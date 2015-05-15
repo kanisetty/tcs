@@ -1,0 +1,31 @@
+{
+  "label": {
+    "Assigned To": "分配至",
+    "Cancelled": "已取消",
+    "Comments": "备注",
+    "Completed": "已完成",
+    "Due Date": "截止日期",
+    "High": "高",
+    "Instructions": "说明",
+    "In Process": "处理中",
+    "Issue": "问题",
+    "Low": "低",
+    "Medium": "中",
+    "Name": "名称",
+    "OK": "确定",
+    "On Hold": "暂挂",
+    "Pending": "待定",
+    "Priority": "优先级",
+    "Start Date": "开始日期",
+    "Status": "状态",
+    "Success! The task has been updated": "成功！任务已更新",
+    "Task": "任务",
+    "Update": "更新"
+  },
+  "error": {
+    "Invalid task ID": "任务 ID 无效。",
+    "Problem closing app": "关闭应用程序时出现问题: ",
+    "Name is required": "需要名称",
+    "Start Date is required": "需要开始日期"
+  }
+}

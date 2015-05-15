@@ -1,0 +1,63 @@
+<html>
+	<head>
+		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+		<script type="text/javascript" src="appworks.js"></script>	
+		<script src="js/appworks-comms.js"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function () {
+
+				if (!window.AppWorksComms) {
+					alert('Caller: Did not find AppWorksComms object!!');
+				}
+
+				var thisAppsName = 'appworksCommsCall';
+				var destComponentName = 'appworksCommsComponent';
+				var destMethod = 'onCallFromApp';
+				var dataForDest = { 'message' : 'hello from ' + thisAppsName };
+				var refreshOnReturn = true;
+
+				$('#callComponent').click(function() {
+					var openCompReq = AppWorksComms.getOpenAppRequest(destComponentName,  
+						destMethod, dataForDest, refreshOnReturn);
+
+					AppWorksComms.openApp(openCompReq);
+				});
+
+				$('#getComponents').click(function() {
+					alert('calling getComponents');
+					var components = AppWorks.getComponents(function(data) {
+						$('#activityData').text(JSON.stringify(data.components));
+					});
+				});
+
+				$('#alterView').click(function() {
+					$('#toUpdate').text("Updated!!!");	
+				});
+
+				// this function looks at what was written to see if there was a send call or return call
+				// and should call the corresponding function, we provide a callback handler and pass the
+				// data to it if you want to implement your own thing
+				AppWorksComms.processComms(function(data) {
+					alert('processComms returned ' + JSON.stringify(data));
+					// we expect something like { message : "some message from the component" } 
+					if (data.data) {
+						$('#activityData').text(JSON.stringify(data.data));
+					}
+				});
+
+			});
+		</script>
+	</head>
+	<body>	
+		<h1>Caller app:</h1>
+		<div>All this app does is ask another component to display and process some data</div>
+		</br>
+		<h3>Current page activity</h3>	
+		<div id="activityData"></div>
+		<input type="button" id="alterView">Upate page to show refresh works on return</input>
+		<input type="button" id="callComponent">Call Component</input>
+		<input type="button" id="getComponents">Get Available Components</input>
+		<div id="toUpdate"></div>
+	</body>		
+</html>

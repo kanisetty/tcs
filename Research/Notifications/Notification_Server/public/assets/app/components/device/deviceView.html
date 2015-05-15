@@ -1,0 +1,28 @@
+<div class="container">
+
+	<h1>{{"content_title_devices" | translate}}</h1>
+	<form role ='form'>
+		<div class ='form-group col-md-5' style="padding-left:0;">
+			<label class="form-control input-sm sr-only" for="deviceUsername">{{"content_devices_username" | translate}}</label>
+			<input ng-model='deviceUsername' class ='form-control' id="deviceUsername" placeholder="{{'content_devices_username' | translate}}"/>
+		</div>
+		<div class ='form-group col-md-5' style="padding-left:0;">
+			<label class="form-control input-sm sr-only" for="deviceRegid">{{"content_devices_regid" | translate}}</label>
+			<input ng-model ='deviceRegid' class ='form-control' id="deviceRegid" placeholder="{{'content_devices_regid' | translate}}" />
+		</div>
+
+		<button ng-click ='addDevice()' class ='col-md-2 btn btn-primary'>{{"content_add_device" | translate}}</button>
+
+		<div style="clear: both"></div>
+	</form>
+
+	<ul class="list-group">
+		<li class="list-group-item" ng-repeat="device in devices">
+			<div class="row">
+				<div class="col-md-3"><strong>{{device.username}}</strong></div>
+				<div class="col-md-9"><span>{{device.regid}}</span></div>
+			</div>
+		</li>
+	</ul>
+
+</div>

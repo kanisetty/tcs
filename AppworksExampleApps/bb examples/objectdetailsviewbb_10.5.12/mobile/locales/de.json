@@ -1,0 +1,22 @@
+{
+  "label": {
+    "Audit": "Protokoll",
+    "byte": "Byte",
+    "bytes": "Bytes",
+    "Created:": "Erstellt:",
+    "Created By:": "Ersteller:",
+    "Categories": "Kategorien",
+    "Description:": "Beschreibung:",
+    "Document": "Dokument",
+    "ErrorInvalidNodeID": "Fehler: Ungültige Knoten-ID.",
+    "GB": "GB",
+    "KB": "KB",
+    "MB": "MB",
+    "Modified:": "Geändert:",
+    "NoCategoriesDefined": "Keine Kategorien definiert.",
+    "Properties": "Eigenschaften",
+    "Size:": "Größe:",
+    "TB": "TB",
+    "Type:": "Typ:"
+  }
+}

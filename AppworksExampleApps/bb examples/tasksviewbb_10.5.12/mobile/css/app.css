@@ -1,0 +1,26 @@
+/* OTAG App */
+body {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.otag-header {
+  background: #2f6699;
+  color: #ffffff;
+  padding: 0.3em;
+  width: 100%;
+}
+
+.error-message {
+  min-height: 1.3em;
+}
+
+.otag-header {
+  display: block;
+  text-align: center;
+}
+
+#taskData{
+	padding-left:10px;	
+}
+

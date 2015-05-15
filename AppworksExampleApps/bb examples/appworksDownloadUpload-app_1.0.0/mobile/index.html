@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>appworks js object</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	
+  </head>
+  <body>
+	
+
+	<button type="button" onclick="doDownloadThenUpload()">Do Download And Upload With New Name</button>	
+	<br/>
+	<br/>	
+	
+    <script src="js/vendor/jquery-2.1.3.min.js"></script>
+	
+	<script type="text/javascript" src="appworks.js"></script>	
+	<script src="js/appworks-cache-client.js"></script>
+
+	<script type="text/javascript">
+					
+	function refreshHTML()
+	{
+		location.reload(true);
+	}
+
+	function doDownloadThenUpload() 
+	{
+		// form a content server download request and open the resulting download
+
+		// this is a very specific exmaple with required backing services, at the time of writing we are using 
+		// gateway:  http://jt-cmhc-appw.opentext.net:8080
+		// cs:       http://jt-cmhc-cs1.opentext.net/otcsu13/llisapi.dll 
+		// creds:    otadmin@otds.admin/0P3nt3xt
+
+		var llCookie = getLlCookie();
+		if (typeof llCookie == "undefined" || llCookie == "")
+		{
+			alert("Failed to resolve the LLCookie! Download will not proceed.");
+			return;
+		}
+
+		var relativePath = "/content/ContentChannel";
+		var fileName = "Changepoint timekeeping system.docx";
+		var nodeID = "123411";
+
+		var headers = { 
+			"Cookie" : "LLCookie=" + llCookie
+		};
+		var queryParams = {
+			"nodeID" : nodeID
+		};
+
+		var openOnReturn = true;
+
+		// ask the runtime to cache the document using these settings 
+		var cacheRequest = AppWorksCache.getBaseCacheRequest(fileName, "com.opentext.bb.example", "1");
+
+		var dlRequest = AppWorks.createDownloadRequest(fileName, relativePath, 
+			headers, queryParams, openOnReturn, cacheRequest);
+
+		alert("Issuing download request " + JSON.stringify(dlRequest));
+		AppWorks.downloadFile(dlRequest,
+			// on success   
+			function(data) {
+				alert("download succeeded " + JSON.stringify(data));
+
+				// upload the file back to the same server 
+				var fieldName = "file";
+				var fieldType = "file";
+				var b64FileContent = data.fileData;
+				var newFileName = "ourUpdatedDoc.docx";
+				var contentType = "application/octet-stream";
+
+				var parentID = "123851"; // this is the folder id
+
+				var fileInputField = AppWorks.createFormField(fieldName, fieldType, 
+					b64FileContent, newFileName, contentType);
+				alert("Created file form field " + JSON.stringify(fileInputField));
+
+				// the url to post to the new doc to, its the parent directory of the file
+				// we downloaded 
+				var relativePath = "/content/v4/nodes/" + parentID + "/children";
+				var uploadHeaders = {};
+				var uploadQueryParams = {
+					"cstoken" : llCookie
+				};
+				var formFields = [ fileInputField ];
+				var uploadRequest = AppWorks.createUploadRequest(relativePath, headers, uploadQueryParams, formFields);
+				alert("Issuing upload request " + JSON.stringify(uploadRequest));
+
+				AppWorks.uploadFile(uploadRequest, function(data) {
+						alert("Upload succeeded " + JSON.stringify(data));
+					},
+					function(data) {
+						alert("Upload failed " + JSON.stringify(data));	
+					}
+				)
+			},
+			// on fail
+			function(data) {
+				alert('download failed ' + JSON.stringify(data));
+		});
+	}
+
+	function getLlCookie() 
+	{
+		try {
+			var cookieObj = (document.cookie || '').split(/;\s*/).reduce(function(re, c) {
+				  var tmp = c.match(/([^=]+)=(.*)/);
+				  if (tmp) re[tmp[1]] = unescape(tmp[2]);
+				  return re;
+				}, {});	
+			return encodeURIComponent(cookieObj['LLCookie']);
+		} catch (e) {
+			return "";
+		}
+	}
+
+	</script>
+	
+  </body>
+</html>

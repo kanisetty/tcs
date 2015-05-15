@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+		<script type="text/javascript" src="appworks.js"></script>	
+		<script src="js/appworks-comms.js"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function () {
+				alert('Receiver component ready');
+
+				if (!window.AppWorksComms) {
+					alert('Receiver: Did not find AppWorksComms object!!');
+				}
+
+				// local handler that the app should have asked to fire 
+				window.onCallFromApp = function(data) {
+					alert('onCallFromApp called, let the callback populate the view');
+				}
+
+				// this function looks at what was written to see if there was a send call or return call
+				// and should call the corresponding function, we provide a callback handler and pass the
+				// data to it if you want to implement your own thing
+				AppWorksComms.processComms(function(data) {
+					if (data.data) {
+						$('#dataDisplay').text(JSON.stringify(data.data));
+					}
+				});
+
+			});
+		</script>
+	</head>
+	<body>	
+		<h1>Receiver component:</h1>
+		<div>All this component does is process data from an app and return control to it. On load the page calls. Hit the back button bottom left to go back</div>
+		</br>
+		<h3>Data Display</h3>	
+		<div id="dataDisplay"></div>
+		
+	</body>		
+</html>

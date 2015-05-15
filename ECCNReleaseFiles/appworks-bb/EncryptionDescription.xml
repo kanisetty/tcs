@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE Encryption SYSTEM "Encryption.dtd">
+<Encryption>
+	<PathToSourceTree>
+		http://user:password@appworks-re1.lab.opentext.com:8079/appworks.git
+	</PathToSourceTree>
+	
+	<DataEncryptionUsage>
+		<Notes>
+			We create and store a one-way hash of the user entered password, upon offline access of the mobile application, we compare the hash of their password we stored previously with a new hash we create of the password they supply during this interaction.
+            </Notes>
+		<Data nature = "configuration"></Data>
+		<Algorithm name="SHA" keyStrength="256">
+		</Algorithm>
+		<Implementation>
+			<SourceLocation file= "awc.blackberry/AppWorks/src/Security/Auth/OfflineAuthManager.hpp"></SourceLocation>
+		</Implementation>
+	</DataEncryptionUsage>
+	</Encryption>
+
+	<DataEncryptionUsage>
+		<Notes>
+Blackberry SDK Security Manager .
+            </Notes>
+		<Data nature = "configuration"></Data>
+		<Algorithm name="SHA" keyStrength="256">
+		</Algorithm>
+		<Implementation>
+			<SourceLocation file= "awc.blackberry\AppWorks\src\Security\SecurityManager.cpp"></SourceLocation>
+		</Implementation>
+	</DataEncryptionUsage>
+	</Encryption>
+
+	<DataEncryptionUsage>
+		<Notes>
+		Encryption is the same as the PKWARE implementation https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT
+            </Notes>
+		<Data nature = "configuration"></Data>
+		<Algorithm name="AES" keyStrength="128">		</Algorithm>
+		<Algorithm name="AES" keyStrength="192">		</Algorithm>
+		<Algorithm name="AES" keyStrength="256">		</Algorithm>
+		<Algorithm name="3DES" keyStrength="168">		</Algorithm>
+		<Algorithm name="3DES" keyStrength="128">		</Algorithm>
+		<Algorithm name="DES" keyStrength="64">		</Algorithm>
+		<Algorithm name="RC2" keyStrength="40">		</Algorithm>
+		<Algorithm name="RC2" keyStrength="64">		</Algorithm>
+		<Algorithm name="RC2" keyStrength="128">		</Algorithm>
+		<Algorithm name="RC4" keyStrength="40">		</Algorithm>
+		<Algorithm name="RC4" keyStrength="64">		</Algorithm>
+		<Algorithm name="RC4" keyStrength="128">		</Algorithm>
+		<Algorithm name="Blowfish" keyStrength="448">		</Algorithm>
+		<Algorithm name="Twofish" keyStrength="128">		</Algorithm>
+		<Algorithm name="Twofish" keyStrength="192">		</Algorithm>
+		<Algorithm name="Twofish" keyStrength="256">		</Algorithm>
+		<Implementation>
+			<SourceLocation file= "awc.blackberry\quazip\src\zip.c"></SourceLocation>
+		</Implementation>
+	</DataEncryptionUsage>
+	</Encryption>
+
+	<DataEncryptionUsage>
+		<Notes>
+Encryption is the same as the PKWARE implementation https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT
+            </Notes>
+		<Data nature = "configuration"></Data>
+				<Algorithm name="AES" keyStrength="128">		</Algorithm>
+		<Algorithm name="AES" keyStrength="192">		</Algorithm>
+		<Algorithm name="AES" keyStrength="256">		</Algorithm>
+		<Algorithm name="3DES" keyStrength="168">		</Algorithm>
+		<Algorithm name="3DES" keyStrength="128">		</Algorithm>
+		<Algorithm name="DES" keyStrength="64">		</Algorithm>
+		<Algorithm name="RC2" keyStrength="40">		</Algorithm>
+		<Algorithm name="RC2" keyStrength="64">		</Algorithm>
+		<Algorithm name="RC2" keyStrength="128">		</Algorithm>
+		<Algorithm name="RC4" keyStrength="40">		</Algorithm>
+		<Algorithm name="RC4" keyStrength="64">		</Algorithm>
+		<Algorithm name="RC4" keyStrength="128">		</Algorithm>
+		<Algorithm name="Blowfish" keyStrength="448">		</Algorithm>
+		<Algorithm name="Twofish" keyStrength="128">		</Algorithm>
+		<Algorithm name="Twofish" keyStrength="192">		</Algorithm>
+		<Algorithm name="Twofish" keyStrength="256">		</Algorithm>
+		</Algorithm>
+		<Implementation>
+			<SourceLocation file= "awc.blackberry\quazip\src\unzip.c"></SourceLocation>
+		</Implementation>
+	</DataEncryptionUsage>
+	</Encryption>
+
+	<DataEncryptionUsage>
+		<Notes>
+
+            </Notes>
+		<Data nature = "configuration"></Data>
+		<Algorithm name="Base64" keyStrength="64">
+		</Algorithm>
+		<Implementation>
+			<SourceLocation file= "awc.blackberry\AppWorks\src\Models\Utility.cpp"></SourceLocation>
+		</Implementation>
+	</DataEncryptionUsage>
+	</Encryption>
+
+	<ThirdPartyProduct
+		product         = "quazip"
+		version         = "1.01e"
+		description     = "Provides access to ZIP archives from Qt programs using QIODevice API."
+		opensource      = "yes"
+		type            = "binary"
+		modified        = "no"
+		licenseText     = "lib/LICENSE.txt"
+		link            = "http://sourceforge.net/projects/quazip/"
+		downloadLink    = "http://mirror.csclub.uwaterloo.ca/apache//db/derby/db-derby-10.10.1.1/db-derby-10.10.1.1-lib.zip"
+		licenseLink     = "http://sourceforge.net/projects/quazip/" >
+		<LicenseConditions
+			licenseName                                  = "GNU LESSER GENERAL PUBLIC LICENSE"
+			licenseAllows_Distribution                   = "yes"
+			licenseAllows_Modification                   = "yes"
+			licenseAllows_Additions                      = "yes"
+			licenseAllows_AdvertisementWithAuthorsName   = "no"
+			licenseRequires_CopyrightNotice              = "no"
+			licenseRequires_ListConditions               = "no"
+			licenseRequires_WarrantyDisclaimer           = "no"
+			licenseRequires_MarkModifications            = "no"
+			licenseRequires_DistributionOfSource         = "no"
+		/>
+	</ThirdPartyProduct>
+
+	<ThirdPartyProduct
+		product         = "QT Cascades by Blackberry"
+		version         = "10"
+		description     = "Cascades QT library provided as part of teh Blackberry OS 10 SDK"
+		opensource      = "no"
+		type            = "binary"
+		modified        = "no"
+		licenseText     = "SDKLA_English.pdf"
+		link            = "http://developer.blackberry.com/native/downloads/"
+		downloadLink    = "http://developer.blackberry.com/native/downloads/"
+		licenseLink     = "http://uk.blackberry.com/content/dam/blackBerry/pdf/legal/northAmerica/english/SDKLA_English.pdf" >
+		<LicenseConditions
+			licenseName                                  = "BLACKBERRY SDK LICENSE AGREEMENT"
+			licenseAllows_Distribution                   = "yes"
+			licenseAllows_Modification                   = "no"
+			licenseAllows_Additions                      = "no"
+			licenseAllows_AdvertisementWithAuthorsName   = "no"
+			licenseRequires_CopyrightNotice              = "no"
+			licenseRequires_ListConditions               = "no"
+			licenseRequires_WarrantyDisclaimer           = "no"
+			licenseRequires_MarkModifications            = "no"
+			licenseRequires_DistributionOfSource         = "no"
+		/>
+	</ThirdPartyProduct>
