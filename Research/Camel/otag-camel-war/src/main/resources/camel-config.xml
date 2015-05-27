@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <!--These are for spring autowire / annotations:-->
+    <!--xmlns:context="http://www.springframework.org/schema/context"-->
+    <!--...-->
+    <!--http://www.springframework.org/schema/context-->
+    <!--http://www.springframework.org/schema/context/spring-context-2.5.xsd">-->
+    <!--...-->
+
+    <!--Enable spring annotation-->
+    <context:annotation-config />
+
+    <!--use camel-metrics route policy to gather metrics for all routes-->
+    <bean id="metricsRoutePolicyFactory" class="org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicyFactory"/>
+
+    <!--rest service marshals pojos-->
+    <!--Get rid of this, was using it to invoke other route builders which is probably not best-->
+    <!--See package scan config below-->
+    <!--<bean id="awgCamelRoutes" class="com.opentext.otag.camel.proto.routebuilders.AWGCamelRouteBuilder"/>-->
+
+    <!--a bean for doodad services-->
+    <bean id="doodadService" class="com.opentext.otag.camel.proto.DoodadService"/>
+
+    <!--a bean for whatnot services-->
+    <bean id="whatnotService" class="com.opentext.otag.camel.proto.WhatnotService"/>
+
+    <!--a bean for managing routes-->
+    <bean id="installerService" class="com.opentext.otag.camel.proto.InstallerService"/>
+
+    <!--Used by the proxy to rewrite urls-->
+    <bean id="awgUrlRewriteIn" class="com.opentext.otag.camel.proto.AWGUrlRewrite"/>
+
+    <!--Used to manage proxy routes-->
+    <bean id="proxyRoutesService" class="com.opentext.otag.camel.proto.ProxyRouteService"/>
+
+    <camelContext id="myCamel" xmlns="http://camel.apache.org/schema/spring">
+        <!--<routeBuilder ref="awgCamelRoutes"/>-->
+        <packageScan>
+            <package>com.opentext.otag.camel.proto.routebuilders</package>
+            <excludes>**.*Test*</excludes>
+            <includes>**.*</includes>
+        </packageScan>
+    </camelContext>
+
+</beans>
