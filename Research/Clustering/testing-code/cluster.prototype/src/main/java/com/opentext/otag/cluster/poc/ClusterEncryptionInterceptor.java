@@ -59,54 +59,69 @@ public class ClusterEncryptionInterceptor extends ChannelInterceptorBase {
 
     @Override
     synchronized public void messageReceived(ChannelMessage msg) {
-        if(decryptor == null) return;
-
-        byte[] data = msg.getMessage().getBytes();
-
-        try {
-            @SuppressWarnings("unchecked")
-            HashMap<String, byte[]> packet = (HashMap<String, byte[]>) XByteBuffer.deserialize(data);
-            byte[] encryptedData = packet.get(DATA_KEY);
-            byte[] iv = packet.get(IV);
-
-            decryptor.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
-            byte[] decryptedData = decryptor.doFinal(encryptedData);
-
-            msg.setMessage(new XByteBuffer(decryptedData, true));
-
-        } catch (GeneralSecurityException | IOException | NullPointerException |
-                ClassCastException | ClassNotFoundException e) {
-            LOG.error(e);
+        LOG.info("onMessageReceived from " + msg.getAddress());
+        if (decryptor == null) {
+            LOG.warn("decryptor is null returning");
+            return;
         }
 
-        super.messageReceived(msg);
+        try {
+            byte[] data = msg.getMessage().getBytes();
+
+            try {
+                @SuppressWarnings("unchecked")
+                HashMap<String, byte[]> packet = (HashMap<String, byte[]>) XByteBuffer.deserialize(data);
+                byte[] encryptedData = packet.get(DATA_KEY);
+                byte[] iv = packet.get(IV);
+
+                decryptor.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
+                byte[] decryptedData = decryptor.doFinal(encryptedData);
+
+                msg.setMessage(new XByteBuffer(decryptedData, true));
+
+            } catch (GeneralSecurityException | IOException | NullPointerException |
+                    ClassCastException | ClassNotFoundException e) {
+                LOG.error("our part of Message receive failed " + e.getMessage(), e);
+            }
+
+            super.messageReceived(msg);
+        } catch (Exception e) {
+            LOG.error("Message receive failed " + e.getMessage(), e);
+        }
     }
 
     @Override
     synchronized public void sendMessage(Member[] destination, ChannelMessage msg,
                                          InterceptorPayload payload) throws ChannelException {
-        if(encryptor == null) return;
-
-        byte[] data = msg.getMessage().getBytes();
-
-        try {
-
-            byte[] encryptedData = encryptor.doFinal(data);
-
-            // AES/CBC produces encrypted data and an initialization vector (iv).
-            // The receiver will need both. The iv can safely be sent in the clear.
-            HashMap<String, byte[]> packet = new HashMap<String, byte[]>();
-            packet.put(DATA_KEY, encryptedData);
-            packet.put(IV, encryptor.getIV());
-
-            byte[] packetData = XByteBuffer.serialize(packet);
-            msg.setMessage(new XByteBuffer(packetData, true));
-
-        } catch (GeneralSecurityException | IOException e) {
-            LOG.error(e);
+        LOG.info("sendingMessage");
+        if (encryptor == null) {
+            LOG.info("Encryptor was null returning");
+            return;
         }
 
-        super.sendMessage(destination, msg, payload);
+        try {
+            byte[] data = msg.getMessage().getBytes();
+
+            try {
+                byte[] encryptedData = encryptor.doFinal(data);
+
+                // AES/CBC produces encrypted data and an initialization vector (iv).
+                // The receiver will need both. The iv can safely be sent in the clear.
+                HashMap<String, byte[]> packet = new HashMap<>();
+                packet.put(DATA_KEY, encryptedData);
+                packet.put(IV, encryptor.getIV());
+
+                byte[] packetData = XByteBuffer.serialize(packet);
+                msg.setMessage(new XByteBuffer(packetData, true));
+
+            } catch (Exception e) {
+                LOG.error("Failed to perform our part of the send " + e.getMessage(), e);
+            }
+
+            super.sendMessage(destination, msg, payload);
+        } catch (Exception e) {
+            LOG.error("Failed to send message " + e.getMessage(), e);
+        }
     }
 
 }

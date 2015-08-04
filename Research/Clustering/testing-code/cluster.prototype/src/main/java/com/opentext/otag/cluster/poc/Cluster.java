@@ -59,6 +59,11 @@ public class Cluster implements ChannelListener, MembershipListener {
             channel.addMembershipListener(this);
 
             String clusterKey = getClusterKey();
+            LOG.info("clusterKey=" + clusterKey);
+            int clusterMulticastPort = getClusterMulticastPort();
+            LOG.info("clusterMulticastPort=" + clusterMulticastPort);
+            String clusterMulticastAddress = getClusterMulticastAddress();
+            LOG.info("clusterMulticastAddress=" + clusterMulticastAddress);
 
             // standard apache interceptors: better availability detection, and use separate thread to send messages
             channel.addInterceptor(new ClusterEncryptionInterceptor(clusterKey));
@@ -66,8 +71,8 @@ public class Cluster implements ChannelListener, MembershipListener {
             channel.addInterceptor(new MessageDispatch15Interceptor());
 
             // set multi-cast (member discovery) parameters
-            membershipService.setPort(getClusterMulticastPort());
-            membershipService.setAddress(getClusterMulticastAddress());
+            membershipService.setPort(clusterMulticastPort);
+            membershipService.setAddress(clusterMulticastAddress);
             membershipService.setFrequency(CLUSTER_FREQUENCY);
 
             // set receiver (incoming message) parameters
