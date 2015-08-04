@@ -15,7 +15,7 @@ public class AppWorksService implements ServletContextListener {
 
     public static final Log LOG = LogFactory.getLog(AppWorksService.class);
 
-    public static final String LOG_MARKER = "***** MY-SERVICE ****** - ";
+    public static final String LOG_MARKER = "***** CLUSTER POC ****** - ";
 
     private static Thread senderThread = null;
     private static Cluster cluster = Cluster.getInstance();
