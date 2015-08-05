@@ -35,13 +35,9 @@
     </build>
 
     <dependencies>
-
-      <!--  <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-tribes</artifactId>
-            <version>7.0.25</version>
-        </dependency>-->
-
+        <!-- !!!! IMPORTANT !!!
+            We must ensure our tribes implementation is compatible with the one supplied by
+            our host container. -->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-tribes</artifactId>
