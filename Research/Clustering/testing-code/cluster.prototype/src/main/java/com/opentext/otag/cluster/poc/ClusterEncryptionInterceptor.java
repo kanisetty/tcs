@@ -69,8 +69,13 @@ public class ClusterEncryptionInterceptor extends ChannelInterceptorBase {
             byte[] data = msg.getMessage().getBytes();
 
             try {
+
+                ClassLoader[] classLoaders = new ClassLoader[2];
+                classLoaders[0] = this.getClass().getClassLoader();
+                classLoaders[1] = Thread.currentThread().getContextClassLoader();
+
                 @SuppressWarnings("unchecked")
-                HashMap<String, byte[]> packet = (HashMap<String, byte[]>) XByteBuffer.deserialize(data);
+                HashMap<String, byte[]> packet = (HashMap<String, byte[]>) XByteBuffer.deserialize(data,0,data.length, classLoaders);
                 byte[] encryptedData = packet.get(DATA_KEY);
                 byte[] iv = packet.get(IV);
 

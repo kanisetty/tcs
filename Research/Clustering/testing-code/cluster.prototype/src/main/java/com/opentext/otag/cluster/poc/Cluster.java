@@ -50,7 +50,7 @@ public class Cluster implements ChannelListener, MembershipListener {
 
     private Cluster() {
         try {
-            channel = new GroupChannel();
+            channel = new AwgGroupChannel();
 
             McastService membershipService = (McastService) channel.getMembershipService();
             ReceiverBase receiver = (ReceiverBase) channel.getChannelReceiver();
@@ -80,6 +80,7 @@ public class Cluster implements ChannelListener, MembershipListener {
             receiver.setPort(CLUSTER_RECEIVER_PORT);
 
             sendOptions = Channel.SEND_OPTIONS_DEFAULT;
+
 
             channel.start(Channel.DEFAULT);
 
