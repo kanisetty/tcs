@@ -37,6 +37,42 @@
     	<wsdl.file>DummyFile.wsdl</wsdl.file>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>Generate Files from WSDL</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.cxf</groupId>
+                        <artifactId>cxf-codegen-plugin</artifactId>
+                        <version>3.1.2</version>
+                        <executions>
+                            <!-- Execute the task in generate sources phase -->
+                            <execution>
+                                <id>generate-sources</id>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <sourceRoot>${basedir}/src/main/java</sourceRoot>
+                                    <wsdlOptions>
+                                        <wsdlOption>
+                                            <wsdl>${basedir}/src/main/resources/${wsdl.file}</wsdl>
+                                        </wsdlOption>
+                                    </wsdlOptions>
+                                </configuration>
+                                <goals>
+                                    <goal>wsdl2java</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -50,29 +86,6 @@
                     </configuration>
                 </plugin>
 
-                <plugin>
-                    <groupId>org.apache.cxf</groupId>
-                    <artifactId>cxf-codegen-plugin</artifactId>
-                    <version>3.1.2</version>
-                    <executions>
-                        <!-- Execute the task in generate sources phase -->
-                        <execution>
-                            <id>generate-sources</id>
-                            <phase>generate-sources</phase>
-                            <configuration>
-                                <sourceRoot>${basedir}/src/main/java</sourceRoot>
-                                <wsdlOptions>
-                                    <wsdlOption>
-                                        <wsdl>${basedir}/src/main/resources/${wsdl.file}</wsdl>
-                                    </wsdlOption>
-                                </wsdlOptions>
-                            </configuration>
-                            <goals>
-                                <goal>wsdl2java</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
 
                 <!-- Deploy sources as well as built artifacts so we can debug effectively when
                     inside AppWorks service projects -->
