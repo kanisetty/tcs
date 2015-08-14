@@ -9,6 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.opentext.ecm.otsync.ws.server.rest.resources.*;
+import com.opentext.ecm.otsync.ws.server.rest.resources.approots.AppRoots;
+import com.opentext.ecm.otsync.ws.server.rest.resources.clients.Clients;
+import com.opentext.ecm.otsync.ws.server.rest.resources.node.Nodes;
+import com.opentext.ecm.otsync.ws.server.rest.resources.shares.Shares;
+import com.opentext.ecm.otsync.ws.server.rest.resources.users.Users;
+import com.opentext.ecm.otsync.ws.server.rest.resources.watches.Watches;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

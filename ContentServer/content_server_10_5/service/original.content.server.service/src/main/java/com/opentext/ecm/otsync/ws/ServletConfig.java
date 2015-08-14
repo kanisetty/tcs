@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+// TODO make this AppworksServiceContextListener and don't call it explicitly from AbstractOTSyncServlet
 public class ServletConfig {
 
 	public static final String APP_NAME = "content";

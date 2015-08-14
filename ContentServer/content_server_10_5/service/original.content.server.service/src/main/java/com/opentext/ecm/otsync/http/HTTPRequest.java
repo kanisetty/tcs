@@ -45,10 +45,11 @@ import java.util.Map.Entry;
 
 public class HTTPRequest {
 
-	// TODO FIXME update HTTP client, a lot of deprecated stuff in here
-	private static final int TEMP_COOKIE_LIFETIME = 60 * 1000; // in ms	
-	private static final String MISSING_COOKIE_ERROR = "Missing or invalid Cookie: Failed to extract cookie data from request.";
 	private static final Log log = LogFactory.getLog(HTTPRequest.class);
+
+	// TODO FIXME update HTTP client, a lot of deprecated stuff in here
+	private static final int TEMP_COOKIE_LIFETIME = 60 * 1000; // in ms
+	private static final String MISSING_COOKIE_ERROR = "Missing or invalid Cookie: Failed to extract cookie data from request.";
 	private final HttpParams downloadParams;
 	private final HttpParams uploadParams;
 	private final HttpParams frontChannelParams;

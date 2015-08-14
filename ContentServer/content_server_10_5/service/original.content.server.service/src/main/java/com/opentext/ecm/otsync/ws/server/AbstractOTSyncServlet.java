@@ -54,6 +54,8 @@ public abstract class AbstractOTSyncServlet extends HttpServlet {
 	public void init(javax.servlet.ServletConfig config) throws ServletException {
 		super.init(config);
 
+		// TODO FIXME YUP THERE IS DANGER AFOOT HERE, WE ARE TRYING TO WORK WITH SETTINGS THAT WE WONT HAVE
+		// ACCESS TO
 		ServletConfig.init(getServletContext());
 
 		messageConverter = new JsonMessageConverter();
@@ -82,6 +84,7 @@ public abstract class AbstractOTSyncServlet extends HttpServlet {
 		cleanUpThread.start();
 	}
 
+	// TODO FIXME THESE LISTENERS ARE INJECTED INTO THE FRONT CHANNEL ONLY!!!
 	private void initListeners() {
 		// Create a switch which will respond on the {"type"} key in the JSON string. 
 		// For example, the AuthMessageListener's "onMessage" method will be called when a JSON string with {"type": "auth"} 

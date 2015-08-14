@@ -78,10 +78,8 @@ public class Servlet3FrontChannel {
 			if(response != null){
 				ServletUtil.error(response, "Invalid JSON format", HttpServletResponse.SC_BAD_REQUEST);
 			}
-			if(asyncRequest != null){
-				asyncRequest.complete();
-			}
-		} 
+			asyncRequest.complete();
+		}
 		catch (IOException ioe) {
 			if(in != null){
 				log.warn("Error processing request", ioe);
@@ -92,9 +90,7 @@ public class Servlet3FrontChannel {
 			else {
 				log.info("Front-channel request closed before contents could be read");
 			}
-			if(asyncRequest != null){
-				asyncRequest.complete();
-			}
+			asyncRequest.complete();
 		}
 	}
 	

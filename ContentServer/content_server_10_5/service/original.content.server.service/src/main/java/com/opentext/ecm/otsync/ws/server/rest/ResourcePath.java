@@ -127,28 +127,28 @@ public class ResourcePath {
 		return token;
 	}
 
-	static void rejectResource(HttpServletResponse resp) {
+	public static void rejectResource(HttpServletResponse resp) {
 		try {
 			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 		} catch (IOException e) {
 		}
 	}
 
-	static void rejectRequest(HttpServletResponse resp) {
+	public static void rejectRequest(HttpServletResponse resp) {
 		try {
 			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		} catch (IOException e) {
 		}
 	}
 
-	static void rejectAuth(HttpServletResponse resp) {
+	public static void rejectAuth(HttpServletResponse resp) {
 		try {
 			resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 		} catch (IOException e) {
 		}
 	}
 
-	static void sendInternalError(HttpServletResponse resp) {
+	public static void sendInternalError(HttpServletResponse resp) {
 		try {
 			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		} catch (IOException e) {

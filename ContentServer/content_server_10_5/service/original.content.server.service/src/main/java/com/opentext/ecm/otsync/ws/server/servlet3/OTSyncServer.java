@@ -15,6 +15,9 @@ import com.opentext.ecm.otsync.ws.server.AbstractOTSyncServlet;
 
 @SuppressWarnings("serial")
 public class OTSyncServer extends AbstractOTSyncServlet {
+	// TODO FIXME this is really weird, why not just get rid of the private vars and keep the
+	// statics, or why not just implement a service type singleton if they are used globally like this!!!
+
 	private Servlet3BackChannel backChannel;
 	private Servlet3FrontChannel frontChannel;
 	private Servlet3ContentChannel contentChannel;
@@ -108,6 +111,9 @@ public class OTSyncServer extends AbstractOTSyncServlet {
 		setGlobalContentChannel(contentChannel);
 		setGlobalServerConnection(serverConnection);
 	}
+
+	//  TODO FIXME very strange, why have two members of the same class refer to the same thing like this
+	// if you expose the instance via a static method encapsulation is automatically broken???
 
 	private static void setGlobalFrontChannel(Servlet3FrontChannel currentFrontChannel) {
 		globalFrontChannel = currentFrontChannel;
