@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpStatus;
 
-import com.opentext.ecm.otsync.http.HTTPRequest.ResponseWithStatus;
+import com.opentext.ecm.otsync.http.ContentServiceHttpClient.ResponseWithStatus;
 import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.ServletUtil;

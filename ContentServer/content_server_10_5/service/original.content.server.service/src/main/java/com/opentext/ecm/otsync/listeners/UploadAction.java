@@ -10,7 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
-import com.opentext.ecm.otsync.http.HTTPRequest;
+import com.opentext.ecm.otsync.http.ContentServiceHttpClient;
 import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 
@@ -18,10 +18,10 @@ public class UploadAction extends SuspendedAction {
 
 	private static final String COULD_NOT_SEND_UPLOAD_REQUEST_ERROR_MSG = "Could not send upload request to server";
 	protected static Log log = LogFactory.getLog(Class.class);
-	protected final HTTPRequest contentServerConnection;
+	protected final ContentServiceHttpClient contentServerConnection;
 	private AsyncContext async;
 
-	public UploadAction(HTTPRequest contentServerConnection, AsyncContext async) {
+	public UploadAction(ContentServiceHttpClient contentServerConnection, AsyncContext async) {
 		this.contentServerConnection = contentServerConnection;
 		this.async = async;
 	}

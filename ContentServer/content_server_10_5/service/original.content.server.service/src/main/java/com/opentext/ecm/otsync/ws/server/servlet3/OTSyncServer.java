@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.opentext.ecm.otsync.http.HTTPRequest;
+import com.opentext.ecm.otsync.http.ContentServiceHttpClient;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.server.AbstractOTSyncServlet;
 
@@ -27,7 +27,7 @@ public class OTSyncServer extends AbstractOTSyncServlet {
 	private static Servlet3FrontChannel globalFrontChannel;
 	private static Servlet3ContentChannel globalContentChannel;
 	private static Servlet3BackChannel globalBackChannel;
-	private static HTTPRequest globalServerConnection;
+	private static ContentServiceHttpClient globalServerConnection;
       
 	/** 
 	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -41,10 +41,7 @@ public class OTSyncServer extends AbstractOTSyncServlet {
        
 		try{
 			
-			if (ServletUtil.isRestXMLRequest(request)) {
-				//RestResourcesHandler.handle(ce);
-			}
-			else if (ServletUtil.isFrontChannelRequest(request)) {
+			if (ServletUtil.isFrontChannelRequest(request)) {
 				frontChannel.handle(request);
 			}
 			else if (ServletUtil.isBackChannelRequest(request)) {
@@ -139,11 +136,11 @@ public class OTSyncServer extends AbstractOTSyncServlet {
 		return globalContentChannel;
 	}
 	
-	private static void setGlobalServerConnection(HTTPRequest currentServerConnection){
+	private static void setGlobalServerConnection(ContentServiceHttpClient currentServerConnection){
 		globalServerConnection = currentServerConnection;
 	}
 	
-	public static HTTPRequest getServerConnection(){
+	public static ContentServiceHttpClient getServerConnection(){
 		return globalServerConnection;
 	}
 }

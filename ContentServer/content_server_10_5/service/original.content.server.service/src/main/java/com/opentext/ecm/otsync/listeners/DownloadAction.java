@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.ContentServerURL;
-import com.opentext.ecm.otsync.http.HTTPRequest;
+import com.opentext.ecm.otsync.http.ContentServiceHttpClient;
 import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.ServletUtil;
@@ -16,13 +16,13 @@ import com.opentext.ecm.otsync.ws.server.AbstractDownloadChannel;
 
 public class DownloadAction extends SuspendedAction {
 
-	private HTTPRequest contentServerConnection;
+	private ContentServiceHttpClient contentServerConnection;
 	private AsyncContext async;
 	private static final String NO_RESPONSE_ERROR_MSG = "Could not get response";
 	private static final String MISSING_PARAMETER_ERROR_MSG = "either url or nodeID parameter is required";
 	private static final String INVALID_PARAMETER_ERROR_MSG = "The url parameter was invalid";
 
-	public DownloadAction(HTTPRequest contentServerConnection, AsyncContext async) {
+	public DownloadAction(ContentServiceHttpClient contentServerConnection, AsyncContext async) {
 		this.contentServerConnection = contentServerConnection;
 		this.async = async;
 	}

@@ -1,15 +1,12 @@
 package com.opentext.ecm.otsync.ws.server;
 
 import com.opentext.ecm.otsync.engine.core.SuspendedActionQueue;
-import com.opentext.ecm.otsync.http.HTTPRequest;
+import com.opentext.ecm.otsync.http.ContentServiceHttpClient;
 import com.opentext.ecm.otsync.listeners.*;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.message.JsonMessageConverter;
 import com.opentext.ecm.otsync.ws.message.MessageConverter;
-import com.opentext.otag.api.services.handlers.AbstractSettingChangeHandler;
-import com.opentext.otag.api.services.handlers.SettingChangeHandler;
-import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -40,7 +37,7 @@ public abstract class AbstractOTSyncServlet extends HttpServlet {
 	protected SynchronousMessageSwitch messageHandler;
 	protected CleanUpThread cleanUpThread;
 	protected MessageConverter messageConverter;
-	protected HTTPRequest serverConnection;
+	protected ContentServiceHttpClient serverConnection;
 	protected ChunkedContentRequestQueue chunkedContentRequestQueue;
 
 	private ClientSet clients;
@@ -60,7 +57,7 @@ public abstract class AbstractOTSyncServlet extends HttpServlet {
 
 		messageConverter = new JsonMessageConverter();
 		clients = new ClientSet();
-		serverConnection = new HTTPRequest();
+		serverConnection = new ContentServiceHttpClient();
 
 		// Create message feeds with thread pools. There is one main (shared) pool that will handle all requests headed for content server
 		// (external user api calls excepted). In addition, there are separate queues with a small number of dedicated threads for

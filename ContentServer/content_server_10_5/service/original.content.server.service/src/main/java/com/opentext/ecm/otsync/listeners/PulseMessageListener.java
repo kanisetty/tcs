@@ -1,6 +1,6 @@
 package com.opentext.ecm.otsync.listeners;
 
-import com.opentext.ecm.otsync.http.HTTPRequest;
+import com.opentext.ecm.otsync.http.ContentServiceHttpClient;
 import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.payload.Payload;
@@ -22,9 +22,9 @@ public class PulseMessageListener implements MessageForwarder {
 	private static final String PULSE_UPDATE_PATH = "/pulse/statuses/update";
 	private static final String PULSE_COMMENTS_PATH = "/pulse/statuses/public_timeline";
 	
-	private final HTTPRequest _serverConnection;
+	private final ContentServiceHttpClient _serverConnection;
 	
-	public PulseMessageListener(HTTPRequest serverConnection) {
+	public PulseMessageListener(ContentServiceHttpClient serverConnection) {
 		_serverConnection = serverConnection;
 	}
 

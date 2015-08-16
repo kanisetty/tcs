@@ -1,6 +1,6 @@
 package com.opentext.ecm.otsync.listeners;
 
-import com.opentext.ecm.otsync.http.HTTPRequest;
+import com.opentext.ecm.otsync.http.ContentServiceHttpClient;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.message.SynchronousMessageListener;
 import com.opentext.ecm.otsync.ws.ServletConfig;
@@ -15,10 +15,10 @@ import java.util.Map;
 
 public class AuthMessageListener implements SynchronousMessageListener {
 	private MessageConverter _messageConverter;
-	private HTTPRequest _serverConnection;
+	private ContentServiceHttpClient _serverConnection;
     public static Log log = LogFactory.getLog(ServletConfig.class);
 
-	public AuthMessageListener(MessageConverter messageConverter, HTTPRequest serverConnection) {
+	public AuthMessageListener(MessageConverter messageConverter, ContentServiceHttpClient serverConnection) {
 		_messageConverter = messageConverter;
 		_serverConnection = serverConnection;
 	}

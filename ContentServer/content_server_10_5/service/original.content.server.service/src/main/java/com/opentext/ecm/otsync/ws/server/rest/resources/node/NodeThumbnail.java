@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
-import com.opentext.ecm.otsync.http.HTTPRequest;
+import com.opentext.ecm.otsync.http.ContentServiceHttpClient;
 import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.ws.ServletConfig;
@@ -69,7 +69,7 @@ public class NodeThumbnail extends ResourcePath {
 			
 			RequestHeader headers = new RequestHeader(req);
 			
-			HTTPRequest serverConnection = OTSyncServer.getServerConnection();
+			ContentServiceHttpClient serverConnection = OTSyncServer.getServerConnection();
 			
 			SuspendedAction action = new RESTDownloadAction(serverConnection, asyncRequest, headers, url, llcookie);
 			

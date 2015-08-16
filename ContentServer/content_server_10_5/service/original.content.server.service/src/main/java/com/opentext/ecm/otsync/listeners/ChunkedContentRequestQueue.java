@@ -3,7 +3,7 @@ package com.opentext.ecm.otsync.listeners;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.engine.core.SuspendedActionQueue;
 import com.opentext.ecm.otsync.gateway.GatewayServices;
-import com.opentext.ecm.otsync.http.HTTPRequest;
+import com.opentext.ecm.otsync.http.ContentServiceHttpClient;
 import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.payload.Payload;
@@ -55,7 +55,7 @@ public class ChunkedContentRequestQueue {
 	public static final String CS_COOKIE_NAME = "LLCookie";
 	private final Map<String, Request> _downloadsInProgress;
 	private final Map<String, Request> _uploadsInProgress;
-	private final HTTPRequest _contentServerConnection;
+	private final ContentServiceHttpClient _contentServerConnection;
 	private final MessageConverter _messageConverter;
 	private final SuspendedActionQueue _sharedThreadPool;
 
@@ -84,7 +84,7 @@ public class ChunkedContentRequestQueue {
 	}
 
 	public ChunkedContentRequestQueue(
-			final HTTPRequest contentServerConnection, 
+			final ContentServiceHttpClient contentServerConnection,
 			final MessageConverter messageConverter, 
 			final SuspendedActionQueue sharedThreadPool) throws ServletException {
 		cleanAllCacheFiles();  // make sure there are no orphaned cache files

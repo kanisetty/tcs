@@ -23,7 +23,7 @@ public class AdminAPI {
 		this.cstoken = ResourcePath.getCSToken(req);
 		this.headers = new RequestHeader(req);
 		
-		this.params = new HashMap<String, String>();
+		this.params = new HashMap<>();
 		sendAllParams(req, params);
 		params.put(ResourcePath.CSTOKEN, cstoken);
 		params.put("func", func);

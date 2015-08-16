@@ -1,6 +1,6 @@
 package com.opentext.ecm.otsync.listeners;
 
-import com.opentext.ecm.otsync.http.HTTPRequest;
+import com.opentext.ecm.otsync.http.ContentServiceHttpClient;
 import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.payload.Payload;
@@ -13,9 +13,9 @@ import java.util.Map;
 
 public class NotifyMessageListener implements MessageForwarder {
 	
-	private final HTTPRequest _serverConnection;
+	private final ContentServiceHttpClient _serverConnection;
 	
-	public NotifyMessageListener(HTTPRequest serverConnection) {
+	public NotifyMessageListener(ContentServiceHttpClient serverConnection) {
 		_serverConnection = serverConnection;
 	}
 	

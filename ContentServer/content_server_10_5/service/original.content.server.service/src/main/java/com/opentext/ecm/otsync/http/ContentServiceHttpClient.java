@@ -2,9 +2,6 @@ package com.opentext.ecm.otsync.http;
 
 import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.ServletUtil;
-import com.opentext.otag.api.services.handlers.AbstractSettingChangeHandler;
-import com.opentext.otag.api.services.handlers.SettingChangeHandler;
-import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.*;
@@ -43,9 +40,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class HTTPRequest {
+public class ContentServiceHttpClient {
 
-	private static final Log log = LogFactory.getLog(HTTPRequest.class);
+	private static final Log log = LogFactory.getLog(ContentServiceHttpClient.class);
 
 	// TODO FIXME update HTTP client, a lot of deprecated stuff in here
 	private static final int TEMP_COOKIE_LIFETIME = 60 * 1000; // in ms
@@ -113,7 +110,7 @@ public class HTTPRequest {
 //		}
 //	}
 
-	public HTTPRequest(){		
+	public ContentServiceHttpClient(){
 		setConnectionPool();
 		
 		downloadParams = new BasicHttpParams();
@@ -121,11 +118,17 @@ public class HTTPRequest {
 		frontChannelParams = new BasicHttpParams();
 		
 		/**
-		 * Downloads: long socket timeout times, as the data may take a long time for the server to prepare. No
+		 * Downloads:
+		 * long socket timeout times, as the data may take a long time for the server to prepare. No
 		 *   redirecting, as we don't want to serve up a login or error page from Content Server.
-		 * Uploads: configurable, moderately-long timeout as the server may take a while to process the uploaded data.
-		 * Front-channel: shorter socket timeout, as there is no point in waiting longer than the
+		 *
+		 * Uploads:
+		 *  configurable, moderately-long timeout as the server may take a while to process the uploaded data.
+		 *
+		 * Front-channel:
+		 * shorter socket timeout, as there is no point in waiting longer than the
 		 *   request is active.
+		 *
 		 * Connection timeout in all cases is shorter, as the server is either down or busy if it takes
 		 *   long at all to get a connection.
 		 */
@@ -141,9 +144,10 @@ public class HTTPRequest {
 	}
 	
 	private void setConnectionTimeoutParams() {
-		HttpConnectionParams.setConnectionTimeout(downloadParams, ServletConfig.getConnectionTimeout());
-		HttpConnectionParams.setConnectionTimeout(uploadParams, ServletConfig.getConnectionTimeout());
-		HttpConnectionParams.setConnectionTimeout(frontChannelParams, ServletConfig.getConnectionTimeout());
+		int connectionTimeout = ServletConfig.getConnectionTimeout();
+		HttpConnectionParams.setConnectionTimeout(downloadParams, connectionTimeout);
+		HttpConnectionParams.setConnectionTimeout(uploadParams, connectionTimeout);
+		HttpConnectionParams.setConnectionTimeout(frontChannelParams, connectionTimeout);
 	}
 
 	private void setRequestTimeoutParams() {

@@ -28,6 +28,7 @@ import com.opentext.ecm.otsync.message.Message;
  *
  */
 public class Payload {
+
 	public Payload(String jsonString){
 		if(jsonString == null){
 			throw new NullPointerException();
@@ -50,12 +51,12 @@ public class Payload {
 		this.fields = new HashMap<>();
 	}
 	
-	@Override
 	/**
 	 * Return a clone of the Payload that can be concurrently modified by another thread without blocking.
 	 * Note that if any fields have mutable objects as their value (e.g. a List), modifying these objects is not thread-safe.
 	 * It is always safe to get and set values on the clone, however.
 	 */
+	@Override
 	public synchronized Payload clone(){
 		Payload	theClone = new Payload(this.jsonString);
 		

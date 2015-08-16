@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <!-- Make the OTAG auth and identity service available in this web app -->
+    <ResourceLink 
+    		global="otag/IdentityService"
+    		name="otag/IdentityService"
+			type="com.opentext.otag.auth.IdentityService"/>
+</Context>

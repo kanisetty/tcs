@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
-import com.opentext.ecm.otsync.http.HTTPRequest;
+import com.opentext.ecm.otsync.http.ContentServiceHttpClient;
 import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.ws.ServletConfig;
@@ -22,7 +22,7 @@ import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
 import com.opentext.ecm.otsync.ws.server.servlet3.OTSyncServer;
 
 public class RESTUploadAction extends SuspendedAction {
-	private HTTPRequest serverConnection;
+	private ContentServiceHttpClient serverConnection;
 	private AsyncContext async;
 	private HttpServletResponse resp;
 	private RequestHeader headers;
@@ -36,7 +36,7 @@ public class RESTUploadAction extends SuspendedAction {
 	public static final String UPLOAD_PART_NAME = "file";
 	private String filefieldname = "";
 
-	public RESTUploadAction(HTTPRequest serverConnection,
+	public RESTUploadAction(ContentServiceHttpClient serverConnection,
 			AsyncContext async, RequestHeader headers,
 			InputStream stream, long fileSize, HashMap<String, Object> payload,
 			String filename, String filefieldname, Map<String, String> params) {
@@ -100,7 +100,7 @@ public class RESTUploadAction extends SuspendedAction {
 					params.put(Message.PAYLOAD_KEY_NAME, payloadString);
 					params.put(Message.FUNC_KEY_NAME, Message.OTSYNC_FUNC_VALUE);
 					
-					HTTPRequest serverConnection = OTSyncServer.getServerConnection();					
+					ContentServiceHttpClient serverConnection = OTSyncServer.getServerConnection();
 	
 					AsyncContext asyncRequest = req.startAsync();
 					asyncRequest.setTimeout(ServletConfig.getServlet3ContentTimeout());
@@ -154,7 +154,7 @@ public class RESTUploadAction extends SuspendedAction {
 					params.put(ResourcePath.CSTOKEN, cstoken);
 					params.put(Message.FUNC_KEY_NAME, func);
 					
-					HTTPRequest serverConnection = OTSyncServer.getServerConnection();
+					ContentServiceHttpClient serverConnection = OTSyncServer.getServerConnection();
 	
 					serverConnection.forwardMultiPartPost(
 							stream, params, fileFieldName, filename, fileSize,
