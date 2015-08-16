@@ -25,8 +25,8 @@
         <app.properties.type>service</app.properties.type>
 
         <!-- Output artifacts properties -->
-        <appworks.service.name>otag-assignments-service</appworks.service.name>
-        <appworks.service.version>2.0</appworks.service.version>
+        <appworks.service.name>assignments</appworks.service.name>
+        <appworks.service.version>16.0</appworks.service.version>
         <appworks.service.zip.name>${appworks.service.name}_${appworks.service.version}</appworks.service.zip.name>
     </properties>
 

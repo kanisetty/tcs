@@ -17,8 +17,8 @@
         <appworks.platform.version>2.0-SNAPSHOT</appworks.platform.version>
 
         <!-- Output artifacts properties -->
-        <appworks.service.name>otag-feeds-service</appworks.service.name>
-        <appworks.service.version>2.0</appworks.service.version>
+        <appworks.service.name>feeds</appworks.service.name>
+        <appworks.service.version>16.0</appworks.service.version>
         <appworks.service.zip.name>${appworks.service.name}_${appworks.service.version}</appworks.service.zip.name>
     </properties>
 

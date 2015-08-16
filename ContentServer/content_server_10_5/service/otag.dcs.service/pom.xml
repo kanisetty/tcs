@@ -5,26 +5,20 @@
                              
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.opentext.otag.cs.favorites</groupId>
-    <artifactId>otag.favorites.service</artifactId>
+    <groupId>com.opentext.otag.cs.dcs</groupId>
+    <artifactId>otag.dcs.service</artifactId>
     <packaging>war</packaging>
     <version>2.0-SNAPSHOT</version>
-    <name>Content Server Favorites Appworks Service</name>
+    <name>Document Conversion Service</name>
+    <description>Provides rendered views of documents</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
         <appworks.platform.version>2.0-SNAPSHOT</appworks.platform.version>
 
-        <!-- General app.properties -->
-        <app.properties.displayName>Favorites Service</app.properties.displayName>
-        <app.properties.description>Content Server Favorites service</app.properties.description>
-        <app.properties.releaseNumber>3</app.properties.releaseNumber>
-        <app.properties.minimumClientVersion>2</app.properties.minimumClientVersion>
-        <app.properties.type>service</app.properties.type>
-
         <!-- Output artifacts properties -->
-        <appworks.service.name>favorites</appworks.service.name>
+        <appworks.service.name>dcs</appworks.service.name>
         <appworks.service.version>16.0</appworks.service.version>
         <appworks.service.zip.name>${appworks.service.name}_${appworks.service.version}</appworks.service.zip.name>
     </properties>
@@ -116,6 +110,12 @@
             <groupId>com.opentext.cs.otag</groupId>
             <artifactId>cs-otag-service-tools</artifactId>
             <version>${appworks.platform.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20141113</version>
         </dependency>
   
         <dependency>
