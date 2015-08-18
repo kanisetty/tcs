@@ -1,16 +1,15 @@
 package com.opentext.ecm.otsync.ws.server.servlet3;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import com.opentext.ecm.otsync.ws.ServletUtil;
+import com.opentext.ecm.otsync.ws.message.MessageConverter;
+import com.opentext.ecm.otsync.ws.server.ResponseHandler;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.opentext.ecm.otsync.ws.ServletUtil;
-import com.opentext.ecm.otsync.ws.message.MessageConverter;
-import com.opentext.ecm.otsync.ws.server.ResponseHandler;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Servlet3ResponseHandler implements ResponseHandler {
 

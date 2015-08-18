@@ -1,26 +1,23 @@
 package com.opentext.ecm.otsync.ws.server.servlet3;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.servlet.AsyncContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.SettingsService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.codehaus.jackson.JsonProcessingException;
-
 import com.opentext.ecm.otsync.engine.core.SuspendedActionQueue;
 import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.listeners.SynchronousMessageSwitch;
 import com.opentext.ecm.otsync.message.Message;
-import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.message.MessageConverter;
 import com.opentext.ecm.otsync.ws.server.ResponseHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.JsonProcessingException;
+
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Map;
 
 public class Servlet3FrontChannel {
 

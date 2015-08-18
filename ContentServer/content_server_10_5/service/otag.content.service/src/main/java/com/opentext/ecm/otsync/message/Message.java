@@ -4,11 +4,10 @@ package com.opentext.ecm.otsync.message;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.listeners.SynchronousMessageSwitch;
 import com.opentext.ecm.otsync.ws.server.ResponseHandler;
-import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  *

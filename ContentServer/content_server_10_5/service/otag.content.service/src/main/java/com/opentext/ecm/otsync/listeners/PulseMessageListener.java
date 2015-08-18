@@ -1,17 +1,14 @@
 package com.opentext.ecm.otsync.listeners;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.opentext.ecm.otsync.ContentServerService;
-import org.codehaus.jackson.JsonProcessingException;
-
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.payload.Payload;
-import com.opentext.ecm.otsync.ws.ServletConfig;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PulseMessageListener implements MessageForwarder {
 

@@ -1,11 +1,5 @@
 package com.opentext.ecm.otsync.listeners;
 
-import java.io.IOException;
-
-import javax.servlet.AsyncContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.ContentServerURL;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
@@ -13,6 +7,11 @@ import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.server.AbstractDownloadChannel;
+
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class DownloadAction extends SuspendedAction {
 

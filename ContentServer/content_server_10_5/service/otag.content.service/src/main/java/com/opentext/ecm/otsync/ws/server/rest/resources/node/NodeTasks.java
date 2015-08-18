@@ -2,7 +2,6 @@ package com.opentext.ecm.otsync.ws.server.rest.resources.node;
 
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
-import com.opentext.ecm.otsync.ws.server.servlet3.OTSyncServer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

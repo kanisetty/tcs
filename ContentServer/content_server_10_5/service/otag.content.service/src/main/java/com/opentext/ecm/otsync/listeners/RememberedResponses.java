@@ -1,15 +1,11 @@
 package com.opentext.ecm.otsync.listeners;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.message.Message;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class RememberedResponses {
 

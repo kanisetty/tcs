@@ -1,9 +1,5 @@
 package com.opentext.ecm.otsync.ws.server.servlet3;
 
-import javax.servlet.AsyncContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.opentext.ecm.otsync.SettingsService;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.engine.core.SuspendedActionQueue;
@@ -11,11 +7,11 @@ import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.listeners.DownloadAction;
 import com.opentext.ecm.otsync.listeners.UploadAction;
 import com.opentext.ecm.otsync.message.Message;
-import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.ServletUtil;
-import com.opentext.otag.api.services.client.SettingsClient;
 
-import java.util.Set;
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class Servlet3ContentChannel {
 

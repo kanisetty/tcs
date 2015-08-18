@@ -6,11 +6,9 @@ import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
-import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.message.MessageConverter.Serializer;
 import com.opentext.ecm.otsync.ws.server.rest.RESTServlet;
 import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
-import com.opentext.ecm.otsync.ws.server.servlet3.OTSyncServer;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;

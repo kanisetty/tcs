@@ -1,14 +1,11 @@
 package com.opentext.ecm.otsync.http;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.opentext.ecm.otsync.ContentServerService;
+import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
 import org.apache.http.HttpMessage;
 
-import com.opentext.ecm.otsync.ws.ServletConfig;
-import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * RequestHeader encapsulates header values that will be required

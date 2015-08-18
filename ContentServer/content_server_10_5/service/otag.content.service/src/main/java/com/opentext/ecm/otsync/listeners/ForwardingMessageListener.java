@@ -1,16 +1,15 @@
 package com.opentext.ecm.otsync.listeners;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.message.SynchronousMessageListener;
 import com.opentext.ecm.otsync.payload.Payload;
 import com.opentext.ecm.otsync.ws.server.ClientSet;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.util.Map;
 
 public class ForwardingMessageListener implements SynchronousMessageListener {
 

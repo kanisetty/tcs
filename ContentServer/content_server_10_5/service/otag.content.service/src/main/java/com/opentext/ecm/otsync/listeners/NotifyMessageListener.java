@@ -5,7 +5,6 @@ import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.payload.Payload;
-import com.opentext.ecm.otsync.ws.server.rest.resources.Notifications;
 import com.opentext.otag.api.services.client.NotificationsClient;
 import com.opentext.otag.api.shared.types.notification.NotificationSeqBounds;
 import org.apache.commons.logging.Log;
