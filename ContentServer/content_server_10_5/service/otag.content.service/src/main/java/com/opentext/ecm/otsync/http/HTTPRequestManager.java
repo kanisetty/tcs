@@ -94,8 +94,8 @@ public class HTTPRequestManager {
         public HttpResponse response;
     }
 
-    public HTTPRequestManager(SettingsService settingService) {
-        settingsService = settingService;
+    public HTTPRequestManager(SettingsService configSettingService) {
+        settingsService = configSettingService;
         setConnectionPool();
     }
 

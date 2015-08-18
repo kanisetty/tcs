@@ -89,13 +89,13 @@ public class ChunkedContentRequestQueue {
                                       MessageConverter messageConverter,
                                       SuspendedActionQueue sharedThreadPool,
                                       SettingsService settingsService) throws ServletException {
-        cleanAllCacheFiles();  // make sure there are no orphaned cache files
         _downloadsInProgress = Collections.synchronizedMap(new HashMap<>());
         _uploadsInProgress = Collections.synchronizedMap(new HashMap<>());
         _contentServerConnection = contentServerConnection;
         _messageConverter = messageConverter;
         _sharedThreadPool = sharedThreadPool;
         this.settingsService = settingsService;
+        cleanAllCacheFiles();  // make sure there are no orphaned cache files
     }
 
     public void downloadFile(final HttpServletRequest request, final HttpServletResponse response, final String url, final String llcookie) {

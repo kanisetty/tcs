@@ -53,15 +53,21 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
         LOG.info("Starting Content Server ContentService ...");
 
         settingsClient = new SettingsClient(appName);
+        LOG.debug("Created SettingsClient");
+        settingsService = new SettingsService(settingsClient);
+        LOG.debug("Created SettingsService");
         identityServiceClient = new IdentityServiceClient(appName);
+        LOG.debug("Created IdentityServiceClient");
 
         httpRequestManager = new HTTPRequestManager(settingsService);
+        LOG.debug("HTTP Manager initialised");
+
         serviceEngine = new ContentServiceEngine(
                 settingsService,
                 new NotificationsClient(appName),
                 identityServiceClient,
                 httpRequestManager);
-        settingsService = new SettingsService(settingsClient);
+        LOG.debug("Initialised Content Service engine");
 
         upgradeFromExistingTempoProperties();
 

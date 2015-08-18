@@ -98,6 +98,7 @@ public class ContentServiceEngine {
                                 NotificationsClient notificationsClient,
                                 IdentityServiceClient identityServiceClient,
                                 HTTPRequestManager httpRequestManager) {
+        LOG.info("Initialising engine");
         this.settingsService = settingsService;
         this.notificationsClient = notificationsClient;
         this.identityServiceClient = identityServiceClient;
@@ -112,6 +113,7 @@ public class ContentServiceEngine {
             // chunked uploads and downloads use the same thread pools as regular uploads and downloads
             chunkedContentRequestQueue = new ChunkedContentRequestQueue(
                     serverConnection, messageConverter, sharedThreadPool, settingsService);
+            LOG.debug("ChunkedContentRequestQueue initialised");
         } catch (ServletException e) {
             throw new RuntimeException("Failed to create ChunkedContentRequestQueue, " + e.getMessage(), e);
         }
@@ -174,13 +176,19 @@ public class ContentServiceEngine {
     }
 
     private void initialiseChannels() {
-        backChannel = new Servlet3BackChannel(messageConverter, identityServiceClient, serverConnection);
         frontChannel = new Servlet3FrontChannel(sharedThreadPool, messageConverter, messageHandler, settingsService);
+        LOG.info("Initialised Front Channel successfully");
         contentChannel = new Servlet3ContentChannel(serverConnection, sharedThreadPool, settingsService);
+        LOG.info("Initialised Content Channel successfully");
         chunkedContentChannel = new Servlet3ChunkedContentChannel(chunkedContentRequestQueue);
+        LOG.info("Initialised Chunked Content Channel successfully");
+        backChannel = new Servlet3BackChannel(messageConverter, identityServiceClient, serverConnection);
+        LOG.info("Initialised Back Channel successfully");
+
     }
 
     private void initListeners() {
+        LOG.info("Setting up Front Channel Listeners");
         // Create a switch which will respond on the {"type"} key in the JSON string.
         // For example, the AuthMessageListener's "onMessage" method will be called when a
         // JSON string with {"type": "auth"} is POSTed to the FrontChannel
@@ -207,11 +215,13 @@ public class ContentServiceEngine {
 
         ContentRequestListener contentRequestListener = new ContentRequestListener(notificationsClient);
         messageHandler.setHandler(contentRequestListener, Message.CONTENT_KEY_VALUE);
+        LOG.info("Completed Channel Listener initialisation");
     }
 
     public void shutdown() {
         sharedThreadPool.stop();
         cleanUpThread.stopThread();
+        LOG.info("Shutdown ContentServiceEngine complete");
     }
 
 }
