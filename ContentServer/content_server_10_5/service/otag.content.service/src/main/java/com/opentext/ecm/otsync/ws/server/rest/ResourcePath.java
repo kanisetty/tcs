@@ -1,13 +1,11 @@
 package com.opentext.ecm.otsync.ws.server.rest;
 
-import com.opentext.ecm.otsync.otag.ContentServerService;
-import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.http.HTTPRequestManager.ResponseWithStatus;
 import com.opentext.ecm.otsync.http.RequestHeader;
+import com.opentext.ecm.otsync.otag.ContentServerService;
+import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.ws.ServletUtil;
-import com.opentext.ecm.otsync.ws.server.servlet3.Servlet3BackChannel;
-import com.opentext.ecm.otsync.ws.server.servlet3.Servlet3ChunkedContentChannel;
 import com.opentext.ecm.otsync.ws.server.servlet3.Servlet3ContentChannel;
 import com.opentext.ecm.otsync.ws.server.servlet3.Servlet3FrontChannel;
 import org.apache.http.HttpStatus;
@@ -82,22 +80,10 @@ public class ResourcePath {
         }
     }
 
-    final protected int getPathIndex() {
-        return pathIndex;
-    }
-
     // Provide access to the central Engine's channels and resources
 
     protected Servlet3FrontChannel getFrontChannel() {
         return ContentServerService.getEngine().getFrontChannel();
-    }
-
-    protected Servlet3BackChannel getBackChannel() {
-        return ContentServerService.getEngine().getBackChannel();
-    }
-
-    public Servlet3ChunkedContentChannel getChunkedContentChannel() {
-        return ContentServerService.getEngine().getChunkedContentChannel();
     }
 
     public Servlet3ContentChannel getContentChannel() {

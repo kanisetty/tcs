@@ -112,6 +112,10 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
         return identityServiceClient;
     }
 
+    public static SettingsClient getSettingsClient() {
+        return settingsClient;
+    }
+
     public static HTTPRequestManager getHttpManager() {
         return httpRequestManager;
     }
