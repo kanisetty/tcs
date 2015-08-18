@@ -1,6 +1,6 @@
 package com.opentext.ecm.otsync.ws.server.servlet3;
 
-import com.opentext.ecm.otsync.SettingsService;
+import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.engine.core.SuspendedActionQueue;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;

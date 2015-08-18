@@ -1,6 +1,6 @@
 package com.opentext.ecm.otsync.http;
 
-import com.opentext.ecm.otsync.ContentServerService;
+import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
 import org.apache.http.HttpMessage;
 

@@ -1,4 +1,4 @@
-package com.opentext.ecm.otsync;
+package com.opentext.ecm.otsync.otag;
 
 import com.opentext.otag.api.services.client.SettingsClient;
 import org.apache.commons.logging.Log;
@@ -10,7 +10,8 @@ import java.net.URISyntaxException;
 import static com.opentext.ecm.otsync.ContentServiceConstants.*;
 
 /**
- * Encapsulates access to the Settings that the ContentService is interested in.
+ * Encapsulates access to the config Settings stored at the Gateway that the
+ * ContentService is interested in.
  */
 public class SettingsService {
 

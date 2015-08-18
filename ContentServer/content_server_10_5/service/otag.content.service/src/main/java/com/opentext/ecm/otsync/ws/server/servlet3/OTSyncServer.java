@@ -1,6 +1,6 @@
 package com.opentext.ecm.otsync.ws.server.servlet3;
 
-import com.opentext.ecm.otsync.ContentServerService;
+import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.engine.ContentServiceEngine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

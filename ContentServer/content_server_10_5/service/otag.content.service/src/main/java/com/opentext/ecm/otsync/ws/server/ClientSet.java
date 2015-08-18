@@ -1,12 +1,13 @@
 package com.opentext.ecm.otsync.ws.server;
 
-import com.opentext.ecm.otsync.ContentServerService;
-import com.opentext.ecm.otsync.ws.ServletConfig;
+import com.opentext.ecm.otsync.otag.ContentServerService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.util.*;
+
+import static com.opentext.ecm.otsync.ContentServiceConstants.MAX_ALLOWED_STORED_RESPONSES;
 
 /**
  * Stores the set of known clients (connected or not).
@@ -85,7 +86,7 @@ public class ClientSet {
 
         if (client == null) {
             // If the client is new to us, but wants retries, create an object for it
-            client = addNewClient("unknown", clientId, ServletConfig.getMaxAllowedStoredResponses());
+            client = addNewClient("unknown", clientId, MAX_ALLOWED_STORED_RESPONSES);
         }
 
         return client.getLastResult(messageId);

@@ -1,6 +1,6 @@
 package com.opentext.ecm.otsync.ws.server;
 
-import com.opentext.ecm.otsync.ContentServerService;
+import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.listeners.ChunkedContentRequestQueue;
 
 public class CleanUpThread extends Thread {

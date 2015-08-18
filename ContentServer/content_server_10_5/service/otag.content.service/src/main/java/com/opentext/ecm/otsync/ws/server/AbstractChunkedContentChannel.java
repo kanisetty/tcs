@@ -2,7 +2,6 @@ package com.opentext.ecm.otsync.ws.server;
 
 import com.opentext.ecm.otsync.http.ContentServerURL;
 import com.opentext.ecm.otsync.listeners.ChunkedContentRequestQueue;
-import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,6 +9,8 @@ import org.apache.commons.logging.LogFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static com.opentext.ecm.otsync.ContentServiceConstants.*;
 
 public class AbstractChunkedContentChannel extends AbstractDownloadChannel {
 
@@ -23,15 +24,15 @@ public class AbstractChunkedContentChannel extends AbstractDownloadChannel {
     }
 
     protected void chunkedDownload(final HttpServletRequest request, final HttpServletResponse response) {
-        String url = request.getParameter(ServletConfig.getContentUrlParameterName());
+        String url = request.getParameter(CONTENT_URL_PARAMETER_NAME);
         final String llcookie = getLLCookieFromRequest(request);
         ContentServerURL csURL = new ContentServerURL(url);
 
         // if there's no url given, check for an object id
         if (url == null || url.equals("")) {
             url = ServletUtil.getDownloadUrlForID(
-                    request.getParameter(ServletConfig.getContentNodeIDParameterName()),
-                    request.getParameter(ServletConfig.getContentVersionNumParameterName()));
+                    request.getParameter(CONTENT_NODEID_PARAMETER_NAME),
+                    request.getParameter(CONTENT_VERNUM_PARAMETER_NAME));
         } else {
             // the URL has to be checked to ensure that it is not a malicious request
             if (csURL.isValid()) {

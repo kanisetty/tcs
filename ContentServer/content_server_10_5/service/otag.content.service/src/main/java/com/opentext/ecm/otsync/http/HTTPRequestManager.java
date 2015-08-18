@@ -1,7 +1,7 @@
 package com.opentext.ecm.otsync.http;
 
 import com.opentext.ecm.otsync.ContentServiceConstants;
-import com.opentext.ecm.otsync.SettingsService;
+import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.otag.api.services.handlers.AbstractSettingChangeHandler;
 import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;

@@ -1,6 +1,6 @@
 package com.opentext.ecm.otsync.ws;
 
-import com.opentext.ecm.otsync.ContentServerService;
+import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.ContentServiceConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+
+import static com.opentext.ecm.otsync.ContentServiceConstants.*;
 
 public class ServletUtil {
 
@@ -91,27 +93,27 @@ public class ServletUtil {
     }
 
     public static boolean isRestXMLRequest(HttpServletRequest request) {
-        return ServletConfig.getWadlUri().equalsIgnoreCase(request.getRequestURI());
+        return WADL_URI.equalsIgnoreCase(request.getRequestURI());
     }
 
     public static boolean isNotifyChannelRequest(HttpServletRequest request) {
-        return ServletConfig.getNotifyChannelServeletPath().equalsIgnoreCase(request.getServletPath());
+        return NOTIFY_CHANNEL_SERVLET_PATH.equalsIgnoreCase(request.getServletPath());
     }
 
     public static boolean isFrontChannelRequest(HttpServletRequest request) {
-        return ServletConfig.getFrontChannelServeletPath().equalsIgnoreCase(request.getServletPath());
+        return FRONT_CHANNEL_SERVLET_PATH.equalsIgnoreCase(request.getServletPath());
     }
 
     public static boolean isBackChannelRequest(HttpServletRequest request) {
-        return ServletConfig.getBackChannelServeletPath().equalsIgnoreCase(request.getServletPath());
+        return BACK_CHANNEL_SERVLET_PATH.equalsIgnoreCase(request.getServletPath());
     }
 
     public static boolean isContentChannelRequest(HttpServletRequest request) {
-        return ServletConfig.getContentChannelServeletPath().equalsIgnoreCase(request.getServletPath());
+        return CONTENT_CHANNEL_SERVLET_PATH.equalsIgnoreCase(request.getServletPath());
     }
 
     public static boolean isChunkedContentChannelRequest(HttpServletRequest request) {
-        return ServletConfig.getChunkedContentChannelServeletPath().equalsIgnoreCase(request.getServletPath());
+        return CHUNKED_CONTENT_CHANNEL_SERVLET_PATH.equalsIgnoreCase(request.getServletPath());
     }
 
     public static void nullRead(HttpServletRequest request) throws IOException {

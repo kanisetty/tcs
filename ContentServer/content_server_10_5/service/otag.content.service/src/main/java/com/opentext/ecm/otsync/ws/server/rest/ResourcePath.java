@@ -1,7 +1,7 @@
 package com.opentext.ecm.otsync.ws.server.rest;
 
-import com.opentext.ecm.otsync.ContentServerService;
-import com.opentext.ecm.otsync.SettingsService;
+import com.opentext.ecm.otsync.otag.ContentServerService;
+import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.http.HTTPRequestManager.ResponseWithStatus;
 import com.opentext.ecm.otsync.http.RequestHeader;

@@ -1,4 +1,4 @@
-package com.opentext.ecm.otsync;
+package com.opentext.ecm.otsync.otag;
 
 import com.opentext.ecm.otsync.engine.ContentServiceEngine;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;

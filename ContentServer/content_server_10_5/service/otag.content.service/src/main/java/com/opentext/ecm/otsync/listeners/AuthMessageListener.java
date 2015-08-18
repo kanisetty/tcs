@@ -4,7 +4,6 @@ import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.message.SynchronousMessageListener;
-import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.message.MessageConverter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,19 +11,22 @@ import org.apache.commons.logging.LogFactory;
 import java.io.IOException;
 import java.util.Map;
 
+import static com.opentext.ecm.otsync.ContentServiceConstants.MAX_ALLOWED_STORED_RESPONSES;
+
 // TODO NO ONE GETS ACCESS TO OUR Client table from outside the Gateway
 public class AuthMessageListener implements SynchronousMessageListener {
-	private MessageConverter _messageConverter;
-	private HTTPRequestManager _serverConnection;
-    public static Log log = LogFactory.getLog(ServletConfig.class);
 
-	public AuthMessageListener(MessageConverter messageConverter, HTTPRequestManager serverConnection) {
-		_messageConverter = messageConverter;
-		_serverConnection = serverConnection;
-	}
+    private MessageConverter _messageConverter;
+    private HTTPRequestManager _serverConnection;
+    public static Log log = LogFactory.getLog(AuthMessageListener.class);
 
-	public Map<String, Object> onMessage(Map<String, Object> message) throws IOException {
-		return null;
+    public AuthMessageListener(MessageConverter messageConverter, HTTPRequestManager serverConnection) {
+        _messageConverter = messageConverter;
+        _serverConnection = serverConnection;
+    }
+
+    public Map<String, Object> onMessage(Map<String, Object> message) throws IOException {
+        return null;
 //		EntityManager manager = Setting.emf.createEntityManager();
 //		boolean isRest = false;
 //
@@ -182,10 +184,10 @@ public class AuthMessageListener implements SynchronousMessageListener {
 //			return ret;
 //		}
 
-		// if an IOException is thrown during the above operations, the message service will catch it
-		// and return an HTTP error to the client indicating that the message could not be forwarded
-	}
-        
+        // if an IOException is thrown during the above operations, the message service will catch it
+        // and return an HTTP error to the client indicating that the message could not be forwarded
+    }
+
 //    private void track(String user, String id, Map<String, Object> data, String ip, EntityManager manager) {
 //
 //		manager.getTransaction().begin();
@@ -237,34 +239,33 @@ public class AuthMessageListener implements SynchronousMessageListener {
 //
 //	}
 
-	private String getUser(boolean isRest, Map<String, Object> info) {
-		if(isRest){
-			return (String)info.get(Message.REST_USERNAME_KEYNAME);
-		}
-		else {
-			return (String)info.get(Message.USERNAME_KEY_NAME);
-		}
-	}
-    
-	public int getMaxStoredResponses(Map<String, Object> message) {
-		
-		int maxStoredResponses = ContentServiceConstants.DEFAULT_STORED_RESPONSES;
-		
-		// if the client passed in a request for a certain number of stored responses,
-		// honour it if it is well-formed, but cap it at the configured maximum
-		if(message.containsKey(Message.MAX_STORED_RESPONSES_KEY_NAME)){
-			try{
-				maxStoredResponses = Integer.parseInt(message.get(Message.MAX_STORED_RESPONSES_KEY_NAME).toString());
-				
-				if(ServletConfig.getMaxAllowedStoredResponses() < maxStoredResponses){
-					maxStoredResponses = ServletConfig.getMaxAllowedStoredResponses();						
-				}
-				
-			} catch (NumberFormatException e){
-				log.warn("Client sent non-integer for max stored responses", e);
-				// continue using the default value
-			}
-		}
-		return maxStoredResponses;
-	}
+    private String getUser(boolean isRest, Map<String, Object> info) {
+        if (isRest) {
+            return (String) info.get(Message.REST_USERNAME_KEYNAME);
+        } else {
+            return (String) info.get(Message.USERNAME_KEY_NAME);
+        }
+    }
+
+    public int getMaxStoredResponses(Map<String, Object> message) {
+
+        int maxStoredResponses = ContentServiceConstants.DEFAULT_STORED_RESPONSES;
+
+        // if the client passed in a request for a certain number of stored responses,
+        // honour it if it is well-formed, but cap it at the configured maximum
+        if (message.containsKey(Message.MAX_STORED_RESPONSES_KEY_NAME)) {
+            try {
+                maxStoredResponses = Integer.parseInt(message.get(Message.MAX_STORED_RESPONSES_KEY_NAME).toString());
+
+                if (MAX_ALLOWED_STORED_RESPONSES < maxStoredResponses) {
+                    maxStoredResponses = MAX_ALLOWED_STORED_RESPONSES;
+                }
+
+            } catch (NumberFormatException e) {
+                log.warn("Client sent non-integer for max stored responses", e);
+                // continue using the default value
+            }
+        }
+        return maxStoredResponses;
+    }
 }

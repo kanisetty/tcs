@@ -1,6 +1,6 @@
 package com.opentext.ecm.otsync.ws.server.rest.resources.node;
 
-import com.opentext.ecm.otsync.ContentServerService;
+import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.engine.ContentServiceEngine;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;

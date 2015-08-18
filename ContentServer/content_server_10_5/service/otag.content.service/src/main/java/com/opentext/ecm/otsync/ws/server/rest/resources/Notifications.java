@@ -1,7 +1,7 @@
 package com.opentext.ecm.otsync.ws.server.rest.resources;
 
 
-import com.opentext.ecm.otsync.ContentServerService;
+import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;

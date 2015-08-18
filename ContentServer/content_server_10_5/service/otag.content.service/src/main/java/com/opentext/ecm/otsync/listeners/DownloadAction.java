@@ -4,7 +4,6 @@ import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.ContentServerURL;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.http.RequestHeader;
-import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.server.AbstractDownloadChannel;
 
@@ -12,6 +11,8 @@ import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static com.opentext.ecm.otsync.ContentServiceConstants.*;
 
 public class DownloadAction extends SuspendedAction {
 
@@ -33,15 +34,15 @@ public class DownloadAction extends SuspendedAction {
     }
 
     private void pipeDownload(final HttpServletRequest request, final HttpServletResponse response) {
-        String url = request.getParameter(ServletConfig.getContentUrlParameterName());
+        String url = request.getParameter(CONTENT_URL_PARAMETER_NAME);
         final String llcookie = AbstractDownloadChannel.getLLCookieFromRequest(request);
         final RequestHeader headers = new RequestHeader(request, llcookie);
         ContentServerURL csURL = new ContentServerURL(url);
 
         // if there's no url given, check for an ojbect id
         if (url == null || url.equals("")) {
-            url = ServletUtil.getDownloadUrlForID(request.getParameter(ServletConfig.getContentNodeIDParameterName()),
-                    request.getParameter(ServletConfig.getContentVersionNumParameterName()));
+            url = ServletUtil.getDownloadUrlForID(request.getParameter(CONTENT_NODEID_PARAMETER_NAME),
+                    request.getParameter(CONTENT_VERNUM_PARAMETER_NAME));
         } else {
             // the URL has to be checked to ensure that it is not a malicious request
             if (csURL.isValid()) {
