@@ -98,7 +98,8 @@ public class ChunkedContentRequestQueue {
         cleanAllCacheFiles();  // make sure there are no orphaned cache files
     }
 
-    public void downloadFile(final HttpServletRequest request, final HttpServletResponse response, final String url, final String llcookie) {
+    public void downloadFile(final HttpServletRequest request, final HttpServletResponse response, final String url,
+                             final String llcookie) {
         final String remoteAddr = request.getRemoteAddr();
         Request dlReq = getDownloadInProgressRequest(remoteAddr, url, llcookie);
         final String key = remoteAddr + url;
@@ -119,12 +120,12 @@ public class ChunkedContentRequestQueue {
             _sharedThreadPool.sendImmediately(downloadAction);
             // suspended action will close the request later
         } else {
-            sendNextPart(response, remoteAddr, dlReq, key);
+            sendNextPart(response, dlReq, key);
             AbstractChunkedContentChannel.closeResponse(response);
         }
     }
 
-    private void sendNextPart(final HttpServletResponse response, final String remoteAddr,
+    private void sendNextPart(final HttpServletResponse response,
                               final Request dlReq, final String key) {
 
         try (FileInputStream in = new FileInputStream(getTempfileDir() + dlReq.tempFilename)) {
@@ -230,7 +231,7 @@ public class ChunkedContentRequestQueue {
                 newDownloadRequest.realFilename = realFilename;
                 _downloadsInProgress.put(key, newDownloadRequest);
 
-                sendNextPart(response, remoteAddr, newDownloadRequest, key);
+                sendNextPart(response, newDownloadRequest, key);
 
                 asyncRequest.complete();
             }
