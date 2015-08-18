@@ -1,0 +1,37 @@
+<SCRIPT>
+
+	function findURLParam( param )
+	{
+		param 		= param.replace( /[\[]/,"\\\[").replace(/[\]]/,"\\\]" );
+
+		var regexS 	= "[\\?&]"+param+"=([^&#]*)";
+		var regex 	= new RegExp( regexS );
+		var results = regex.exec( window.location.href );
+
+		if( results == null )
+		{
+			return "";
+		}
+		else
+		{
+			return results[1];
+		}
+
+	}
+
+	function push()
+	{
+		var requestingWin	= window.parent.opener;
+		var csBrowseWin	= window.parent;
+
+		var id 		= findURLParam( 'id' );
+		var name 	= findURLParam( 'name' );
+
+		requestingWin.utils.PopulatePublishForm( id, name );
+		csBrowseWin.close();
+
+	}
+
+</SCRIPT>
+<BODY ONLOAD="push()">
+</BODY>
