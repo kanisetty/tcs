@@ -45,12 +45,10 @@ public class ChunkedContentRequestQueue {
 
     public static final String COULD_NOT_SEND_UPLOAD_REQUEST_ERROR_MSG = "Could not send upload request to server";
     public static final String MISSING_PARAMETER_ERROR_MSG = "either url or nodeID parameter is required";
-    public static final String CLIENT_LLCOOKIE_PARAMETER_NAME = "LLCookie";
     public static final String CLIENT_PARENTID_PARAMETER_NAME = "parentID";
     public static final String NOT_ALLOWED_ERROR_MESSAGE = "max downloads or uploads in progress or unauthorized; send contentRequest";
     public static final String INTERNAL_SERVER_ERROR_MESSAGE = "An internal server error has occurred.";
     public static final String NO_RESPONSE_ERROR_MSG = "Could not get response";
-    public static final String CS_COOKIE_NAME = "LLCookie";
     public static final String CHAR_ENCODING = ContentServiceConstants.CHAR_ENCODING;
 
     private final Map<String, Request> _downloadsInProgress;
@@ -210,7 +208,8 @@ public class ChunkedContentRequestQueue {
 
             try {
                 if (llcookie != null) {
-                    realFilename = _contentServerConnection.storeGetResponseWithUserCookie(url, response, CS_COOKIE_NAME, llcookie, tempFilename, headers);
+                    realFilename = _contentServerConnection.storeGetResponseWithUserCookie(
+                            url, response, ContentServiceConstants.CS_COOKIE_NAME, llcookie, tempFilename, headers);
                 } else {
                     realFilename = _contentServerConnection.storeGetResponse(url, response, tempFilename);
                 }

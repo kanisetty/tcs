@@ -1,5 +1,6 @@
 package com.opentext.ecm.otsync.ws.server.rest;
 
+import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.http.HTTPRequestManager.ResponseWithStatus;
 import com.opentext.ecm.otsync.http.RequestHeader;
@@ -21,7 +22,6 @@ public class ResourcePath {
 
     private static final String TOKEN_COOKIE = "otagtoken";
     private static final String TOKEN_PARAM = "token";
-    protected static final String LL_COOKIE_NAME = "LLCookie";
     public static final String CSTOKEN = "cstoken";
     private int pathIndex = 0;
     final private List<ResourcePath> subPaths = new ArrayList<>();
@@ -131,7 +131,7 @@ public class ResourcePath {
     public static String getCSToken(HttpServletRequest req) {
         String cstoken = req.getParameter(CSTOKEN);
         if (cstoken == null) {
-            cstoken = ServletUtil.getCookie(req, LL_COOKIE_NAME);
+            cstoken = ServletUtil.getCookie(req, ContentServiceConstants.CS_COOKIE_NAME);
         }
         return cstoken;
     }
@@ -186,7 +186,7 @@ public class ResourcePath {
             HTTPRequestManager requestManager = ContentServerService.getHttpManager();
             if (requestManager != null) {
                 ResponseWithStatus response = requestManager.post(ContentServerService.getCsUrl(),
-                        params, LL_COOKIE_NAME, cookie, headers);
+                        params, ContentServiceConstants.CS_COOKIE_NAME, cookie, headers);
 
                 int statusCode = response.status.getStatusCode();
                 if (statusCode == HttpStatus.SC_OK) {

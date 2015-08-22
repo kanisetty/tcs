@@ -1,5 +1,6 @@
 package com.opentext.ecm.otsync.listeners;
 
+import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.http.RequestHeader;
@@ -16,7 +17,6 @@ public class PulseMessageListener implements MessageForwarder {
     private static final String PULSE_REPLYTO_DEFAULT = "-1";
     private static final String PULSE_REPLYTO_KEY = "in_reply_to_status_id";
     private static final String PULSE_STATUS_KEY = "status";
-    private static final String COOKIE_NAME = "LLCookie";
     private static final String PULSE_NODE_ID = "data_id";
     private static final String PULSE_UPDATE_PATH = "/pulse/statuses/update";
     private static final String PULSE_COMMENTS_PATH = "/pulse/statuses/public_timeline";
@@ -67,7 +67,8 @@ public class PulseMessageListener implements MessageForwarder {
 
         // make the request using the llcookie so the server recognizes the user
         String cookie = payload.getValueAsString(Message.CSTOKEN_KEY_NAME);
-        String in = _serverConnection.postDataWithTemporaryCookie(url, params, COOKIE_NAME, cookie, headers);
+        String in = _serverConnection.postDataWithTemporaryCookie(url, params,
+                ContentServiceConstants.CS_COOKIE_NAME, cookie, headers);
 
         return preparePulseResponse(in);
     }
@@ -99,7 +100,8 @@ public class PulseMessageListener implements MessageForwarder {
 
         // make the request using the llcookie so the server recognizes the user
         String cookie = payload.getValueAsString(Message.CSTOKEN_KEY_NAME);
-        String in = _serverConnection.postDataWithTemporaryCookie(url, params, COOKIE_NAME, cookie, headers);
+        String in = _serverConnection.postDataWithTemporaryCookie(url, params,
+                ContentServiceConstants.CS_COOKIE_NAME, cookie, headers);
 
         return preparePulseResponse(in);
     }

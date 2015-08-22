@@ -1,11 +1,14 @@
 package com.opentext.ecm.otsync.otag;
 
+import com.opentext.ecm.otsync.auth.ContentServerAuthHandler;
 import com.opentext.ecm.otsync.engine.ContentServiceEngine;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.ws.server.ClientType;
 import com.opentext.otag.api.services.client.IdentityServiceClient;
 import com.opentext.otag.api.services.client.NotificationsClient;
 import com.opentext.otag.api.services.client.SettingsClient;
+import com.opentext.otag.api.shared.types.auth.RegisterAuthHandlersRequest;
+import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
 import com.opentext.otag.api.shared.types.settings.Setting;
 import com.opentext.otag.cs.service.ContentServerAppworksServiceBase;
 import org.apache.commons.io.FileUtils;
@@ -90,7 +93,19 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
 
         // Read and set client properties for client tracking and maintenance
         setClientProperties();
+
+        registerAuthHandlers();
         LOG.info("ContentService init complete");
+    }
+
+    // TODO FIXME we should automate this
+    private void registerAuthHandlers() {
+        ContentServerAuthHandler csAuth = AppworksComponentContext.getComponent(ContentServerAuthHandler.class);
+        if (csAuth != null) {
+            RegisterAuthHandlersRequest registerAuthHandlersRequest = new RegisterAuthHandlersRequest();
+            registerAuthHandlersRequest.addHandler(csAuth.buildHandler());
+            identityServiceClient.registerAuthHandlers(registerAuthHandlersRequest);
+        }
     }
 
     @Override

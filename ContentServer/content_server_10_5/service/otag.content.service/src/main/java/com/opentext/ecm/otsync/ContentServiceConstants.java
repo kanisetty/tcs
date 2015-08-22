@@ -67,4 +67,6 @@ public class ContentServiceConstants {
     public final static String RESPONSE_ENCODING = "UTF-8";
     public static final String TRUE_STRING = Boolean.TRUE.toString();
     public static final String FILE_UPLOAD_TYPE = "multipart/form-data";
+
+    public static String CS_COOKIE_NAME = "LLCookie";
 }

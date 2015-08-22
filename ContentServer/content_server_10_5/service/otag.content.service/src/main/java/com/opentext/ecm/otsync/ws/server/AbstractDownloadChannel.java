@@ -13,12 +13,10 @@ public class AbstractDownloadChannel {
 
     public static final Log log = LogFactory.getLog(AbstractDownloadChannel.class);
 
-    public static final String CS_COOKIE_NAME = "LLCookie";
-
     public static String getLLCookieFromRequest(HttpServletRequest request) {
         String llcookie = "";
         try {
-            String cookie = ServletUtil.getCookie(request, CS_COOKIE_NAME);
+            String cookie = ServletUtil.getCookie(request, ContentServiceConstants.CS_COOKIE_NAME);
             if (cookie != null) {
                 llcookie = URLEncoder.encode(cookie, ContentServiceConstants.CHAR_ENCODING);
             }

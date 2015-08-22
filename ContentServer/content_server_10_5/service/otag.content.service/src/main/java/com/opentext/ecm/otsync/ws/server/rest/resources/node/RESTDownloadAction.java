@@ -1,5 +1,6 @@
 package com.opentext.ecm.otsync.ws.server.rest.resources.node;
 
+import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.http.RequestHeader;
@@ -32,7 +33,7 @@ public class RESTDownloadAction extends SuspendedAction {
     public void resume() {
         try {
             serverConnection.streamGetResponseWithUserCookie(url, response,
-                    AbstractDownloadChannel.CS_COOKIE_NAME, llcookie, headers);
+                    ContentServiceConstants.CS_COOKIE_NAME, llcookie, headers);
             async.complete();
         } catch (IOException e) {
             try {

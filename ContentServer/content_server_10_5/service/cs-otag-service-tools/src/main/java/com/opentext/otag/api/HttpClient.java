@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.servlet.http.Cookie;
 
+import com.opentext.otag.api.shared.util.ForwardHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
@@ -44,8 +45,6 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-
-import com.opentext.otag.rest.util.ForwardHeaders;
 
 public class HttpClient {
 	private static final int DEFAULT_DOWNLOAD_TIMEOUT = 3600000;

@@ -48,7 +48,6 @@ public class HTTPRequestManager {
     private static final Log log = LogFactory.getLog(HTTPRequestManager.class);
 
     public static final String ZERO_BYTE_ERROR_RESPONSE = "{\"auth\"=true,\"ok\"=false,\"errMsg\"=\"Cannot upload zero-byte file.\",\"info\":{\"auth\"=true,\"ok\"=false,\"errMsg\"=\"Cannot upload zero-byte file.\"}}";
-    public static final String CS_COOKIE_NAME = "LLCookie";
 
     private static final int TEMP_COOKIE_LIFETIME = 60 * 1000; // in ms
     private static final String MISSING_COOKIE_ERROR = "Missing or invalid Cookie: Failed to extract cookie data from request.";
@@ -273,7 +272,7 @@ public class HTTPRequestManager {
         // for SEA compatibility, we must include the llcookie
 
         if (cstoken != null) {
-            request.addHeader("Cookie", CS_COOKIE_NAME + "=" + cstoken);
+            request.addHeader("Cookie", ContentServiceConstants.CS_COOKIE_NAME + "=" + cstoken);
             // set headers for Content Server validation
             headers.addTo(request);
 
@@ -320,11 +319,11 @@ public class HTTPRequestManager {
         request.setParams(getUploadParams());
 
         // for SEA compatibility, we must include the llcookie
-        String llcookie = ServletUtil.getCookie(requestToForward, CS_COOKIE_NAME);
+        String llcookie = ServletUtil.getCookie(requestToForward, ContentServiceConstants.CS_COOKIE_NAME);
 
         // Check if we got a valid cookie otherwise we respond with an error message.
         if (llcookie != null) {
-            request.addHeader("Cookie", CS_COOKIE_NAME + "=" +
+            request.addHeader("Cookie", ContentServiceConstants.CS_COOKIE_NAME + "=" +
                     URLEncoder.encode(llcookie, ContentServiceConstants.CHAR_ENCODING));
             // set headers for Content Server validation
             RequestHeader headers = new RequestHeader(requestToForward);
@@ -535,7 +534,7 @@ public class HTTPRequestManager {
             httpPost.setParams(getUploadParams());
 
             // for SEA compatibility, we must include the llcookie
-            httpPost.addHeader("Cookie", CS_COOKIE_NAME + "=" + llcookie);
+            httpPost.addHeader("Cookie", ContentServiceConstants.CS_COOKIE_NAME + "=" + llcookie);
 
             // set headers for Content Server validation
             headers.addTo(httpPost);

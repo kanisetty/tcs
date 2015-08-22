@@ -1,5 +1,6 @@
 package com.opentext.ecm.otsync.listeners;
 
+import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.ContentServerURL;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
@@ -65,7 +66,7 @@ public class DownloadAction extends SuspendedAction {
 
             if (llcookie != null) {
                 contentServerConnection.streamGetResponseWithUserCookie(url, response,
-                        AbstractDownloadChannel.CS_COOKIE_NAME, llcookie, headers);
+                        ContentServiceConstants.CS_COOKIE_NAME, llcookie, headers);
             } else {
                 contentServerConnection.streamGetResponse(url, response);
             }

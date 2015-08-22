@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.core.StreamingOutput;
 
+import com.opentext.otag.api.shared.util.ForwardHeaders;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,8 +26,6 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-
-import com.opentext.otag.rest.util.ForwardHeaders;
 
 public class CSMultiPartRequest implements StreamingOutput {
 	public static final Log log = LogFactory.getLog(CSRequest.class);
