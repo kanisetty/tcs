@@ -9,10 +9,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 
 import com.opentext.otag.api.CSRequest;
+import com.opentext.otag.api.shared.util.ForwardHeaders;
 import com.opentext.otag.cs.service.ContentServerAppworksServiceBase;
-import com.opentext.otag.rest.util.ForwardHeaders;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Single endpoint Appworks service for retrieving a users assignments from Content Server.

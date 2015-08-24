@@ -1,8 +1,8 @@
 package com.opentext.otag.cs.workflow;
 
 import com.opentext.otag.api.CSRequest;
+import com.opentext.otag.api.shared.util.ForwardHeaders;
 import com.opentext.otag.cs.service.ContentServerAppworksServiceBase;
-import com.opentext.otag.rest.util.ForwardHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 

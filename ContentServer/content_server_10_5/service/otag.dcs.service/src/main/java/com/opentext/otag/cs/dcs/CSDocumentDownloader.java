@@ -2,7 +2,7 @@ package com.opentext.otag.cs.dcs;
 
 import com.opentext.otag.api.CSRequest;
 import com.opentext.otag.api.HttpClient;
-import com.opentext.otag.rest.util.ForwardHeaders;
+import com.opentext.otag.api.shared.util.ForwardHeaders;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;

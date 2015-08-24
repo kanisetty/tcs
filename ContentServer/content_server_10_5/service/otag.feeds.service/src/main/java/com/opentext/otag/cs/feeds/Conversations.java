@@ -1,6 +1,6 @@
 package com.opentext.otag.cs.feeds;
 
-import com.opentext.otag.rest.util.ForwardHeaders;
+import com.opentext.otag.api.shared.util.ForwardHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;

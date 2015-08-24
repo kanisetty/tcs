@@ -1,7 +1,7 @@
 package com.opentext.otag.cs.feeds;
 
 import com.opentext.otag.api.CSRequest;
-import com.opentext.otag.rest.util.ForwardHeaders;
+import com.opentext.otag.api.shared.util.ForwardHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 

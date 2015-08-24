@@ -2,8 +2,8 @@ package com.opentext.otag.cs.feeds;
 
 import com.opentext.otag.api.CSMultiPartRequest;
 import com.opentext.otag.api.CSRequest;
+import com.opentext.otag.api.shared.util.ForwardHeaders;
 import com.opentext.otag.cs.feeds.FeedItem.Provider;
-import com.opentext.otag.rest.util.ForwardHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.NameValuePair;

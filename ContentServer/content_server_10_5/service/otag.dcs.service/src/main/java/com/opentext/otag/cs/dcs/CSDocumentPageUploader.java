@@ -5,14 +5,13 @@ import com.opentext.otag.api.CSRequest;
 import com.opentext.otag.api.HttpClient;
 import com.opentext.otag.api.services.client.TrustedProviderClient;
 import com.opentext.otag.api.shared.types.TrustedProvider;
-import com.opentext.otag.rest.util.ForwardHeaders;
+import com.opentext.otag.api.shared.util.ForwardHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.message.BasicNameValuePair;
 
-import javax.annotation.PreDestroy;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.File;
