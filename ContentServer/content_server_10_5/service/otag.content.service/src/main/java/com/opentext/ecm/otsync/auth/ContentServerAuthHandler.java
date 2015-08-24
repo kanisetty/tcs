@@ -97,7 +97,7 @@ public class ContentServerAuthHandler extends AbstractAuthRequestHandler {
     private String getCsUrl() {
         return ContentServerService.getCsUrl();
     }
-
+    // TODO FIXME add Resource id to the config settings in here
     /**
      * Retrieve the OTDS resource Id for the Content Server instance hosted at the
      * provided URL.
@@ -123,7 +123,7 @@ public class ContentServerAuthHandler extends AbstractAuthRequestHandler {
                     ret = node.get("ResourceID").asText();
                 }
             } catch (Exception e) {
-                LOG.error("Cannot determine CS ?func=otdsintegration.getresourceid", e);
+                LOG.error("Cannot determine CS resource id via func otdsintegration.getresourceid", e);
             }
         }
 

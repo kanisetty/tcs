@@ -1,129 +1,71 @@
 package com.opentext.ecm.otsync.auth;
 
 import com.opentext.otag.api.shared.types.auth.UserProfile;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Map;
 
-public class CSUserProfile implements UserProfile {
+public class CSUserProfile extends UserProfile {
 
-    private final String username;
-    private final String firstname;
-    private final String lastname;
-    private final String fullname;
-    private final String email;
-    private String userID;
-    private String phone = null;
-    private String title = null;
-    private Boolean following = null;
-    private String location = null;
-    private Integer userPhotoSuffix = null;
-    private Long lastSeenEvent = null;
-    private final boolean isAdmin;
+    public static final String FOLLOWING = "following";
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public CSUserProfile(String jsonResponse, boolean isAdmin) throws IOException, NullPointerException {
-        this.isAdmin = isAdmin;
+        this.admin = isAdmin;
 
         JsonNode json = mapper.readValue(jsonResponse, JsonNode.class);
-        username = json.get("userName").getTextValue();
-        firstname = json.get("firstName").getTextValue();
-        lastname = json.get("lastName").getTextValue();
+        userName = json.get("userName").getTextValue();
+        firstName = json.get("firstName").getTextValue();
+        lastName = json.get("lastName").getTextValue();
         email = json.get("email").getTextValue();
         userID = json.get("userID").asText();
 
         // optional fields, ok if they are null
 
-        try { phone = json.get("phone").getTextValue(); } catch (NullPointerException ignored) {}
-        try { title = json.get("userTitle").getTextValue(); } catch (NullPointerException ignored) {}
-        try { following = json.get("following").getBooleanValue(); } catch (NullPointerException ignored) {}
-        try { location = json.get("userLocation").getTextValue(); } catch (NullPointerException ignored) {}
-        try { userPhotoSuffix = json.get("userPhotoSuffix").getIntValue(); } catch (NullPointerException ignored) {}
+        try {
+            phone = json.get("phone").getTextValue();
+        } catch (NullPointerException ignored) {
+        }
+        try {
+            title = json.get("userTitle").getTextValue();
+        } catch (NullPointerException ignored) {
+        }
+        try {
+            Boolean following = json.get("following").getBooleanValue();
+            setFollowing(following);
+        } catch (NullPointerException ignored) {
+        }
+        try {
+            location = json.get("userLocation").getTextValue();
+        } catch (NullPointerException ignored) {
+        }
+        try {
+            userPhotoSuffix = json.get("userPhotoSuffix").getIntValue();
+        } catch (NullPointerException ignored) {
+        }
 
-        fullname = firstname + " " + lastname;
+        fullName = firstName + " " + lastName;
     }
 
-    @Override
-    public String getUserName(){
-        return username;
+    public Boolean getFollowing() {
+        Serializable followingField = additionalProperties.get(FOLLOWING);
+        return followingField != null &&
+                followingField instanceof Boolean &&
+                (boolean) followingField;
     }
 
-    @Override
-    public String getFirstName(){
-        return firstname;
-    }
-
-    @Override
-    public String getLastName(){
-        return lastname;
-    }
-
-    @Override
-    public String getFullName(){
-        return fullname;
-    }
-
-    @Override
-    public String getEmail(){
-        return email;
-    }
-
-    @Override
-    public String getUserID(){
-        return userID;
-    }
-
-    @Override
-    public String getPhone(){
-        return phone;
-    }
-
-    @Override
-    public String getTitle(){
-        return title;
-    }
-
-    public Boolean getFollowing(){
-        return following;
-    }
-
-    @Override
-    public String getLocation(){
-        return location;
-    }
-
-    @Override
-    public Integer getUserPhotoSuffix(){
-        return userPhotoSuffix;
-    }
-
-    @Override
-    public void setLastSeenEvent(long seqNo) {
-        lastSeenEvent = seqNo;
-    }
-
-    @Override
-    public Long getLastSeenEvent() {
-        return lastSeenEvent;
+    public void setFollowing(Boolean following) {
+        addProfileProperty(FOLLOWING, following);
     }
 
     @Override
     public Map<String, String> getAttributes() {
-        // TODO FIXME not sure what is supposed to get returned here
+        // this field is really for OTDS, read LDAP attributes
         return null;
     }
-
-    @Override
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    @Override
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
 }
