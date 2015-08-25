@@ -7,6 +7,7 @@ import com.opentext.ecm.otsync.ws.server.ClientType;
 import com.opentext.otag.api.services.client.IdentityServiceClient;
 import com.opentext.otag.api.services.client.NotificationsClient;
 import com.opentext.otag.api.services.client.SettingsClient;
+import com.opentext.otag.api.shared.types.auth.AuthHandler;
 import com.opentext.otag.api.shared.types.auth.RegisterAuthHandlersRequest;
 import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
 import com.opentext.otag.api.shared.types.settings.Setting;
@@ -49,6 +50,54 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
     private static IdentityServiceClient identityServiceClient;
 
     private static HTTPRequestManager httpRequestManager;
+
+    private static RegisterAuthProviderThread registerAuthProviderThread;
+
+    /**
+     * In order to resolve the OTDS resource id that we are interested in (for username
+     * mapping) we need the CS url to be defined correctly. Register our auth handler
+     * when we know we can build the AuthProvider with the OTDS resource id.
+     */
+    public class RegisterAuthProviderThread extends Thread {
+
+        private ContentServerAuthHandler csAuthHandler;
+        private boolean keepRunning = true;
+
+        public RegisterAuthProviderThread(ContentServerAuthHandler csAuthHandler) {
+            super("Register CS auth providers Thread");
+            this.csAuthHandler = csAuthHandler;
+        }
+
+        @Override
+        public void run() {
+            LOG.info("Starting CS auth handler registration Thread");
+            while (keepRunning) {
+                try {
+                    RegisterAuthHandlersRequest registerAuthHandlersRequest = new RegisterAuthHandlersRequest();
+                    // the OTDS resource id will be resolved as part of the base build method so we can check it
+                    final AuthHandler handler = csAuthHandler.buildHandler();
+                    if (handler.getOtdsResourceId() != null) {
+                        registerAuthHandlersRequest.addHandler(handler);
+                        identityServiceClient.registerAuthHandlers(registerAuthHandlersRequest);
+                        keepRunning = false;
+                        LOG.info("Registered CS Auth handler with Gateway");
+                    } else {
+                        LOG.info("Still unable to resolve OTDS resource id, sleeping ...");
+                        Thread.sleep(20 * 1000);
+                    }
+                } catch (Exception e) {
+                    LOG.info("Failed to retrieve OTDS resource id");
+                }
+            }
+        }
+
+        public void shutdown() {
+            LOG.info("Shutting down " + this.getName());
+            keepRunning = false;
+            this.interrupt();
+        }
+
+    }
 
     @Override
     public void onStart(String appName) {
@@ -98,14 +147,19 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
         LOG.info("ContentService init complete");
     }
 
-    // TODO FIXME we should automate this
+    /**
+     * Register the auth handlers contained in this service when the service is ready using
+     * our register Thread.
+     */
     private void registerAuthHandlers() {
-        ContentServerAuthHandler csAuth = AppworksComponentContext.getComponent(ContentServerAuthHandler.class);
-        if (csAuth != null) {
-            RegisterAuthHandlersRequest registerAuthHandlersRequest = new RegisterAuthHandlersRequest();
-            registerAuthHandlersRequest.addHandler(csAuth.buildHandler());
-            identityServiceClient.registerAuthHandlers(registerAuthHandlersRequest);
-        }
+        ContentServerAuthHandler csAuthHandler =
+                AppworksComponentContext.getComponent(ContentServerAuthHandler.class);
+
+        if (csAuthHandler == null)
+            throw new RuntimeException("Failed to resolve CS auth handler in Appworks context");
+
+        registerAuthProviderThread = new RegisterAuthProviderThread(csAuthHandler);
+        registerAuthProviderThread.start();
     }
 
     @Override
@@ -113,6 +167,12 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
         LOG.info("Shutting down Content Service Engine ...");
         if (serviceEngine != null)
             serviceEngine.shutdown();
+
+        if (registerAuthProviderThread != null && registerAuthProviderThread.isAlive()) {
+            LOG.info("Shutting down register auth provider Thread, we never " +
+                    "resolved the OTDS resource id!");
+            registerAuthProviderThread.shutdown();
+        }
 
         super.onStop(appName);
     }

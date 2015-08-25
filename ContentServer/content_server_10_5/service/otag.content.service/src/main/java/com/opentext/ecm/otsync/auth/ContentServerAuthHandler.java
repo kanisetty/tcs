@@ -4,6 +4,7 @@ import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.otag.api.HttpClient;
 import com.opentext.otag.api.services.handlers.AbstractAuthRequestHandler;
 import com.opentext.otag.api.services.handlers.AuthResponseDecorator;
+import com.opentext.otag.api.shared.types.auth.AuthHandler;
 import com.opentext.otag.api.shared.types.auth.AuthHandlerResult;
 import com.opentext.otag.api.shared.types.auth.FailedAuthHandlerResult;
 import com.opentext.otag.api.shared.util.ForwardHeaders;
