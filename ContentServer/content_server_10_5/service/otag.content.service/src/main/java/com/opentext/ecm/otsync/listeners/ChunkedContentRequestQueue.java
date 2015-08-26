@@ -11,6 +11,8 @@ import com.opentext.ecm.otsync.payload.Payload;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.message.MessageConverter;
 import com.opentext.ecm.otsync.ws.server.AbstractChunkedContentChannel;
+import com.opentext.otag.api.services.client.NotificationsClient;
+import com.opentext.otag.api.shared.types.notification.NotificationRequest;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
@@ -43,6 +45,8 @@ import java.util.*;
  */
 public class ChunkedContentRequestQueue {
 
+    private static final Log log = LogFactory.getLog(ChunkedContentRequestListener.class);
+
     public static final String COULD_NOT_SEND_UPLOAD_REQUEST_ERROR_MSG = "Could not send upload request to server";
     public static final String MISSING_PARAMETER_ERROR_MSG = "either url or nodeID parameter is required";
     public static final String CLIENT_PARENTID_PARAMETER_NAME = "parentID";
@@ -50,16 +54,6 @@ public class ChunkedContentRequestQueue {
     public static final String INTERNAL_SERVER_ERROR_MESSAGE = "An internal server error has occurred.";
     public static final String NO_RESPONSE_ERROR_MSG = "Could not get response";
     public static final String CHAR_ENCODING = ContentServiceConstants.CHAR_ENCODING;
-
-    private final Map<String, Request> _downloadsInProgress;
-    private final Map<String, Request> _uploadsInProgress;
-    private final HTTPRequestManager _contentServerConnection;
-    private final MessageConverter _messageConverter;
-    private final SuspendedActionQueue _sharedThreadPool;
-
-    private final SettingsService settingsService;
-
-    private static final Log log = LogFactory.getLog(ChunkedContentRequestListener.class);
 
     private class Request {
         public String id;
@@ -83,16 +77,26 @@ public class ChunkedContentRequestQueue {
         }
     }
 
+    private final Map<String, Request> downloadsInProgress;
+    private final Map<String, Request> uploadsInProgress;
+    private final HTTPRequestManager contentServerConnection;
+    private final MessageConverter messageConverter;
+    private final SuspendedActionQueue sharedThreadPool;
+    private final SettingsService settingsService;
+    private final NotificationsClient notificationsClient;
+
     public ChunkedContentRequestQueue(HTTPRequestManager contentServerConnection,
                                       MessageConverter messageConverter,
                                       SuspendedActionQueue sharedThreadPool,
-                                      SettingsService settingsService) throws ServletException {
-        _downloadsInProgress = Collections.synchronizedMap(new HashMap<>());
-        _uploadsInProgress = Collections.synchronizedMap(new HashMap<>());
-        _contentServerConnection = contentServerConnection;
-        _messageConverter = messageConverter;
-        _sharedThreadPool = sharedThreadPool;
+                                      SettingsService settingsService,
+                                      NotificationsClient notificationsClient) throws ServletException {
+        downloadsInProgress = Collections.synchronizedMap(new HashMap<>());
+        uploadsInProgress = Collections.synchronizedMap(new HashMap<>());
+        this.contentServerConnection = contentServerConnection;
+        this.messageConverter = messageConverter;
+        this.sharedThreadPool = sharedThreadPool;
         this.settingsService = settingsService;
+        this.notificationsClient = notificationsClient;
         cleanAllCacheFiles();  // make sure there are no orphaned cache files
     }
 
@@ -115,7 +119,7 @@ public class ChunkedContentRequestQueue {
                             .key(key)
                             .headers(new RequestHeader(request));
 
-            _sharedThreadPool.sendImmediately(downloadAction);
+            sharedThreadPool.sendImmediately(downloadAction);
             // suspended action will close the request later
         } else {
             sendNextPart(response, dlReq, key);
@@ -136,7 +140,7 @@ public class ChunkedContentRequestQueue {
             if (numBytesRead == -1) {
                 //remove the request from the downloads in progress
                 removeTempFile(dlReq.tempFilename);
-                _downloadsInProgress.remove(key);
+                downloadsInProgress.remove(key);
             } else {
                 response.addHeader("Content-Length", Integer.toString(numBytesRead));
                 response.addHeader("Content-Disposition", "attachment; filename=" + dlReq.realFilename);
@@ -151,7 +155,7 @@ public class ChunkedContentRequestQueue {
 
     private void endDownloadOnError(final HttpServletResponse response,
                                     final String key) {
-        _downloadsInProgress.remove(key);
+        downloadsInProgress.remove(key);
         ServletUtil.error(response, INTERNAL_SERVER_ERROR_MESSAGE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 
@@ -208,10 +212,10 @@ public class ChunkedContentRequestQueue {
 
             try {
                 if (llcookie != null) {
-                    realFilename = _contentServerConnection.storeGetResponseWithUserCookie(
+                    realFilename = contentServerConnection.storeGetResponseWithUserCookie(
                             url, response, ContentServiceConstants.CS_COOKIE_NAME, llcookie, tempFilename, headers);
                 } else {
-                    realFilename = _contentServerConnection.storeGetResponse(url, response, tempFilename);
+                    realFilename = contentServerConnection.storeGetResponse(url, response, tempFilename);
                 }
             } catch (IOException e) {
                 ServletUtil.error(response, NO_RESPONSE_ERROR_MSG, HttpServletResponse.SC_NO_CONTENT);
@@ -228,7 +232,7 @@ public class ChunkedContentRequestQueue {
                 newDownloadRequest.llcookie = llcookie;
                 newDownloadRequest.tempFilename = tempFilename;
                 newDownloadRequest.realFilename = realFilename;
-                _downloadsInProgress.put(key, newDownloadRequest);
+                downloadsInProgress.put(key, newDownloadRequest);
 
                 sendNextPart(response, newDownloadRequest, key);
 
@@ -248,11 +252,12 @@ public class ChunkedContentRequestQueue {
         String nodeID = null;
         String llcookie = null;
         String filename = null;
+
         boolean isLastPart = false;
         boolean isFirstPart = false;
         boolean isUpload = false;
         boolean isPhoto = false;
-        Request ulReq;
+
         final ServletFileUpload upload = new ServletFileUpload();
         byte[] chunkData = null;
         final Map<String, Object> jsonPayload = new HashMap<>();
@@ -275,7 +280,8 @@ public class ChunkedContentRequestQueue {
                 final String name = item.getFieldName();
                 final InputStream in = item.openStream();
 
-                if (Message.VERSION_FILE_KEY_NAME.equalsIgnoreCase(name) || Message.PHOTO_FILE_KEY_NAME.equalsIgnoreCase(name)) {
+                if (Message.VERSION_FILE_KEY_NAME.equalsIgnoreCase(name) ||
+                        Message.PHOTO_FILE_KEY_NAME.equalsIgnoreCase(name)) {
                     filename = item.getName();
 
                     final ByteArrayOutputStream data = new ByteArrayOutputStream();
@@ -303,7 +309,7 @@ public class ChunkedContentRequestQueue {
                     data.close();
                 } else if (Message.PAYLOAD_KEY_NAME.equalsIgnoreCase(name)) {
                     try {
-                        final Map<String, Object> payload = _messageConverter.getDeserializer()
+                        final Map<String, Object> payload = messageConverter.getDeserializer()
                                 .deserialize(Streams.asString(in));
                         if ("uploadprofilephoto".equalsIgnoreCase(Message.getFieldAsString(payload, Message.SUBTYPE_KEY_NAME))) {
                             isPhoto = true;
@@ -333,37 +339,43 @@ public class ChunkedContentRequestQueue {
         }
 
         if (filename != null && (isPhoto || nodeID != null) && llcookie != null && chunkData != null) {
-            key = remoteAddr + nodeID + filename;
-            ulReq = getUploadInProgressRequest(remoteAddr, nodeID, filename, llcookie);
-
-            if (ulReq == null) {    //upload has not been started yet
-
-                ulReq = startUpload(key, llcookie, filename, remoteAddr);
-                isFirstPart = true;
-            }
-
-            if (ulReq != null) {
-                //append file data
-
-                try (FileOutputStream out = new FileOutputStream(getTempfileDir() + ulReq.tempFilename, true)) {
-                    if (isFirstPart) {
-                        storeInitialUploadPart(nodeID, ulReq, jsonPayload, out, isUpload, isPhoto);
-                    }
-
-                    out.write(chunkData, 0, chunkDataLen);
-
-                    if (isLastPart) {
-                        completeUpload(request, key, ulReq, out, headers);
-                        // response will be closed by the suspended action
-                    } else {
-                        completeUploadPart(ulReq, out);
-                        AbstractChunkedContentChannel.closeResponse(response);
-                    }
-                }
-            }
+            performUpload(request, response, nodeID, llcookie, filename, isLastPart, isFirstPart, isUpload, isPhoto, chunkData, jsonPayload, chunkDataLen, headers, remoteAddr);
         } else { //no file, or parentID, or llcookie was included with this multipart post! invalidate tokens
             ServletUtil.error(response, INTERNAL_SERVER_ERROR_MESSAGE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            _uploadsInProgress.remove(key);
+            uploadsInProgress.remove(key);
+        }
+    }
+
+    private void performUpload(HttpServletRequest request, HttpServletResponse response, String nodeID, String llcookie, String filename, boolean isLastPart, boolean isFirstPart, boolean isUpload, boolean isPhoto, byte[] chunkData, Map<String, Object> jsonPayload, int chunkDataLen, RequestHeader headers, String remoteAddr) throws IOException {
+        String key;
+        Request ulReq;
+        key = remoteAddr + nodeID + filename;
+        ulReq = getUploadInProgressRequest(remoteAddr, nodeID, filename, llcookie);
+
+        if (ulReq == null) {    //upload has not been started yet
+
+            ulReq = startUpload(key, llcookie, filename, remoteAddr);
+            isFirstPart = true;
+        }
+
+        if (ulReq != null) {
+            //append file data
+
+            try (FileOutputStream out = new FileOutputStream(getTempfileDir() + ulReq.tempFilename, true)) {
+                if (isFirstPart) {
+                    storeInitialUploadPart(nodeID, ulReq, jsonPayload, out, isUpload, isPhoto);
+                }
+
+                out.write(chunkData, 0, chunkDataLen);
+
+                if (isLastPart) {
+                    completeUpload(request, key, ulReq, out, headers);
+                    // response will be closed by the suspended action
+                } else {
+                    completeUploadPart(ulReq, out);
+                    AbstractChunkedContentChannel.closeResponse(response);
+                }
+            }
         }
     }
 
@@ -378,7 +390,7 @@ public class ChunkedContentRequestQueue {
         ulReq.llcookie = llcookie;
         ulReq.tempFilename = uuid.toString();
         ulReq.realFilename = filename;
-        _uploadsInProgress.put(key, ulReq);
+        uploadsInProgress.put(key, ulReq);
 
         return ulReq;
     }
@@ -409,7 +421,7 @@ public class ChunkedContentRequestQueue {
         out.write("otsync.otsyncrequest".getBytes(CHAR_ENCODING));
         out.write(boundaryBytes);
         out.write("Content-Disposition: form-data; name=\"payload\"\r\n\r\n".getBytes(CHAR_ENCODING));
-        String payloadString = _messageConverter.getSerializer().serialize(jsonPayload);
+        String payloadString = messageConverter.getSerializer().serialize(jsonPayload);
         out.write(payloadString.getBytes(CHAR_ENCODING));
         out.write(boundaryBytes);
         if (isPhoto) {
@@ -440,7 +452,7 @@ public class ChunkedContentRequestQueue {
         out.write("--\r\n".getBytes(CHAR_ENCODING));
         out.close();
 
-        _uploadsInProgress.remove(key);
+        uploadsInProgress.remove(key);
 
         AsyncContext async = request.startAsync();
         async.setTimeout(settingsService.getServlet3ContentTimeout());
@@ -453,7 +465,7 @@ public class ChunkedContentRequestQueue {
                         .localFilePath(getTempfileDir() + ulReq.tempFilename)
                         .realFilename();
 
-        _sharedThreadPool.sendImmediately(uploadAction);
+        sharedThreadPool.sendImmediately(uploadAction);
     }
 
     public class Upload extends SuspendedAction {
@@ -495,7 +507,7 @@ public class ChunkedContentRequestQueue {
         @Override
         public void resume() {
             try {
-                _contentServerConnection.streamMultipartPost((HttpServletResponse) async.getResponse(),
+                contentServerConnection.streamMultipartPost((HttpServletResponse) async.getResponse(),
                         settingsService.getContentServerUrl(), localFilePath, boundary, llcookie, headers);
 
             } catch (IOException e) {
@@ -519,13 +531,13 @@ public class ChunkedContentRequestQueue {
 
     public Request getDownloadInProgressRequest(String remoteAddress, String url, String llcookie) {
         final String key = remoteAddress + url;
-        final Request req = _downloadsInProgress.get(key);
+        final Request req = downloadsInProgress.get(key);
         if (req != null) {
             if (req.llcookie.equals(llcookie)) {
                 return req;
             } else {
                 //remove the req from the list and return null, bad authorization!
-                _downloadsInProgress.remove(key);
+                downloadsInProgress.remove(key);
                 return null;
             }
         } else {
@@ -536,13 +548,13 @@ public class ChunkedContentRequestQueue {
     public Request getUploadInProgressRequest(final String remoteAddress, final String parentID,
                                               final String filename, final String llcookie) {
         final String key = remoteAddress + parentID + filename;
-        final Request req = _uploadsInProgress.get(key);
+        final Request req = uploadsInProgress.get(key);
         if (req != null) {
             if (req.llcookie.equals(llcookie)) {
                 return req;
             } else {
                 //remove the req from the list and return null, bad authorization!
-                _uploadsInProgress.remove(key);
+                uploadsInProgress.remove(key);
                 return null;
             }
         } else {
@@ -580,9 +592,11 @@ public class ChunkedContentRequestQueue {
             message.setValue(Message.TYPE_KEY_NAME, Message.CHUNKED_CONTENT_KEY_VALUE);
             message.setValue(Message.SUBTYPE_KEY_NAME, subtype);
 
-            // TODO FIXME NotificationClient 
-            //NotificationService.sendMessageToClient(message.getJsonString(), clientId);
-
+            NotificationRequest notificationRequest = new NotificationRequest(
+                    message.getJsonString(),
+                    Collections.singleton(clientId),
+                    new HashSet<>());
+            notificationsClient.sendNotification(notificationRequest);
         } catch (IOException e) {
             // couldn't send the authorization, for whatever reason
             log.warn("Could not send upload or download authorization", e);
@@ -591,8 +605,8 @@ public class ChunkedContentRequestQueue {
 
     private void cleanDownloadRequestsByIP(final String ip) {
 
-        synchronized (_downloadsInProgress) {
-            Collection<Request> values = _downloadsInProgress.values();
+        synchronized (downloadsInProgress) {
+            Collection<Request> values = downloadsInProgress.values();
             Iterator<Request> i = values.iterator();
 
             while (i.hasNext()) {
@@ -609,8 +623,8 @@ public class ChunkedContentRequestQueue {
         final long currentTime = System.currentTimeMillis();
         final long expiryDelta = settingsService.getChunkedContentCacheExpiryTime() * 1000;
 
-        synchronized (_downloadsInProgress) {
-            for (Map.Entry<String, Request> entry : _downloadsInProgress.entrySet()) {
+        synchronized (downloadsInProgress) {
+            for (Map.Entry<String, Request> entry : downloadsInProgress.entrySet()) {
                 final Request req = entry.getValue();
                 if ((currentTime - req.timestamp) > expiryDelta) {
                     removeDownloadRequest(entry.getKey(), req);
@@ -620,18 +634,18 @@ public class ChunkedContentRequestQueue {
     }
 
     synchronized private void removeDownloadRequest(final String key, final Request req) {
-        //we want to clean up the _downloadsInProgress, as well as the cache file associated with it
+        //we want to clean up the downloadsInProgress, as well as the cache file associated with it
 
         removeTempFile(req.tempFilename);
-        _downloadsInProgress.remove(key);
+        downloadsInProgress.remove(key);
     }
 
     public void cleanUploadRequests() {
         final long currentTime = System.currentTimeMillis();
         final long expiryDelta = settingsService.getChunkedContentCacheExpiryTime() * 1000;
 
-        synchronized (_uploadsInProgress) {
-            Collection<Request> values = _uploadsInProgress.values();
+        synchronized (uploadsInProgress) {
+            Collection<Request> values = uploadsInProgress.values();
             Iterator<Request> i = values.iterator();
 
             while (i.hasNext()) {
@@ -652,7 +666,9 @@ public class ChunkedContentRequestQueue {
         final File[] files = directory.listFiles();
         if (files != null) {
             for (File file : files) {
-                file.delete();
+                if (!file.delete()) {
+                    log.warn("Failed to clean cache file - " + file.getName());
+                }
             }
         } else {
             final String msg = "Could not access temporary directory. Please check the server configuration.";

@@ -30,6 +30,9 @@ public class OTSyncServer extends HttpServlet {
 	}
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) {
+        if (!ContentServerService.isCsUrlDefined())
+            throw new WebApplicationException("The Content Server URL setting has not been defined");
+
         ContentServiceEngine engine = ContentServerService.getEngine();
         if (engine != null) {
             try {

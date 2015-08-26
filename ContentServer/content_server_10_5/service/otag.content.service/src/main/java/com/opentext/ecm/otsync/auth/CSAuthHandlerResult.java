@@ -18,7 +18,6 @@ public class CSAuthHandlerResult extends AuthHandlerResult {
     public CSAuthHandlerResult(String jsonResponse){
         String gotLLCookie = null;
         boolean gotIsAdmin = false;
-        //boolean gotIsExternal = false;
         CSUserProfile gotUserProfile = null;
         String gotErrMsg = null;
 
@@ -27,8 +26,8 @@ public class CSAuthHandlerResult extends AuthHandlerResult {
             username = json.get("userName").getTextValue();
             gotLLCookie = json.get("cstoken").asText();
             gotIsAdmin = json.get("isAdmin").asBoolean();
-            //gotIsExternal = json.get("isExternal").asBoolean();
-            gotUserProfile = new CSUserProfile(jsonResponse, gotIsAdmin);
+            boolean gotIsExternal = json.get("isExternal").asBoolean();
+            gotUserProfile = new CSUserProfile(jsonResponse, gotIsAdmin, gotIsExternal);
         } catch (IOException e) {
             gotErrMsg = "Invalid json response on auth attempt";
             LOG.error(gotErrMsg, e);
@@ -40,8 +39,6 @@ public class CSAuthHandlerResult extends AuthHandlerResult {
         addLLCookie(gotLLCookie);
         success = (gotLLCookie != null);
         admin = gotIsAdmin;
-        // TODO FIXME check this out
-        //isExternal = gotIsExternal;
         errorMessage = gotErrMsg;
         userProfile = gotUserProfile;
     }

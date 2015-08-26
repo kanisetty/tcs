@@ -1,5 +1,6 @@
 package com.opentext.ecm.otsync.ws.server.rest;
 
+import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.ws.server.rest.ResourcePath.Verb;
 import com.opentext.ecm.otsync.ws.server.rest.resources.*;
 import com.opentext.ecm.otsync.ws.server.rest.resources.approots.AppRoots;
@@ -16,6 +17,7 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.WebApplicationException;
 import java.io.IOException;
 
 @MultipartConfig()
@@ -50,25 +52,37 @@ public class RESTServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        doServiceStartedCheck();
         pathRoot.service(req, resp, getPathParts(req), Verb.GET, getVersion(req));
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        doServiceStartedCheck();
         pathRoot.service(req, resp, getPathParts(req), Verb.POST, getVersion(req));
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        doServiceStartedCheck();
         pathRoot.service(req, resp, getPathParts(req), Verb.PUT, getVersion(req));
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        doServiceStartedCheck();
         pathRoot.service(req, resp, getPathParts(req), Verb.DELETE, getVersion(req));
+    }
+
+    /**
+     * Ensure we are ready to service request to Content Server.
+     */
+    private void doServiceStartedCheck() {
+        if (!ContentServerService.isCsUrlDefined())
+            throw new WebApplicationException("The Content Server URL setting has not been defined");
     }
 
     private String[] getPathParts(HttpServletRequest req) {

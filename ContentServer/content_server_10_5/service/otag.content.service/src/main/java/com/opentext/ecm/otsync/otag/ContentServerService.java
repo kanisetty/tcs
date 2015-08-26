@@ -4,13 +4,19 @@ import com.opentext.ecm.otsync.auth.ContentServerAuthHandler;
 import com.opentext.ecm.otsync.engine.ContentServiceEngine;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.ws.server.ClientType;
+import com.opentext.otag.CSConstants;
+import com.opentext.otag.api.HttpClient;
 import com.opentext.otag.api.services.client.IdentityServiceClient;
 import com.opentext.otag.api.services.client.NotificationsClient;
 import com.opentext.otag.api.services.client.SettingsClient;
+import com.opentext.otag.api.services.client.TrustedProviderClient;
+import com.opentext.otag.api.services.handlers.AbstractSettingChangeHandler;
 import com.opentext.otag.api.shared.types.auth.AuthHandler;
 import com.opentext.otag.api.shared.types.auth.RegisterAuthHandlersRequest;
+import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
 import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
 import com.opentext.otag.api.shared.types.settings.Setting;
+import com.opentext.otag.api.shared.types.settings.SettingType;
 import com.opentext.otag.cs.service.ContentServerAppworksServiceBase;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -34,10 +40,43 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
 
     private static final Log LOG = LogFactory.getLog(ContentServerService.class);
 
+    /**
+     * This setting really determines if we will attempt to contact OTDS to resolve
+     * usernames when performing auth actions using our {@code AuthRequestHandler}
+     * implementation to service requests.
+     *
+     * @see ContentServerAuthHandler
+     */
+    @SuppressWarnings("unused")
+    public static class CsAuthOnlyListener extends AbstractSettingChangeHandler {
+
+        @Override
+        public String getSettingKey() {
+            return CS_AUTH_ONLY;
+        }
+
+        @Override
+        public void onSettingChanged(SettingsChangeMessage message) {
+            // re-register the auth providers
+            if (registerAuthProviderThread != null && registerAuthProviderThread.isAlive())
+                registerAuthProviderThread.shutdown();
+
+            registerAuthProviderThread = new RegisterAuthProviderThread();
+        }
+    }
+
     // ClientType settings
     public static final String CLIENTVERSIONFORDOWNLOAD = "CLIENTVERSIONFORDOWNLOAD";
     public static final String CLIENTVERSION = "CLIENTVERSION";
     public static final String CLIENT = "CLIENT";
+
+    /**
+     * Content server URL.
+     */
+    private static String csUrl = null;
+
+    // Trusted provider (Gateway API key)
+    public static final String CONTENTSERVER_PROVIDER_NAME = "ContentServer";
 
     // version and link information from tempo.clients.properties
     private static Map<String, ClientType> clientInfo;
@@ -48,6 +87,7 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
     private static SettingsClient settingsClient;
     private static SettingsService settingsService;
     private static IdentityServiceClient identityServiceClient;
+    private static TrustedProviderClient trustedProviderClient;
 
     private static HTTPRequestManager httpRequestManager;
 
@@ -58,14 +98,15 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
      * mapping) we need the CS url to be defined correctly. Register our auth handler
      * when we know we can build the AuthProvider with the OTDS resource id.
      */
-    public class RegisterAuthProviderThread extends Thread {
+    public static class RegisterAuthProviderThread extends Thread {
 
         private ContentServerAuthHandler csAuthHandler;
+
         private boolean keepRunning = true;
 
-        public RegisterAuthProviderThread(ContentServerAuthHandler csAuthHandler) {
+        public RegisterAuthProviderThread() {
             super("Register CS auth providers Thread");
-            this.csAuthHandler = csAuthHandler;
+            csAuthHandler = AppworksComponentContext.getComponent(ContentServerAuthHandler.class);
         }
 
         @Override
@@ -73,17 +114,25 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
             LOG.info("Starting CS auth handler registration Thread");
             while (keepRunning) {
                 try {
-                    RegisterAuthHandlersRequest registerAuthHandlersRequest = new RegisterAuthHandlersRequest();
                     // the OTDS resource id will be resolved as part of the base build method so we can check it
-                    final AuthHandler handler = csAuthHandler.buildHandler();
-                    if (handler.getOtdsResourceId() != null) {
-                        registerAuthHandlersRequest.addHandler(handler);
-                        identityServiceClient.registerAuthHandlers(registerAuthHandlersRequest);
-                        keepRunning = false;
-                        LOG.info("Registered CS Auth handler with Gateway");
+                    AuthHandler handler = csAuthHandler.buildHandler();
+
+                    RegisterAuthHandlersRequest registerAuthHandlersRequest = new RegisterAuthHandlersRequest();
+                    // re-evaluate via db to see if we expect the OTDS resource id to be populated
+                    boolean csAuthOnly = settingsService.isCsAuthOnly();
+                    if (!csAuthOnly) {
+                        String otdsResourceId = handler.getOtdsResourceId();
+                        if (otdsResourceId != null) {
+                            issueRequest(handler, registerAuthHandlersRequest);
+                            keepRunning = false;
+                            LOG.info("Registered CS Auth handler with Gateway");
+                        } else {
+                            LOG.info("Still unable to resolve OTDS resource id, sleeping ...");
+                            Thread.sleep(20 * 1000);
+                        }
                     } else {
-                        LOG.info("Still unable to resolve OTDS resource id, sleeping ...");
-                        Thread.sleep(20 * 1000);
+                        issueRequest(handler, registerAuthHandlersRequest);
+                        keepRunning = false;
                     }
                 } catch (Exception e) {
                     LOG.info("Failed to retrieve OTDS resource id");
@@ -92,11 +141,35 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
         }
 
         public void shutdown() {
-            LOG.info("Shutting down " + this.getName());
-            keepRunning = false;
-            this.interrupt();
+            try {
+                LOG.info("Shutting down " + this.getName());
+                keepRunning = false;
+                this.interrupt();
+            } catch (Exception e) {
+                LOG.error("Shutdown for "  + this.getName() + " did not complete " +
+                        "successfully, " + e.getMessage(), e);
+            }
         }
 
+        private void issueRequest(AuthHandler handler,
+                                  RegisterAuthHandlersRequest registerAuthHandlersRequest) {
+            registerAuthHandlersRequest.addHandler(handler);
+            identityServiceClient.registerAuthHandlers(registerAuthHandlersRequest);
+        }
+
+    }
+
+    /**
+     * Access the Content Server URL, without this piece of information all channels are locked down.
+     *
+     * @return the content server URL
+     */
+    public static String getCsUrl() {
+        return csUrl;
+    }
+
+    public static boolean isCsUrlDefined() {
+        return "".equals(getCsUrl());
     }
 
     @Override
@@ -110,6 +183,11 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
         LOG.debug("Created SettingsService");
         identityServiceClient = new IdentityServiceClient(appName);
         LOG.debug("Created IdentityServiceClient");
+        trustedProviderClient = new TrustedProviderClient(appName);
+        LOG.debug("Created TrustedProviderClient");
+
+        // create CS URL (contentserver.url) setting if it doesn't exist already
+        initCsUrlSetting(settingsClient);
 
         httpRequestManager = new HTTPRequestManager(settingsService);
         LOG.debug("HTTP Manager initialised");
@@ -117,7 +195,6 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
         serviceEngine = new ContentServiceEngine(
                 settingsService,
                 new NotificationsClient(appName),
-                identityServiceClient,
                 httpRequestManager);
         LOG.debug("Initialised Content Service engine");
 
@@ -147,18 +224,43 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
         LOG.info("ContentService init complete");
     }
 
+    private void initCsUrlSetting(SettingsClient settingsClient) {
+        Setting csUrlSetting = settingsClient.getSetting(CSConstants.CONTENTSERVER_URL);
+        if (csUrlSetting == null) {
+            LOG.warn("Initialising Content Server URL Setting for the first time, it will need to be " +
+                    "populated before the service will run");
+            // TODO remove test system url
+            String csUrlVal = /*"http://aw-dev-cs1.appworks.dev/otcs/cs.exe"*/"";
+            csUrlSetting = new Setting(CSConstants.CONTENTSERVER_URL, APP_NAME, SettingType.string,
+                    "Content Server URL", csUrlVal, "http/s://host/otcs/cs.exe", "Content Server URL", false);
+            boolean created = settingsClient.createSetting(csUrlSetting);
+            if (!created) {
+                LOG.warn("Failed to create CS URL setting!");
+                return;
+            }
+            csUrl = "";
+        } else {
+            csUrl = csUrlSetting.getValue();
+        }
+    }
+
+    // we listen for changes to the Cs URL setting via our parent
+    @Override
+    public void onSettingChanged(SettingsChangeMessage settingsChangeMessage) {
+        super.onSettingChanged(settingsChangeMessage);
+        // update our local csUrl
+        csUrl = settingsChangeMessage.getNewValue();
+        registerAuthHandlers();
+    }
+
     /**
-     * Register the auth handlers contained in this service when the service is ready using
-     * our register Thread.
+     * Register our auth handlers implementation contained in this service.
      */
-    private void registerAuthHandlers() {
-        ContentServerAuthHandler csAuthHandler =
-                AppworksComponentContext.getComponent(ContentServerAuthHandler.class);
+    public static void registerAuthHandlers() {
+        if (registerAuthProviderThread != null && registerAuthProviderThread.isAlive())
+            registerAuthProviderThread.shutdown();
 
-        if (csAuthHandler == null)
-            throw new RuntimeException("Failed to resolve CS auth handler in Appworks context");
-
-        registerAuthProviderThread = new RegisterAuthProviderThread(csAuthHandler);
+        registerAuthProviderThread = new RegisterAuthProviderThread();
         registerAuthProviderThread.start();
     }
 

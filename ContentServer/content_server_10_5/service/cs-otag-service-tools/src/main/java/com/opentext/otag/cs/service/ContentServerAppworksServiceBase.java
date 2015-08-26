@@ -28,7 +28,7 @@ public class ContentServerAppworksServiceBase extends AbstractSettingChangeHandl
     /**
      * Store the CS URL for the app
      */
-    private static String csUrl;
+    private static String csUrl = null;
 
     public static String getCsUrl() {
         return csUrl;
@@ -54,15 +54,8 @@ public class ContentServerAppworksServiceBase extends AbstractSettingChangeHandl
             csUrl = csUrlSetting.getValue();
         } else {
             // this service is dependent on the CS URL being present in the Gateways config settings
-//            LOG.error(STARTUP_FAILED);
-//            throw new RuntimeException(STARTUP_FAILED);
-            // TODO FIXME for now lets create it
-            String csUrlVal = "http://aw-dev-cs1.appworks.dev/otcs/cs.exe";
-            csUrlSetting = new Setting(CSConstants.CONTENTSERVER_URL, "otag", SettingType.string,
-                    "Content Server URl", csUrlVal, csUrlVal, "Content Server URL", false);
-            settingsClient.createSetting(csUrlSetting);
-            csUrl = csUrlSetting.getValue();
-
+            // we will react to the value been set while we are running though
+            LOG.warn(STARTUP_FAILED);
         }
         LOG.info(this.getClass().getName() + " service started successfully");
     }

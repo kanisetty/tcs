@@ -91,8 +91,13 @@ public class ServletConfig {
 
     public static String getContentServerRelativeURL() {
         try {
-            URI csUri = new URI(getContentServerUrl());
-            return csUri.getRawPath();
+            String contentServerUrl = getContentServerUrl();
+
+            if (contentServerUrl != null) {
+                URI csUri = new URI(contentServerUrl);
+                return csUri.getRawPath();
+            }
+            return "";
         } catch (URISyntaxException e) {
             LOG.error(e);
             return "";
@@ -101,8 +106,12 @@ public class ServletConfig {
 
     public static String getContentServerDirectRelativeURL() {
         try {
-            URI csUri = new URI(getContentServerDirectUrl());
-            return csUri.getRawPath();
+            String contentServerDirectUrl = getContentServerDirectUrl();
+            if (contentServerDirectUrl != null) {
+                URI csUri = new URI(contentServerDirectUrl);
+                return csUri.getRawPath();
+            }
+            return "";
         } catch (URISyntaxException e) {
             LOG.error(e);
             return "";

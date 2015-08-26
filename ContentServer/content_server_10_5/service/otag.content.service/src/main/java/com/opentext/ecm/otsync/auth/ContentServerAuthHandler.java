@@ -76,7 +76,7 @@ public class ContentServerAuthHandler extends AbstractAuthRequestHandler {
             params.add(new BasicNameValuePair("username", username));
             params.add(new BasicNameValuePair("password", password));
             String json = client.post(csUrl, params, headers);
-            return new CSAuthHandlerResult(json); // TODO WE SEEM TO GET A RESULT BUT TIS BLOWS UP!!!!
+            return new CSAuthHandlerResult(json);
         } catch (IOException e) {
             String errMsg = "Failed auth by " + username + ": " + e.getMessage();
             LOG.warn(errMsg);
@@ -98,7 +98,7 @@ public class ContentServerAuthHandler extends AbstractAuthRequestHandler {
     private String getCsUrl() {
         return ContentServerService.getCsUrl();
     }
-    // TODO FIXME add Resource id to the config settings in here
+
     /**
      * Retrieve the OTDS resource Id for the Content Server instance hosted at the
      * provided URL.

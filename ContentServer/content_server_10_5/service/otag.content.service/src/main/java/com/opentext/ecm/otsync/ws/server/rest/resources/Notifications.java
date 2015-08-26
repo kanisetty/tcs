@@ -62,7 +62,8 @@ public class Notifications extends ResourcePath {
 				// TODO Servlet3Backchannel is trying to do the same thing!!
 				//NotificationService.getEventsOrConnect(req, resp, user.getUsername(), clientID, seqNo, isShortPoll, token);
 			} else {
-				//NotificationService.connectLegacyBackchannel(req, resp, user.getUsername(), clientID, isShortPoll, token);
+				// TODO FIXME report failure to connect to legacy backchannel, deprecated
+
 			}
 		} catch (WebApplicationException e) {
 			try {

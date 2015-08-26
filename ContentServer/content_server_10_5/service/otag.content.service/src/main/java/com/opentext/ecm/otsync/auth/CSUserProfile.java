@@ -15,8 +15,10 @@ public class CSUserProfile extends UserProfile {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public CSUserProfile(String jsonResponse, boolean isAdmin) throws IOException, NullPointerException {
+    public CSUserProfile(String jsonResponse, boolean isAdmin, boolean isExternal)
+            throws IOException, NullPointerException {
         this.admin = isAdmin;
+        this.addProfileProperty("isExternal", String.valueOf(isExternal));
 
         JsonNode json = mapper.readValue(jsonResponse, JsonNode.class);
         userName = json.get("userName").getTextValue();
@@ -52,15 +54,14 @@ public class CSUserProfile extends UserProfile {
         fullName = firstName + " " + lastName;
     }
 
-    public Boolean getFollowing() {
-        Serializable followingField = additionalProperties.get(FOLLOWING);
+    public boolean getFollowing() {
+        String followingField = additionalProperties.get(FOLLOWING);
         return followingField != null &&
-                followingField instanceof Boolean &&
-                (boolean) followingField;
+                Boolean.valueOf(followingField);
     }
 
-    public void setFollowing(Boolean following) {
-        addProfileProperty(FOLLOWING, following);
+    public void setFollowing(boolean following) {
+        addProfileProperty(FOLLOWING, String.valueOf(following));
     }
 
     @Override

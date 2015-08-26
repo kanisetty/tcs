@@ -2,14 +2,19 @@ package com.opentext.ecm.otsync.listeners;
 
 import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
+import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.message.SynchronousMessageListener;
+import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.message.MessageConverter;
+import com.opentext.ecm.otsync.ws.server.ClientType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.opentext.ecm.otsync.ContentServiceConstants.MAX_ALLOWED_STORED_RESPONSES;
 
@@ -26,29 +31,28 @@ public class AuthMessageListener implements SynchronousMessageListener {
     }
 
     public Map<String, Object> onMessage(Map<String, Object> message) throws IOException {
-        return null;
 //		EntityManager manager = Setting.emf.createEntityManager();
-//		boolean isRest = false;
-//
-//		Map<String, String> params = new HashMap<String, String>();
-//		String password;
-//
-//		// remove header values from the payload while it is being JSONified
-//		RequestHeader headers = (RequestHeader) message.get(RequestHeader.REQUEST_HEADER_KEY);
-//		message.remove(RequestHeader.REQUEST_HEADER_KEY);
-//
-//		// Put characters around the password incase it has spaces
-//		// at the front or end to avoid issue with CS core parse JSON
-//		// triming passwords.
-//		password = (String) message.remove(Message.PASSWORD_KEY_NAME);
-//		if( password != null )
-//		{
-//			password = "<" + password + ">";
-//			message.put(Message.PASSWORD_KEY_NAME, password);
-//		}
-//
+        boolean isRest = false;
+
+        Map<String, String> params = new HashMap<>();
+        String password;
+
+        // remove header values from the payload while it is being JSONified
+        RequestHeader headers = (RequestHeader) message.get(RequestHeader.REQUEST_HEADER_KEY);
+        message.remove(RequestHeader.REQUEST_HEADER_KEY);
+
+        // Put characters around the password incase it has spaces
+        // at the front or end to avoid issue with CS core parse JSON
+        // triming passwords.
+        password = (String) message.remove(Message.PASSWORD_KEY_NAME);
+        if (password != null) {
+            password = "<" + password + ">";
+            message.put(Message.PASSWORD_KEY_NAME, password);
+        }
+
+        // TODO direct access to our clients is not permitted, expose as a service so deployments can grab client rows
 //		// check whether this client has been set to wipe
-//		String id = (String)message.get(Message.CLIENT_ID_KEY_NAME);
+        String id = (String) message.get(Message.CLIENT_ID_KEY_NAME);
 //		if(id != null){
 //			com.opentext.otag.common.tracking.Client clientInfo = manager.find(com.opentext.otag.common.tracking.Client.class, id);
 //
@@ -74,119 +78,123 @@ public class AuthMessageListener implements SynchronousMessageListener {
 //			}
 //		}
 //
-//		// Send the auth request to CS
-//		params.put("func", "otsync.otsyncrequest");
-//		params.put("payload", _messageConverter.getSerializer().serialize(message));
-//
-//		String in = _serverConnection.postData(ServletConfig.getContentServerUrl(), params, headers);
-//
-//		// Get the payload and info member from the response string
-//		Map<String, Object> ret = (Map<String, Object>) _messageConverter.getDeserializer().deserialize(in);
-//		@SuppressWarnings("unchecked")
-//		Map<String, Object> info = (Map<String, Object>) ret.get(Message.INFO_KEY_NAME);
-//		// for rest-style responses, there is no info (the response itself is takes its place)
-//		if (info == null){
-//			info = ret;
-//			isRest = true;
-//		}
-//
-//		//Get the client properties associated with the currently connected client type
-//		ClientType currentClient;
-//
-//		if (message.containsKey(Message.CLIENT_CURRENTVERSION_KEY_VALUE) && !message.containsKey(Message.CLIENT_OS_KEY_NAME)){
-//			//Get default Windows client as this is a legacy client making the request
-//			currentClient = ServletConfig.getClient();
-//		}
-//		else{
-//			String clientOS = (String)message.get(Message.CLIENT_OS_KEY_NAME);
-//			String clientOSVersion = (String)message.get(Message.CLIENT_OSVERSION_KEY_NAME);
-//			String clientBitness = (String)message.get(Message.CLIENT_BITNESS_KEY_NAME);
-//
-//			currentClient = ServletConfig.getClient(clientOS, clientOSVersion, clientBitness);
-//		}
-//
-//
-//		//Get the client version information from the server to be returned to the client
-//		if (currentClient != null){
-//			String language = (String)message.get(Message.CLIENT_LANGUAGE_KEY_NAME);
-//
-//			ret.put(Message.CLIENT_OS_RET_KEY, currentClient.getOS()); //OS of current client type
-//			ret.put(Message.CLIENT_CURRENT_RET_KEY, currentClient.getCurrentVersion()); //current downloadable version of client
-//			ret.put(Message.CLIENT_MIN_RET_KEY, currentClient.getMinVersion()); //minimum allowed version of client
-//			ret.put(Message.CLIENT_LINK_RET_KEY, currentClient.getLink(language)); //link to current downloadable version
-//		}
-//
-//		//Get the legacy client version if no version is reported
-//		String clientVersion = (String)message.get(Message.CLIENT_VERSION_KEY_NAME);
-//		if (clientVersion == null){
-//			clientVersion = (String)message.get(Message.CLIENT_CURRENTVERSION_KEY_VALUE);
-//		}
-//
-//		//Confirm that current reported version meets the minimum requirements
-//		if(currentClient != null && clientVersion != null){
-//
-//			if(!currentClient.isVersionAllowed(clientVersion)){
-//				ret.put(Message.AUTH_KEY_RESPONSE, false);
-//				ret.put(Message.CLIENT_NEEDS_UPGRADE, true);
-//				return ret;
-//			}
-//		}
-//
-//		if (Boolean.TRUE.equals(info.get(Message.AUTH_KEY_RESPONSE))) {
-//
-//			// if the client does not yet have an id, we assign a pseudo-random string as
-//			// its id
-//			String clientID;
-//			Object clientIDObj;
-//
-//			clientIDObj = message.get(Message.CLIENT_ID_KEY_NAME);
-//			if (clientIDObj != null) {
-//				clientID = clientIDObj.toString();
-//			} else {
-//				UUID uuid = UUID.randomUUID();
-//				clientID = uuid.toString();
-//			}
-//
-//
-//			String user = getUser(isRest, info);
-//			if(user == null || user.length() == 0){
-//				log.error("Authorized user has no known username. Client id is " + clientID);
-//			}
-//			int maxStoredResponses = getMaxStoredResponses(message);
-//
-//			// authorize the user with OTAG and use the otagtoken as the back-channel token and tell the client it has just been authorized
+        // Send the auth request to CS
+        params.put("func", "otsync.otsyncrequest");
+        params.put("payload", _messageConverter.getSerializer().serialize(message));
+
+        String in = _serverConnection.postData(ServletConfig.getContentServerUrl(), params, headers);
+
+        // Get the payload and info member from the response string
+        Map<String, Object> ret = _messageConverter.getDeserializer().deserialize(in);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> info = (Map<String, Object>) ret.get(Message.INFO_KEY_NAME);
+        // for rest-style responses, there is no info (the response itself is takes its place)
+        if (info == null) {
+            info = ret;
+            isRest = true;
+        }
+
+        //Get the client properties associated with the currently connected client type
+        ClientType currentClient;
+
+        if (message.containsKey(Message.CLIENT_CURRENTVERSION_KEY_VALUE) && !message.containsKey(Message.CLIENT_OS_KEY_NAME)) {
+            //Get default Windows client as this is a legacy client making the request
+            currentClient = ServletConfig.getClient();
+        } else {
+            String clientOS = (String) message.get(Message.CLIENT_OS_KEY_NAME);
+            String clientOSVersion = (String) message.get(Message.CLIENT_OSVERSION_KEY_NAME);
+            String clientBitness = (String) message.get(Message.CLIENT_BITNESS_KEY_NAME);
+
+            currentClient = ServletConfig.getClient(clientOS, clientOSVersion, clientBitness);
+        }
+
+
+        //Get the client version information from the server to be returned to the client
+        if (currentClient != null) {
+            String language = (String) message.get(Message.CLIENT_LANGUAGE_KEY_NAME);
+
+            ret.put(Message.CLIENT_OS_RET_KEY, currentClient.getOS()); //OS of current client type
+            ret.put(Message.CLIENT_CURRENT_RET_KEY, currentClient.getCurrentVersion()); //current downloadable version of client
+            ret.put(Message.CLIENT_MIN_RET_KEY, currentClient.getMinVersion()); //minimum allowed version of client
+            ret.put(Message.CLIENT_LINK_RET_KEY, currentClient.getLink(language)); //link to current downloadable version
+        }
+
+        //Get the legacy client version if no version is reported
+        String clientVersion = (String) message.get(Message.CLIENT_VERSION_KEY_NAME);
+        if (clientVersion == null) {
+            clientVersion = (String) message.get(Message.CLIENT_CURRENTVERSION_KEY_VALUE);
+        }
+
+        //Confirm that current reported version meets the minimum requirements
+        if (currentClient != null && clientVersion != null) {
+
+            if (!currentClient.isVersionAllowed(clientVersion)) {
+                ret.put(Message.AUTH_KEY_RESPONSE, false);
+                ret.put(Message.CLIENT_NEEDS_UPGRADE, true);
+                return ret;
+            }
+        }
+
+        if (Boolean.TRUE.equals(info.get(Message.AUTH_KEY_RESPONSE))) {
+
+            // if the client does not yet have an id, we assign a pseudo-random string as
+            // its id
+            String clientID;
+            Object clientIDObj;
+
+            clientIDObj = message.get(Message.CLIENT_ID_KEY_NAME);
+            if (clientIDObj != null) {
+                clientID = clientIDObj.toString();
+            } else {
+                UUID uuid = UUID.randomUUID();
+                clientID = uuid.toString();
+            }
+
+
+            String user = getUser(isRest, info);
+            if (user == null || user.length() == 0) {
+                log.error("Authorized user has no known username. Client id is " + clientID);
+            }
+            int maxStoredResponses = getMaxStoredResponses(message);
+
+            // TODO FIXME no no no forceAuth with external user madness thanks, not Gateway functionality
+            // TODO FIXME needs to be reimplemented
+            // authorize the user with OTAG and use the otagtoken as the back-channel token and tell the client it has just been authorized
 //			String token = IdentityProvider.getService()
 //					.forceAuthForUser(
 //							user,
 //							clientID,
 //							(boolean) info.get("isExternal"));
-//
-//			// track this client connection event
-//			track(user, clientID, message, headers.getOriginalAddr(), manager);
-//
-//			if(Boolean.TRUE.equals(message.get(Message.REST_API_KEY_NAME))) {
-//				info.put(Message.CS_BASE_URL_KEY_NAME, ServletConfig.getContentServerBaseUrl());
-//			}
-//			else {
-//				info.put(Message.CS_BASE_URL_OLD_KEY_NAME, ServletConfig.getContentServerBaseUrl());
-//			}
-//			info.put(Message.SYNC_RECOMMENDED_KEY_NAME, false);
-//
-//			ret.put(Message.CLIENT_ID_KEY_NAME, clientID);
-//			ret.put(Message.TOKEN_KEY_NAME, token);
-//			ret.put(Message.MAX_STORED_RESPONSES_KEY_NAME, maxStoredResponses);
-//			ret.put("isOTAG", true);
-//
-//			return ret;
-//
-//		} else {
-//			ret.put(Message.AUTH_KEY_RESPONSE, false);
-//			return ret;
-//		}
+
+            // track this client connection event
+            // TODO needs a Gateway call again here if you want to track a client
+            //track(user, clientID, message, headers.getOriginalAddr(), manager);
+
+            if (Boolean.TRUE.equals(message.get(Message.REST_API_KEY_NAME))) {
+                info.put(Message.CS_BASE_URL_KEY_NAME, ServletConfig.getContentServerBaseUrl());
+            } else {
+                info.put(Message.CS_BASE_URL_OLD_KEY_NAME, ServletConfig.getContentServerBaseUrl());
+            }
+            info.put(Message.SYNC_RECOMMENDED_KEY_NAME, false);
+
+            ret.put(Message.CLIENT_ID_KEY_NAME, clientID);
+            // TODO this is the OneTimeToken issued as part of a wipe, this service needs to implement its
+            // TODO own ideas around wipe if it wants to fulfil desktop client wiping
+            //ret.put(Message.TOKEN_KEY_NAME, token);
+            ret.put(Message.MAX_STORED_RESPONSES_KEY_NAME, maxStoredResponses);
+            ret.put("isOTAG", true);
+
+            return ret;
+
+        } else {
+            ret.put(Message.AUTH_KEY_RESPONSE, false);
+            return ret;
+        }
 
         // if an IOException is thrown during the above operations, the message service will catch it
         // and return an HTTP error to the client indicating that the message could not be forwarded
     }
+
 
 //    private void track(String user, String id, Map<String, Object> data, String ip, EntityManager manager) {
 //

@@ -18,6 +18,7 @@ public class ContentServiceConstants {
     public static final String TEMPDIR = "otag.tmp.path";
     public static final String REPO = "content.repo";
     public static final String IS_TEMPO_BOX_ENABLED = "content.enableTempoBox";
+    public static final String CS_AUTH_ONLY = "content.csAuthOnly";
 
     public final static String OTSYNC_WEB_APP_NAME = "OTSyncServer";
     public final static String BACK_CHANNEL_NAME = "BackChannel";

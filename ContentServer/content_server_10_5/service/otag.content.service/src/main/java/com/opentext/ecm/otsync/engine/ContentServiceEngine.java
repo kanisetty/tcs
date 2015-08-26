@@ -92,16 +92,13 @@ public class ContentServiceEngine {
     // Gateway clients
     private SettingsService settingsService;
     private NotificationsClient notificationsClient;
-    private IdentityServiceClient identityServiceClient;
 
     public ContentServiceEngine(SettingsService settingsService,
                                 NotificationsClient notificationsClient,
-                                IdentityServiceClient identityServiceClient,
                                 HTTPRequestManager httpRequestManager) {
         LOG.info("Initialising engine");
         this.settingsService = settingsService;
         this.notificationsClient = notificationsClient;
-        this.identityServiceClient = identityServiceClient;
 
         messageConverter = new JsonMessageConverter();
         clients = new ClientSet();
@@ -112,7 +109,8 @@ public class ContentServiceEngine {
         try {
             // chunked uploads and downloads use the same thread pools as regular uploads and downloads
             chunkedContentRequestQueue = new ChunkedContentRequestQueue(
-                    serverConnection, messageConverter, sharedThreadPool, settingsService);
+                    serverConnection, messageConverter, sharedThreadPool,
+                    settingsService, notificationsClient);
             LOG.debug("ChunkedContentRequestQueue initialised");
         } catch (ServletException e) {
             throw new RuntimeException("Failed to create ChunkedContentRequestQueue, " + e.getMessage(), e);
@@ -182,7 +180,7 @@ public class ContentServiceEngine {
         LOG.info("Initialised Content Channel successfully");
         chunkedContentChannel = new Servlet3ChunkedContentChannel(chunkedContentRequestQueue);
         LOG.info("Initialised Chunked Content Channel successfully");
-        backChannel = new Servlet3BackChannel(messageConverter, identityServiceClient, serverConnection);
+        backChannel = new Servlet3BackChannel();
         LOG.info("Initialised Back Channel successfully");
 
     }
