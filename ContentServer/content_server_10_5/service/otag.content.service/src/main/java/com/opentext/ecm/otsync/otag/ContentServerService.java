@@ -131,6 +131,8 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
                             Thread.sleep(20 * 1000);
                         }
                     } else {
+                        // ignore OTDS resource for CS only auth
+                        handler = new AuthHandler(handler.getHandler(), handler.isDecorator());
                         issueRequest(handler, registerAuthHandlersRequest);
                         keepRunning = false;
                     }
