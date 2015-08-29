@@ -36,15 +36,11 @@ public class CSAuthHandlerResult extends AuthHandlerResult {
             LOG.error(gotErrMsg, e);
         }
 
-        addLLCookie(gotLLCookie);
+        addRootCookie(ContentServiceConstants.CS_COOKIE_NAME, gotLLCookie);
         success = (gotLLCookie != null);
         admin = gotIsAdmin;
         errorMessage = gotErrMsg;
         userProfile = gotUserProfile;
-    }
-
-    private void addLLCookie(String cstoken) {
-        addRootCookie(ContentServiceConstants.CS_COOKIE_NAME, cstoken);
     }
 
 }

@@ -5,19 +5,17 @@ import com.opentext.ecm.otsync.engine.ContentServiceEngine;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.ws.server.ClientType;
 import com.opentext.otag.CSConstants;
-import com.opentext.otag.api.HttpClient;
-import com.opentext.otag.api.services.client.IdentityServiceClient;
-import com.opentext.otag.api.services.client.NotificationsClient;
-import com.opentext.otag.api.services.client.SettingsClient;
-import com.opentext.otag.api.services.client.TrustedProviderClient;
+import com.opentext.otag.api.services.AppworksServiceContextHandler;
+import com.opentext.otag.api.services.client.*;
 import com.opentext.otag.api.services.handlers.AbstractSettingChangeHandler;
+import com.opentext.otag.api.services.handlers.AppworksServiceStartupComplete;
 import com.opentext.otag.api.shared.types.auth.AuthHandler;
 import com.opentext.otag.api.shared.types.auth.RegisterAuthHandlersRequest;
+import com.opentext.otag.api.shared.types.management.DeploymentResult;
 import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
 import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
 import com.opentext.otag.api.shared.types.settings.Setting;
 import com.opentext.otag.api.shared.types.settings.SettingType;
-import com.opentext.otag.cs.service.ContentServerAppworksServiceBase;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,9 +34,11 @@ import static com.opentext.ecm.otsync.ContentServiceConstants.*;
  * Content Server Appworks Service. Responds to the Gateways startup signal initialising
  * the Engine component and the rest of the service.
  */
-public class ContentServerService extends ContentServerAppworksServiceBase {
+public class ContentServerService extends AbstractSettingChangeHandler
+        implements AppworksServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(ContentServerService.class);
+
 
     /**
      * This setting really determines if we will attempt to contact OTDS to resolve
@@ -47,8 +47,9 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
      *
      * @see ContentServerAuthHandler
      */
-    @SuppressWarnings("unused")
     public static class CsAuthOnlyListener extends AbstractSettingChangeHandler {
+
+        private boolean csAuthOnly = false;
 
         @Override
         public String getSettingKey() {
@@ -57,12 +58,23 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
 
         @Override
         public void onSettingChanged(SettingsChangeMessage message) {
+            try {
+                csAuthOnly = Boolean.valueOf(message.getNewValue());
+            } catch (Exception e) {
+                LOG.error("Failed to set csAuthOnly flag based on setting change message");
+            }
+
             // re-register the auth providers
             if (registerAuthProviderThread != null && registerAuthProviderThread.isAlive())
                 registerAuthProviderThread.shutdown();
 
             registerAuthProviderThread = new RegisterAuthProviderThread();
         }
+
+        public boolean isCsAuthOnly() {
+            return csAuthOnly;
+        }
+
     }
 
     // ClientType settings
@@ -101,25 +113,28 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
     public static class RegisterAuthProviderThread extends Thread {
 
         private ContentServerAuthHandler csAuthHandler;
+        private CsAuthOnlyListener csAuthOnlyListener;
 
         private boolean keepRunning = true;
 
         public RegisterAuthProviderThread() {
             super("Register CS auth providers Thread");
             csAuthHandler = AppworksComponentContext.getComponent(ContentServerAuthHandler.class);
+            csAuthOnlyListener = AppworksComponentContext.getComponent(CsAuthOnlyListener.class);
         }
 
         @Override
         public void run() {
             LOG.info("Starting CS auth handler registration Thread");
+
             while (keepRunning) {
                 try {
                     // the OTDS resource id will be resolved as part of the base build method so we can check it
                     AuthHandler handler = csAuthHandler.buildHandler();
 
                     RegisterAuthHandlersRequest registerAuthHandlersRequest = new RegisterAuthHandlersRequest();
-                    // re-evaluate via db to see if we expect the OTDS resource id to be populated
-                    boolean csAuthOnly = settingsService.isCsAuthOnly();
+                    // ask our listener implementation for the current value
+                    boolean csAuthOnly = csAuthOnlyListener.isCsAuthOnly();
                     if (!csAuthOnly) {
                         String otdsResourceId = handler.getOtdsResourceId();
                         if (otdsResourceId != null) {
@@ -128,16 +143,20 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
                             LOG.info("Registered CS Auth handler with Gateway");
                         } else {
                             LOG.info("Still unable to resolve OTDS resource id, sleeping ...");
-                            Thread.sleep(20 * 1000);
+                            sleep();
                         }
                     } else {
                         // ignore OTDS resource for CS only auth
-                        handler = new AuthHandler(handler.getHandler(), handler.isDecorator());
+                        handler = new AuthHandler(handler.getHandler(),
+                                handler.isDecorator(),
+                                handler.getKnownCookies());
+
                         issueRequest(handler, registerAuthHandlersRequest);
                         keepRunning = false;
                     }
                 } catch (Exception e) {
                     LOG.info("Failed to retrieve OTDS resource id");
+                    sleep();
                 }
             }
         }
@@ -159,6 +178,12 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
             identityServiceClient.registerAuthHandlers(registerAuthHandlersRequest);
         }
 
+        private void sleep() {
+            try {
+                Thread.sleep(20 * 1000);
+            } catch (InterruptedException ignored) {}
+        }
+
     }
 
     /**
@@ -174,56 +199,71 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
         return "".equals(getCsUrl());
     }
 
+    // this method will attempt to complete the deployment passing the result to the Gateway
+    @AppworksServiceStartupComplete
     @Override
     public void onStart(String appName) {
-        super.onStart(appName);
-        LOG.info("Starting Content Server ContentService ...");
+        ServiceClient serviceClient = new ServiceClient(appName);
 
-        settingsClient = new SettingsClient(appName);
-        LOG.debug("Created SettingsClient");
-        settingsService = new SettingsService(settingsClient);
-        LOG.debug("Created SettingsService");
-        identityServiceClient = new IdentityServiceClient(appName);
-        LOG.debug("Created IdentityServiceClient");
-        trustedProviderClient = new TrustedProviderClient(appName);
-        LOG.debug("Created TrustedProviderClient");
-
-        // create CS URL (contentserver.url) setting if it doesn't exist already
-        initCsUrlSetting(settingsClient);
-
-        httpRequestManager = new HTTPRequestManager(settingsService);
-        LOG.debug("HTTP Manager initialised");
-
-        serviceEngine = new ContentServiceEngine(
-                settingsService,
-                new NotificationsClient(appName),
-                httpRequestManager);
-        LOG.debug("Initialised Content Service engine");
-
-        upgradeFromExistingTempoProperties();
-
-        // Copy Sample Properties File to conf
-        File sourceFile;
-        File destinationFile;
-        String clientFilePath = System.getProperty("catalina.base") +
-                "/webapps/content/WEB-INF/tempo.clients.properties";
-        String destFileName = System.getProperty("catalina.base") +
-                "/conf/tempo.clients.properties";
-
-        sourceFile = new File(clientFilePath);
-        destinationFile = new File(destFileName);
         try {
-            if (!destinationFile.canRead())
-                FileUtils.copyFile(sourceFile, destinationFile);
-        } catch (IOException e) {
-            LOG.error(e);
+            LOG.info("Starting Content Server ContentService ...");
+
+            settingsClient = new SettingsClient(appName);
+            LOG.debug("Created SettingsClient");
+            settingsService = new SettingsService(settingsClient);
+            LOG.debug("Created SettingsService");
+            identityServiceClient = new IdentityServiceClient(appName);
+            LOG.debug("Created IdentityServiceClient");
+            trustedProviderClient = new TrustedProviderClient(appName);
+            LOG.debug("Created TrustedProviderClient");
+
+            // create CS URL (contentserver.url) setting if it doesn't exist already
+            initCsUrlSetting(settingsClient);
+
+            httpRequestManager = new HTTPRequestManager(settingsService);
+            LOG.debug("HTTP Manager initialised");
+
+            serviceEngine = new ContentServiceEngine(
+                    settingsService,
+                    new NotificationsClient(appName),
+                    httpRequestManager);
+            LOG.debug("Initialised Content Service engine");
+
+            upgradeFromExistingTempoProperties();
+
+            // Copy Sample Properties File to conf
+            File sourceFile;
+            File destinationFile;
+            String clientFilePath = System.getProperty("catalina.base") +
+                    "/webapps/content/WEB-INF/tempo.clients.properties";
+            String destFileName = System.getProperty("catalina.base") +
+                    "/conf/tempo.clients.properties";
+
+            sourceFile = new File(clientFilePath);
+            destinationFile = new File(destFileName);
+            try {
+                if (!destinationFile.canRead())
+                    FileUtils.copyFile(sourceFile, destinationFile);
+            } catch (IOException e) {
+                LOG.error(e);
+            }
+
+            // Read and set client properties for client tracking and maintenance
+            setClientProperties();
+
+            registerAuthHandlers();
+
+            boolean completeAck = serviceClient.completeDeployment(new DeploymentResult(true));
+            if (completeAck) {
+                LOG.info("ContentService init complete");
+            } else {
+                LOG.error("Failed to complete deployment, deployment result was rejected");
+            }
+        } catch (Exception e) {
+            String errMsg = "Service failed to start correctly, " + e.getMessage();
+            LOG.error(errMsg, e);
+            serviceClient.completeDeployment(new DeploymentResult(errMsg));
         }
-
-        // Read and set client properties for client tracking and maintenance
-        setClientProperties();
-
-        registerAuthHandlers();
-        LOG.info("ContentService init complete");
     }
 
     private void initCsUrlSetting(SettingsClient settingsClient) {
@@ -231,14 +271,15 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
         if (csUrlSetting == null) {
             LOG.warn("Initialising Content Server URL Setting for the first time, it will need to be " +
                     "populated before the service will run");
+            LOG.info("issuing request to " + settingsClient.getManagingOtagUrl() +
+                    " clientId=" + settingsClient.getId());
             // TODO remove test system url
             String csUrlVal = /*"http://aw-dev-cs1.appworks.dev/otcs/cs.exe"*/"";
             csUrlSetting = new Setting(CSConstants.CONTENTSERVER_URL, APP_NAME, SettingType.string,
                     "Content Server URL", csUrlVal, "http/s://host/otcs/cs.exe", "Content Server URL", false);
             boolean created = settingsClient.createSetting(csUrlSetting);
             if (!created) {
-                LOG.warn("Failed to create CS URL setting!");
-                return;
+                throw new RuntimeException("Failed to create CS URL setting!");
             }
             csUrl = "";
         } else {
@@ -246,10 +287,14 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
         }
     }
 
+    @Override
+    public String getSettingKey() {
+        return CSConstants.CONTENTSERVER_URL;
+    }
+
     // we listen for changes to the Cs URL setting via our parent
     @Override
     public void onSettingChanged(SettingsChangeMessage settingsChangeMessage) {
-        super.onSettingChanged(settingsChangeMessage);
         // update our local csUrl
         csUrl = settingsChangeMessage.getNewValue();
         registerAuthHandlers();
@@ -277,8 +322,6 @@ public class ContentServerService extends ContentServerAppworksServiceBase {
                     "resolved the OTDS resource id!");
             registerAuthProviderThread.shutdown();
         }
-
-        super.onStop(appName);
     }
 
     // Provide access to our central components and Gateway clients across the service

@@ -1,12 +1,13 @@
 package com.opentext.ecm.otsync.auth;
 
+import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.otag.api.HttpClient;
 import com.opentext.otag.api.services.handlers.AbstractAuthRequestHandler;
 import com.opentext.otag.api.services.handlers.AuthResponseDecorator;
-import com.opentext.otag.api.shared.types.auth.AuthHandler;
 import com.opentext.otag.api.shared.types.auth.AuthHandlerResult;
 import com.opentext.otag.api.shared.types.auth.FailedAuthHandlerResult;
+import com.opentext.otag.api.shared.util.Cookie;
 import com.opentext.otag.api.shared.util.ForwardHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,7 +19,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Content Server authentication handler, makes use of the available cs functions
@@ -95,6 +98,17 @@ public class ContentServerAuthHandler extends AbstractAuthRequestHandler {
         return getCSResourceId(getCsUrl());
     }
 
+    @Override
+    public Set<Cookie> getKnownCookies() {
+        Set<Cookie> cookies = new HashSet<>();
+
+        Cookie llCookie = new Cookie(ContentServiceConstants.CS_COOKIE_NAME, "");
+        llCookie.setPath("/");
+        cookies.add(llCookie);
+
+        return cookies;
+    }
+
     private String getCsUrl() {
         return ContentServerService.getCsUrl();
     }
@@ -122,6 +136,8 @@ public class ContentServerAuthHandler extends AbstractAuthRequestHandler {
                 if (!isEmpty(json)) {
                     JsonNode node = OBJECT_MAPPER.readTree(new StringReader(json));
                     ret = node.get("ResourceID").asText();
+                    // TODO FIXME update setting value
+
                 }
             } catch (Exception e) {
                 LOG.error("Cannot determine CS resource id via func otdsintegration.getresourceid", e);

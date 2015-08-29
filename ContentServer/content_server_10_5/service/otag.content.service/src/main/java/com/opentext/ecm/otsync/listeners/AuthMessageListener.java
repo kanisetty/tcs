@@ -18,7 +18,8 @@ import java.util.UUID;
 
 import static com.opentext.ecm.otsync.ContentServiceConstants.MAX_ALLOWED_STORED_RESPONSES;
 
-// TODO NO ONE GETS ACCESS TO OUR Client table from outside the Gateway
+// TODO FIXME we really need to ask clients to auth via OTAG not this endpoint,
+// TODO FIXME the Tempo desktop wipe probably needs to be reimplemented
 public class AuthMessageListener implements SynchronousMessageListener {
 
     private MessageConverter _messageConverter;
@@ -50,7 +51,8 @@ public class AuthMessageListener implements SynchronousMessageListener {
             message.put(Message.PASSWORD_KEY_NAME, password);
         }
 
-        // TODO direct access to our clients is not permitted, expose as a service so deployments can grab client rows
+        // TODO TO MAKE SURE THAT EVEN IF THE CLIENT ISNT AUTHED IT STILL GETS WIPED
+        // TODO direct access to our clients is not permitted, expose as a service so deployments can grab client rows???
 //		// check whether this client has been set to wipe
         String id = (String) message.get(Message.CLIENT_ID_KEY_NAME);
 //		if(id != null){
@@ -157,8 +159,7 @@ public class AuthMessageListener implements SynchronousMessageListener {
             }
             int maxStoredResponses = getMaxStoredResponses(message);
 
-            // TODO FIXME no no no forceAuth with external user madness thanks, not Gateway functionality
-            // TODO FIXME needs to be reimplemented
+            // TODO FIXME no forceAuth in current impl check old one out
             // authorize the user with OTAG and use the otagtoken as the back-channel token and tell the client it has just been authorized
 //			String token = IdentityProvider.getService()
 //					.forceAuthForUser(
@@ -167,7 +168,7 @@ public class AuthMessageListener implements SynchronousMessageListener {
 //							(boolean) info.get("isExternal"));
 
             // track this client connection event
-            // TODO needs a Gateway call again here if you want to track a client
+            // TODO needs a Gateway call again here if you want to track a client, just use otag
             //track(user, clientID, message, headers.getOriginalAddr(), manager);
 
             if (Boolean.TRUE.equals(message.get(Message.REST_API_KEY_NAME))) {
