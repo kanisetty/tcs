@@ -1,15 +1,14 @@
 package com.opentext.otag.cs.service;
 
 import com.opentext.otag.CSConstants;
-import com.opentext.otag.api.services.AppworksServiceContextHandler;
 import com.opentext.otag.api.services.client.ServiceClient;
 import com.opentext.otag.api.services.client.SettingsClient;
 import com.opentext.otag.api.services.handlers.AbstractSettingChangeHandler;
+import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
 import com.opentext.otag.api.services.handlers.AppworksServiceStartupComplete;
 import com.opentext.otag.api.shared.types.management.DeploymentResult;
 import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
 import com.opentext.otag.api.shared.types.settings.Setting;
-import com.opentext.otag.api.shared.types.settings.SettingType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

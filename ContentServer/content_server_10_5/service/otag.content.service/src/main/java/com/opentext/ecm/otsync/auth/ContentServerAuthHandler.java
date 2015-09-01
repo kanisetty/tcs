@@ -128,17 +128,17 @@ public class ContentServerAuthHandler extends AbstractAuthRequestHandler {
     private String getCSResourceId(String csUrl) {
         String ret = null;
 
-        if (!isEmpty(csUrl)) {
-            ArrayList<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair("func", GET_OTDS_RESOURCEID_FUNC));
-            try {
-                String json = client.get(csUrl, params);
-                if (!isEmpty(json)) {
-                    JsonNode node = OBJECT_MAPPER.readTree(new StringReader(json));
-                    ret = node.get("ResourceID").asText();
-                    // TODO FIXME update setting value
+                if (!isEmpty(csUrl)) {
+                    ArrayList<NameValuePair> params = new ArrayList<>();
+                    params.add(new BasicNameValuePair("func", GET_OTDS_RESOURCEID_FUNC));
+                    try {
+                        String json = client.get(csUrl, params);
+                        if (!isEmpty(json)) {
+                            JsonNode node = OBJECT_MAPPER.readTree(new StringReader(json));
+                            ret = node.get("ResourceID").asText();
+                            // TODO FIXME update setting value
 
-                }
+                        }
             } catch (Exception e) {
                 LOG.error("Cannot determine CS resource id via func otdsintegration.getresourceid", e);
             }
