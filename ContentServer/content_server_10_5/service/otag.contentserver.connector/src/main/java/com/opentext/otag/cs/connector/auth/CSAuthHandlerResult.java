@@ -1,7 +1,7 @@
-package com.opentext.ecm.otsync.auth;
+package com.opentext.otag.cs.connector.auth;
 
-import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.otag.api.shared.types.auth.AuthHandlerResult;
+import com.opentext.otag.cs.connector.ContentServerConnector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonNode;
@@ -36,7 +36,7 @@ public class CSAuthHandlerResult extends AuthHandlerResult {
             LOG.error(gotErrMsg, e);
         }
 
-        addRootCookie(ContentServiceConstants.CS_COOKIE_NAME, gotLLCookie);
+        addRootCookie(ContentServerConnector.CS_COOKIE_NAME, gotLLCookie);
         success = (gotLLCookie != null);
         admin = gotIsAdmin;
         errorMessage = gotErrMsg;

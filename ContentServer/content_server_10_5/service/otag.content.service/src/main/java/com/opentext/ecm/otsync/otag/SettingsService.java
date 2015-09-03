@@ -92,10 +92,6 @@ public class SettingsService {
         return ContentServerService.getCsUrl();
     }
 
-    public boolean isCsAuthOnly() {
-        return settingsClient.getSettingAsBool(CS_AUTH_ONLY);
-    }
-
     public String getContentServerBaseUrl() {
         String relativeUrl = getContentServerRelativeURL();
         String csUrl = getContentServerUrl();

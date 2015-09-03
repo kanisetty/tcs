@@ -1,14 +1,14 @@
-package com.opentext.ecm.otsync.auth;
+package com.opentext.otag.cs.connector.auth;
 
-import com.opentext.ecm.otsync.ContentServiceConstants;
-import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.otag.api.HttpClient;
 import com.opentext.otag.api.services.handlers.AbstractAuthRequestHandler;
 import com.opentext.otag.api.services.handlers.AuthResponseDecorator;
 import com.opentext.otag.api.shared.types.auth.AuthHandlerResult;
 import com.opentext.otag.api.shared.types.auth.FailedAuthHandlerResult;
+import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
 import com.opentext.otag.api.shared.util.Cookie;
 import com.opentext.otag.api.shared.util.ForwardHeaders;
+import com.opentext.otag.cs.connector.ContentServerConnector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.NameValuePair;
@@ -39,6 +39,11 @@ public class ContentServerAuthHandler extends AbstractAuthRequestHandler {
 
     private static final HttpClient client = new HttpClient();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    /**
+     * Connector housing this handler. It retains the connection to Content Server itself.
+     */
+    ContentServerConnector connector;
 
     @Override
     public AuthHandlerResult auth(String otdsticket, ForwardHeaders headers) {
@@ -102,15 +107,25 @@ public class ContentServerAuthHandler extends AbstractAuthRequestHandler {
     public Set<Cookie> getKnownCookies() {
         Set<Cookie> cookies = new HashSet<>();
 
-        Cookie llCookie = new Cookie(ContentServiceConstants.CS_COOKIE_NAME, "");
+        Cookie llCookie = new Cookie(ContentServerConnector.CS_COOKIE_NAME, "");
         llCookie.setPath("/");
         cookies.add(llCookie);
 
         return cookies;
     }
 
+    /**
+     * Safely return the Content Server URL if our connector has been setup
+     * or null, otherwise.
+     *
+     * @return Content Server URL
+     */
     private String getCsUrl() {
-        return ContentServerService.getCsUrl();
+        // grab the reference to the connector from our AW context
+        if (connector != null)
+            connector = AppworksComponentContext.getComponent(ContentServerConnector.class);
+
+        return (connector != null) ? connector.getConnectionString() : null;
     }
 
     /**
@@ -128,17 +143,17 @@ public class ContentServerAuthHandler extends AbstractAuthRequestHandler {
     private String getCSResourceId(String csUrl) {
         String ret = null;
 
-                if (!isEmpty(csUrl)) {
-                    ArrayList<NameValuePair> params = new ArrayList<>();
-                    params.add(new BasicNameValuePair("func", GET_OTDS_RESOURCEID_FUNC));
-                    try {
-                        String json = client.get(csUrl, params);
-                        if (!isEmpty(json)) {
-                            JsonNode node = OBJECT_MAPPER.readTree(new StringReader(json));
-                            ret = node.get("ResourceID").asText();
-                            // TODO FIXME update setting value
+        if (!isEmpty(csUrl)) {
+            ArrayList<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("func", GET_OTDS_RESOURCEID_FUNC));
+            try {
+                String json = client.get(csUrl, params);
+                if (!isEmpty(json)) {
+                    JsonNode node = OBJECT_MAPPER.readTree(new StringReader(json));
+                    ret = node.get("ResourceID").asText();
+                    // TODO FIXME update setting value
 
-                        }
+                }
             } catch (Exception e) {
                 LOG.error("Cannot determine CS resource id via func otdsintegration.getresourceid", e);
             }

@@ -1,0 +1,303 @@
+package com.opentext.otag.cs.connector;
+
+import com.opentext.otag.api.HttpClient;
+import com.opentext.otag.api.services.client.ServiceClient;
+import com.opentext.otag.api.services.client.SettingsClient;
+import com.opentext.otag.api.services.client.TrustedProviderClient;
+import com.opentext.otag.api.services.connector.EIMConnectorService;
+import com.opentext.otag.api.services.handlers.AbstractMultiChangeSettingHandler;
+import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
+import com.opentext.otag.api.services.handlers.AppworksServiceStartupComplete;
+import com.opentext.otag.api.services.handlers.AuthRequestHandler;
+import com.opentext.otag.api.services.provided.OtagUrlUpdateHandler;
+import com.opentext.otag.api.shared.types.TrustedProvider;
+import com.opentext.otag.api.shared.types.auth.AuthHandlerResult;
+import com.opentext.otag.api.shared.types.management.DeploymentResult;
+import com.opentext.otag.api.shared.types.proxy.ProxyMappingRepresentation;
+import com.opentext.otag.api.shared.types.proxy.ProxySettings;
+import com.opentext.otag.api.shared.types.settings.Setting;
+import com.opentext.otag.api.shared.types.settings.SettingType;
+import com.opentext.otag.api.shared.util.Cookie;
+import com.opentext.otag.api.shared.util.ForwardHeaders;
+import com.opentext.otag.cs.connector.auth.ContentServerAuthHandler;
+import com.opentext.otag.cs.connector.auth.registration.AuthRegistrationHandler;
+import jersey.repackaged.com.google.common.collect.Sets;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HttpContext;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
+import static com.opentext.otag.api.shared.types.sdk.AppworksComponentContext.getComponent;
+
+/**
+ * Content Server 10.5 EIM Connector.
+ * <p>
+ * This connector provides information on how to connect to a Content Server
+ * instance, and also registers the Content Server authentication handler.
+ * <p>
+ * It also attempts to register a Trusted Provider key with the
+ * Gateway. Retrieving/generating a key via the Gateway is simple but in order
+ * to get the key into Content Server we need a valid LLCookie. This means we
+ * have to have some valid credentials to use with our Content Server auth handler.
+ * We therefore include some configuration settings to allow the user to enter
+ * these details.
+ */
+public class ContentServerConnector extends AbstractMultiChangeSettingHandler
+        implements EIMConnectorService, AppworksServiceContextHandler {
+
+    private static final Log LOG = LogFactory.getLog(ContentServerConnector.class);
+
+    public static final String CS_COOKIE_NAME = "LLCookie";
+    private static final String HTTP_REFERER_HEADER = "REFERER";
+
+    private HttpClient httpClient;
+
+    /**
+     * The Content Server URL is managed as a config setting in the Gateway, it can
+     * be set in the administration UI.
+     */
+    private String csUrl;
+
+    // user credentials this service needs to establish a trusted provider key
+    private String csAdminUser;
+    private String csAdminPassword;
+
+    private String trustedServerKey;
+
+    public ContentServerConnector() {
+        httpClient = new HttpClient();
+    }
+
+    @AppworksServiceStartupComplete
+    @Override
+    public void onStart(String appName) {
+        LOG.info("Starting ContentServerConnector EIM connector");
+    // TODO remove this now we have our own
+        initCsUrlSetting(new SettingsClient(appName));
+
+        ServiceClient serviceClient = new ServiceClient(appName);
+        TrustedProviderClient trustedProviderClient = new TrustedProviderClient(appName);
+
+        TrustedProvider connectorProvider = trustedProviderClient.getOrCreate(getTrustedServerName());
+        if (connectorProvider != null) {
+            trustedServerKey = connectorProvider.getKey();
+        } else {
+            String errMsg = "We failed to retrieve a provider key from the Gateway";
+            serviceClient.completeDeployment(new DeploymentResult(errMsg));
+            LOG.error(errMsg);
+            return;
+        }
+
+        // listen for changes to our settings
+        registerSettingHandlers();
+        // tell the Gateway we have finished deploying
+        serviceClient.completeDeployment(new DeploymentResult(true));
+    }
+
+    @Override
+    public void onStop(String appName) {
+        LOG.info("Stopped ContentServerConnector EIM connector");
+    }
+
+    @Override
+    public String getConnectorName() {
+        return "Content Server";
+    }
+
+    @Override
+    public String getConnectorVersion() {
+        return "10.5";
+    }
+
+    @Override
+    public String getConnectionString() {
+        return csUrl;
+    }
+
+    @Override
+    public String getTrustedServerName() {
+        return "ContentServer";
+    }
+
+    @Override
+    public String getTrustedServerKey() {
+        return trustedServerKey;
+    }
+
+    @Override
+    public boolean registerTrustedServerKey(String serverName, String key) {
+        String connectionString = getConnectionString();
+
+        String cstoken = getCsToken(csAdminUser, csAdminPassword);
+        if (cstoken == null) {
+            LOG.warn("Unable to resolve CS token, we wont be able to register the Trusted Provider key");
+            return false;
+        }
+
+        try {
+            if (connectionString != null) {
+                List<NameValuePair> params;
+
+                params = new ArrayList<>();
+                params.add(new BasicNameValuePair("func", "otsync.settings"));
+                params.add(new BasicNameValuePair("sharedKey", key));
+                // Also use the configured otag url for this server to set up communications
+                // from the otsync notifier, and redirects for Tempo Box
+                String otagUrl = getOtagUrl();
+                params.add(new BasicNameValuePair("engine", otagUrl + '/'));
+                params.add(new BasicNameValuePair("destination_uri", otagUrl + "/gateway"));
+
+                HttpContext cookie = httpClient.getContextWithCookie(CS_COOKIE_NAME, cstoken, csUrl);
+                HttpUriRequest req = httpClient.getPostRequest(csUrl, params);
+                req.addHeader(HTTP_REFERER_HEADER, csUrl);
+                // ForwardHeaders instance was passed here
+                // headers.addTo(req);
+                HttpClient.DetailedResponse response = httpClient.executeRequestWithDetails(req, cookie);
+
+                int statusCode = response.status.getStatusCode();
+                if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
+                    // 302 is the llrequesthandler's way of failing auth
+                    LOG.error("We failed to set the trusted server key as Content Server told " +
+                            "us the cs token we provided was not valid");
+                } else if (statusCode != HttpStatus.SC_OK) {
+                    LOG.error("We failed to register the");
+                }
+                return true;
+            }
+        } catch (IOException e) {
+            LOG.error("We failed to contact Content Server to register " +
+                    "the trusted provider key", e);
+        }
+
+        return false;
+    }
+
+    private String getCsToken(String csAdminUser, String csAdminPassword) {
+
+        if (isAuthRegistered()) {
+            if (csAdminUser != null && !csAdminUser.isEmpty() &&
+                    csAdminPassword != null && !csAdminPassword.isEmpty()) {
+                ContentServerAuthHandler authHandler = (ContentServerAuthHandler) getAuthHandler();
+                AuthHandlerResult result = authHandler.auth(csAdminPassword, csAdminPassword, new ForwardHeaders());
+                Cookie llCookie = result.getCookies().get(CS_COOKIE_NAME);
+                if (llCookie != null) {
+                    return llCookie.getValue();
+                } else {
+                    LOG.info("Failed to extract LLCookie from auth response");
+                }
+            } else {
+                LOG.info("The Content Server credentials have not been set yet so we " +
+                        "cannot attempt to retrieve a cs token");
+            }
+        } else {
+            LOG.info("Auth handler ha not been registered yet so we cannot get LLCookie");
+        }
+
+        return null;
+    }
+
+    private String getOtagUrl() {
+        try {
+            OtagUrlUpdateHandler otagUrlHandler = getComponent(OtagUrlUpdateHandler.class);
+            if (otagUrlHandler != null)
+                return otagUrlHandler.getOtagUrl();
+        } catch (Exception e) {
+            LOG.warn("Failed to resolve OtagUrlUpdateHandler", e);
+        }
+
+        return null;
+    }
+
+    @Override
+    public AuthRequestHandler getAuthHandler() {
+        return getComponent(ContentServerAuthHandler.class);
+    }
+
+    @Override
+    public ProxySettings getProxySettings() {
+        Set<ProxyMappingRepresentation> mappings = Sets.newHashSet(Arrays.asList(
+                new ProxyMappingRepresentation("otcs", "localhost/otcs"),
+                new ProxyMappingRepresentation("otcs_support", "localhost/otcs_support")));
+
+        Set<String> whiteList = Sets.newHashSet(Arrays.asList(
+                "otcs_support/.*",
+                "otcs/cs.exe?func=form.*",
+                "otcs/cs.exe/displayform.*",
+                "otcs/cs.exe?func=formwf.*",
+                "otcs/cs.exe?func=work.*",
+                "otcs/cs.exe?func=ll&objAction=EditForm.*",
+                "otcs/cs.exe?func=webform.*",
+                "otcs/cs.exe?func=ll.login",
+                "otcs/cs.exe?func=LL.getlogin",
+                "otcs/cs.exe?func=ll.DoLogout",
+                "otcs/cs.exe?func=ll&objAction=initiate&nexturl=.*workflowview.*",
+                "otcs/cs.exe?func=ll&objAction=create*&nextURL=.*workflowview.*",
+                "otcs/cs.exe?func=ll&objAction=EditAttrValuesEdit&formname=.*",
+                "otcs/cs.exe?func=ll&objAction=targetBrowse&formname=.*",
+                "otcs/cs.exe?func=ll&objAction=targetBrowse&formName=.*"
+        ));
+
+        return new ProxySettings(mappings, whiteList);
+    }
+
+    @Override
+    public Set<String> getSettingKeys() {
+        return Sets.newHashSet(Arrays.asList(
+                CsConnectorConstants.CS_URL,
+                CsConnectorConstants.CS_ADMIN_USER,
+                CsConnectorConstants.CS_ADMIN_PWORD));
+    }
+
+    private void registerSettingHandlers() {
+        addHandler(CsConnectorConstants.CS_URL, (s) -> {
+            String newValue = s.getNewValue();
+            LOG.info("Updating cs URL -> " + newValue);
+            csUrl = newValue;
+        });
+        addHandler(CsConnectorConstants.CS_ADMIN_USER, (s) -> {
+            LOG.info("Updating cs admin user");
+            csAdminUser = s.getNewValue();
+        });
+        addHandler(CsConnectorConstants.CS_ADMIN_PWORD, (s) -> {
+            LOG.info("Updating cs admin user");
+            csAdminPassword = s.getNewValue();
+        });
+    }
+
+    private void initCsUrlSetting(SettingsClient settingsClient) {
+        Setting csUrlSetting = settingsClient.getSetting(CsConnectorConstants.CS_URL);
+        if (csUrlSetting == null) {
+            LOG.warn("Initialising Content Server URL Setting for the first time, it will need to be " +
+                    "populated before the service will run");
+            LOG.info("issuing request to " + settingsClient.getManagingOtagUrl() +
+                    " clientId=" + settingsClient.getId());
+            // TODO remove test system url
+            String csUrlVal = /*"http://aw-dev-cs1.appworks.dev/otcs/cs.exe"*/"";
+            csUrlSetting = new Setting(CsConnectorConstants.CS_URL, "contentserverConnector", SettingType.string,
+                    "Content Server URL", csUrlVal, "http/s://host/otcs/cs.exe", "Content Server URL", false);
+            boolean created = settingsClient.createSetting(csUrlSetting);
+            if (!created) {
+                throw new RuntimeException("Failed to create CS URL setting!");
+            }
+            csUrl = "";
+        } else {
+            csUrl = csUrlSetting.getValue();
+        }
+    }
+
+    private boolean isAuthRegistered() {
+        AuthRegistrationHandler authRegistrationHandler =
+                getComponent(AuthRegistrationHandler.class);
+        return authRegistrationHandler != null && authRegistrationHandler.isAuthRegistered();
+    }
+
+}

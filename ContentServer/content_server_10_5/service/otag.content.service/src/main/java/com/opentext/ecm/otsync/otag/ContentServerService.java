@@ -1,19 +1,18 @@
 package com.opentext.ecm.otsync.otag;
 
-import com.opentext.ecm.otsync.auth.ContentServerAuthHandler;
 import com.opentext.ecm.otsync.engine.ContentServiceEngine;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.ws.server.ClientType;
 import com.opentext.otag.CSConstants;
-import com.opentext.otag.api.services.client.*;
+import com.opentext.otag.api.services.client.IdentityServiceClient;
+import com.opentext.otag.api.services.client.NotificationsClient;
+import com.opentext.otag.api.services.client.ServiceClient;
+import com.opentext.otag.api.services.client.SettingsClient;
 import com.opentext.otag.api.services.handlers.AbstractSettingChangeHandler;
 import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
 import com.opentext.otag.api.services.handlers.AppworksServiceStartupComplete;
-import com.opentext.otag.api.shared.types.auth.AuthHandler;
-import com.opentext.otag.api.shared.types.auth.RegisterAuthHandlersRequest;
 import com.opentext.otag.api.shared.types.management.DeploymentResult;
 import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
-import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
 import com.opentext.otag.api.shared.types.settings.Setting;
 import com.opentext.otag.api.shared.types.settings.SettingType;
 import org.apache.commons.io.FileUtils;
@@ -39,44 +38,6 @@ public class ContentServerService extends AbstractSettingChangeHandler
 
     private static final Log LOG = LogFactory.getLog(ContentServerService.class);
 
-
-    /**
-     * This setting really determines if we will attempt to contact OTDS to resolve
-     * usernames when performing auth actions using our {@code AuthRequestHandler}
-     * implementation to service requests.
-     *
-     * @see ContentServerAuthHandler
-     */
-    public static class CsAuthOnlyListener extends AbstractSettingChangeHandler {
-
-        private boolean csAuthOnly = false;
-
-        @Override
-        public String getSettingKey() {
-            return CS_AUTH_ONLY;
-        }
-
-        @Override
-        public void onSettingChanged(SettingsChangeMessage message) {
-            try {
-                csAuthOnly = Boolean.valueOf(message.getNewValue());
-            } catch (Exception e) {
-                LOG.error("Failed to set csAuthOnly flag based on setting change message");
-            }
-
-            // re-register the auth providers
-            if (registerAuthProviderThread != null && registerAuthProviderThread.isAlive())
-                registerAuthProviderThread.shutdown();
-
-            registerAuthProviderThread = new RegisterAuthProviderThread();
-        }
-
-        public boolean isCsAuthOnly() {
-            return csAuthOnly;
-        }
-
-    }
-
     // ClientType settings
     public static final String CLIENTVERSIONFORDOWNLOAD = "CLIENTVERSIONFORDOWNLOAD";
     public static final String CLIENTVERSION = "CLIENTVERSION";
@@ -99,92 +60,8 @@ public class ContentServerService extends AbstractSettingChangeHandler
     private static SettingsClient settingsClient;
     private static SettingsService settingsService;
     private static IdentityServiceClient identityServiceClient;
-    private static TrustedProviderClient trustedProviderClient;
 
     private static HTTPRequestManager httpRequestManager;
-
-    private static RegisterAuthProviderThread registerAuthProviderThread;
-
-    /**
-     * In order to resolve the OTDS resource id that we are interested in (for username
-     * mapping) we need the CS url to be defined correctly. Register our auth handler
-     * when we know we can build the AuthProvider with the OTDS resource id.
-     */
-    public static class RegisterAuthProviderThread extends Thread {
-
-        private ContentServerAuthHandler csAuthHandler;
-        private CsAuthOnlyListener csAuthOnlyListener;
-
-        private boolean keepRunning = true;
-
-        public RegisterAuthProviderThread() {
-            super("Register CS auth providers Thread");
-            csAuthHandler = AppworksComponentContext.getComponent(ContentServerAuthHandler.class);
-            csAuthOnlyListener = AppworksComponentContext.getComponent(CsAuthOnlyListener.class);
-        }
-
-        @Override
-        public void run() {
-            LOG.info("Starting CS auth handler registration Thread");
-
-            while (keepRunning) {
-                try {
-                    // the OTDS resource id will be resolved as part of the base build method so we can check it
-                    AuthHandler handler = csAuthHandler.buildHandler();
-
-                    RegisterAuthHandlersRequest registerAuthHandlersRequest = new RegisterAuthHandlersRequest();
-                    // ask our listener implementation for the current value
-                    boolean csAuthOnly = csAuthOnlyListener.isCsAuthOnly();
-                    if (!csAuthOnly) {
-                        String otdsResourceId = handler.getOtdsResourceId();
-                        if (otdsResourceId != null) {
-                            issueRequest(handler, registerAuthHandlersRequest);
-                            keepRunning = false;
-                            LOG.info("Registered CS Auth handler with Gateway");
-                        } else {
-                            LOG.info("Still unable to resolve OTDS resource id, sleeping ...");
-                            sleep();
-                        }
-                    } else {
-                        // ignore OTDS resource for CS only auth
-                        handler = new AuthHandler(handler.getHandler(),
-                                handler.isDecorator(),
-                                handler.getKnownCookies());
-
-                        issueRequest(handler, registerAuthHandlersRequest);
-                        keepRunning = false;
-                    }
-                } catch (Exception e) {
-                    LOG.info("Failed to retrieve OTDS resource id");
-                    sleep();
-                }
-            }
-        }
-
-        public void shutdown() {
-            try {
-                LOG.info("Shutting down " + this.getName());
-                keepRunning = false;
-                this.interrupt();
-            } catch (Exception e) {
-                LOG.error("Shutdown for "  + this.getName() + " did not complete " +
-                        "successfully, " + e.getMessage(), e);
-            }
-        }
-
-        private void issueRequest(AuthHandler handler,
-                                  RegisterAuthHandlersRequest registerAuthHandlersRequest) {
-            registerAuthHandlersRequest.addHandler(handler);
-            identityServiceClient.registerAuthHandlers(registerAuthHandlersRequest);
-        }
-
-        private void sleep() {
-            try {
-                Thread.sleep(20 * 1000);
-            } catch (InterruptedException ignored) {}
-        }
-
-    }
 
     /**
      * Access the Content Server URL, without this piece of information all channels are locked down.
@@ -214,8 +91,6 @@ public class ContentServerService extends AbstractSettingChangeHandler
             LOG.debug("Created SettingsService");
             identityServiceClient = new IdentityServiceClient(appName);
             LOG.debug("Created IdentityServiceClient");
-            trustedProviderClient = new TrustedProviderClient(appName);
-            LOG.debug("Created TrustedProviderClient");
 
             // create CS URL (contentserver.url) setting if it doesn't exist already
             initCsUrlSetting(settingsClient);
@@ -250,8 +125,6 @@ public class ContentServerService extends AbstractSettingChangeHandler
 
             // Read and set client properties for client tracking and maintenance
             setClientProperties();
-
-            registerAuthHandlers();
 
             boolean completeAck = serviceClient.completeDeployment(new DeploymentResult(true));
             if (completeAck) {
@@ -297,18 +170,6 @@ public class ContentServerService extends AbstractSettingChangeHandler
     public void onSettingChanged(SettingsChangeMessage settingsChangeMessage) {
         // update our local csUrl
         csUrl = settingsChangeMessage.getNewValue();
-        registerAuthHandlers();
-    }
-
-    /**
-     * Register our auth handlers implementation contained in this service.
-     */
-    public static void registerAuthHandlers() {
-        if (registerAuthProviderThread != null && registerAuthProviderThread.isAlive())
-            registerAuthProviderThread.shutdown();
-
-        registerAuthProviderThread = new RegisterAuthProviderThread();
-        registerAuthProviderThread.start();
     }
 
     @Override
@@ -316,12 +177,6 @@ public class ContentServerService extends AbstractSettingChangeHandler
         LOG.info("Shutting down Content Service Engine ...");
         if (serviceEngine != null)
             serviceEngine.shutdown();
-
-        if (registerAuthProviderThread != null && registerAuthProviderThread.isAlive()) {
-            LOG.info("Shutting down register auth provider Thread, we never " +
-                    "resolved the OTDS resource id!");
-            registerAuthProviderThread.shutdown();
-        }
     }
 
     // Provide access to our central components and Gateway clients across the service

@@ -56,7 +56,6 @@ public abstract class ContentServerAppworksServiceBase extends AbstractSettingCh
         csUrl = settingsChangeMessage.getNewValue();
     }
 
-    @AppworksServiceStartupComplete // promises to complete deployment
     @Override
     public void onStart(String appName) {
         LOG.info("ContentServerAppworksServiceBase onStart called");

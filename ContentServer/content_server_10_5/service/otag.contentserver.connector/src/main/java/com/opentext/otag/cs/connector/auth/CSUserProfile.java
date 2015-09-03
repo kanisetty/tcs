@@ -1,12 +1,10 @@
-package com.opentext.ecm.otsync.auth;
+package com.opentext.otag.cs.connector.auth;
 
 import com.opentext.otag.api.shared.types.auth.UserProfile;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Map;
 
 public class CSUserProfile extends UserProfile {
