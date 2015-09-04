@@ -15,6 +15,7 @@ import com.opentext.otag.api.shared.types.auth.AuthHandlerResult;
 import com.opentext.otag.api.shared.types.management.DeploymentResult;
 import com.opentext.otag.api.shared.types.proxy.ProxyMappingRepresentation;
 import com.opentext.otag.api.shared.types.proxy.ProxySettings;
+import com.opentext.otag.api.shared.types.sdk.EIMConnector;
 import com.opentext.otag.api.shared.types.settings.Setting;
 import com.opentext.otag.api.shared.types.settings.SettingType;
 import com.opentext.otag.api.shared.util.Cookie;
@@ -81,26 +82,41 @@ public class ContentServerConnector extends AbstractMultiChangeSettingHandler
     @Override
     public void onStart(String appName) {
         LOG.info("Starting ContentServerConnector EIM connector");
-    // TODO remove this now we have our own
-        initCsUrlSetting(new SettingsClient(appName));
 
         ServiceClient serviceClient = new ServiceClient(appName);
         TrustedProviderClient trustedProviderClient = new TrustedProviderClient(appName);
 
-        TrustedProvider connectorProvider = trustedProviderClient.getOrCreate(getTrustedServerName());
-        if (connectorProvider != null) {
-            trustedServerKey = connectorProvider.getKey();
-        } else {
-            String errMsg = "We failed to retrieve a provider key from the Gateway";
+        try {
+            TrustedProvider connectorProvider = trustedProviderClient.getOrCreate(getTrustedServerName());
+            if (connectorProvider != null) {
+                trustedServerKey = connectorProvider.getKey();
+            } else {
+                String errMsg = "We failed to retrieve a provider key from the Gateway";
+                serviceClient.completeDeployment(new DeploymentResult(errMsg));
+                LOG.error(errMsg);
+                return;
+            }
+
+            // listen for changes to our settings
+            registerSettingHandlers();
+            EIMConnector eimConnector = new EIMConnector(getConnectorName(), getConnectorVersion(),
+                    getConnectionString(), getConnectionStringSettingKey(), getTrustedServerKey(), getProxySettings());
+
+            if (serviceClient.registerConnector(eimConnector)) {
+                // tell the Gateway we have finished deploying
+                serviceClient.completeDeployment(new DeploymentResult(true));
+            } else {
+                String errMsg = "Failed to register Content Server EIM Connector with the Gateway";
+                LOG.error(errMsg);
+                serviceClient.completeDeployment(new DeploymentResult(errMsg));
+            }
+        } catch (Exception e) {
+            String errMsg = "Failed to start the Content Server EIM " +
+                    "Connector with the Gateway, " + e.getMessage();
+            LOG.error(errMsg, e);
             serviceClient.completeDeployment(new DeploymentResult(errMsg));
-            LOG.error(errMsg);
-            return;
         }
 
-        // listen for changes to our settings
-        registerSettingHandlers();
-        // tell the Gateway we have finished deploying
-        serviceClient.completeDeployment(new DeploymentResult(true));
     }
 
     @Override
@@ -110,7 +126,7 @@ public class ContentServerConnector extends AbstractMultiChangeSettingHandler
 
     @Override
     public String getConnectorName() {
-        return "Content Server";
+        return "ContentServer";
     }
 
     @Override
@@ -121,6 +137,11 @@ public class ContentServerConnector extends AbstractMultiChangeSettingHandler
     @Override
     public String getConnectionString() {
         return csUrl;
+    }
+
+    @Override
+    public String getConnectionStringSettingKey() {
+        return CsConnectorConstants.CS_URL;
     }
 
     @Override
@@ -271,27 +292,6 @@ public class ContentServerConnector extends AbstractMultiChangeSettingHandler
             LOG.info("Updating cs admin user");
             csAdminPassword = s.getNewValue();
         });
-    }
-
-    private void initCsUrlSetting(SettingsClient settingsClient) {
-        Setting csUrlSetting = settingsClient.getSetting(CsConnectorConstants.CS_URL);
-        if (csUrlSetting == null) {
-            LOG.warn("Initialising Content Server URL Setting for the first time, it will need to be " +
-                    "populated before the service will run");
-            LOG.info("issuing request to " + settingsClient.getManagingOtagUrl() +
-                    " clientId=" + settingsClient.getId());
-            // TODO remove test system url
-            String csUrlVal = /*"http://aw-dev-cs1.appworks.dev/otcs/cs.exe"*/"";
-            csUrlSetting = new Setting(CsConnectorConstants.CS_URL, "contentserverConnector", SettingType.string,
-                    "Content Server URL", csUrlVal, "http/s://host/otcs/cs.exe", "Content Server URL", false);
-            boolean created = settingsClient.createSetting(csUrlSetting);
-            if (!created) {
-                throw new RuntimeException("Failed to create CS URL setting!");
-            }
-            csUrl = "";
-        } else {
-            csUrl = csUrlSetting.getValue();
-        }
     }
 
     private boolean isAuthRegistered() {

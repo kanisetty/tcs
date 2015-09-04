@@ -1,8 +1,10 @@
 package com.opentext.otag.cs.workflow;
 
 import com.opentext.otag.api.CSRequest;
+import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
 import com.opentext.otag.api.shared.util.ForwardHeaders;
-import com.opentext.otag.cs.service.ContentServerAppworksServiceBase;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -10,13 +12,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.util.ArrayList;
 import java.util.List;
 
 @Path("workflows")
 @Produces(MediaType.APPLICATION_JSON)
-public class Workflows {
+public class WorkflowsResource {
+
+    private static final Log LOG = LogFactory.getLog(WorkflowsResource.class);
+
+    /**
+     * Our Appworks service component
+     */
+    private WorkflowAppworksService workflowService;
 
     @GET
     @Path("{mapID}")
@@ -196,8 +206,24 @@ public class Workflows {
         return new CSRequest(getCsUrl(), "otag.workflowstepput", cstoken, params, new ForwardHeaders(request));
     }
 
+    /**
+     * Resolve the Content Server using the workflow service as it manages the EIM Connector.
+     *
+     * @return content server URL
+     * @throws WebApplicationException 403 if we cannot resolve the connector URL
+     */
     public String getCsUrl() {
-        return ContentServerAppworksServiceBase.getCsUrl();
+        if (workflowService == null)
+            workflowService = AppworksComponentContext.getComponent(WorkflowAppworksService.class);
+
+        if (workflowService != null) {
+            String csConnection = workflowService.getCsConnection();
+            if (csConnection != null)
+                return csConnection;
+        }
+
+        LOG.error("Unable to resolve Content Server connection, all requests will be rejected ");
+        throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
 
 }
