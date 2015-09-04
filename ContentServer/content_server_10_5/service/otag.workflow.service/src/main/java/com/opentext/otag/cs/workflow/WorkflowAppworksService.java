@@ -2,6 +2,7 @@ package com.opentext.otag.cs.workflow;
 
 import com.opentext.otag.api.services.client.ServiceClient;
 import com.opentext.otag.api.services.connector.EIMConnectorClient;
+import com.opentext.otag.api.services.connector.EIMConnectorClient.ConnectionResult;
 import com.opentext.otag.api.services.connector.EIMConnectorClientImpl;
 import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
 import com.opentext.otag.api.services.handlers.AppworksServiceStartupComplete;
@@ -24,13 +25,13 @@ public class WorkflowAppworksService implements AppworksServiceContextHandler {
         serviceClient = new ServiceClient(appName);
 
         try {
-            // Appworks creates the instance for us
             EIMConnectorClient csConnector = new EIMConnectorClientImpl(appName, "ContentServer", "10.5");
-            EIMConnector eimConnector = csConnector.connect();
-            if (eimConnector != null) {
-                csConnection = eimConnector;
+            ConnectionResult connectionResult = csConnector.connect();
+            if (connectionResult.isSuccess()) {
+                csConnection = connectionResult.getConnector();
             } else {
-                failBuild("Failed to resolve the Content Server EIM connector");
+                failBuild("Failed to resolve the Content Server EIM " +
+                        "connector, message=" + connectionResult.getMessage());
             }
 
             serviceClient.completeDeployment(new DeploymentResult(true));
