@@ -122,7 +122,7 @@ public class ContentServerAuthHandler extends AbstractAuthRequestHandler {
      */
     private String getCsUrl() {
         // grab the reference to the connector from our AW context
-        if (connector != null)
+        if (connector == null)
             connector = AppworksComponentContext.getComponent(ContentServerConnector.class);
 
         return (connector != null) ? connector.getConnectionString() : null;

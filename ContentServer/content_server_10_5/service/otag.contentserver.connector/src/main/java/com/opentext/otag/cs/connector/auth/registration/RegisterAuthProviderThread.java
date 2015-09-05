@@ -51,11 +51,16 @@ public class RegisterAuthProviderThread extends Thread {
                     String otdsResourceId = handler.getOtdsResourceId();
                     if (otdsResourceId != null) {
                         LOG.info("OTDS Resource Id was populated, issuing registration request to Gateway");
-                        issueRequest(handler, registerAuthHandlersRequest);
-                        // let the connector know we are done
-                        registrationHandler.setRegisteredAuth(true);
-                        keepRunning = false;
-                        LOG.info("Registered CS Auth handler with Gateway");
+                        if (!issueRequest(handler, registerAuthHandlersRequest)) {
+                            LOG.info("Failed to register auth handler, please review the logs at " +
+                                    "managing Gateway, sleeping ...");
+                            sleep();
+                        } else {
+                            // let the connector know we are done
+                            registrationHandler.setRegisteredAuth(true);
+                            keepRunning = false;
+                            LOG.info("Registered CS Auth handler with Gateway");
+                        }
                     } else {
                         LOG.info("Still unable to resolve OTDS resource id, sleeping ...");
                         sleep();
@@ -88,10 +93,10 @@ public class RegisterAuthProviderThread extends Thread {
         }
     }
 
-    private void issueRequest(AuthHandler handler,
+    private boolean issueRequest(AuthHandler handler,
                               RegisterAuthHandlersRequest registerAuthHandlersRequest) {
         registerAuthHandlersRequest.addHandler(handler);
-        identityServiceClient.registerAuthHandlers(registerAuthHandlersRequest);
+        return identityServiceClient.registerAuthHandlers(registerAuthHandlersRequest);
     }
 
     private void sleep() {
