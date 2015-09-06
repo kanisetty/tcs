@@ -208,7 +208,7 @@ public class ContentServerConnector extends AbstractMultiChangeSettingHandler
             if (csAdminUser != null && !csAdminUser.isEmpty() &&
                     csAdminPassword != null && !csAdminPassword.isEmpty()) {
                 ContentServerAuthHandler authHandler = (ContentServerAuthHandler) getAuthHandler();
-                AuthHandlerResult result = authHandler.auth(csAdminPassword, csAdminPassword, new ForwardHeaders());
+                AuthHandlerResult result = authHandler.auth(csAdminUser, csAdminPassword, new ForwardHeaders());
                 Cookie llCookie = result.getCookies().get(CS_COOKIE_NAME);
                 if (llCookie != null) {
                     return llCookie.getValue();
