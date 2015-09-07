@@ -8,13 +8,15 @@ import com.opentext.otag.api.services.client.IdentityServiceClient;
 import com.opentext.otag.api.services.client.NotificationsClient;
 import com.opentext.otag.api.services.client.ServiceClient;
 import com.opentext.otag.api.services.client.SettingsClient;
+import com.opentext.otag.api.services.connector.EIMConnectorClient;
+import com.opentext.otag.api.services.connector.EIMConnectorClient.ConnectionResult;
+import com.opentext.otag.api.services.connector.EIMConnectorClientImpl;
 import com.opentext.otag.api.services.handlers.AbstractSettingChangeHandler;
 import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
 import com.opentext.otag.api.services.handlers.AppworksServiceStartupComplete;
 import com.opentext.otag.api.shared.types.management.DeploymentResult;
 import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
 import com.opentext.otag.api.shared.types.settings.Setting;
-import com.opentext.otag.api.shared.types.settings.SettingType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,8 +35,7 @@ import static com.opentext.ecm.otsync.ContentServiceConstants.*;
  * Content Server Appworks Service. Responds to the Gateways startup signal initialising
  * the Engine component and the rest of the service.
  */
-public class ContentServerService extends AbstractSettingChangeHandler
-        implements AppworksServiceContextHandler {
+public class ContentServerService implements AppworksServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(ContentServerService.class);
 
@@ -44,12 +45,10 @@ public class ContentServerService extends AbstractSettingChangeHandler
     public static final String CLIENT = "CLIENT";
 
     /**
-     * Content server URL.
+     * Content server connector, retains the EIM connection and keeps the
+     * connection String up to date (admin UI can configure the connector).
      */
-    private static String csUrl = null;
-
-    // Trusted provider (Gateway API key)
-    public static final String CONTENTSERVER_PROVIDER_NAME = "ContentServer";
+    private static EIMConnectorClient csConnector;
 
     // version and link information from tempo.clients.properties
     private static Map<String, ClientType> clientInfo;
@@ -63,19 +62,6 @@ public class ContentServerService extends AbstractSettingChangeHandler
 
     private static HTTPRequestManager httpRequestManager;
 
-    /**
-     * Access the Content Server URL, without this piece of information all channels are locked down.
-     *
-     * @return the content server URL
-     */
-    public static String getCsUrl() {
-        return csUrl;
-    }
-
-    public static boolean isCsUrlDefined() {
-        return "".equals(getCsUrl());
-    }
-
     // this method will attempt to complete the deployment passing the result to the Gateway
     @AppworksServiceStartupComplete
     @Override
@@ -85,15 +71,26 @@ public class ContentServerService extends AbstractSettingChangeHandler
         try {
             LOG.info("Starting Content Server ContentService ...");
 
+            try {
+                csConnector = new EIMConnectorClientImpl(appName, "ContentServer", "10.5");
+                ConnectionResult connectionResult = csConnector.connect();
+                if (!connectionResult.isSuccess()) {
+                    String errMsg = "Failed connection result =" + connectionResult.getMessage();
+                    LOG.error(errMsg);
+                    throw new RuntimeException(errMsg);
+                }
+            } catch (Exception e) {
+                // record the specifics here
+                LOG.error("Connection failed for Content Server 10.5: " + e.getMessage(), e);
+                throw e;
+            }
+
             settingsClient = new SettingsClient(appName);
             LOG.debug("Created SettingsClient");
             settingsService = new SettingsService(settingsClient);
             LOG.debug("Created SettingsService");
             identityServiceClient = new IdentityServiceClient(appName);
             LOG.debug("Created IdentityServiceClient");
-
-            // create CS URL (contentserver.url) setting if it doesn't exist already
-            initCsUrlSetting(settingsClient);
 
             httpRequestManager = new HTTPRequestManager(settingsService);
             LOG.debug("HTTP Manager initialised");
@@ -139,44 +136,30 @@ public class ContentServerService extends AbstractSettingChangeHandler
         }
     }
 
-    private void initCsUrlSetting(SettingsClient settingsClient) {
-        Setting csUrlSetting = settingsClient.getSetting(CSConstants.CONTENTSERVER_URL);
-        if (csUrlSetting == null) {
-            LOG.warn("Initialising Content Server URL Setting for the first time, it will need to be " +
-                    "populated before the service will run");
-            LOG.info("issuing request to " + settingsClient.getManagingOtagUrl() +
-                    " clientId=" + settingsClient.getId());
-            // TODO remove test system url
-            String csUrlVal = /*"http://aw-dev-cs1.appworks.dev/otcs/cs.exe"*/"";
-            csUrlSetting = new Setting(CSConstants.CONTENTSERVER_URL, APP_NAME, SettingType.string,
-                    "Content Server URL", csUrlVal, "http/s://host/otcs/cs.exe", "Content Server URL", false);
-            boolean created = settingsClient.createSetting(csUrlSetting);
-            if (!created) {
-                throw new RuntimeException("Failed to create CS URL setting!");
-            }
-            csUrl = "";
-        } else {
-            csUrl = csUrlSetting.getValue();
-        }
-    }
-
-    @Override
-    public String getSettingKey() {
-        return CSConstants.CONTENTSERVER_URL;
-    }
-
-    // we listen for changes to the Cs URL setting via our parent
-    @Override
-    public void onSettingChanged(SettingsChangeMessage settingsChangeMessage) {
-        // update our local csUrl
-        csUrl = settingsChangeMessage.getNewValue();
-    }
-
     @Override
     public void onStop(String appName) {
         LOG.info("Shutting down Content Service Engine ...");
         if (serviceEngine != null)
             serviceEngine.shutdown();
+    }
+
+    /**
+     * Access the Content Server URL, without this piece of information all channels
+     * are locked down. This method returns null if we failed to connect to Content
+     * Server.
+     *
+     * @return the content server URL
+     */
+    public static String getCsUrl() {
+        boolean connectionStringDefined = csConnector != null &&
+                csConnector.getConnectionString() != null &&
+                !csConnector.getConnectionString().trim().isEmpty();
+
+        return connectionStringDefined ? csConnector.getConnectionString() : null;
+    }
+
+    public static boolean isCsUrlDefined() {
+        return getCsUrl() != null;
     }
 
     // Provide access to our central components and Gateway clients across the service
