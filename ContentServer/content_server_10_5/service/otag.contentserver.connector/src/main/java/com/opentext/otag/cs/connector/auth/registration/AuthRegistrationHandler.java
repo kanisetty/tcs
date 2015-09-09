@@ -52,7 +52,7 @@ public class AuthRegistrationHandler extends AbstractMultiChangeSettingHandler i
     @Override
     public void onStart(String appName) {
         LOG.info("Started AuthRegistrationHandler");
-        identityServiceClient = new IdentityServiceClient(appName);
+        identityServiceClient = new IdentityServiceClient();
 
         LOG.info("Adding handlers for CS URL and CS AUTH ONLY");
         addHandler(CsConnectorConstants.CS_URL, (s) -> {

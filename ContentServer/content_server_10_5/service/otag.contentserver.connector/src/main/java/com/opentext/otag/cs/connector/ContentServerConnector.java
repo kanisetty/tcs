@@ -83,8 +83,8 @@ public class ContentServerConnector extends AbstractMultiChangeSettingHandler
     public void onStart(String appName) {
         LOG.info("Starting ContentServerConnector EIM connector");
 
-        ServiceClient serviceClient = new ServiceClient(appName);
-        TrustedProviderClient trustedProviderClient = new TrustedProviderClient(appName);
+        ServiceClient serviceClient = new ServiceClient();
+        TrustedProviderClient trustedProviderClient = new TrustedProviderClient();
 
         try {
             TrustedProvider connectorProvider = trustedProviderClient.getOrCreate(getTrustedServerName());

@@ -34,7 +34,7 @@ public class TrustedServerKeyRegistrationHandler implements AppworksServiceConte
     @Override
     public void onStart(String appName) {
         LOG.info("Starting Trusted Provider Key registration");
-        TrustedProviderClient providerClient = new TrustedProviderClient(appName);
+        TrustedProviderClient providerClient = new TrustedProviderClient();
         registerKeyThread = new RegisterKeyThread(providerClient);
         registerKeyThread.start();
     }
