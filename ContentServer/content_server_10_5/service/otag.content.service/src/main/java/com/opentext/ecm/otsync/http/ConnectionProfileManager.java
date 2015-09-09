@@ -42,7 +42,7 @@ public class ConnectionProfileManager extends AbstractMultiChangeSettingHandler 
      */
     @Override
     public void onStart(String appName) {
-        settingsService = new SettingsService(new SettingsClient(appName));
+        settingsService = new SettingsService(new SettingsClient());
 
         /**
          * Downloads: long socket timeout times, as the data may take a long time for the server to prepare. No

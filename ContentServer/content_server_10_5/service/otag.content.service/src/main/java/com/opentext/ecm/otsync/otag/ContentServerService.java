@@ -66,13 +66,13 @@ public class ContentServerService implements AppworksServiceContextHandler {
     @AppworksServiceStartupComplete
     @Override
     public void onStart(String appName) {
-        ServiceClient serviceClient = new ServiceClient(appName);
+        ServiceClient serviceClient = new ServiceClient();
 
         try {
             LOG.info("Starting Content Server ContentService ...");
 
             try {
-                csConnector = new EIMConnectorClientImpl(appName, "ContentServer", "10.5");
+                csConnector = new EIMConnectorClientImpl("ContentServer", "10.5");
                 ConnectionResult connectionResult = csConnector.connect();
                 if (!connectionResult.isSuccess()) {
                     String errMsg = "Failed connection result =" + connectionResult.getMessage();
@@ -85,11 +85,11 @@ public class ContentServerService implements AppworksServiceContextHandler {
                 throw e;
             }
 
-            settingsClient = new SettingsClient(appName);
+            settingsClient = new SettingsClient();
             LOG.debug("Created SettingsClient");
             settingsService = new SettingsService(settingsClient);
             LOG.debug("Created SettingsService");
-            identityServiceClient = new IdentityServiceClient(appName);
+            identityServiceClient = new IdentityServiceClient();
             LOG.debug("Created IdentityServiceClient");
 
             httpRequestManager = new HTTPRequestManager(settingsService);
@@ -97,7 +97,7 @@ public class ContentServerService implements AppworksServiceContextHandler {
 
             serviceEngine = new ContentServiceEngine(
                     settingsService,
-                    new NotificationsClient(appName),
+                    new NotificationsClient(),
                     httpRequestManager);
             LOG.debug("Initialised Content Service engine");
 

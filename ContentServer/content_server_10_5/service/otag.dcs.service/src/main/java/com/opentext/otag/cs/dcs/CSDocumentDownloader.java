@@ -32,7 +32,7 @@ public class CSDocumentDownloader {
         this.nodeID = nodeID;
         this.csToken = csToken;
         this.headers = forwardHeaders;
-        csurl = DocumentConversionService.getService().getCsConnection();
+        csurl = DocumentConversionService.getCsUrl();
     }
 
     public void download(File file) throws IOException {

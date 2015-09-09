@@ -1,8 +1,6 @@
 package com.opentext.otag.cs.dcs;
 
 import com.opentext.otag.api.services.client.ServiceClient;
-import com.opentext.otag.api.services.client.SettingsClient;
-import com.opentext.otag.api.services.client.TrustedProviderClient;
 import com.opentext.otag.api.services.connector.EIMConnectorClient;
 import com.opentext.otag.api.services.connector.EIMConnectorClientImpl;
 import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
@@ -13,23 +11,24 @@ import com.opentext.otag.api.shared.types.sdk.EIMConnector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+
 public class DocumentConversionService  implements AppworksServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(DocumentConversionService.class);
 
     private EIMConnector csConnection;
     private ServiceClient serviceClient;
-    private TrustedProviderClient trustedProviderClient;
-    private SettingsClient settingsClient;
 
     @AppworksServiceStartupComplete
     @Override
     public void onStart(String appName) {
         LOG.info("Started workflow service");
-        serviceClient = new ServiceClient(appName);
+        serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl(appName, "ContentServer", "10.5");
+            EIMConnectorClient csConnector = new EIMConnectorClientImpl("ContentServer", "10.5");
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
@@ -39,9 +38,6 @@ public class DocumentConversionService  implements AppworksServiceContextHandler
             }
 
             serviceClient.completeDeployment(new DeploymentResult(true));
-
-            trustedProviderClient = new TrustedProviderClient(appName);
-            settingsClient = new SettingsClient(appName);
         } catch (Exception e) {
             failBuild("Failed to start Document Conversion Service, " + e.getMessage());
         }
@@ -52,8 +48,26 @@ public class DocumentConversionService  implements AppworksServiceContextHandler
         LOG.info("Document Conversion Service has stopped");
     }
 
+    public static String getCsUrl() {
+        DocumentConversionService service = AppworksComponentContext.getComponent(
+                DocumentConversionService.class);
+        if (service == null) {
+            LOG.error("Failed to resolve DocumentConversionService, so cannot get Content Server connection");
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+
+        String csConnectionUrl = service.getCsConnection();
+
+        if (csConnectionUrl == null || csConnectionUrl.isEmpty()) {
+            LOG.error("Content Server connection was not defined");
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+
+        return csConnectionUrl;
+    }
+
     public String getCsConnection() {
-        return (csConnection != null) ? csConnection.getConnectionUrl() : null;
+        return csConnection.getConnectionUrl();
     }
 
     private void failBuild(String errMsg) {
@@ -61,14 +75,6 @@ public class DocumentConversionService  implements AppworksServiceContextHandler
         if (!serviceClient.completeDeployment(new DeploymentResult(errMsg))) {
             LOG.error("Failed to report deployment outcome to the Gateway");
         }
-    }
-
-    public TrustedProviderClient getProviderClient() {
-        return trustedProviderClient;
-    }
-
-    public SettingsClient getSettingsClient() {
-        return settingsClient;
     }
 
     /**

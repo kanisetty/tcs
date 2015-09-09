@@ -27,17 +27,18 @@ public class CSDocumentPageUploader {
     private String csToken;
     private ForwardHeaders headers;
     private String csUrl;
+    private TrustedProviderClient trustedProviderClient;
 
     public CSDocumentPageUploader(String nodeID, String csToken, ForwardHeaders forwardHeaders) {
         this.nodeID = nodeID;
         this.csToken = csToken;
         this.headers = forwardHeaders;
-        csUrl = DocumentConversionService.getService().getCsConnection();
+        csUrl = DocumentConversionService.getCsUrl();
+        trustedProviderClient = new TrustedProviderClient();
     }
 
     public void upload(Integer pageNumber, String file) throws Exception {
-        TrustedProviderClient providerClient = DocumentConversionService.getService().getProviderClient();
-        TrustedProvider provider = providerClient.getOrCreate("ContentServer");
+        TrustedProvider provider = trustedProviderClient.getOrCreate("ContentServer");
 
         if (provider == null) throw new IOException("Unable to get ContentServer Provider");
 

@@ -21,10 +21,10 @@ public class AssignmentsService implements AppworksServiceContextHandler {
     @Override
     public void onStart(String appName) {
         LOG.info("Started workflow service");
-        serviceClient = new ServiceClient(appName);
+        serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl(appName, "ContentServer", "10.5");
+            EIMConnectorClient csConnector = new EIMConnectorClientImpl("ContentServer", "10.5");
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();

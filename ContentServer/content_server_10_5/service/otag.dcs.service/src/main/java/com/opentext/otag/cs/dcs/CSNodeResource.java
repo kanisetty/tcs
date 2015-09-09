@@ -9,7 +9,10 @@ import org.codehaus.jackson.map.ObjectReader;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class CSNodeResource {
   public final String nodeID;

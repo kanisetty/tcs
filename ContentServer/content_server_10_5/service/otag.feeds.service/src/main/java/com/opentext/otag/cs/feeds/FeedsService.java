@@ -21,16 +21,15 @@ public class FeedsService implements AppworksServiceContextHandler {
 
     private EIMConnector csConnection;
     private ServiceClient serviceClient;
-    private SettingsClient settingsClient;
 
     @AppworksServiceStartupComplete
     @Override
     public void onStart(String appName) {
         LOG.info("Started workflow service");
-        serviceClient = new ServiceClient(appName);
+        serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl(appName, "ContentServer", "10.5");
+            EIMConnectorClient csConnector = new EIMConnectorClientImpl("ContentServer", "10.5");
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
@@ -40,7 +39,6 @@ public class FeedsService implements AppworksServiceContextHandler {
             }
 
             serviceClient.completeDeployment(new DeploymentResult(true));
-            settingsClient = new SettingsClient(appName);
         } catch (Exception e) {
             failBuild("Failed to start Feeds Service, " + e.getMessage());
         }
@@ -55,10 +53,6 @@ public class FeedsService implements AppworksServiceContextHandler {
         return (csConnection != null) ? csConnection.getConnectionUrl() : null;
     }
 
-    public SettingsClient getSettingsClient() {
-        return settingsClient;
-    }
-
     public static FeedsService getService() {
         FeedsService feedsService = AppworksComponentContext.getComponent(FeedsService.class);
         if (feedsService == null)
@@ -67,14 +61,20 @@ public class FeedsService implements AppworksServiceContextHandler {
         return feedsService;
     }
 
+    /**
+     * Provide centralised public access to the connection URL we obtain from the
+     * Content Server 10.5 connector.
+     *
+     * @return content server URL
+     * @throws WebApplicationException 403, if we haven't managed to get a connection URL
+     */
     public static String getCsUrl() {
-        String csUrl;
-        try {
-            FeedsService service = getService();
-            csUrl = service.getCsConnection();
-        } catch (Exception e) {
+        FeedsService feedsService = AppworksComponentContext.getComponent(FeedsService.class);
+        if (feedsService == null) {
+            LOG.error("Unable to resolve FeedsService, unable to get Content Server connection");
             throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
+        String csUrl = feedsService.getCsConnection();
 
         if (csUrl == null || csUrl.isEmpty()) {
             LOG.error("Unable to resolve Content Server connection, all requests will be rejected");
