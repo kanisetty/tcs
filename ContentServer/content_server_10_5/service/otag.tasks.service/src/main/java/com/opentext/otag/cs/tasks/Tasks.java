@@ -1,8 +1,10 @@
 package com.opentext.otag.cs.tasks;
 
 import com.opentext.otag.api.CSRequest;
+import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
 import com.opentext.otag.api.shared.util.ForwardHeaders;
-import com.opentext.otag.cs.service.ContentServerAppworksServiceBase;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +21,12 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class Tasks {
 
+    private static final Log LOG = LogFactory.getLog(Tasks.class);
+
     private static final String TASK_FUNC = "otag.tasksGet";
     private static final String TASK_PUT_FUNC = "otag.tasksPost";
+
+    private static TasksService tasksService;
 
     @GET
     @Path("{taskID}")
@@ -69,16 +76,35 @@ public class Tasks {
         if (status != null)
             params.add(new BasicNameValuePair("status", status));
 
-        return new CSRequest(ContentServerAppworksServiceBase.getCsUrl(), TASK_PUT_FUNC,
+        return new CSRequest(getCsUrl(), TASK_PUT_FUNC,
                 cstoken, params, new ForwardHeaders(request));
     }
 
     private StreamingOutput getTaskItem(String taskID, String cstoken, HttpServletRequest request) {
 
-        List<NameValuePair> params = new ArrayList<NameValuePair>(2);
+        List<NameValuePair> params = new ArrayList<>(2);
         params.add(new BasicNameValuePair("taskID", taskID));
-        return new CSRequest(ContentServerAppworksServiceBase.getCsUrl(), TASK_FUNC,
+        return new CSRequest(getCsUrl(), TASK_FUNC,
                 cstoken, params, new ForwardHeaders(request));
+    }
+
+    private String getCsUrl() {
+        // resolve the parent service lazily
+        if (tasksService == null)
+            tasksService = AppworksComponentContext.getComponent(TasksService.class);
+
+        if (tasksService == null) {
+            LOG.error("Unable to resolve TasksService");
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+
+        String csUrl = tasksService.getCsConnection();
+        if (csUrl == null || csUrl.isEmpty()) {
+            LOG.error("Unable to resolve Content Server connection, all requests will be rejected");
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+
+        return csUrl;
     }
 
 }

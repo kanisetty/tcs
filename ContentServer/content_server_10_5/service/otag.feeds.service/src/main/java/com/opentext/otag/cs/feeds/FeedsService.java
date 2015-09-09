@@ -1,27 +1,94 @@
 package com.opentext.otag.cs.feeds;
 
+import com.opentext.otag.api.services.client.ServiceClient;
 import com.opentext.otag.api.services.client.SettingsClient;
-import com.opentext.otag.cs.service.ContentServerAppworksServiceBase;
+import com.opentext.otag.api.services.connector.EIMConnectorClient;
+import com.opentext.otag.api.services.connector.EIMConnectorClientImpl;
+import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
+import com.opentext.otag.api.services.handlers.AppworksServiceStartupComplete;
+import com.opentext.otag.api.shared.types.management.DeploymentResult;
+import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
+import com.opentext.otag.api.shared.types.sdk.EIMConnector;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-public class FeedsService extends ContentServerAppworksServiceBase {
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
-    // Gateway Settings API client
-    private static SettingsClient settingsClient;
+public class FeedsService implements AppworksServiceContextHandler {
 
-    /**
-     * Initialise the FeedsService, our parent class will have setup the CS URL or
-     * failed at this point if it cannot resolve that String.
-     *
-     * @param appName the name of this app as known by the Gateway
-     */
+    private static final Log LOG = LogFactory.getLog(FeedsService.class);
+
+    private EIMConnector csConnection;
+    private ServiceClient serviceClient;
+    private SettingsClient settingsClient;
+
+    @AppworksServiceStartupComplete
     @Override
     public void onStart(String appName) {
-        super.onStart(appName);
-        settingsClient = new SettingsClient(appName);
+        LOG.info("Started workflow service");
+        serviceClient = new ServiceClient(appName);
+
+        try {
+            EIMConnectorClient csConnector = new EIMConnectorClientImpl(appName, "ContentServer", "10.5");
+            EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
+            if (connectionResult.isSuccess()) {
+                csConnection = connectionResult.getConnector();
+            } else {
+                failBuild("Failed to resolve the Content Server EIM " +
+                        "connector, message=" + connectionResult.getMessage());
+            }
+
+            serviceClient.completeDeployment(new DeploymentResult(true));
+            settingsClient = new SettingsClient(appName);
+        } catch (Exception e) {
+            failBuild("Failed to start Feeds Service, " + e.getMessage());
+        }
     }
 
-    public static SettingsClient getSettingsClient() {
+    @Override
+    public void onStop(String appName) {
+        LOG.info("Feeds Service has stopped");
+    }
+
+    public String getCsConnection() {
+        return (csConnection != null) ? csConnection.getConnectionUrl() : null;
+    }
+
+    public SettingsClient getSettingsClient() {
         return settingsClient;
+    }
+
+    public static FeedsService getService() {
+        FeedsService feedsService = AppworksComponentContext.getComponent(FeedsService.class);
+        if (feedsService == null)
+            throw new RuntimeException("Unable to resolve FeedsService");
+
+        return feedsService;
+    }
+
+    public static String getCsUrl() {
+        String csUrl;
+        try {
+            FeedsService service = getService();
+            csUrl = service.getCsConnection();
+        } catch (Exception e) {
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+
+        if (csUrl == null || csUrl.isEmpty()) {
+            LOG.error("Unable to resolve Content Server connection, all requests will be rejected");
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+
+        return csUrl;
+    }
+
+    private void failBuild(String errMsg) {
+        LOG.error(errMsg);
+        if (!serviceClient.completeDeployment(new DeploymentResult(errMsg))) {
+            LOG.error("Failed to report deployment outcome to the Gateway");
+        }
     }
 
 }

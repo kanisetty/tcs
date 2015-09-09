@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CSDocumentPageUploader {
+
     private String nodeID;
     private String csToken;
     private ForwardHeaders headers;
@@ -31,12 +32,12 @@ public class CSDocumentPageUploader {
         this.nodeID = nodeID;
         this.csToken = csToken;
         this.headers = forwardHeaders;
-        csUrl = DocumentConversionService.getCsUrl();
+        csUrl = DocumentConversionService.getService().getCsConnection();
     }
 
     public void upload(Integer pageNumber, String file) throws Exception {
-        TrustedProviderClient providerClient = DocumentConversionService.getProviderClient();
-        TrustedProvider provider = providerClient.getByName("ContentServer");
+        TrustedProviderClient providerClient = DocumentConversionService.getService().getProviderClient();
+        TrustedProvider provider = providerClient.getOrCreate("ContentServer");
 
         if (provider == null) throw new IOException("Unable to get ContentServer Provider");
 

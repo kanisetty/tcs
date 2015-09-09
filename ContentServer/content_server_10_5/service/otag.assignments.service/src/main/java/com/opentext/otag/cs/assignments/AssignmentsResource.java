@@ -1,16 +1,18 @@
 package com.opentext.otag.cs.assignments;
 
-import java.util.ArrayList;
+import com.opentext.otag.api.CSRequest;
+import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
+import com.opentext.otag.api.shared.util.ForwardHeaders;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-
-import com.opentext.otag.api.CSRequest;
-import com.opentext.otag.api.shared.util.ForwardHeaders;
-import com.opentext.otag.cs.service.ContentServerAppworksServiceBase;
+import java.util.ArrayList;
 
 /**
  * Single endpoint Appworks service for retrieving a users assignments from Content Server.
@@ -18,6 +20,10 @@ import com.opentext.otag.cs.service.ContentServerAppworksServiceBase;
 @Path("assignments")
 @Produces(MediaType.APPLICATION_JSON)
 public class AssignmentsResource {
+
+    private static final Log LOG = LogFactory.getLog(AssignmentsResource.class);
+
+    private AssignmentsService assignmentsService;
 
     /**
      * Content server function name.
@@ -31,8 +37,24 @@ public class AssignmentsResource {
         if (llcookie != null)
             cstoken = llcookie;
 
-        return new CSRequest(ContentServerAppworksServiceBase.getCsUrl(), GET_MY_ASSIGNMENTS_FUNC,
+        return new CSRequest(getCsUrl(), GET_MY_ASSIGNMENTS_FUNC,
                 cstoken, new ArrayList<>(), new ForwardHeaders(request));
+    }
+
+    private String getCsUrl() {
+        if (assignmentsService != null)
+            return assignmentsService.getCsConnection();
+
+        assignmentsService = AppworksComponentContext.getComponent(AssignmentsService.class);
+
+        if (assignmentsService != null) {
+            String csConnection = assignmentsService.getCsConnection();
+            if (csConnection != null)
+                return csConnection;
+        }
+
+        LOG.error("Unable to service assignments request, unable to get CS connection URL");
+        throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
 
 }

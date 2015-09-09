@@ -222,7 +222,7 @@ public class WorkflowsResource {
                 return csConnection;
         }
 
-        LOG.error("Unable to resolve Content Server connection, all requests will be rejected ");
+        LOG.error("Unable to resolve Content Server connection, all requests will be rejected");
         throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
 

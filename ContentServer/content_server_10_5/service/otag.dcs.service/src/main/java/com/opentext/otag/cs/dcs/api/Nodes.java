@@ -1,5 +1,7 @@
 package com.opentext.otag.cs.dcs.api;
 
+import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
+import com.opentext.otag.cs.dcs.DocumentConversionService;
 import com.opentext.otag.cs.dcs.Node;
 import com.opentext.otag.cs.dcs.NodeFactory;
 import org.apache.commons.logging.Log;
@@ -64,6 +66,20 @@ public class Nodes {
         } catch (Exception e) {
             log.error("Get page" + page + " error for " + nodeID, e);
             throw new WebApplicationException(e);
+        }
+    }
+
+    public void ensureCsConnection() {
+        DocumentConversionService dcs = AppworksComponentContext.getComponent(DocumentConversionService.class);
+        if (dcs == null) {
+            log.error("Unable to resolve DocumentConversionService");
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+
+        String csUrl = dcs.getCsConnection();
+        if (csUrl == null || csUrl.isEmpty()) {
+            log.error("Unable to resolve Content Server connection, all requests will be rejected");
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
     }
 

@@ -30,6 +30,7 @@ public class CSRequestBuilder {
     }
 
     public CSRequest build() {
-        return new CSRequest(DocumentConversionService.getCsUrl(), this.func, this.csToken, this.params, header);
+        return new CSRequest(DocumentConversionService.getService().getCsConnection(),
+                this.func, this.csToken, this.params, header);
     }
 }

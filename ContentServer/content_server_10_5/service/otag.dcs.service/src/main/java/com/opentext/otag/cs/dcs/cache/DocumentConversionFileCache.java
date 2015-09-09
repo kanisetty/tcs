@@ -98,7 +98,7 @@ public class DocumentConversionFileCache {
     }
 
     private static SettingsClient getSettingsClient() {
-        return DocumentConversionService.getSettingsClient();
+        return DocumentConversionService.getService().getSettingsClient();
     }
 
 }

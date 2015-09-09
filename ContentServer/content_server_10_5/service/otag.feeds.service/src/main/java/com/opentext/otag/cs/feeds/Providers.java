@@ -69,7 +69,7 @@ public class Providers {
 		String val = null;
 
 		try {
-			val = FeedsService.getSettingsClient().getSettingAsString(settingKey);
+			val = FeedsService.getService().getSettingsClient().getSettingAsString(settingKey);
 		} catch (Exception ignored) {}
 
 		return (val == null) ? defaultValue : val;

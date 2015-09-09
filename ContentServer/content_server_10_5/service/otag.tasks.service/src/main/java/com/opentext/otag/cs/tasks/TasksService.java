@@ -1,4 +1,4 @@
-package com.opentext.otag.cs.favorites;
+package com.opentext.otag.cs.tasks;
 
 import com.opentext.otag.api.services.client.ServiceClient;
 import com.opentext.otag.api.services.connector.EIMConnectorClient;
@@ -10,9 +10,9 @@ import com.opentext.otag.api.shared.types.sdk.EIMConnector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class FavoritesService  implements AppworksServiceContextHandler {
+public class TasksService implements AppworksServiceContextHandler {
 
-    private static final Log LOG = LogFactory.getLog(FavoritesService.class);
+    private static final Log LOG = LogFactory.getLog(TasksService.class);
 
     private EIMConnector csConnection;
     private ServiceClient serviceClient;
@@ -20,7 +20,7 @@ public class FavoritesService  implements AppworksServiceContextHandler {
     @AppworksServiceStartupComplete
     @Override
     public void onStart(String appName) {
-        LOG.info("Started workflow service");
+        LOG.info("Started Tasks service");
         serviceClient = new ServiceClient(appName);
 
         try {
@@ -35,13 +35,13 @@ public class FavoritesService  implements AppworksServiceContextHandler {
 
             serviceClient.completeDeployment(new DeploymentResult(true));
         } catch (Exception e) {
-            failBuild("Failed to start Favorites Service, " + e.getMessage());
+            failBuild("Failed to start Tasks Service, " + e.getMessage());
         }
     }
 
     @Override
     public void onStop(String appName) {
-        LOG.info("Favorites Service has stopped");
+        LOG.info("Workflow Service has stopped");
     }
 
     public String getCsConnection() {

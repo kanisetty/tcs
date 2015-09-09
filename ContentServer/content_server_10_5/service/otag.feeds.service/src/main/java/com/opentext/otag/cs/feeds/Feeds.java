@@ -268,11 +268,6 @@ public class Feeds {
         }
     }
 
-    /**
-     * Get an up to date URL for Content Server from our Appworks service.
-     *
-     * @return cs URL
-     */
     private String csUrl() {
         return FeedsService.getCsUrl();
     }
