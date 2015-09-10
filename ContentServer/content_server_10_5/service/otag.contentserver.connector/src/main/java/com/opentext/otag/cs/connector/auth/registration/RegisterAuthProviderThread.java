@@ -1,9 +1,12 @@
 package com.opentext.otag.cs.connector.auth.registration;
 
 import com.opentext.otag.api.services.client.IdentityServiceClient;
+import com.opentext.otag.api.services.client.SettingsClient;
 import com.opentext.otag.api.shared.types.auth.AuthHandler;
 import com.opentext.otag.api.shared.types.auth.RegisterAuthHandlersRequest;
 import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
+import com.opentext.otag.api.shared.types.settings.Setting;
+import com.opentext.otag.cs.connector.CsConnectorConstants;
 import com.opentext.otag.cs.connector.auth.ContentServerAuthHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,6 +59,9 @@ public class RegisterAuthProviderThread extends Thread {
                                     "managing Gateway, sleeping ...");
                             sleep();
                         } else {
+                            // set the read-only setting value
+                            updateOtdsResourceIdSetting(otdsResourceId);
+
                             // let the connector know we are done
                             registrationHandler.setRegisteredAuth(true);
                             keepRunning = false;
@@ -79,6 +85,29 @@ public class RegisterAuthProviderThread extends Thread {
                 LOG.info("Failed to retrieve OTDS resource id");
                 sleep();
             }
+        }
+    }
+
+    private void updateOtdsResourceIdSetting(String otdsResourceId) {
+        LOG.info("Attempting to update OTDS resource id setting to " + otdsResourceId);
+        try {
+            SettingsClient settingsClient = new SettingsClient();
+            Setting otdsResId = settingsClient.getSetting(CsConnectorConstants.OTDS_RES_ID);
+            if (otdsResId != null) {
+                otdsResId.setValue(otdsResourceId);
+                if (settingsClient.updateSetting(otdsResId)) {
+                    LOG.info("Successfully set OTDS resource id setting");
+                } else {
+                    LOG.warn("Failed to update setting " + CsConnectorConstants.OTDS_RES_ID +
+                            " to value " + otdsResourceId);
+                }
+            } else {
+                LOG.warn("Failed to lookup setting " + CsConnectorConstants.OTDS_RES_ID +
+                        " and cannot update value to " + otdsResourceId);
+            }
+        } catch (Exception e) {
+            LOG.error("Failed to update OTDS resource id due to some unexpected " +
+                    "error, " + e.getMessage(), e);
         }
     }
 
