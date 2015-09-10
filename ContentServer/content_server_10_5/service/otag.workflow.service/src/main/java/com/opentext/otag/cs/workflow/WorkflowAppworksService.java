@@ -29,6 +29,13 @@ public class WorkflowAppworksService implements AppworksServiceContextHandler {
             ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
+
+                String connectionUrl = csConnection.getConnectionUrl();
+                LOG.info("Got a connection to Content Server 10.5, URL=" + connectionUrl);
+                LOG.info("Connection details " + csConnection.toString());
+                if (connectionUrl == null || connectionUrl.isEmpty())
+                    failBuild("Managed to resolve Content Server connector but it did not have a " +
+                            "valid URL connection String");
             } else {
                 failBuild("Failed to resolve the Content Server EIM " +
                         "connector, message=" + connectionResult.getMessage());
