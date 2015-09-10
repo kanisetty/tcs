@@ -93,7 +93,7 @@ public class TrustedServerKeyRegistrationHandler implements AppworksServiceConte
                             "Content Server with Trusted provider key");
                     if (connector.registerTrustedServerKey(trustedServerName, trustedServerKey)) {
                         keepRunning = false;
-                        LOG.info("Registered Trusted Provider key with Gateway");
+                        LOG.info("Registered Trusted Provider key with Content Server");
                     } else {
                         LOG.info("Attempted registration of Trusted Provider key failed, sleeping ...");
                         sleep();

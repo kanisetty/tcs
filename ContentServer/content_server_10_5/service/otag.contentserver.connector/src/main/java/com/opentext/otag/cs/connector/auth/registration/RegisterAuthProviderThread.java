@@ -52,6 +52,7 @@ public class RegisterAuthProviderThread extends Thread {
                 boolean csAuthOnly = registrationHandler.isCsAuthOnly();
                 if (!csAuthOnly) {
                     String otdsResourceId = handler.getOtdsResourceId();
+
                     if (otdsResourceId != null) {
                         LOG.info("OTDS Resource Id was populated, issuing registration request to Gateway");
                         if (!issueRequest(handler, registerAuthHandlersRequest)) {

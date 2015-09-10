@@ -17,7 +17,6 @@ import com.opentext.otag.api.shared.types.proxy.ProxyMappingRepresentation;
 import com.opentext.otag.api.shared.types.proxy.ProxySettings;
 import com.opentext.otag.api.shared.types.sdk.EIMConnector;
 import com.opentext.otag.api.shared.types.settings.Setting;
-import com.opentext.otag.api.shared.types.settings.SettingType;
 import com.opentext.otag.api.shared.util.Cookie;
 import com.opentext.otag.api.shared.util.ForwardHeaders;
 import com.opentext.otag.cs.connector.auth.ContentServerAuthHandler;
@@ -32,10 +31,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Consumer;
 
 import static com.opentext.otag.api.shared.types.sdk.AppworksComponentContext.getComponent;
 
@@ -73,9 +70,14 @@ public class ContentServerConnector extends AbstractMultiChangeSettingHandler
     private String csAdminPassword;
 
     private String trustedServerKey;
+    private SettingsClient settingsClient;
 
+    /**
+     * Default no-args constructor used by the Appworks Framework.
+     */
     public ContentServerConnector() {
         httpClient = new HttpClient();
+        settingsClient = new SettingsClient();
     }
 
     @AppworksServiceStartupComplete
@@ -97,6 +99,8 @@ public class ContentServerConnector extends AbstractMultiChangeSettingHandler
                 return;
             }
 
+            // see if we have stored our settings already
+            resolveSettings();
             // listen for changes to our settings
             registerSettingHandlers();
             EIMConnector eimConnector = new EIMConnector(getConnectorName(), getConnectorVersion(),
@@ -209,12 +213,14 @@ public class ContentServerConnector extends AbstractMultiChangeSettingHandler
                     csAdminPassword != null && !csAdminPassword.isEmpty()) {
                 ContentServerAuthHandler authHandler = (ContentServerAuthHandler) getAuthHandler();
                 AuthHandlerResult result = authHandler.auth(csAdminUser, csAdminPassword, new ForwardHeaders());
-                Cookie llCookie = result.getCookies().get(CS_COOKIE_NAME);
-                if (llCookie != null) {
-                    return llCookie.getValue();
-                } else {
-                    LOG.info("Failed to extract LLCookie from auth response");
+                Map<String, Cookie> cookies = result.getCookies();
+                if (cookies != null) {
+                    Cookie llCookie = cookies.get(CS_COOKIE_NAME);
+                    if (llCookie != null) {
+                        return llCookie.getValue();
+                    }
                 }
+                LOG.info("Failed to extract LLCookie from auth response");
             } else {
                 LOG.info("The Content Server credentials have not been set yet so we " +
                         "cannot attempt to retrieve a cs token");
@@ -292,6 +298,27 @@ public class ContentServerConnector extends AbstractMultiChangeSettingHandler
             LOG.info("Updating cs admin user");
             csAdminPassword = s.getNewValue();
         });
+    }
+
+    /**
+     * Read the settings on startup, just in case we are restarting or upgrading.
+     */
+    private void resolveSettings() {
+        resolveSetting(CsConnectorConstants.CS_URL, (s) -> csUrl = s);
+        resolveSetting(CsConnectorConstants.CS_ADMIN_USER, (s) -> csAdminUser = s);
+        resolveSetting(CsConnectorConstants.CS_ADMIN_PWORD, (s) -> csAdminPassword = s);
+    }
+
+    private void resolveSetting(String settingKey, Consumer<String> setter) {
+        Setting setting = settingsClient.getSetting(settingKey);
+        if (setting != null) {
+            String value = setting.getValue();
+            if (value != null) {
+                LOG.info("Discovered " + settingKey + " setting was defined, " +
+                        "setting local value " + value);
+                setter.accept(value);
+            }
+        }
     }
 
     private boolean isAuthRegistered() {
