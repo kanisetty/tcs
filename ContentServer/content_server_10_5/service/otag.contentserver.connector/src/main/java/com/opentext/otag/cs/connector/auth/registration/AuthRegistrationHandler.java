@@ -1,8 +1,8 @@
 package com.opentext.otag.cs.connector.auth.registration;
 
-import com.opentext.otag.api.services.client.IdentityServiceClient;
-import com.opentext.otag.api.services.handlers.AbstractMultiChangeSettingHandler;
-import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
+import com.opentext.otag.sdk.client.AuthClient;
+import com.opentext.otag.sdk.handlers.AbstractMultiChangeSettingHandler;
+import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
 import com.opentext.otag.cs.connector.CsConnectorConstants;
 import jersey.repackaged.com.google.common.collect.Sets;
 import org.apache.commons.logging.Log;
@@ -39,7 +39,7 @@ public class AuthRegistrationHandler extends AbstractMultiChangeSettingHandler i
      */
     private boolean csAuthOnly = false;
 
-    IdentityServiceClient identityServiceClient;
+    AuthClient identityServiceClient;
 
     /**
      * This thread will register the ContentServiceAuthHandler with the Gateway, it will do
@@ -52,7 +52,7 @@ public class AuthRegistrationHandler extends AbstractMultiChangeSettingHandler i
     @Override
     public void onStart(String appName) {
         LOG.info("Started AuthRegistrationHandler");
-        identityServiceClient = new IdentityServiceClient();
+        identityServiceClient = new AuthClient();
 
         LOG.info("Adding handlers for CS URL and CS AUTH ONLY");
         addHandler(CsConnectorConstants.CS_URL, (s) -> {

@@ -1,15 +1,15 @@
 package com.opentext.otag.cs.connector;
 
 import com.opentext.otag.api.HttpClient;
-import com.opentext.otag.api.services.client.ServiceClient;
-import com.opentext.otag.api.services.client.SettingsClient;
-import com.opentext.otag.api.services.client.TrustedProviderClient;
-import com.opentext.otag.api.services.connector.EIMConnectorService;
-import com.opentext.otag.api.services.handlers.AbstractMultiChangeSettingHandler;
-import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
-import com.opentext.otag.api.services.handlers.AppworksServiceStartupComplete;
-import com.opentext.otag.api.services.handlers.AuthRequestHandler;
-import com.opentext.otag.api.services.provided.OtagUrlUpdateHandler;
+import com.opentext.otag.sdk.client.ServiceClient;
+import com.opentext.otag.sdk.client.SettingsClient;
+import com.opentext.otag.sdk.client.TrustedProviderClient;
+import com.opentext.otag.sdk.connector.EIMConnectorService;
+import com.opentext.otag.sdk.handlers.AbstractMultiChangeSettingHandler;
+import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AppworksServiceStartupComplete;
+import com.opentext.otag.sdk.handlers.AuthRequestHandler;
+import com.opentext.otag.sdk.provided.OtagUrlUpdateHandler;
 import com.opentext.otag.api.shared.types.TrustedProvider;
 import com.opentext.otag.api.shared.types.auth.AuthHandlerResult;
 import com.opentext.otag.api.shared.types.management.DeploymentResult;

@@ -1,7 +1,7 @@
 package com.opentext.otag.cs.feeds;
 
-import com.opentext.otag.api.services.client.SettingsClient;
-import com.opentext.otag.api.services.handlers.SettingChangeHandler;
+import com.opentext.otag.sdk.client.SettingsClient;
+import com.opentext.otag.sdk.handlers.SettingChangeHandler;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

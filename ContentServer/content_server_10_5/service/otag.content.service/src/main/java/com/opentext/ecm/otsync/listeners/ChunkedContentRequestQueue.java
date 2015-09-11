@@ -1,18 +1,18 @@
 package com.opentext.ecm.otsync.listeners;
 
 import com.opentext.ecm.otsync.ContentServiceConstants;
-import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.engine.core.SuspendedActionQueue;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
+import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.payload.Payload;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.message.MessageConverter;
 import com.opentext.ecm.otsync.ws.server.AbstractChunkedContentChannel;
-import com.opentext.otag.api.services.client.NotificationsClient;
 import com.opentext.otag.api.shared.types.notification.NotificationRequest;
+import com.opentext.otag.sdk.client.NotificationsClient;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;

@@ -1,13 +1,12 @@
 package com.opentext.ecm.otsync.ws.server.servlet3;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.opentext.ecm.otsync.listeners.ChunkedContentRequestQueue;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.server.AbstractChunkedContentChannel;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class Servlet3ChunkedContentChannel extends
 AbstractChunkedContentChannel {

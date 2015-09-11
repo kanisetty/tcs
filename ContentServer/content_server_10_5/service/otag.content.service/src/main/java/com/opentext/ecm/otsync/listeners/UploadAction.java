@@ -1,8 +1,8 @@
 package com.opentext.ecm.otsync.listeners;
 
-import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
+import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

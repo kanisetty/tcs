@@ -1,10 +1,10 @@
 package com.opentext.otag.cs.assignments;
 
-import com.opentext.otag.api.services.client.ServiceClient;
-import com.opentext.otag.api.services.connector.EIMConnectorClient;
-import com.opentext.otag.api.services.connector.EIMConnectorClientImpl;
-import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
-import com.opentext.otag.api.services.handlers.AppworksServiceStartupComplete;
+import com.opentext.otag.sdk.client.ServiceClient;
+import com.opentext.otag.sdk.connector.EIMConnectorClient;
+import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
+import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AppworksServiceStartupComplete;
 import com.opentext.otag.api.shared.types.management.DeploymentResult;
 import com.opentext.otag.api.shared.types.sdk.EIMConnector;
 import org.apache.commons.logging.Log;

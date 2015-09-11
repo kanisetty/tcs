@@ -1,12 +1,12 @@
 package com.opentext.ecm.otsync.ws.server.servlet3;
 
-import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.engine.core.SuspendedActionQueue;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.listeners.DownloadAction;
 import com.opentext.ecm.otsync.listeners.UploadAction;
 import com.opentext.ecm.otsync.message.Message;
+import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 
 import javax.servlet.AsyncContext;

@@ -1,6 +1,6 @@
 package com.opentext.ecm.otsync.otag;
 
-import com.opentext.otag.api.services.client.SettingsClient;
+import com.opentext.otag.sdk.client.SettingsClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

@@ -1,7 +1,7 @@
 package com.opentext.otag.cs.connector.auth.registration;
 
-import com.opentext.otag.api.services.client.IdentityServiceClient;
-import com.opentext.otag.api.services.client.SettingsClient;
+import com.opentext.otag.sdk.client.AuthClient;
+import com.opentext.otag.sdk.client.SettingsClient;
 import com.opentext.otag.api.shared.types.auth.AuthHandler;
 import com.opentext.otag.api.shared.types.auth.RegisterAuthHandlersRequest;
 import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
@@ -24,13 +24,13 @@ public class RegisterAuthProviderThread extends Thread {
     private static final Log LOG = LogFactory.getLog(RegisterAuthProviderThread.class);
 
     private AuthRegistrationHandler registrationHandler;
-    private IdentityServiceClient identityServiceClient;
+    private AuthClient identityServiceClient;
     private ContentServerAuthHandler csAuthHandler;
 
     private boolean keepRunning = true;
 
     public RegisterAuthProviderThread(AuthRegistrationHandler registrationHandler,
-                                      IdentityServiceClient identityServiceClient) {
+                                      AuthClient identityServiceClient) {
         super("Register CS auth providers Thread");
         this.registrationHandler = registrationHandler;
         this.identityServiceClient = identityServiceClient;

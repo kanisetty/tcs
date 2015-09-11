@@ -1,8 +1,8 @@
 package com.opentext.ecm.otsync.engine.core;
 
+import com.opentext.ecm.otsync.engine.threading.NamedThreadFactory;
 import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.otag.SettingsService;
-import com.opentext.ecm.otsync.engine.threading.NamedThreadFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

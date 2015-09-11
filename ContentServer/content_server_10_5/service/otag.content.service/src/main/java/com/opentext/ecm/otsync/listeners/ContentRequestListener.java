@@ -3,8 +3,8 @@ package com.opentext.ecm.otsync.listeners;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.message.SynchronousMessageListener;
 import com.opentext.ecm.otsync.payload.Payload;
-import com.opentext.otag.api.services.client.NotificationsClient;
 import com.opentext.otag.api.shared.types.notification.NotificationRequest;
+import com.opentext.otag.sdk.client.NotificationsClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

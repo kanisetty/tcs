@@ -1,7 +1,7 @@
 package com.opentext.ecm.otsync.ws;
 
-import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.ContentServiceConstants;
+import com.opentext.ecm.otsync.otag.ContentServerService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

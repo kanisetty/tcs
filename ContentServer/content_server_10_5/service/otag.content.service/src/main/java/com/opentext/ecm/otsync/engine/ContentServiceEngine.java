@@ -1,11 +1,11 @@
 package com.opentext.ecm.otsync.engine;
 
 import com.opentext.ecm.otsync.ContentServiceConstants;
-import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.engine.core.SuspendedActionQueue;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.listeners.*;
 import com.opentext.ecm.otsync.message.Message;
+import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.message.JsonMessageConverter;
 import com.opentext.ecm.otsync.ws.message.MessageConverter;
@@ -15,10 +15,9 @@ import com.opentext.ecm.otsync.ws.server.servlet3.Servlet3BackChannel;
 import com.opentext.ecm.otsync.ws.server.servlet3.Servlet3ChunkedContentChannel;
 import com.opentext.ecm.otsync.ws.server.servlet3.Servlet3ContentChannel;
 import com.opentext.ecm.otsync.ws.server.servlet3.Servlet3FrontChannel;
-import com.opentext.otag.api.services.client.IdentityServiceClient;
-import com.opentext.otag.api.services.client.NotificationsClient;
-import com.opentext.otag.api.services.handlers.AbstractSettingChangeHandler;
 import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
+import com.opentext.otag.sdk.client.NotificationsClient;
+import com.opentext.otag.sdk.handlers.AbstractSettingChangeHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

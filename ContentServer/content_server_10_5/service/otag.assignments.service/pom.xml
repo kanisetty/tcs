@@ -98,21 +98,7 @@
 
     <dependencies>
 
-        <!-- OTAG dependencies are provided by the host so we can mark them as provided -->
-        <dependency>
-            <groupId>com.opentext.otag.api.shared</groupId>
-            <artifactId>otag-api-shared</artifactId>
-            <version>${appworks.platform.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.opentext.otag.api.services</groupId>
-            <artifactId>otag-service-development-kit</artifactId>
-            <version>${appworks.platform.version}</version>
-            <scope>provided</scope>
-        </dependency>
-  
+        <!-- OTAG dependencies -->
         <dependency>
             <groupId>com.opentext.cs.otag</groupId>
             <artifactId>cs-otag-service-tools</artifactId>

@@ -3,20 +3,17 @@ package com.opentext.ecm.otsync.otag;
 import com.opentext.ecm.otsync.engine.ContentServiceEngine;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.ws.server.ClientType;
-import com.opentext.otag.CSConstants;
-import com.opentext.otag.api.services.client.IdentityServiceClient;
-import com.opentext.otag.api.services.client.NotificationsClient;
-import com.opentext.otag.api.services.client.ServiceClient;
-import com.opentext.otag.api.services.client.SettingsClient;
-import com.opentext.otag.api.services.connector.EIMConnectorClient;
-import com.opentext.otag.api.services.connector.EIMConnectorClient.ConnectionResult;
-import com.opentext.otag.api.services.connector.EIMConnectorClientImpl;
-import com.opentext.otag.api.services.handlers.AbstractSettingChangeHandler;
-import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
-import com.opentext.otag.api.services.handlers.AppworksServiceStartupComplete;
 import com.opentext.otag.api.shared.types.management.DeploymentResult;
-import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
 import com.opentext.otag.api.shared.types.settings.Setting;
+import com.opentext.otag.sdk.client.AuthClient;
+import com.opentext.otag.sdk.client.NotificationsClient;
+import com.opentext.otag.sdk.client.ServiceClient;
+import com.opentext.otag.sdk.client.SettingsClient;
+import com.opentext.otag.sdk.connector.EIMConnectorClient;
+import com.opentext.otag.sdk.connector.EIMConnectorClient.ConnectionResult;
+import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
+import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AppworksServiceStartupComplete;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -58,7 +55,7 @@ public class ContentServerService implements AppworksServiceContextHandler {
     // Gateway services
     private static SettingsClient settingsClient;
     private static SettingsService settingsService;
-    private static IdentityServiceClient identityServiceClient;
+    private static AuthClient AuthClient;
 
     private static HTTPRequestManager httpRequestManager;
 
@@ -89,8 +86,8 @@ public class ContentServerService implements AppworksServiceContextHandler {
             LOG.debug("Created SettingsClient");
             settingsService = new SettingsService(settingsClient);
             LOG.debug("Created SettingsService");
-            identityServiceClient = new IdentityServiceClient();
-            LOG.debug("Created IdentityServiceClient");
+            AuthClient = new AuthClient();
+            LOG.debug("Created AuthClient");
 
             httpRequestManager = new HTTPRequestManager(settingsService);
             LOG.debug("HTTP Manager initialised");
@@ -168,8 +165,8 @@ public class ContentServerService implements AppworksServiceContextHandler {
         return serviceEngine;
     }
 
-    public static IdentityServiceClient getIdService() {
-        return identityServiceClient;
+    public static AuthClient getIdService() {
+        return AuthClient;
     }
 
     public static SettingsClient getSettingsClient() {

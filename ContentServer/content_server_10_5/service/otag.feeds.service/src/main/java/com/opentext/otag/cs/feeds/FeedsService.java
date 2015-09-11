@@ -1,11 +1,11 @@
 package com.opentext.otag.cs.feeds;
 
-import com.opentext.otag.api.services.client.ServiceClient;
-import com.opentext.otag.api.services.client.SettingsClient;
-import com.opentext.otag.api.services.connector.EIMConnectorClient;
-import com.opentext.otag.api.services.connector.EIMConnectorClientImpl;
-import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
-import com.opentext.otag.api.services.handlers.AppworksServiceStartupComplete;
+import com.opentext.otag.sdk.client.ServiceClient;
+import com.opentext.otag.sdk.client.SettingsClient;
+import com.opentext.otag.sdk.connector.EIMConnectorClient;
+import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
+import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AppworksServiceStartupComplete;
 import com.opentext.otag.api.shared.types.management.DeploymentResult;
 import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
 import com.opentext.otag.api.shared.types.sdk.EIMConnector;

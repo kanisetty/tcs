@@ -4,7 +4,6 @@ import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.http.RequestHeader;
-import com.opentext.ecm.otsync.ws.server.AbstractDownloadChannel;
 import com.opentext.ecm.otsync.ws.server.rest.RESTServlet;
 
 import javax.servlet.AsyncContext;

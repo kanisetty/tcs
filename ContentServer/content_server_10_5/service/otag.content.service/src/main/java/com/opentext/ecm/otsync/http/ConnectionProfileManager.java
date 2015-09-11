@@ -2,9 +2,9 @@ package com.opentext.ecm.otsync.http;
 
 import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.otag.SettingsService;
-import com.opentext.otag.api.services.client.SettingsClient;
-import com.opentext.otag.api.services.handlers.AbstractMultiChangeSettingHandler;
-import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
+import com.opentext.otag.sdk.client.SettingsClient;
+import com.opentext.otag.sdk.handlers.AbstractMultiChangeSettingHandler;
+import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.params.HttpClientParams;

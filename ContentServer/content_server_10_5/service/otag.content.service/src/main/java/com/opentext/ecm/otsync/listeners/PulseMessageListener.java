@@ -1,10 +1,10 @@
 package com.opentext.ecm.otsync.listeners;
 
 import com.opentext.ecm.otsync.ContentServiceConstants;
-import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
+import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.payload.Payload;
 
 import java.io.IOException;

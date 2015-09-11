@@ -1,7 +1,6 @@
 package com.opentext.otag.cs.dcs.cache;
 
-
-import com.opentext.otag.api.services.client.SettingsClient;
+import com.opentext.otag.sdk.client.SettingsClient;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,7 +25,7 @@ public class DocumentConversionFileCache {
     public static final String DCS_PARTITION = File.separator + "dcs";
 
     private static final Set<Path> lockedPaths = new HashSet<>();
-    private static  SettingsClient settingClient;
+    private static SettingsClient settingClient;
     private Path path;
 
     public DocumentConversionFileCache(Path path) {

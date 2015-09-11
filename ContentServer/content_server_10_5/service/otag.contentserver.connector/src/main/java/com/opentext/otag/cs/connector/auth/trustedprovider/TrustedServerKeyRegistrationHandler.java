@@ -1,7 +1,7 @@
 package com.opentext.otag.cs.connector.auth.trustedprovider;
 
-import com.opentext.otag.api.services.client.TrustedProviderClient;
-import com.opentext.otag.api.services.handlers.AppworksServiceContextHandler;
+import com.opentext.otag.sdk.client.TrustedProviderClient;
+import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
 import com.opentext.otag.api.shared.types.TrustedProvider;
 import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
 import com.opentext.otag.cs.connector.ContentServerConnector;

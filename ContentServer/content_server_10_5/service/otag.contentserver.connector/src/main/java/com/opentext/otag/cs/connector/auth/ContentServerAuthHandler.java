@@ -1,8 +1,8 @@
 package com.opentext.otag.cs.connector.auth;
 
 import com.opentext.otag.api.HttpClient;
-import com.opentext.otag.api.services.handlers.AbstractAuthRequestHandler;
-import com.opentext.otag.api.services.handlers.AuthResponseDecorator;
+import com.opentext.otag.sdk.handlers.AbstractAuthRequestHandler;
+import com.opentext.otag.sdk.handlers.AuthResponseDecorator;
 import com.opentext.otag.api.shared.types.auth.AuthHandlerResult;
 import com.opentext.otag.api.shared.types.auth.FailedAuthHandlerResult;
 import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
