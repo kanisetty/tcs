@@ -1,7 +1,7 @@
 package com.opentext.otag.cs.connector.auth.registration;
 
 import com.opentext.otag.sdk.client.AuthClient;
-import com.opentext.otag.sdk.handlers.AbstractMultiChangeSettingHandler;
+import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
 import com.opentext.otag.cs.connector.CsConnectorConstants;
 import jersey.repackaged.com.google.common.collect.Sets;
@@ -24,7 +24,7 @@ import java.util.Set;
  * @see RegisterAuthProviderThread
  * @see com.opentext.otag.cs.connector.auth.ContentServerAuthHandler
  */
-public class AuthRegistrationHandler extends AbstractMultiChangeSettingHandler implements AppworksServiceContextHandler {
+public class AuthRegistrationHandler extends AbstractMultiSettingChangeHandler implements AppworksServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(AuthRegistrationHandler.class);
 

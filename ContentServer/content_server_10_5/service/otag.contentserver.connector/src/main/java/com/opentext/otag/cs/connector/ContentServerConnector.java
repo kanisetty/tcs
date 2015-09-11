@@ -5,7 +5,7 @@ import com.opentext.otag.sdk.client.ServiceClient;
 import com.opentext.otag.sdk.client.SettingsClient;
 import com.opentext.otag.sdk.client.TrustedProviderClient;
 import com.opentext.otag.sdk.connector.EIMConnectorService;
-import com.opentext.otag.sdk.handlers.AbstractMultiChangeSettingHandler;
+import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AppworksServiceStartupComplete;
 import com.opentext.otag.sdk.handlers.AuthRequestHandler;
@@ -49,7 +49,7 @@ import static com.opentext.otag.api.shared.types.sdk.AppworksComponentContext.ge
  * We therefore include some configuration settings to allow the user to enter
  * these details.
  */
-public class ContentServerConnector extends AbstractMultiChangeSettingHandler
+public class ContentServerConnector extends AbstractMultiSettingChangeHandler
         implements EIMConnectorService, AppworksServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(ContentServerConnector.class);
