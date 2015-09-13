@@ -19,13 +19,13 @@
         <!-- General app.properties -->
         <app.properties.displayName>Favorites Service</app.properties.displayName>
         <app.properties.description>Content Server Favorites service</app.properties.description>
-        <app.properties.releaseNumber>3</app.properties.releaseNumber>
+        <app.properties.version>16.0</app.properties.version>
         <app.properties.minimumClientVersion>2</app.properties.minimumClientVersion>
         <app.properties.type>service</app.properties.type>
 
         <!-- Output artifacts properties -->
         <appworks.service.name>favorites</appworks.service.name>
-        <appworks.service.version>16.0</appworks.service.version>
+        <appworks.service.version>${app.properties.version}</appworks.service.version>
         <appworks.service.zip.name>${appworks.service.name}_${appworks.service.version}</appworks.service.zip.name>
     </properties>
 
