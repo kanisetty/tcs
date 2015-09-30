@@ -234,9 +234,15 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
 
     private String getOtagUrl() {
         try {
+            String otagUrl = "";
             OtagUrlUpdateHandler otagUrlHandler = getComponent(OtagUrlUpdateHandler.class);
             if (otagUrlHandler != null)
-                return otagUrlHandler.getOtagUrl();
+                otagUrl = otagUrlHandler.getOtagUrl();
+
+            if (otagUrl == null || otagUrl.isEmpty())
+                otagUrl = settingsClient.getSettingAsString("otag.url");
+
+            return otagUrl;
         } catch (Exception e) {
             LOG.warn("Failed to resolve OtagUrlUpdateHandler", e);
         }
