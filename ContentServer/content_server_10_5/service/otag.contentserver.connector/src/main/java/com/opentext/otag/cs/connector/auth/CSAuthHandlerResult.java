@@ -13,9 +13,18 @@ public class CSAuthHandlerResult extends AuthHandlerResult {
 
     private static final Log LOG = LogFactory.getLog(CSAuthHandlerResult.class);
 
+    public static final String CSTOKEN = "cstoken";
+    public static final String IS_ADMIN = "isAdmin";
+    public static final String USER_NAME = "userName";
+    public static final String CS_USER_NAME = "csUsername";
+    public static final String USER_ID = "userID";
+    public static final String CS_USER_ID = "csUserId";
+
+    public static final String IS_EXTERNAL = "isExternal";
+
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public CSAuthHandlerResult(String jsonResponse){
+    public CSAuthHandlerResult(String jsonResponse) {
         String gotLLCookie = null;
         boolean gotIsAdmin = false;
         CSUserProfile gotUserProfile = null;
@@ -23,15 +32,17 @@ public class CSAuthHandlerResult extends AuthHandlerResult {
 
         try {
             JsonNode json = MAPPER.readValue(jsonResponse, JsonNode.class);
-            username = json.get("userName").getTextValue();
-            gotLLCookie = json.get("cstoken").asText();
-            gotIsAdmin = json.get("isAdmin").asBoolean();
-            boolean gotIsExternal = json.get("isExternal").asBoolean();
+            username = json.get(USER_NAME).getTextValue();
+            gotLLCookie = json.get(CSTOKEN).asText();
+            gotIsAdmin = json.get(IS_ADMIN).asBoolean();
+            boolean gotIsExternal = json.get(IS_EXTERNAL).asBoolean();
             gotUserProfile = new CSUserProfile(jsonResponse, gotIsAdmin, gotIsExternal);
+
+            addResponseBodyContent(json);
         } catch (IOException e) {
             gotErrMsg = "Invalid json response on auth attempt";
             LOG.error(gotErrMsg, e);
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             gotErrMsg = "Missing field in json response on auth attempt";
             LOG.error(gotErrMsg, e);
         }
@@ -41,6 +52,18 @@ public class CSAuthHandlerResult extends AuthHandlerResult {
         admin = gotIsAdmin;
         errorMessage = gotErrMsg;
         userProfile = gotUserProfile;
+    }
+
+    private void addResponseBodyContent(JsonNode json) {
+        String csToken = json.get(CSTOKEN).asText();
+        if (csToken != null)
+            addResponseField(CSTOKEN, csToken);
+        String csUsername = json.get(USER_NAME).asText();
+        if (csUsername != null)
+            addResponseField(CS_USER_NAME, csUsername);
+        String csUserId = json.get(USER_ID).asText();
+        if (csUserId != null)
+            addResponseField(CS_USER_ID, csUserId);
     }
 
 }
