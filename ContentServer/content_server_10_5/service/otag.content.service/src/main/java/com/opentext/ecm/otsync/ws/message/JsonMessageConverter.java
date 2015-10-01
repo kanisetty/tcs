@@ -1,6 +1,6 @@
 package com.opentext.ecm.otsync.ws.message;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Map;

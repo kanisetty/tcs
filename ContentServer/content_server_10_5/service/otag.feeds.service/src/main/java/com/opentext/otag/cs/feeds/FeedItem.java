@@ -1,7 +1,6 @@
 package com.opentext.otag.cs.feeds;
 
-import org.codehaus.jackson.JsonNode;
-
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class FeedItem {
 
@@ -43,25 +42,25 @@ public class FeedItem {
 	
 	public FeedItem(JsonNode node){
 		feed = Provider.valueOf(node.get("feed").asText());
-		username = node.get("userName").getTextValue();
+		username = node.get("userName").asText();
 		userID = node.get("userID").asText();
-		firstName = node.get("firstName").getTextValue();
-		lastName = node.get("lastName").getTextValue();
-		userTitle = node.get("userTitle").getTextValue();
-		userLocation = node.get("userLocation").getTextValue();
+		firstName = node.get("firstName").asText();
+		lastName = node.get("lastName").asText();
+		userTitle = node.get("userTitle").asText();
+		userLocation = node.get("userLocation").asText();
 		id = node.get("id").asText();
 		if (feed == Provider.PulseContent){
 			name = node.get("name").asText();
 			subType = node.get("subType").asInt();
 		}
 		header = null;
-		body = node.get("body").getTextValue();
+		body = node.get("body").asText();
 		footer = null;
 		commentCount = node.get("commentCount").asInt();
 		likeCount = node.get("likeCount").asInt();
 		isLiked = node.get("isLiked").asBoolean();
 		otagID = null;
-		createDate = node.get("createDate").getTextValue();
+		createDate = node.get("createDate").asText();
 		seqNo = node.get("seqNo").asInt();
 		conversationID = node.get("conversationID").asInt();
 		isFollowing = node.get("isFollowing").asBoolean();
@@ -70,15 +69,15 @@ public class FeedItem {
 		if (node.has("attachmentID") && !node.get("attachmentID").isNull()){
 			attachmentID = node.get("attachmentID").asText();
 			attachmentMimeTypeImgURL = node.get("attachmentMimeTypeImgURL").asText();
-			attachmentName = node.get("attachmentName").getTextValue();
+			attachmentName = node.get("attachmentName").asText();
 			attachmentSubType = node.get("attachmentSubType").asInt();
 		}
 		if (node.has("inReplyTo") && !node.get("inReplyTo").isNull()){
 			inReplyToSeqNo = node.get("inReplyTo").asInt();
 			inReplyToUserID = node.get("inReplyToUserID").asText();
-			inReplyToUserName = node.get("inReplyToUserName").getTextValue();
-			inReplyToFirstName = node.get("inReplyToUserFirstName").getTextValue();
-			inReplyToLastName = node.get("inReplyToUserLastName").getTextValue();
+			inReplyToUserName = node.get("inReplyToUserName").asText();
+			inReplyToFirstName = node.get("inReplyToUserFirstName").asText();
+			inReplyToLastName = node.get("inReplyToUserLastName").asText();
 		}
 	}
 }

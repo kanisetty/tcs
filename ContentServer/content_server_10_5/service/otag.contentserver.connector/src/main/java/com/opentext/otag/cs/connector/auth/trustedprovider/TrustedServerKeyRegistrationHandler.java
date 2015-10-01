@@ -1,6 +1,9 @@
 package com.opentext.otag.cs.connector.auth.trustedprovider;
 
+import com.opentext.otag.api.shared.util.StringObfuscator;
+import com.opentext.otag.cs.connector.CsConnectorConstants;
 import com.opentext.otag.sdk.client.TrustedProviderClient;
+import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
 import com.opentext.otag.api.shared.types.TrustedProvider;
 import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
@@ -8,6 +11,10 @@ import com.opentext.otag.cs.connector.ContentServerConnector;
 import com.opentext.otag.cs.connector.auth.registration.AuthRegistrationHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class is responsible for registering the Trusted Provider key
@@ -20,11 +27,13 @@ import org.apache.commons.logging.LogFactory;
  *
  * @see ContentServerConnector#registerTrustedServerKey(String, String)
  */
-public class TrustedServerKeyRegistrationHandler implements AppworksServiceContextHandler {
+public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingChangeHandler
+        implements AppworksServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(TrustedServerKeyRegistrationHandler.class);
 
     private RegisterKeyThread registerKeyThread;
+    private TrustedProviderClient trustedProviderClient;
 
     /**
      * Fire up the key registration Thread onStart.
@@ -34,8 +43,30 @@ public class TrustedServerKeyRegistrationHandler implements AppworksServiceConte
     @Override
     public void onStart(String appName) {
         LOG.info("Starting Trusted Provider Key registration");
-        TrustedProviderClient providerClient = new TrustedProviderClient();
-        registerKeyThread = new RegisterKeyThread(providerClient);
+        trustedProviderClient = new TrustedProviderClient();
+        registerKeyThread = new RegisterKeyThread(trustedProviderClient);
+        registerKeyThread.start();
+
+        addHandler(CsConnectorConstants.CS_ADMIN_USER, (s) -> {
+            LOG.info("Restarting trusted server key thread as " +
+                    CsConnectorConstants.CS_ADMIN_USER + " was changed to " + s.getNewValue());
+            restartTrustedKeyThread();
+        });
+        addHandler(CsConnectorConstants.CS_ADMIN_PWORD, (s) -> {
+            LOG.info("Restarting trusted server key thread as " +
+                    CsConnectorConstants.CS_ADMIN_PWORD + " was changed to " +
+                    StringObfuscator.obfuscate(s.getNewValue()));
+            restartTrustedKeyThread();
+        });
+    }
+
+    private void restartTrustedKeyThread() {
+        if (registerKeyThread != null && registerKeyThread.isAlive()) {
+            LOG.info("Shutting down trusted key thread as we have been asked to restart");
+            registerKeyThread.shutdown();
+        }
+
+        registerKeyThread = new RegisterKeyThread(trustedProviderClient);
         registerKeyThread.start();
     }
 
@@ -43,6 +74,12 @@ public class TrustedServerKeyRegistrationHandler implements AppworksServiceConte
     public void onStop(String appName) {
         if (registerKeyThread != null && registerKeyThread.isAlive())
             registerKeyThread.shutdown();
+    }
+
+    @Override
+    public Set<String> getSettingKeys() {
+        return new HashSet<>(Arrays.asList(CsConnectorConstants.CS_ADMIN_USER,
+                CsConnectorConstants.CS_ADMIN_PWORD));
     }
 
     /**

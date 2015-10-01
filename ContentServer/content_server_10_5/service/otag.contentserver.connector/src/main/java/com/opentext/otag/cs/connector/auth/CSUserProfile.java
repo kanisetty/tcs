@@ -1,8 +1,8 @@
 package com.opentext.otag.cs.connector.auth;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opentext.otag.api.shared.types.auth.UserProfile;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Map;
@@ -19,33 +19,33 @@ public class CSUserProfile extends UserProfile {
         this.addProfileProperty("isExternal", String.valueOf(isExternal));
 
         JsonNode json = mapper.readValue(jsonResponse, JsonNode.class);
-        userName = json.get("userName").getTextValue();
-        firstName = json.get("firstName").getTextValue();
-        lastName = json.get("lastName").getTextValue();
-        email = json.get("email").getTextValue();
+        userName = json.get("userName").asText();
+        firstName = json.get("firstName").asText();
+        lastName = json.get("lastName").asText();
+        email = json.get("email").asText();
         userID = json.get("userID").asText();
 
         // optional fields, ok if they are null
 
         try {
-            phone = json.get("phone").getTextValue();
+            phone = json.get("phone").asText();
         } catch (NullPointerException ignored) {
         }
         try {
-            title = json.get("userTitle").getTextValue();
+            title = json.get("userTitle").asText();
         } catch (NullPointerException ignored) {
         }
         try {
-            Boolean following = json.get("following").getBooleanValue();
+            Boolean following = json.get("following").asBoolean();
             setFollowing(following);
         } catch (NullPointerException ignored) {
         }
         try {
-            location = json.get("userLocation").getTextValue();
+            location = json.get("userLocation").asText();
         } catch (NullPointerException ignored) {
         }
         try {
-            userPhotoSuffix = json.get("userPhotoSuffix").getIntValue();
+            userPhotoSuffix = json.get("userPhotoSuffix").asInt();
         } catch (NullPointerException ignored) {
         }
 

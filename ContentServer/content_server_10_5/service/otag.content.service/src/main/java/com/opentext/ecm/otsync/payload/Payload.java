@@ -1,12 +1,8 @@
 package com.opentext.ecm.otsync.payload;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opentext.ecm.otsync.message.Message;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -131,8 +127,6 @@ public class Payload {
      * Call before accessing the Map of fields; initializes from the json string if necessary.
      *
      * @throws IOException
-     * @throws JsonParseException
-     * @throws JsonMappingException
      */
     synchronized private void initializeFieldsIfNull() throws IOException {
         if (fields == null) {
@@ -145,8 +139,6 @@ public class Payload {
      * Call before accessing the json string; initializes from the Map of fields if necessary.
      *
      * @throws IOException
-     * @throws JsonGenerationException
-     * @throws JsonMappingException
      */
     synchronized private void initializeJsonStringIfNull() throws IOException {
         if (jsonString == null) {

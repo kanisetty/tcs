@@ -1,5 +1,6 @@
 package com.opentext.ecm.otsync.ws.server.servlet3;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.engine.core.SuspendedActionQueue;
 import com.opentext.ecm.otsync.http.RequestHeader;
@@ -11,7 +12,6 @@ import com.opentext.ecm.otsync.ws.message.MessageConverter;
 import com.opentext.ecm.otsync.ws.server.ResponseHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.jackson.JsonProcessingException;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;

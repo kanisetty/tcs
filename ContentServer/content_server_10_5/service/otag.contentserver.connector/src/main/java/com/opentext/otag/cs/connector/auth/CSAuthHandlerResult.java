@@ -1,11 +1,11 @@
 package com.opentext.otag.cs.connector.auth;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opentext.otag.api.shared.types.auth.AuthHandlerResult;
 import com.opentext.otag.cs.connector.ContentServerConnector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 
@@ -32,7 +32,7 @@ public class CSAuthHandlerResult extends AuthHandlerResult {
 
         try {
             JsonNode json = MAPPER.readValue(jsonResponse, JsonNode.class);
-            username = json.get(USER_NAME).getTextValue();
+            username = json.get(USER_NAME).asText();
             gotLLCookie = json.get(CSTOKEN).asText();
             gotIsAdmin = json.get(IS_ADMIN).asBoolean();
             boolean gotIsExternal = json.get(IS_EXTERNAL).asBoolean();

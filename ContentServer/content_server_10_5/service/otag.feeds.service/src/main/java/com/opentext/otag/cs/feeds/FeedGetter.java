@@ -1,14 +1,14 @@
 package com.opentext.otag.cs.feeds;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.opentext.otag.api.HttpClient;
 import com.opentext.otag.api.HttpClient.DetailedResponse;
 import com.opentext.otag.api.shared.util.ForwardHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectReader;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.WebApplicationException;
@@ -144,10 +144,10 @@ public class FeedGetter {
             }
 
             JsonNode root = nodeReader.readValue(response.body);
-            feed.cstoken = root.get("cstoken").getTextValue();
+            feed.cstoken = root.get("cstoken").asText();
             feed.isMoreData = root.get("isMoreData").asBoolean();
             JsonNode itemsNode = root.get("items");
-            Iterator<JsonNode> rawItems = itemsNode.getElements();
+            Iterator<JsonNode> rawItems = itemsNode.elements();
 
             feed.items = new ArrayList<>(itemsNode.size());
             while (rawItems.hasNext()) {

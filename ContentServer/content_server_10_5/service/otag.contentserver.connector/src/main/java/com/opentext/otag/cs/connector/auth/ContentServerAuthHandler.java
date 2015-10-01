@@ -1,5 +1,7 @@
 package com.opentext.otag.cs.connector.auth;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opentext.otag.api.HttpClient;
 import com.opentext.otag.sdk.handlers.AbstractAuthRequestHandler;
 import com.opentext.otag.sdk.handlers.AuthResponseDecorator;
@@ -13,8 +15,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.io.StringReader;

@@ -1,12 +1,12 @@
 package com.opentext.ecm.otsync.ws.server.rest.resources;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
 import com.opentext.otag.api.shared.types.auth.User;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

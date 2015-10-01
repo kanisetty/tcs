@@ -1,5 +1,7 @@
 package com.opentext.otag.cs.feeds;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.opentext.otag.api.CSMultiPartRequest;
 import com.opentext.otag.api.CSRequest;
 import com.opentext.otag.api.shared.util.ForwardHeaders;
@@ -8,8 +10,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectReader;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 

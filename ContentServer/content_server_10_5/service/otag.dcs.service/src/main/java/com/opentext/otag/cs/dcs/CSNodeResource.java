@@ -1,11 +1,11 @@
 package com.opentext.otag.cs.dcs;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.opentext.otag.api.CSRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectReader;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
