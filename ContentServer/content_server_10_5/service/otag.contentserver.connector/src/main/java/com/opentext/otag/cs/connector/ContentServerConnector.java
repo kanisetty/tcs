@@ -31,6 +31,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -182,7 +183,7 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
                 params.add(new BasicNameValuePair("engine", otagUrl + '/'));
                 params.add(new BasicNameValuePair("destination_uri", otagUrl + "/gateway"));
 
-                HttpContext cookie = httpClient.getContextWithCookie(CS_COOKIE_NAME, cstoken, csUrl);
+                HttpContext cookie = httpClient.getContextWithCookie(CS_COOKIE_NAME, URLEncoder.encode(cstoken, "UTF-8"), csUrl);
                 HttpUriRequest req = httpClient.getPostRequest(csUrl, params);
                 req.addHeader(HTTP_REFERER_HEADER, csUrl);
                 // ForwardHeaders instance was passed here
