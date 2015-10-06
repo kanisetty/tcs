@@ -77,13 +77,14 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
      */
     public ContentServerConnector() {
         httpClient = new HttpClient();
-        settingsClient = new SettingsClient();
     }
 
     @AppworksServiceStartupComplete
     @Override
     public void onStart(String appName) {
         LOG.info("Starting ContentServerConnector EIM connector");
+
+        settingsClient = new SettingsClient();
 
         ServiceClient serviceClient = new ServiceClient();
         TrustedProviderClient trustedProviderClient = new TrustedProviderClient();
