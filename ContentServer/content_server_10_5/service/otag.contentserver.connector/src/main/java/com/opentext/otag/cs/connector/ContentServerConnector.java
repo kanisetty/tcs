@@ -196,7 +196,7 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
                     LOG.error("We failed to set the trusted server key as Content Server told " +
                             "us the cs token we provided was not valid");
                 } else if (statusCode != HttpStatus.SC_OK) {
-                    LOG.error("We failed to register the");
+                    LOG.error("We failed to register the trusted server key, statusCode=" + statusCode);
                 }
                 return true;
             }

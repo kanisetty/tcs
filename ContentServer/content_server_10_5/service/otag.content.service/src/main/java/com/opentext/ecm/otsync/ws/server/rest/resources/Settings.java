@@ -23,7 +23,7 @@ public class Settings extends ResourcePath {
 
         RequestHeader headers = new RequestHeader(req);
 
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put("func", "otsync.settings");
 
         doAdminApiPost(resp, cookie, headers, params, true); // true: return the response body
