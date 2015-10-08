@@ -60,6 +60,15 @@ public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingCha
         });
     }
 
+    public void updateProviderKey(String updatedKey) {
+        ContentServerConnector connector = AppworksComponentContext.getComponent(ContentServerConnector.class);
+        if (connector != null) {
+            connector.registerTrustedServerKey(connector.getTrustedServerName(), updatedKey);
+        } else {
+            LOG.warn("Failed to force provider key update as we could not resolve the ContentServerConnector");
+        }
+    }
+
     private void restartTrustedKeyThread() {
         if (registerKeyThread != null && registerKeyThread.isAlive()) {
             LOG.info("Shutting down trusted key thread as we have been asked to restart");

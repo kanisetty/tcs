@@ -1,6 +1,7 @@
 package com.opentext.otag.cs.connector;
 
 import com.opentext.otag.api.HttpClient;
+import com.opentext.otag.cs.connector.auth.trustedprovider.TrustedServerKeyRegistrationHandler;
 import com.opentext.otag.sdk.client.ServiceClient;
 import com.opentext.otag.sdk.client.SettingsClient;
 import com.opentext.otag.sdk.client.TrustedProviderClient;
@@ -282,6 +283,19 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
         ));
 
         return new ProxySettings(mappings, whiteList);
+    }
+
+    @Override
+    public void onUpdateConnector(EIMConnector eimConnector) {
+        LOG.info("EIM Connector Update Received, publishing updated key to CS");
+        // kick of the key registration thread again as someone updated the connector in the Gateway
+        TrustedServerKeyRegistrationHandler providerKeyHandler = getComponent(TrustedServerKeyRegistrationHandler.class);
+        if (providerKeyHandler != null) {
+            providerKeyHandler.updateProviderKey(eimConnector.getProviderKey());
+        } else {
+            LOG.warn("Could not respond to EIM connector update as we could not resolve the " +
+                    "TrustedServerKeyRegistrationHandler component");
+        }
     }
 
     @Override
