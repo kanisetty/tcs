@@ -261,8 +261,8 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
     @Override
     public ProxySettings getProxySettings() {
         Set<ProxyMappingRepresentation> mappings = Sets.newHashSet(Arrays.asList(
-                new ProxyMappingRepresentation("otcs", "localhost/otcs"),
-                new ProxyMappingRepresentation("otcs_support", "localhost/otcs_support")));
+                new ProxyMappingRepresentation("otcs", "localhost/otcs", null),
+                new ProxyMappingRepresentation("otcs_support", "localhost/otcs_support", null)));
 
         Set<String> whiteList = Sets.newHashSet(Arrays.asList(
                 "otcs_support/.*",
