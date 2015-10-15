@@ -178,11 +178,12 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
                 params = new ArrayList<>();
                 params.add(new BasicNameValuePair("func", "otsync.settings"));
                 params.add(new BasicNameValuePair("sharedKey", key));
+                
                 // Also use the configured otag url for this server to set up communications
                 // from the otsync notifier, and redirects for Tempo Box
                 String otagUrl = getOtagUrl();
                 params.add(new BasicNameValuePair("engine", otagUrl + '/'));
-                params.add(new BasicNameValuePair("destination_uri", otagUrl + "/gateway"));
+                params.add(new BasicNameValuePair("destination_uri", otagUrl));
 
                 HttpContext cookie = httpClient.getContextWithCookie(CS_COOKIE_NAME, URLEncoder.encode(cstoken, "UTF-8"), csUrl);
                 HttpUriRequest req = httpClient.getPostRequest(csUrl, params);
