@@ -16,7 +16,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <appworks.platform.version>2.0-SNAPSHOT</appworks.platform.version>
+        <appworks.platform.version>16.01-ALPHA-1</appworks.platform.version>
     </properties>
 
     <build>
