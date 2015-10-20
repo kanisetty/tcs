@@ -36,7 +36,7 @@ public class CSRequest implements StreamingOutput {
 	public static final Log log = LogFactory.getLog(CSRequest.class);
 
 	public static final String FUNC_PARAM_NAME = "func";
-	public static final String CSTOKEN_PARAM_NAME = "cstoken";
+
 
 	private static final HttpClient http = new HttpClient();
 
@@ -46,11 +46,12 @@ public class CSRequest implements StreamingOutput {
 
 	private HttpResponse response = null;
 
-	public CSRequest(String csUrl, String func, String cstoken, List<NameValuePair> params, ForwardHeaders headers){
+	public CSRequest(String csUrl, String func, List<NameValuePair> params, ForwardHeaders headers){
 		this.csUrl = csUrl;
-		params.add(new BasicNameValuePair(CSTOKEN_PARAM_NAME, cstoken));
+
 		params.add(new BasicNameValuePair(FUNC_PARAM_NAME, func));
 		this.params = params;
+
 		this.headers = headers;
 	}
 	

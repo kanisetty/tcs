@@ -6,6 +6,7 @@ import com.opentext.otag.api.CSMultiPartRequest;
 import com.opentext.otag.api.CSRequest;
 import com.opentext.otag.api.shared.util.ForwardHeaders;
 import com.opentext.otag.cs.feeds.FeedItem.Provider;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.NameValuePair;
@@ -37,6 +38,7 @@ public class Feeds {
     private static final String GET_LIKES = "otag.likesForObject";
     private static final String UNLIKE_FUNC = "otag.likedelete";
 
+
     public static class Bookmark {
         public int ContentServer;
 
@@ -53,23 +55,17 @@ public class Feeds {
         public List<FeedItem> items;
         public Bookmark oldest = null;
         public Bookmark newest = null;
-        public String cstoken;
         public boolean isMoreData;
     }
 
     @GET
-    public Response getAggregatedList(@QueryParam("cstoken") String cstoken,
-                                      @CookieParam("LLCookie") String llcookie,
-                                      @QueryParam("before") Bookmark before,
+    public Response getAggregatedList(@QueryParam("before") Bookmark before,
                                       @QueryParam("after") Bookmark after,
                                       @QueryParam("count") @DefaultValue("20") int count,
                                       @QueryParam("query") String query,
                                       @Context HttpServletRequest request) {
-        if (llcookie != null)
-            cstoken = llcookie;
 
-        Feed feed = new FeedGetter(before, after, count, cstoken,
-                new ForwardHeaders(request)).setQuery(query).getFeed();
+        Feed feed = new FeedGetter(before, after, count, new CSForwardHeaders(request)).setQuery(query).getFeed();
 
         return Response.ok(feed).build();
     }
@@ -77,56 +73,42 @@ public class Feeds {
     @POST
     @Path("{provider}/{seqNo}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public StreamingOutput postCommentOnStatusPlain(@QueryParam("cstoken") String cstoken,
-                                                    @CookieParam("LLCookie") String llcookie,
-                                                    @FormParam("status") String status,
+    public StreamingOutput postCommentOnStatusPlain(@FormParam("status") String status,
                                                     @PathParam("provider") Provider provider,
                                                     @PathParam("seqNo") long seqNo,
                                                     @Context HttpServletRequest request) {
-        if (llcookie != null)
-            cstoken = llcookie;
 
         List<NameValuePair> params = new ArrayList<>(5);
         params.add(new BasicNameValuePair("status", status));
         params.add(new BasicNameValuePair("in_reply_to_status_id", Long.toString(seqNo)));
-        return new CSRequest(csUrl(), POST_STATUS_FUNC, cstoken, params, new ForwardHeaders(request));
+        return new CSRequest(csUrl(), POST_STATUS_FUNC, params, new CSForwardHeaders(request));
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public StreamingOutput postStatusPlain(
-            @QueryParam("otagtoken") String otagtoken,
-            @CookieParam("otagtoken") String otagCookie,
-            @QueryParam("cstoken") String cstoken,
-            @CookieParam("LLCookie") String llcookie,
             @FormParam("status") String status,
             @FormParam("lat") String lat,
             @FormParam("long") String lon,
             @Context HttpServletRequest request
     ) {
-        if (llcookie != null) cstoken = llcookie;
 
         List<NameValuePair> params = new ArrayList<>(5);
         params.add(new BasicNameValuePair("status", status));
         if (lat != null) params.add(new BasicNameValuePair("lat", lat));
         if (lon != null) params.add(new BasicNameValuePair("long", lon));
-        return new CSRequest(csUrl(), POST_STATUS_FUNC, cstoken, params, new ForwardHeaders(request));
+        return new CSRequest(csUrl(), POST_STATUS_FUNC, params, new CSForwardHeaders(request));
     }
 
     @POST
     @Path("{provider}/{seqNo}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public StreamingOutput postCommentOnStatusWithAttachment(@QueryParam("cstoken") String cstokenInQuery,
-                                                             @CookieParam("LLCookie") String llcookie,
-                                                             @FormDataParam("cstoken") String csTokenInForm,
-                                                             @FormDataParam("status") String status,
+    public StreamingOutput postCommentOnStatusWithAttachment(@FormDataParam("status") String status,
                                                              @FormDataParam("file") InputStream inputStream,
                                                              @FormDataParam("file") FormDataContentDisposition fileInfo,
                                                              @PathParam("provider") Provider provider,
                                                              @PathParam("seqNo") long seqNo,
                                                              @Context HttpServletRequest request) {
-        String csToken = cstokenInQuery != null ? cstokenInQuery :
-                (llcookie != null ? llcookie : csTokenInForm);
 
         List<NameValuePair> params = new ArrayList<>(5);
         params.add(new BasicNameValuePair("status", status));
@@ -136,31 +118,24 @@ public class Feeds {
 
             String filename = fileInfo.getFileName();
             if (filename != null) {
-                return new CSMultiPartRequest(csUrl(), POST_STATUS_FUNC, csToken, params,
-                        inputStream, "AddDesktopDoc", filename,
-                        new ForwardHeaders(request));
+                return new CSMultiPartRequest(csUrl(), POST_STATUS_FUNC, params, inputStream, "AddDesktopDoc", filename,
+                        new CSForwardHeaders(request));
             } else {
                 throw new WebApplicationException(Status.BAD_REQUEST);
             }
         } else {
-            return new CSRequest(csUrl(), POST_STATUS_FUNC,
-                    csToken, params, new ForwardHeaders(request));
+            return new CSRequest(csUrl(), POST_STATUS_FUNC, params, new CSForwardHeaders(request));
         }
     }
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public StreamingOutput postStatusWithAttachment(@QueryParam("cstoken") String cstokenInQuery,
-                                                    @CookieParam("LLCookie") String llcookie,
-                                                    @FormDataParam("cstoken") String csTokenInForm,
-                                                    @FormDataParam("status") String status,
+    public StreamingOutput postStatusWithAttachment(@FormDataParam("status") String status,
                                                     @FormDataParam("lat") String lat,
                                                     @FormDataParam("long") String lon,
                                                     @FormDataParam("file") InputStream inputStream,
                                                     @FormDataParam("file") FormDataContentDisposition fileInfo,
                                                     @Context HttpServletRequest request) {
-        String csToken = cstokenInQuery != null ? cstokenInQuery :
-                (llcookie != null ? llcookie : csTokenInForm);
 
         List<NameValuePair> params = new ArrayList<>(5);
         params.add(new BasicNameValuePair("status", status));
@@ -172,30 +147,27 @@ public class Feeds {
             String filename = fileInfo.getFileName();
             if (filename != null) {
 
-                return new CSMultiPartRequest(csUrl(), POST_STATUS_FUNC, csToken, params,
+                return new CSMultiPartRequest(csUrl(), POST_STATUS_FUNC, params,
                         inputStream, "AddDesktopDoc", filename,
-                        new ForwardHeaders(request));
+                        new CSForwardHeaders(request));
             } else {
                 throw new WebApplicationException(Status.BAD_REQUEST);
             }
         } else {
-            return new CSRequest(csUrl(), POST_STATUS_FUNC, csToken, params, new ForwardHeaders(request));
+            return new CSRequest(csUrl(), POST_STATUS_FUNC, params, new CSForwardHeaders(request));
         }
     }
 
     @GET
     @Path("{provider}")
-    public Response getProviderList(@QueryParam("cstoken") String cstoken,
-                                    @CookieParam("LLCookie") String llcookie,
-                                    @QueryParam("before") Bookmark before,
+    public Response getProviderList(@QueryParam("before") Bookmark before,
                                     @QueryParam("after") Bookmark after,
                                     @QueryParam("count") @DefaultValue("20") int count,
                                     @QueryParam("query") String query,
                                     @PathParam("provider") Provider provider,
                                     @Context HttpServletRequest request) {
-        if (llcookie != null) cstoken = llcookie;
 
-        Feed feed = new FeedGetter(before, after, count, cstoken, new ForwardHeaders(request))
+        Feed feed = new FeedGetter(before, after, count, new CSForwardHeaders(request))
                 .setProvider(provider)
                 .setQuery(query)
                 .getFeed();
@@ -205,60 +177,49 @@ public class Feeds {
 
     @GET
     @Path("{provider}/{seqNo}")
-    public Response getFeedItem(@QueryParam("cstoken") String cstoken,
-                                @CookieParam("LLCookie") String llcookie,
-                                @PathParam("provider") Provider provider,
+    public Response getFeedItem(@PathParam("provider") Provider provider,
                                 @PathParam("seqNo") int seqNo,
                                 @Context HttpServletRequest request) {
-        if (llcookie != null) cstoken = llcookie;
 
-        FeedItem item = getFeedItem(provider, seqNo, cstoken, new ForwardHeaders(request));
+        FeedItem item = getFeedItem(provider, seqNo, new CSForwardHeaders(request));
 
         return Response.ok(item).build();
     }
 
     @GET
     @Path("{provider}/{seqNo}/likes")
-    public StreamingOutput getLikes(@QueryParam("cstoken") String cstoken,
-                                    @CookieParam("LLCookie") String llcookie,
-                                    @PathParam("provider") Provider provider,
+    public StreamingOutput getLikes(@PathParam("provider") Provider provider,
                                     @PathParam("seqNo") int seqNo,
                                     @Context HttpServletRequest request) {
-        if (llcookie != null) cstoken = llcookie;
 
         List<NameValuePair> params = new ArrayList<>(3);
         params.add(new BasicNameValuePair("seqNo", Integer.toString(seqNo)));
-        return new CSRequest(csUrl(), GET_LIKES, cstoken, params, new ForwardHeaders(request));
+        return new CSRequest(csUrl(), GET_LIKES, params, new CSForwardHeaders(request));
     }
 
     @POST
     @Path("{provider}/{seqNo}/likes")
-    public StreamingOutput likeItem(@QueryParam("cstoken") String cstoken,
-                                    @CookieParam("LLCookie") String llcookie,
-                                    @PathParam("provider") Provider provider,
+    public StreamingOutput likeItem(@PathParam("provider") Provider provider,
                                     @PathParam("seqNo") int seqNo,
                                     @Context HttpServletRequest request) {
-        if (llcookie != null) cstoken = llcookie;
+
         List<NameValuePair> params = new ArrayList<>(3);
         params.add(new BasicNameValuePair("seqNo", Integer.toString(seqNo)));
-        return new CSRequest(csUrl(), LIKE_FUNC, cstoken, params, new ForwardHeaders(request));
+        return new CSRequest(csUrl(), LIKE_FUNC, params, new CSForwardHeaders(request));
     }
 
     @DELETE
     @Path("{provider}/{seqNo}/likes")
-    public StreamingOutput unlikeItem(@QueryParam("cstoken") String cstoken,
-                                      @CookieParam("LLCookie") String llcookie,
-                                      @PathParam("provider") Provider provider,
+    public StreamingOutput unlikeItem(@PathParam("provider") Provider provider,
                                       @PathParam("seqNo") int seqNo,
                                       @Context HttpServletRequest request) {
-        if (llcookie != null) cstoken = llcookie;
         List<NameValuePair> params = new ArrayList<>(3);
         params.add(new BasicNameValuePair("seqNo", Integer.toString(seqNo)));
-        return new CSRequest(csUrl(), UNLIKE_FUNC, cstoken, params, new ForwardHeaders(request));
+        return new CSRequest(csUrl(), UNLIKE_FUNC, params, new CSForwardHeaders(request));
     }
 
-    FeedItem getFeedItem(Provider provider, int seqNo, String cstoken, ForwardHeaders headers) {
-        Feed singletonFeed = new FeedGetter(seqNo + 1, seqNo - 1, 1, cstoken, headers)
+    FeedItem getFeedItem(Provider provider, int seqNo, ForwardHeaders headers) {
+        Feed singletonFeed = new FeedGetter(seqNo + 1, seqNo - 1, 1,  headers)
                 .setProvider(provider)
                 .getFeed();
         if (singletonFeed.items.size() > 0) {

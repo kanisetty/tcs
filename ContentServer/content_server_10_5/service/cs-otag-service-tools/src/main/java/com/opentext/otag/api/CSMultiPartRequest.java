@@ -31,15 +31,12 @@ public class CSMultiPartRequest implements StreamingOutput {
 	public static final Log log = LogFactory.getLog(CSRequest.class);
 
 	public static final String FUNC_PARAM_NAME = "func";
-	public static final String CSTOKEN_PARAM_NAME = "cstoken";
-	public static final String CS_COOKIE_NAME = "LLCookie";
 
 	private static final HttpClient http = new HttpClient();
 
 	private final String csUrl;
 	private final List<NameValuePair> params;
 	private final ForwardHeaders headers;
-	private final String cstoken;
 	private final InputStream fileStream;
 	private final String filePartName;
 	private final String filename;
@@ -47,15 +44,14 @@ public class CSMultiPartRequest implements StreamingOutput {
 	private HttpResponse response = null;
 
 
-	public CSMultiPartRequest(String csUrl, String func, String cstoken, List<NameValuePair> params,
+	public CSMultiPartRequest(String csUrl, String func, List<NameValuePair> params,
 			InputStream fileStream, String filePartName, String filename,
 			ForwardHeaders headers){
-		params.add(new BasicNameValuePair(CSTOKEN_PARAM_NAME, cstoken));
+
 		params.add(new BasicNameValuePair(FUNC_PARAM_NAME, func));
 		this.csUrl = csUrl;
 		this.params = params;
 		this.headers = headers;
-		this.cstoken = cstoken;
 		this.fileStream = fileStream;
 		this.filePartName = filePartName;
 		this.filename = filename;
@@ -88,7 +84,8 @@ public class CSMultiPartRequest implements StreamingOutput {
 			headers.addTo(request);
 			
 			// for SEA compatibility, we must include the llcookie
-			request.addHeader("Cookie", CS_COOKIE_NAME + "=" + cstoken);
+			//TODO: test that this is still required
+			// request.addHeader("Cookie", CS_COOKIE_NAME + "=" + cstoken);
 			
 			response = http.executeRaw(request, null);
 			final StatusLine status = response.getStatusLine();

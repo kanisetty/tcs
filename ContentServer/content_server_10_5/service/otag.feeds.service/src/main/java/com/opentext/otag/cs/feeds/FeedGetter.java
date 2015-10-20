@@ -26,7 +26,6 @@ public class FeedGetter {
     private static final String AFTER = "after";
     private static final String BEFORE = "before";
     private static final String COUNT = "count";
-    private static final String CSTOKEN = "cstoken";
     private static final String GET_FEED_FUNC = "otag.feedget";
     private static final String TYPE = "type";
     private static final String STATUS_TYPE = "status";
@@ -38,7 +37,6 @@ public class FeedGetter {
     private Feeds.Bookmark before;
     private Feeds.Bookmark after;
     private int count;
-    private String cstoken;
     private ForwardHeaders headers;
     private String nodeID = null;
     private String query = null;
@@ -46,15 +44,14 @@ public class FeedGetter {
     private FeedItem.Provider provider = null;
     private boolean isRecursive = false;
 
-    public FeedGetter(Feeds.Bookmark before, Feeds.Bookmark after, int count, String cstoken, ForwardHeaders headers) {
+    public FeedGetter(Feeds.Bookmark before, Feeds.Bookmark after, int count, ForwardHeaders headers) {
         this.before = before;
         this.after = after;
         this.count = count;
-        this.cstoken = cstoken;
         this.headers = headers;
     }
 
-    public FeedGetter(int csBefore, int csAfter, int count, String cstoken, ForwardHeaders headers) {
+    public FeedGetter(int csBefore, int csAfter, int count, ForwardHeaders headers) {
         Feeds.Bookmark before = new Feeds.Bookmark();
         Feeds.Bookmark after = new Feeds.Bookmark();
         before.ContentServer = csBefore;
@@ -62,7 +59,6 @@ public class FeedGetter {
         this.before = before;
         this.after = after;
         this.count = count;
-        this.cstoken = cstoken;
         this.headers = headers;
     }
 
@@ -108,7 +104,7 @@ public class FeedGetter {
             if (before != null)
                 params.add(new BasicNameValuePair(BEFORE, Integer.toString(before.ContentServer)));
             params.add(new BasicNameValuePair(COUNT, Integer.toString(count)));
-            params.add(new BasicNameValuePair(CSTOKEN, cstoken));
+
             if (provider != null) {
                 switch (provider) {
                     case PulseContent:
@@ -144,7 +140,6 @@ public class FeedGetter {
             }
 
             JsonNode root = nodeReader.readValue(response.body);
-            feed.cstoken = root.get("cstoken").asText();
             feed.isMoreData = root.get("isMoreData").asBoolean();
             JsonNode itemsNode = root.get("items");
             Iterator<JsonNode> rawItems = itemsNode.elements();

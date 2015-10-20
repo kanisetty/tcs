@@ -2,7 +2,7 @@ package com.opentext.otag.cs.favorites;
 
 import com.opentext.otag.api.CSRequest;
 import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
-import com.opentext.otag.api.shared.util.ForwardHeaders;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.NameValuePair;
@@ -26,50 +26,37 @@ public class FavoritesResource {
     private static FavoritesService favoritesService;
 
     @GET
-    public StreamingOutput getMyFavorites(@QueryParam("cstoken") String cstoken,
-                                          @CookieParam("LLCookie") String llcookie,
-                                          @Context HttpServletRequest request) {
-        if (llcookie != null)
-            cstoken = llcookie;
+    public StreamingOutput getMyFavorites(@Context HttpServletRequest request) {
 
-        List<NameValuePair> params = new ArrayList<>(2);
-
-        return new CSRequest(getCsUrl(), "otag.favoritesGet", cstoken, params, new ForwardHeaders(request));
+        return new CSRequest(getCsUrl(), "otag.favoritesGet", new ArrayList<>(0),  new CSForwardHeaders(request));
     }
 
     @POST
-    public StreamingOutput addFavorite(@FormParam("cstoken") String cstoken,
-                                       @CookieParam("LLCookie") String llcookie,
-                                       @FormParam("nodeID") Integer nodeID,
+    public StreamingOutput addFavorite(@FormParam("nodeID") Integer nodeID,
                                        @Context HttpServletRequest request) {
-        if (llcookie != null)
-            cstoken = llcookie;
 
         if (nodeID == null) {
             throw new WebApplicationException(Response.Status.BAD_REQUEST.getStatusCode());
         }
 
-        List<NameValuePair> params = new ArrayList<>(3);
+        List<NameValuePair> params = new ArrayList<>(1);
         params.add(new BasicNameValuePair("nodeID", Integer.toString(nodeID)));
-        return new CSRequest(getCsUrl(), "otag.favoritesAdd", cstoken, params, new ForwardHeaders(request));
+
+        return new CSRequest(getCsUrl(), "otag.favoritesAdd", params, new CSForwardHeaders(request));
     }
 
     @DELETE
     @Path("{nodeID}")
     public StreamingOutput deleteFavorite(@PathParam("nodeID") Integer nodeID,
-                                          @QueryParam("cstoken") String cstoken,
-                                          @CookieParam("LLCookie") String llcookie,
                                           @Context HttpServletRequest request) {
-        if (llcookie != null)
-            cstoken = llcookie;
 
         if (nodeID == null) {
             throw new WebApplicationException(Response.Status.BAD_REQUEST.getStatusCode());
         }
 
-        List<NameValuePair> params = new ArrayList<>(3);
+        List<NameValuePair> params = new ArrayList<>(1);
         params.add(new BasicNameValuePair("nodeID", Integer.toString(nodeID)));
-        return new CSRequest(getCsUrl(), "otag.favoritesDelete", cstoken, params, new ForwardHeaders(request));
+        return new CSRequest(getCsUrl(), "otag.favoritesDelete", params, new CSForwardHeaders(request));
     }
 
     /**
