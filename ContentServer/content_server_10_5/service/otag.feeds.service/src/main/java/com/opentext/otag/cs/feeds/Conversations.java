@@ -1,9 +1,6 @@
 package com.opentext.otag.cs.feeds;
 
-import com.opentext.otag.api.shared.util.ForwardHeaders;
-import com.opentext.otag.rest.util.HeaderUtil;
-import com.sun.xml.internal.ws.client.sei.ResponseBuilder;
-
+import com.opentext.otag.rest.util.CSForwardHeaders;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -26,7 +23,7 @@ public class Conversations {
 
 		
 		Feeds.Feed feed = new FeedGetter(before, after, count,
-                HeaderUtil.CSForwardHeaders(request)).setConversationID(conversationID).getFeed();
+                new CSForwardHeaders(request)).setConversationID(conversationID).getFeed();
 			
 		return Response.ok(feed).build();
 	}
