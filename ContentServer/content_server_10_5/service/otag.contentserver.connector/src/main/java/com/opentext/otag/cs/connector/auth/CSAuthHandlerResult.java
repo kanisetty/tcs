@@ -13,7 +13,7 @@ public class CSAuthHandlerResult extends AuthHandlerResult {
 
     private static final Log LOG = LogFactory.getLog(CSAuthHandlerResult.class);
 
-    public static final String CSTOKEN = "cstoken";
+    public static final String OTCSTICKET = "otcsticket";
     public static final String IS_ADMIN = "isAdmin";
     public static final String USER_NAME = "userName";
     public static final String CS_USER_NAME = "csUsername";
@@ -25,18 +25,19 @@ public class CSAuthHandlerResult extends AuthHandlerResult {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public CSAuthHandlerResult(String jsonResponse) {
-        String gotLLCookie = null;
-        boolean gotIsAdmin = false;
+        String otcsticket = null;
+        boolean isAdmin = false;
+        boolean isExternal = false;
         CSUserProfile gotUserProfile = null;
         String gotErrMsg = null;
 
         try {
             JsonNode json = MAPPER.readValue(jsonResponse, JsonNode.class);
             username = json.get(USER_NAME).asText();
-            gotLLCookie = json.get(CSTOKEN).asText();
-            gotIsAdmin = json.get(IS_ADMIN).asBoolean();
-            boolean gotIsExternal = json.get(IS_EXTERNAL).asBoolean();
-            gotUserProfile = new CSUserProfile(jsonResponse, gotIsAdmin, gotIsExternal);
+            otcsticket = json.get(OTCSTICKET).asText();
+            isAdmin = json.get(IS_ADMIN).asBoolean();
+            isExternal = json.get(IS_EXTERNAL).asBoolean();
+            gotUserProfile = new CSUserProfile(jsonResponse, isAdmin, isExternal);
 
             addResponseBodyContent(json);
         } catch (IOException e) {
@@ -47,17 +48,16 @@ public class CSAuthHandlerResult extends AuthHandlerResult {
             LOG.error(gotErrMsg, e);
         }
 
-        addRootCookie(ContentServerConnector.CS_COOKIE_NAME, gotLLCookie);
-        success = (gotLLCookie != null);
-        admin = gotIsAdmin;
+        success = (otcsticket != null);
+        admin = isAdmin;
         errorMessage = gotErrMsg;
         userProfile = gotUserProfile;
     }
 
     private void addResponseBodyContent(JsonNode json) {
-        String csToken = json.get(CSTOKEN).asText();
-        if (csToken != null)
-            addResponseField(CSTOKEN, csToken);
+        String otcsticket = json.get(OTCSTICKET).asText();
+        if (otcsticket != null)
+            addResponseField(OTCSTICKET, otcsticket);
         String csUsername = json.get(USER_NAME).asText();
         if (csUsername != null)
             addResponseField(CS_USER_NAME, csUsername);
