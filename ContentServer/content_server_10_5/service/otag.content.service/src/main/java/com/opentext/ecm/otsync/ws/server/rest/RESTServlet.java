@@ -36,7 +36,6 @@ public class RESTServlet extends HttpServlet {
             //this.addSubPath(new Clients());
             this.addSubPath(new Settings());
             this.addSubPath(new AppRoots());
-            this.addSubPath(new Properties());
             this.addSubPath(new Watches());
             this.addSubPath(new Events());
         }

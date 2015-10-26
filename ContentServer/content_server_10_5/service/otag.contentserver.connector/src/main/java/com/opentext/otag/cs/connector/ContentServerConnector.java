@@ -139,7 +139,7 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
 
     @Override
     public String getConnectorVersion() {
-        return "10.5";
+        return "16";
     }
 
     @Override
