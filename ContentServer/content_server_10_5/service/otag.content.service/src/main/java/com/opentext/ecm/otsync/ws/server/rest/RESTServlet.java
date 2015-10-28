@@ -34,7 +34,6 @@ public class RESTServlet extends HttpServlet {
             this.addSubPath(new Notifications());
             // TODO FIXME removed as it was used for completion of client wipe, to discuss
             //this.addSubPath(new Clients());
-            this.addSubPath(new Settings());
             this.addSubPath(new AppRoots());
             this.addSubPath(new Watches());
             this.addSubPath(new Events());
