@@ -1,9 +1,9 @@
 package com.opentext.ecm.otsync.ws.server.rest.resources;
 
 import com.opentext.ecm.otsync.ContentServiceConstants;
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,7 +39,6 @@ public class Auth extends ResourcePath {
         HashMap<String, Object> payload = Message.makePayload(Message.AUTH_KEY_VALUE, Message.AUTH_KEY_VALUE, req);
         payload.put(Message.USERNAME_KEY_NAME, req.getParameter("username"));
         payload.put(Message.PASSWORD_KEY_NAME, req.getParameter("password"));
-        payload.put(Message.OTDSTICKET_KEY_NAME, req.getParameter("otdsTicket"));
         payload.put(Message.IMPERSONATE_KEY_NAME, Boolean.parseBoolean(req.getParameter("impersonate")));
 
         //Client tracking info
@@ -60,13 +59,11 @@ public class Auth extends ResourcePath {
     }
 
     public void getAdminCookie(HttpServletRequest req, HttpServletResponse resp) {
-        RequestHeader headers = new RequestHeader(req);
-
         Map<String, String> params = new HashMap<String, String>();
         params.put("func", "otsync.adminAuth");
         params.put("username", req.getParameter("username"));
         params.put("password", req.getParameter("password"));
 
-        doAdminApiPost(resp, null, headers, params, true);
+        doAdminApiPost(resp, new CSForwardHeaders(req), params, true);
     }
 }

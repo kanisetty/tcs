@@ -140,6 +140,10 @@ public class ContentServerService implements AppworksServiceContextHandler {
             serviceEngine.shutdown();
     }
 
+    public static Map<String, ClientType> getClientInfo(){
+        return clientInfo;
+    }
+
     /**
      * Access the Content Server URL, without this piece of information all channels
      * are locked down. This method returns null if we failed to connect to Content

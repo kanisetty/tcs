@@ -3,12 +3,12 @@ package com.opentext.ecm.otsync.ws.server.rest;
 import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
 import com.opentext.ecm.otsync.http.HTTPRequestManager.ResponseWithStatus;
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.server.servlet3.Servlet3ContentChannel;
 import com.opentext.ecm.otsync.ws.server.servlet3.Servlet3FrontChannel;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 import org.apache.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ public class ResourcePath {
 
     private static final String TOKEN_COOKIE = "otagtoken";
     private static final String TOKEN_PARAM = "token";
-    public static final String CSTOKEN = "cstoken";
+    public static final String OTCSTICKET_HEADER_NAME = "OTCSTICKET";
     private int pathIndex = 0;
     final private List<ResourcePath> subPaths = new ArrayList<>();
 
@@ -128,12 +128,14 @@ public class ResourcePath {
         }
     }
 
-    public static String getCSToken(HttpServletRequest req) {
-        String cstoken = req.getParameter(CSTOKEN);
-        if (cstoken == null) {
-            cstoken = ServletUtil.getCookie(req, ContentServiceConstants.CS_COOKIE_NAME);
+    public static String getOTCSTicket(HttpServletRequest request) {
+        String otcsticket = request.getHeader(OTCSTICKET_HEADER_NAME);
+
+        if (otcsticket == null) {
+
+            otcsticket = ServletUtil.getCookie(request, ContentServiceConstants.CS_COOKIE_NAME);
         }
-        return cstoken;
+        return otcsticket;
     }
 
     public static String getToken(HttpServletRequest req) {
@@ -179,14 +181,13 @@ public class ResourcePath {
         }
     }
 
-    public static boolean doAdminApiPost(HttpServletResponse resp, String cookie, RequestHeader headers,
-                                         Map<String, String> params, boolean forwardResponse) {
+    public static boolean doAdminApiPost(HttpServletResponse resp, CSForwardHeaders headers, Map<String, String> params, boolean forwardResponse) {
         boolean success = false;
         try {
             HTTPRequestManager requestManager = ContentServerService.getHttpManager();
             if (requestManager != null) {
                 ResponseWithStatus response = requestManager.post(ContentServerService.getCsUrl(),
-                        params, ContentServiceConstants.CS_COOKIE_NAME, cookie, headers);
+                        params, headers);
 
                 int statusCode = response.status.getStatusCode();
                 if (statusCode == HttpStatus.SC_OK) {
@@ -199,7 +200,7 @@ public class ResourcePath {
 
                     success = true;
                 } else if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
-                    // 302 happens when CS10 tries to redirect us to a login page, i.e. the cstoken isn't good
+                    // 302 happens when CS10 tries to redirect us to a login page, i.e. the otcsticket isn't good
                     rejectAuth(resp);
                 } else {
                     resp.sendError(statusCode, response.status.getReasonPhrase());

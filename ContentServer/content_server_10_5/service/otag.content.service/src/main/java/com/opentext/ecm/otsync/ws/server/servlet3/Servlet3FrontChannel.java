@@ -3,13 +3,13 @@ package com.opentext.ecm.otsync.ws.server.servlet3;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.engine.core.SuspendedActionQueue;
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.listeners.SynchronousMessageSwitch;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.message.MessageConverter;
 import com.opentext.ecm.otsync.ws.server.ResponseHandler;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -108,8 +108,8 @@ public class Servlet3FrontChannel {
     private void sendFrontChannelPayload(HttpServletRequest request, AsyncContext asyncRequest, Map<String, Object> payload,
                                          Map<String, Object> extraData, boolean enqueue) {
         // get the forwarded-for header if it exists
-        RequestHeader headers = new RequestHeader(request, payload);
-        payload.put(RequestHeader.REQUEST_HEADER_KEY, headers);
+        CSForwardHeaders headers = new CSForwardHeaders(request);
+        payload.put(CSForwardHeaders.REQUEST_HEADER_KEY, headers);
 
         // create a response handler that will connect the message to this comet event, and
         // pass the message on to the notification service for handling by registered listeners

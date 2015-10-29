@@ -31,23 +31,8 @@
 
 	<servlet-mapping>
 	    <servlet-name>RESTServlet</servlet-name>
-	    <url-pattern>/v3/*</url-pattern>
-		<url-pattern>/v4/*</url-pattern>
-  	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>RESTServletJersey</servlet-name>
-		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-		<init-param>
-			<param-name>javax.ws.rs.Application</param-name>
-			<param-value>com.opentext.ecm.otsync.content.ContentAPI</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>RESTServletJersey</servlet-name>
 		<url-pattern>/v5/*</url-pattern>
-	</servlet-mapping>
+  	</servlet-mapping>
 
 	<mime-mapping> 
 		<extension>ico</extension> 

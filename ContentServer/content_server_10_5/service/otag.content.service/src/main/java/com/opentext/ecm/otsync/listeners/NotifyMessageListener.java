@@ -1,11 +1,11 @@
 package com.opentext.ecm.otsync.listeners;
 
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.payload.Payload;
 import com.opentext.otag.api.shared.types.notification.NotificationSeqBounds;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 import com.opentext.otag.sdk.client.NotificationsClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,8 +32,8 @@ public class NotifyMessageListener implements MessageForwarder {
         Map<String, String> params = new HashMap<>();
 
         // remove header values from the payload while it is being JSONified
-        RequestHeader headers = (RequestHeader) payload.getValue(RequestHeader.REQUEST_HEADER_KEY);
-        payload.remove(RequestHeader.REQUEST_HEADER_KEY);
+        CSForwardHeaders headers = (CSForwardHeaders) payload.getValue(CSForwardHeaders.REQUEST_HEADER_KEY);
+        payload.remove(CSForwardHeaders.REQUEST_HEADER_KEY);
 
         params.put("func", "otsync.otsyncrequest");
         params.put("payload", payload.getJsonString());

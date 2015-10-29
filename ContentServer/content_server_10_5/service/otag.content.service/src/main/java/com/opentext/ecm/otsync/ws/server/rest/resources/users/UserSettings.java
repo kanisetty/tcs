@@ -39,9 +39,7 @@ public class UserSettings extends ResourcePath {
         Enumeration<String> reqParams = req.getParameterNames();
         while (reqParams.hasMoreElements()) {
             String param = reqParams.nextElement();
-            if (!Message.CSTOKEN_KEY_NAME.equals(param)) {
-                Message.infoPut(payload, param, Boolean.parseBoolean(req.getParameter(param)));
-            }
+            Message.infoPut(payload, param, Boolean.parseBoolean(req.getParameter(param)));
         }
         getFrontChannel().sendFrontChannelPayload(req, payload, false);
     }

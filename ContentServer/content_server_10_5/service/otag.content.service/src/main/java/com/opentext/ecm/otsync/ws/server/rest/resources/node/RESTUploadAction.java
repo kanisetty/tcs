@@ -3,12 +3,12 @@ package com.opentext.ecm.otsync.ws.server.rest.resources.node;
 import com.opentext.ecm.otsync.engine.ContentServiceEngine;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.ws.message.MessageConverter.Serializer;
 import com.opentext.ecm.otsync.ws.server.rest.RESTServlet;
 import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
@@ -25,10 +25,9 @@ public class RESTUploadAction extends SuspendedAction {
     private HTTPRequestManager serverConnection;
     private AsyncContext async;
     private HttpServletResponse resp;
-    private RequestHeader headers;
+    private CSForwardHeaders headers;
     private InputStream stream;
     private long fileSize;
-    private String cstoken;
     private String filename;
     private Map<String, String> params;
     public static final String PHOTO_UPLOAD_PART_NAME = "Photo";
@@ -37,7 +36,7 @@ public class RESTUploadAction extends SuspendedAction {
     private String filefieldname = "";
 
     public RESTUploadAction(HTTPRequestManager serverConnection,
-                            AsyncContext async, RequestHeader headers,
+                            AsyncContext async, CSForwardHeaders headers,
                             InputStream stream, long fileSize, String filename, String filefieldname,
                             Map<String, String> params) {
         this.serverConnection = serverConnection;
@@ -46,7 +45,6 @@ public class RESTUploadAction extends SuspendedAction {
         this.headers = headers;
         this.stream = stream;
         this.fileSize = fileSize;
-        this.cstoken = headers.getOTCSTicket();
         this.filename = filename;
         this.filefieldname = filefieldname;
         this.params = params;
@@ -55,9 +53,7 @@ public class RESTUploadAction extends SuspendedAction {
     @Override
     public void resume() {
         try {
-            serverConnection.forwardMultiPartPost(
-                    stream, params, filefieldname, filename, fileSize,
-                    headers, resp, cstoken);
+            serverConnection.forwardMultiPartPost( stream, params, filefieldname, filename, fileSize, headers, resp);
             async.complete();
         } catch (IOException e) {
             try {
@@ -78,8 +74,6 @@ public class RESTUploadAction extends SuspendedAction {
                                      HttpServletResponse resp, HashMap<String, Object> payload,
                                      String fileFieldName) {
         try {
-            RequestHeader headers = new RequestHeader(req);
-
             Part filePart = req.getPart(UPLOAD_PART_NAME);
 
             if (filePart != null) {
@@ -104,7 +98,7 @@ public class RESTUploadAction extends SuspendedAction {
                     AsyncContext asyncRequest = req.startAsync();
                     asyncRequest.setTimeout(ContentServerService.getSettingsService().getServlet3ContentTimeout());
 
-                    SuspendedAction action = new RESTUploadAction(serverConnection, asyncRequest, headers,
+                    SuspendedAction action = new RESTUploadAction(serverConnection, asyncRequest, new CSForwardHeaders(req),
                             stream, fileSize, filename, fileFieldName, params);
                     getEngine().getContentChannel().sendUpload(action);
                 } else {
@@ -138,11 +132,7 @@ public class RESTUploadAction extends SuspendedAction {
                                              Map<String, String> params, String fileFieldName,
                                              HttpServletRequest req, HttpServletResponse resp) {
         try {
-            RequestHeader headers = new RequestHeader(req);
-
             Part filePart = req.getPart(UPLOAD_PART_NAME);
-
-            String cstoken = ResourcePath.getCSToken(req);
 
             if (filePart != null) {
                 InputStream stream = filePart.getInputStream();
@@ -156,9 +146,7 @@ public class RESTUploadAction extends SuspendedAction {
 
                     HTTPRequestManager serverConnection = getHttpManager();
 
-                    serverConnection.forwardMultiPartPost(
-                            stream, params, fileFieldName, filename, fileSize,
-                            headers, resp, cstoken);
+                    serverConnection.forwardMultiPartPost( stream, params, fileFieldName, filename, fileSize, new CSForwardHeaders(req), resp );
                     resp.flushBuffer();
                     resp.getOutputStream().close();
                 } else {

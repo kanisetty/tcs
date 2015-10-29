@@ -1,12 +1,11 @@
 package com.opentext.ecm.otsync.listeners;
 
-import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.ContentServerURL;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.server.AbstractDownloadChannel;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
@@ -36,8 +35,6 @@ public class DownloadAction extends SuspendedAction {
 
     private void pipeDownload(final HttpServletRequest request, final HttpServletResponse response) {
         String url = request.getParameter(CONTENT_URL_PARAMETER_NAME);
-        final String llcookie = AbstractDownloadChannel.getLLCookieFromRequest(request);
-        final RequestHeader headers = new RequestHeader(request, llcookie);
         ContentServerURL csURL = new ContentServerURL(url);
 
         // if there's no url given, check for an ojbect id
@@ -63,15 +60,9 @@ public class DownloadAction extends SuspendedAction {
         try {
 
             AbstractDownloadChannel.log.info("Downloading " + url);
-
-            if (llcookie != null) {
-                contentServerConnection.streamGetResponseWithUserCookie(url, response,
-                        ContentServiceConstants.CS_COOKIE_NAME, llcookie, headers);
-            } else {
-                contentServerConnection.streamGetResponse(url, response);
-            }
-
+            contentServerConnection.streamGetResponseWithHeaders(url, response, new CSForwardHeaders(request));
         } catch (IOException e) {
+
             ServletUtil.error(response, NO_RESPONSE_ERROR_MSG, HttpServletResponse.SC_NO_CONTENT);
         }
     }

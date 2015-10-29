@@ -25,7 +25,6 @@ public class AbstractChunkedContentChannel extends AbstractDownloadChannel {
 
     protected void chunkedDownload(final HttpServletRequest request, final HttpServletResponse response) {
         String url = request.getParameter(CONTENT_URL_PARAMETER_NAME);
-        final String llcookie = getLLCookieFromRequest(request);
         ContentServerURL csURL = new ContentServerURL(url);
 
         // if there's no url given, check for an object id
@@ -52,7 +51,7 @@ public class AbstractChunkedContentChannel extends AbstractDownloadChannel {
 
         log.info("Downloading chunk of " + url);
 
-        _queue.downloadFile(request, response, url, llcookie);
+        _queue.downloadFile(request, response, url);
     }
 
     public static void closeResponse(HttpServletResponse response) {

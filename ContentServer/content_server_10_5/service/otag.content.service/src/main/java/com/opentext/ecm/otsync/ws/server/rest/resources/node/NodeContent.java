@@ -3,10 +3,10 @@ package com.opentext.ecm.otsync.ws.server.rest.resources.node;
 import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
@@ -30,20 +30,18 @@ public class NodeContent extends ResourcePath {
 
     private void download(HttpServletRequest req, HttpServletResponse resp, String node) {
         String version = req.getParameter(Message.VERSION_KEY_REST_NAME);
-        String llcookie = getCSToken(req);
+        String otcsticket = getOTCSTicket(req);
         boolean auto = Boolean.parseBoolean(req.getParameter(Message.AUTO_MODE_KEY_NAME));
 
-        if (llcookie != null) {
+        if (otcsticket != null) {
             String url = ServletUtil.getDownloadUrlForID(node, version);
 
             AsyncContext asyncRequest = req.startAsync();
             asyncRequest.setTimeout(getSettingsService().getServlet3ContentTimeout());
 
-            RequestHeader headers = new RequestHeader(req);
-
             HTTPRequestManager serverConnection = getServerConnection();
 
-            SuspendedAction action = new RESTDownloadAction(serverConnection, asyncRequest, headers, url, llcookie);
+            SuspendedAction action = new RESTDownloadAction(serverConnection, asyncRequest, new CSForwardHeaders(req), url);
 
             // enqueue only downloads marked "auto", representing automatic file-sync;
             // others can run directly on this thread
