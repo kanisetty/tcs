@@ -5,11 +5,11 @@
                              
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.opentext.otag.rest.shares</groupId>
-    <artifactId>otag.shares.service</artifactId>
+    <groupId>com.opentext.otag.rest.tempocontent</groupId>
+    <artifactId>otag.tempocontent.service</artifactId>
     <packaging>war</packaging>
     <version>2.0-SNAPSHOT</version>
-    <name>Content Server Shares AppWorks Service</name>
+    <name>Content Server Tempo Content AppWorks Service</name>
     <description>TODO</description>
 
     <properties>
@@ -18,14 +18,14 @@
         <appworks.platform.version>2.0-SNAPSHOT</appworks.platform.version>
 
         <!-- General app.properties -->
-        <app.properties.displayName>Shares Service</app.properties.displayName>
-        <app.properties.description>Content Server Shares Service</app.properties.description>
+        <app.properties.displayName>Tempo Content Service</app.properties.displayName>
+        <app.properties.description>Content Server Tempo Content Service</app.properties.description>
         <app.properties.version>16.0</app.properties.version>
         <app.properties.minimumClientVersion>2</app.properties.minimumClientVersion>
         <app.properties.type>service</app.properties.type>
 
         <!-- Output artifacts properties -->
-        <appworks.service.name>shares</appworks.service.name>
+        <appworks.service.name>tempocontent</appworks.service.name>
         <appworks.service.version>${app.properties.version}</appworks.service.version>
         <appworks.service.zip.name>${appworks.service.name}_${appworks.service.version}</appworks.service.zip.name>
     </properties>
