@@ -21,7 +21,6 @@ import java.util.Map;
 public class ResourcePath {
 
     private static final String TOKEN_COOKIE = "otagtoken";
-    private static final String TOKEN_PARAM = "token";
     public static final String OTCSTICKET_HEADER_NAME = "OTCSTICKET";
     private int pathIndex = 0;
     final private List<ResourcePath> subPaths = new ArrayList<>();
@@ -136,14 +135,6 @@ public class ResourcePath {
             otcsticket = ServletUtil.getCookie(request, ContentServiceConstants.CS_COOKIE_NAME);
         }
         return otcsticket;
-    }
-
-    public static String getToken(HttpServletRequest req) {
-        String token = req.getParameter(TOKEN_PARAM);
-        if (token == null) {
-            token = ServletUtil.getCookie(req, TOKEN_COOKIE);
-        }
-        return token;
     }
 
     public static void rejectResource(HttpServletResponse resp) {

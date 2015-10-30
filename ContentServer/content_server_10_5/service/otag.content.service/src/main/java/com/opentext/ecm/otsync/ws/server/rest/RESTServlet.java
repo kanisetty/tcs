@@ -3,9 +3,7 @@ package com.opentext.ecm.otsync.ws.server.rest;
 import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.ws.server.rest.ResourcePath.Verb;
 import com.opentext.ecm.otsync.ws.server.rest.resources.*;
-import com.opentext.ecm.otsync.ws.server.rest.resources.approots.AppRoots;
 import com.opentext.ecm.otsync.ws.server.rest.resources.node.Nodes;
-import com.opentext.ecm.otsync.ws.server.rest.resources.shares.Shares;
 import com.opentext.ecm.otsync.ws.server.rest.resources.users.Users;
 import com.opentext.ecm.otsync.ws.server.rest.resources.watches.Watches;
 import org.apache.commons.logging.Log;
@@ -29,12 +27,9 @@ public class RESTServlet extends HttpServlet {
         public PathRoot() {
             this.addSubPath(new Auth());
             this.addSubPath(new Nodes());
-            this.addSubPath(new Shares());
             this.addSubPath(new Users());
-            this.addSubPath(new Notifications());
             // TODO FIXME removed as it was used for completion of client wipe, to discuss
             //this.addSubPath(new Clients());
-            this.addSubPath(new AppRoots());
             this.addSubPath(new Watches());
             this.addSubPath(new Events());
             this.addSubPath(new Settings());
