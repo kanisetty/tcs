@@ -1,5 +1,6 @@
 package com.opentext.otag.cs.tasks;
 
+import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
 import com.opentext.otag.sdk.client.ServiceClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
@@ -9,6 +10,9 @@ import com.opentext.otag.api.shared.types.management.DeploymentResult;
 import com.opentext.otag.api.shared.types.sdk.EIMConnector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 public class TasksService implements AppworksServiceContextHandler {
 
@@ -24,13 +28,13 @@ public class TasksService implements AppworksServiceContextHandler {
         serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl("ContentServer", "10.5");
+            EIMConnectorClient csConnector = new EIMConnectorClientImpl("ContentServer", "16");
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
 
                 String connectionUrl = csConnection.getConnectionUrl();
-                LOG.info("Got a connection to Content Server 10.5, URL=" + connectionUrl);
+                LOG.info("Got a connection to Content Server 16, URL=" + connectionUrl);
                 LOG.info("Connection details " + csConnection.toString());
                 if (connectionUrl == null || connectionUrl.isEmpty())
                     failBuild("Managed to resolve Content Server connector but it did not have a " +
@@ -55,6 +59,24 @@ public class TasksService implements AppworksServiceContextHandler {
         return (csConnection != null) ? csConnection.getConnectionUrl() : null;
     }
 
+    public static String getCsUrl() {
+
+        TasksService tasksService = AppworksComponentContext.getComponent(TasksService.class);
+
+        if (tasksService == null) {
+            LOG.error("Unable to resolve TasksService");
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+
+        String csUrl = tasksService.getCsConnection();
+
+        if (csUrl == null || csUrl.isEmpty()) {
+            LOG.error("Unable to resolve Content Server connection, all requests will be rejected");
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+
+        return csUrl;
+    }
     private void failBuild(String errMsg) {
         LOG.error(errMsg);
         if (!serviceClient.completeDeployment(new DeploymentResult(errMsg))) {

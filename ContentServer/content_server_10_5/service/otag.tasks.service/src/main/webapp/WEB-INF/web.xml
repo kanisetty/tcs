@@ -17,7 +17,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>RESTServlet</servlet-name>
-        <url-pattern>/v1/*</url-pattern>
+        <url-pattern>/v5/*</url-pattern>
     </servlet-mapping>
 
 </web-app>
