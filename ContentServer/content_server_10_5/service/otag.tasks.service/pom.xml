@@ -8,14 +8,14 @@
     <groupId>com.opentext.otag.cs.tasks</groupId>
     <artifactId>otag.tasks.service</artifactId>
     <packaging>war</packaging>
-    <version>2.0-SNAPSHOT</version>
+    <version>16.01-ALPHA-4</version>
     <name>Content Server Tasks AppWorks Service</name>
     <description>TODO</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
-        <appworks.platform.version>2.0-SNAPSHOT</appworks.platform.version>
+        <appworks.platform.version>16.01-ALPHA-4</appworks.platform.version>
 
         <!-- General app.properties -->
         <app.properties.displayName>Tasks Service</app.properties.displayName>

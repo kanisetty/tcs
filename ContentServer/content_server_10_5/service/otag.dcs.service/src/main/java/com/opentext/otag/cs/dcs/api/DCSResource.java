@@ -1,7 +1,5 @@
 package com.opentext.otag.cs.dcs.api;
 
-import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
-import com.opentext.otag.cs.dcs.DocumentConversionService;
 import com.opentext.otag.cs.dcs.Node;
 import com.opentext.otag.cs.dcs.NodeFactory;
 import org.apache.commons.logging.Log;
@@ -16,23 +14,19 @@ import javax.ws.rs.core.StreamingOutput;
 
 
 @Path("nodes/{nodeID}")
-public class Nodes {
+public class DCSResource {
 
-    public static final Log log = LogFactory.getLog(Nodes.class);
+    public static final Log log = LogFactory.getLog(DCSResource.class);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getNumberOfPages(@PathParam("nodeID") String nodeID,
-                                     @QueryParam("cstoken") String cstoken,
-                                     @CookieParam("LLCookie") String llcookie,
                                      @Context HttpServletRequest request) {
-        if (llcookie != null)
-            cstoken = llcookie;
 
         try {
             NodeFactory nodeFactory = NodeFactory.singleton();
             Node node = nodeFactory.node(nodeID);
-            int count = node.getTotalPages(nodeFactory.newCSNodeResource(nodeID, cstoken, request));
+            int count = node.getTotalPages(nodeFactory.newCSNodeResource(nodeID, request));
 
             return Response.ok(count).build();
         } catch (WebApplicationException e) {
@@ -49,17 +43,13 @@ public class Nodes {
     @Produces("image/png")
     public StreamingOutput getRenderedPage(@PathParam("nodeID") String nodeID,
                                            @PathParam("page") int page,
-                                           @QueryParam("csToken") String cstoken,
-                                           @CookieParam("LLCookie") String llcookie,
                                            @Context HttpServletRequest request) {
-        if (llcookie != null)
-            cstoken = llcookie;
 
         try {
             NodeFactory nodeFactory = NodeFactory.singleton();
             Node node = nodeFactory.node(nodeID);
 
-            return node.getPage(page, nodeFactory.newCSNodeResource(nodeID, cstoken, request));
+            return node.getPage(page, nodeFactory.newCSNodeResource(nodeID, request));
         } catch (WebApplicationException e) {
             log.error("Get page" + page + " error for " + nodeID, e);
             throw e;
@@ -68,19 +58,4 @@ public class Nodes {
             throw new WebApplicationException(e);
         }
     }
-
-    public void ensureCsConnection() {
-        DocumentConversionService dcs = AppworksComponentContext.getComponent(DocumentConversionService.class);
-        if (dcs == null) {
-            log.error("Unable to resolve DocumentConversionService");
-            throw new WebApplicationException(Response.Status.FORBIDDEN);
-        }
-
-        String csUrl = dcs.getCsConnection();
-        if (csUrl == null || csUrl.isEmpty()) {
-            log.error("Unable to resolve Content Server connection, all requests will be rejected");
-            throw new WebApplicationException(Response.Status.FORBIDDEN);
-        }
-    }
-
 }

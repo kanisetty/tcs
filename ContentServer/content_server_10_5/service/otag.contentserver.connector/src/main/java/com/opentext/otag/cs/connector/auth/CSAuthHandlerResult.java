@@ -55,15 +55,19 @@ public class CSAuthHandlerResult extends AuthHandlerResult {
     }
 
     private void addResponseBodyContent(JsonNode json) {
+
         String otcsticket = json.get(OTCSTICKET).asText();
+
         if (otcsticket != null)
-            addResponseField(OTCSTICKET, otcsticket);
+            addAdditionalProperty(OTCSTICKET, otcsticket);
+
         String csUsername = json.get(USER_NAME).asText();
         if (csUsername != null)
-            addResponseField(CS_USER_NAME, csUsername);
+            addAdditionalProperty(CS_USER_NAME, csUsername);
+
         String csUserId = json.get(USER_ID).asText();
         if (csUserId != null)
-            addResponseField(CS_USER_ID, csUserId);
+            addAdditionalProperty(CS_USER_ID, csUserId);
     }
 
 }

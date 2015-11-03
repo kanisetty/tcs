@@ -1,7 +1,7 @@
 package com.opentext.otag.cs.dcs;
 
 import com.opentext.otag.api.CSRequest;
-import com.opentext.otag.api.shared.util.ForwardHeaders;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -11,11 +11,9 @@ import java.util.List;
 public class CSRequestBuilder {
     private List<NameValuePair> params = new ArrayList<>();
     private String func;
-    private String csToken;
-    private ForwardHeaders header;
+    private CSForwardHeaders header;
 
-    public CSRequestBuilder(String csToken, ForwardHeaders headers) {
-        this.csToken = csToken;
+    public CSRequestBuilder(CSForwardHeaders headers) {
         this.header = headers;
     }
 
@@ -31,6 +29,6 @@ public class CSRequestBuilder {
 
     public CSRequest build() {
         return new CSRequest(DocumentConversionService.getCsUrl(),
-                this.func, this.csToken, this.params, header);
+                this.func, this.params, header);
     }
 }

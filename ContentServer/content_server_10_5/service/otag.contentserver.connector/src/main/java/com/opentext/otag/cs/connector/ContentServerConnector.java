@@ -1,5 +1,6 @@
 package com.opentext.otag.cs.connector;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.opentext.otag.api.HttpClient;
 import com.opentext.otag.cs.connector.auth.trustedprovider.TrustedServerKeyRegistrationHandler;
 import com.opentext.otag.sdk.client.ServiceClient;
@@ -219,9 +220,11 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
                     csAdminPassword != null && !csAdminPassword.isEmpty()) {
                 ContentServerAuthHandler authHandler = (ContentServerAuthHandler) getAuthHandler();
                 AuthHandlerResult result = authHandler.auth(csAdminUser, csAdminPassword, new ForwardHeaders());
-                Map<String, String> additionalParams = result.getAdditionalResponseFields();
+                JsonNode additionalParams = result.getAddtlRespFields();
+
                 if (additionalParams != null) {
-                    String otcsticket = additionalParams.get("otcsticket");
+
+                    String otcsticket = additionalParams.get("otcsticket").asText();
                     return otcsticket;
                 }
             } else {

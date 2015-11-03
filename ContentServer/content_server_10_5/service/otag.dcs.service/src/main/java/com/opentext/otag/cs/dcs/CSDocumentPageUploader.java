@@ -1,11 +1,10 @@
 package com.opentext.otag.cs.dcs;
 
-import com.opentext.otag.api.CSMultiPartRequest;
 import com.opentext.otag.api.CSRequest;
 import com.opentext.otag.api.HttpClient;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 import com.opentext.otag.sdk.client.TrustedProviderClient;
 import com.opentext.otag.api.shared.types.TrustedProvider;
-import com.opentext.otag.api.shared.util.ForwardHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
@@ -24,15 +23,13 @@ import java.util.List;
 public class CSDocumentPageUploader {
 
     private String nodeID;
-    private String csToken;
-    private ForwardHeaders headers;
+    private CSForwardHeaders headers;
     private String csUrl;
     private TrustedProviderClient trustedProviderClient;
 
-    public CSDocumentPageUploader(String nodeID, String csToken, ForwardHeaders forwardHeaders) {
+    public CSDocumentPageUploader(String nodeID, CSForwardHeaders csForwardHeaders) {
         this.nodeID = nodeID;
-        this.csToken = csToken;
-        this.headers = forwardHeaders;
+        this.headers = csForwardHeaders;
         csUrl = DocumentConversionService.getCsUrl();
         trustedProviderClient = new TrustedProviderClient();
     }
@@ -43,7 +40,6 @@ public class CSDocumentPageUploader {
         if (provider == null) throw new IOException("Unable to get ContentServer Provider");
 
         List<NameValuePair> params = new ArrayList<>(5);
-        params.add(new BasicNameValuePair(CSRequest.CSTOKEN_PARAM_NAME, csToken));
         params.add(new BasicNameValuePair(CSRequest.FUNC_PARAM_NAME, "otag.renderedpagepost"));
         params.add(new BasicNameValuePair("nodeID", nodeID));
         params.add(new BasicNameValuePair("page", Integer.toString(pageNumber)));
@@ -62,9 +58,6 @@ public class CSDocumentPageUploader {
                     size);
 
             headers.addTo(request);
-
-            // for SEA compatibility, we must include the llcookie
-            request.addHeader("Cookie", CSMultiPartRequest.CS_COOKIE_NAME + "=" + csToken);
 
             HttpClient.DetailedResponse response = client.executeRequestWithDetails(request, null);
 
