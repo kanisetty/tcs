@@ -13,15 +13,15 @@
     <name>OTSync bundles parent</name>
 
     <modules>
-        <module>otag.assignments.service</module>
-        <module>otag.content.service</module>
-        <module>otag.dcs.service</module>
-        <module>otag.favorites.service</module>
-        <module>otag.feeds.service</module>
-        <module>otag.shares.service</module>
-        <module>otag.tasks.service</module>
-        <module>otag.tempocontent.service</module>
-        <module>otag.workflow.service</module>
+        <module>assignments.service</module>
+        <module>content.service</module>
+        <module>dcs.service</module>
+        <module>favorites.service</module>
+        <module>feeds.service</module>
+        <module>shares.service</module>
+        <module>tasks.service</module>
+        <module>tempocontent.service</module>
+        <module>workflow.service</module>
     </modules>
 
     <properties>
