@@ -1,0 +1,12 @@
+{
+	"tabName":"Tempo Box",
+	"helpUrl":"/content/help.jsp",
+	"menuItems":[
+		{"title":"Settings","url":"#/?loadDialog=settings"},
+		{"title":"About","url":"#/?loadDialog=about"}
+	],
+	"handlers":[
+		{"type":"foldershared","url":"#/?loadDialog=ShareRequests"},
+		{"type":"assigned","url":"#/TASK"}
+	]
+}

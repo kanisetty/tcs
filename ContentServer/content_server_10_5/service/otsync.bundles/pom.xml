@@ -1,0 +1,95 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+                             
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.opentext.otsync</groupId>
+    <artifactId>otsync.bundles.parent</artifactId>
+    <packaging>pom</packaging>
+    <version>16.01-ALPHA-4-SNAPSHOT</version>
+
+    <name>OTSync bundles parent</name>
+
+    <modules>
+        <module>otag.assignments.service</module>
+        <module>otag.content.service</module>
+        <module>otag.dcs.service</module>
+        <module>otag.favorites.service</module>
+        <module>otag.feeds.service</module>
+        <module>otag.shares.service</module>
+        <module>otag.tasks.service</module>
+        <module>otag.tempocontent.service</module>
+        <module>otag.workflow.service</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <otag.platform.version>16.01-ALPHA-4</otag.platform.version>
+        <!-- child modules can reference this using  -->
+        <main.basedir>${project.basedir}</main.basedir>
+
+        <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
+
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+
+                <!-- Deploy sources as well as built artifacts so we can debug effectively when
+                    inside AppWorks service projects -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.2.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- TODO FAO Mike
+                We want to use the dependency plugin to grab the zip deployed to next of the connector
+                We then want to use the assembly plugin to grab all of the other zips we built
+                We probably want to do this in a module that runs last, youll need an entry in the <modules> section above
+
+                This is thd depenedency plugin we want to use to grab the cs connector zip from Nexus
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+
+                -->
+             
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>deployment</id>
+            <name>Internal Releases</name>
+            <url>${nexus.base.url}/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>deployment</id>
+            <name>Internal Releases</name>
+            <url>${nexus.base.url}/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

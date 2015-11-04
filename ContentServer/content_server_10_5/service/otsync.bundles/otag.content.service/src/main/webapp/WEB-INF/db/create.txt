@@ -1,0 +1,5 @@
+drop table if exists newinvitees;
+drop table if exists pwresets;
+create table newinvitees (email,firstname,lastname,invitername,invitedate,validationcode,validationdate);
+create table pwresets (username,validationcode,validationdate);
+.quit

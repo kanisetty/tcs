@@ -1,0 +1,7 @@
+.if-syncmod-h-ggd-show { display:inline; }
+.if-syncmod-h-ggd-showblock { display:block; }
+.if-syncmod-h-ggd-show-trff { display:inline;    }  /* table rows in firefox (before ie! sigh) */
+.if-syncmod-h-ggd-show-trie { display:table-row; }  /* table rows in ie */
+.if-syncmod-h-ggd-show-tcff { display:inline; }
+.if-syncmod-h-ggd-show-tcie { display:table-cell; }
+.if-syncmod-h-ggd-hide { display:none; }
