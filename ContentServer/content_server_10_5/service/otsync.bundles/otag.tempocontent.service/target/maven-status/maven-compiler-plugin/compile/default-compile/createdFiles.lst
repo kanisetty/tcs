@@ -1,9 +1,0 @@
-com\opentext\otag\request\JsonHelper.class
-com\opentext\otag\request\SnakeResponseAdapter.class
-com\opentext\otag\rest\tempocontent\EventsResource.class
-com\opentext\otag\request\NameMapper.class
-com\opentext\otag\rest\tempocontent\WatchesResource.class
-com\opentext\otag\rest\tempocontent\TempoContentAPI.class
-com\opentext\otag\rest\tempocontent\AppRootsResource.class
-com\opentext\otag\request\SnakeResponseAdapter$1.class
-com\opentext\otag\rest\tempocontent\TempoContentService.class
