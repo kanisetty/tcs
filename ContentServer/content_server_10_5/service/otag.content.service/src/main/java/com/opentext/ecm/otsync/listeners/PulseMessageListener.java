@@ -2,10 +2,10 @@ package com.opentext.ecm.otsync.listeners;
 
 import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.payload.Payload;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -62,13 +62,10 @@ public class PulseMessageListener implements MessageForwarder {
         params.put(PULSE_NODE_ID, info.getValueAsString(Message.NODE_ID_KEY_NAME));
 
         // remove header values from the payload
-        RequestHeader headers = (RequestHeader) payload.getValue(RequestHeader.REQUEST_HEADER_KEY);
-        payload.remove(RequestHeader.REQUEST_HEADER_KEY);
+        CSForwardHeaders headers = (CSForwardHeaders) payload.getValue(CSForwardHeaders.REQUEST_HEADER_KEY);
+        payload.remove(CSForwardHeaders.REQUEST_HEADER_KEY);
 
-        // make the request using the llcookie so the server recognizes the user
-        String cookie = payload.getValueAsString(Message.CSTOKEN_KEY_NAME);
-        String in = _serverConnection.postDataWithTemporaryCookie(url, params,
-                ContentServiceConstants.CS_COOKIE_NAME, cookie, headers);
+        String in = _serverConnection.postData(url, params, headers);
 
         return preparePulseResponse(in);
     }
@@ -95,13 +92,10 @@ public class PulseMessageListener implements MessageForwarder {
         String url = ContentServerService.getCsUrl() + PULSE_UPDATE_PATH;
 
         // remove header values from the payload
-        RequestHeader headers = (RequestHeader) payload.getValue(RequestHeader.REQUEST_HEADER_KEY);
-        payload.remove(RequestHeader.REQUEST_HEADER_KEY);
+        CSForwardHeaders headers = (CSForwardHeaders) payload.getValue(CSForwardHeaders.REQUEST_HEADER_KEY);
+        payload.remove(CSForwardHeaders.REQUEST_HEADER_KEY);
 
-        // make the request using the llcookie so the server recognizes the user
-        String cookie = payload.getValueAsString(Message.CSTOKEN_KEY_NAME);
-        String in = _serverConnection.postDataWithTemporaryCookie(url, params,
-                ContentServiceConstants.CS_COOKIE_NAME, cookie, headers);
+        String in = _serverConnection.postData(url, params, headers);
 
         return preparePulseResponse(in);
     }

@@ -1,8 +1,8 @@
 package com.opentext.ecm.otsync.ws.server.rest.resources;
 
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.ws.server.rest.AdminAPI;
 import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,14 +19,11 @@ public class Settings extends ResourcePath {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp,
                          String[] pathParams, int version) {
-        String cookie = getCSToken(req);
-
-        RequestHeader headers = new RequestHeader(req);
 
         Map<String, String> params = new HashMap<>();
         params.put("func", "otsync.settings");
 
-        doAdminApiPost(resp, cookie, headers, params, true); // true: return the response body
+        doAdminApiPost(resp, new CSForwardHeaders(req), params, true); // true: return the response body
     }
 
     @Override

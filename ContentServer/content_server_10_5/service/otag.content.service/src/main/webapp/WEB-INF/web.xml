@@ -27,13 +27,13 @@
 		<servlet-class>com.opentext.ecm.otsync.ws.server.rest.RESTServlet</servlet-class>
 		<load-on-startup>2</load-on-startup>
 		<async-supported>true</async-supported>
-	</servlet>  
+	</servlet>
+
 	<servlet-mapping>
 	    <servlet-name>RESTServlet</servlet-name>
-	    <url-pattern>/v3/*</url-pattern>
-		<url-pattern>/v4/*</url-pattern>
-  </servlet-mapping>
-  	
+		<url-pattern>/v5/*</url-pattern>
+  	</servlet-mapping>
+
 	<mime-mapping> 
 		<extension>ico</extension> 
 		<mime-type>image/x-icon</mime-type> 

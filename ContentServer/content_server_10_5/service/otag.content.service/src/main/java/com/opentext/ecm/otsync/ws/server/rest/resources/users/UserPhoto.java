@@ -2,12 +2,12 @@ package com.opentext.ecm.otsync.ws.server.rest.resources.users;
 
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
 import com.opentext.ecm.otsync.ws.server.rest.resources.node.RESTDownloadAction;
 import com.opentext.ecm.otsync.ws.server.rest.resources.node.RESTUploadAction;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
@@ -30,9 +30,9 @@ public class UserPhoto extends ResourcePath {
     }
 
     private void downloadUserPhoto(HttpServletRequest req, String user, HttpServletResponse resp) {
-        String llcookie = getCSToken(req);
+        String otcsticket = getOTCSTicket(req);
 
-        if (llcookie != null) {
+        if (otcsticket != null) {
             String url = new StringBuilder()
                     .append(ContentServerService.getCsUrl())
                     .append("?func=otsync.GetUserPhoto&userID=")
@@ -42,11 +42,9 @@ public class UserPhoto extends ResourcePath {
             AsyncContext asyncRequest = req.startAsync();
             asyncRequest.setTimeout(getSettingsService().getServlet3RequestTimeout());
 
-            RequestHeader headers = new RequestHeader(req, llcookie);
-
             HTTPRequestManager serverConnection = getServerConnection();
 
-            SuspendedAction action = new RESTDownloadAction(serverConnection, asyncRequest, headers, url, llcookie);
+            SuspendedAction action = new RESTDownloadAction(serverConnection, asyncRequest, new CSForwardHeaders(req), url);
 
             getContentChannel().sendDownload(action, false);
         } else {

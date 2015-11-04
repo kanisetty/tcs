@@ -1,17 +1,15 @@
 package com.opentext.otag.cs.dcs;
 
-import com.opentext.otag.api.shared.util.ForwardHeaders;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 
 public class CSRequestBuilderFactory {
-    private String csToken;
-    private ForwardHeaders forwardHeader;
+    private CSForwardHeaders forwardHeader;
 
-    public CSRequestBuilderFactory(String cstoken, ForwardHeaders forwardHeader) {
-        this.csToken = cstoken;
+    public CSRequestBuilderFactory(CSForwardHeaders forwardHeader) {
         this.forwardHeader = forwardHeader;
     }
 
     public CSRequestBuilder newBuilder() {
-        return new CSRequestBuilder(csToken, forwardHeader);
+        return new CSRequestBuilder(forwardHeader);
     }
 }

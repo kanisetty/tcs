@@ -4,25 +4,22 @@ import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 import com.opentext.otag.sdk.handlers.AbstractSettingChangeHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.*;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
@@ -98,19 +95,7 @@ public class HTTPRequestManager {
         connectionManager.setMaxTotal(settingsService.getCSConnectionPoolSize());
     }
 
-    /**
-     * Sends an HTTP POST request to a url, with the given parameters, as though they
-     * were the contents of an HTML form
-     *
-     * @param serverUrl  - The URL of the server
-     * @param parameters - a map of parameters; they keys are the names of the arguments
-     * @throws IOException
-     */
-    public String postData(String serverUrl, Map<String, String> parameters) throws IOException {
-        return postData(serverUrl, parameters, null);
-    }
-
-    public String postData(String serverUrl, Map<String, String> parameters, RequestHeader headers) throws IOException {
+    public String postData(String serverUrl, Map<String, String> parameters, CSForwardHeaders headers) throws IOException {
 
         // prepare the post arguments as an http entity
         UrlEncodedFormEntity entity = encodeParameters(parameters);
@@ -129,28 +114,16 @@ public class HTTPRequestManager {
         return result;
     }
 
-    public void streamGetResponse(String url, HttpServletResponse servletResponse) throws IOException {
-        throw new UnsupportedOperationException("Downloads are only allowed with cookies at present.");
-    }
-
-    public String storeGetResponse(String url, HttpServletResponse servletResponse, String filename) throws IOException {
-        throw new UnsupportedOperationException("Downloads are only allowed with cookies at present.");
-    }
-
     /**
      * Use for file downloads. Sets the given cookie, just for this request (other threads should be unaffected),
      * and streams the results of the GET request directly back via the servlet response.
      *
      * @param url             The exact URL to download, including any parameters
      * @param servletResponse
-     * @param cookieName
-     * @param value
      * @throws IOException
      */
-    public void streamGetResponseWithUserCookie(String url, HttpServletResponse servletResponse,
-                                                String cookieName, String value,
-                                                RequestHeader headers) throws IOException {
-        HttpRequestPair requestPair = getResponseWithUserCookie(url, cookieName, value, headers);
+    public void streamGetResponseWithHeaders(String url, HttpServletResponse servletResponse, CSForwardHeaders headers) throws IOException {
+        HttpRequestPair requestPair = doGETWithHeaders(url, headers);
         try {
             duplicateResponse(servletResponse, requestPair.response);
         } catch (IOException e) {
@@ -166,15 +139,12 @@ public class HTTPRequestManager {
      *
      * @param url             The exact URL to download, including any parameters
      * @param servletResponse
-     * @param cookieName
-     * @param value
      * @return String
      * @throws IOException
      */
-    public String storeGetResponseWithUserCookie(String url, HttpServletResponse servletResponse,
-                                                 String cookieName, String value, String filename,
-                                                 RequestHeader headers) throws IOException {
-        HttpRequestPair requestPair = getResponseWithUserCookie(url, cookieName, value, headers);
+    public String storeGetResponseWithHeaders(String url, HttpServletResponse servletResponse, String filename,
+                                              CSForwardHeaders headers) throws IOException {
+        HttpRequestPair requestPair = doGETWithHeaders(url, headers);
         try {
             return stripHeadersAndReturnFilename(servletResponse, filename, requestPair.response);
         } catch (IOException e) {
@@ -204,20 +174,8 @@ public class HTTPRequestManager {
         return ret;
     }
 
-    public HttpRequestPair getResponseWithUserCookie(String url, String cookieName, String value, RequestHeader headers) throws IOException {
-        // Create a local context and associated cookie store for this call only, so that
-        // a long download can proceed without interfering with other users' cookies
-        CookieStore cookieStore = new BasicCookieStore();
+    public HttpRequestPair doGETWithHeaders(String url, CSForwardHeaders headers) throws IOException {
         HttpContext httpContext = new BasicHttpContext();
-        httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-
-        // set the user's cookie
-        BasicClientCookie cookie = new BasicClientCookie(cookieName, value);
-        cookie.setVersion(0);
-        cookie.setDomain(getServerHostName());
-        cookie.setPath("/");
-        cookie.setExpiryDate(getCookieExpiryTime());
-        cookieStore.addCookie(cookie);
 
         // send the request using the local cookie, disallowing redirects
         HttpUriRequest request = new HttpGet(url);
@@ -251,9 +209,8 @@ public class HTTPRequestManager {
             String filePartName,
             String filename,
             long filesize,
-            RequestHeader headers,
-            HttpServletResponse response,
-            String cstoken) throws IOException {
+            CSForwardHeaders headers,
+            HttpServletResponse response) throws IOException {
 
         ContentBody filePart = new FixedInputStreamBody(stream, filename, filesize);
 
@@ -269,31 +226,23 @@ public class HTTPRequestManager {
         request.setEntity(entity);
         request.setParams(getUploadParams());
 
-        // for SEA compatibility, we must include the llcookie
+        headers.addTo(request);
 
-        if (cstoken != null) {
-            request.addHeader("Cookie", ContentServiceConstants.CS_COOKIE_NAME + "=" + cstoken);
-            // set headers for Content Server validation
-            headers.addTo(request);
+        try {
+            HttpResponse httpResponse = httpClient.execute(request);
 
-            try {
-                HttpResponse httpResponse = httpClient.execute(request);
-
-                if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-                    // workaround for TEMPO-2311: cs.dll returns a 500 on zero-byte uploads instead of
-                    // ok=false, so we generate a more appropriate response here
-                    EntityUtils.consume(httpResponse.getEntity());
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                } else {
-                    duplicateResponse(response, httpResponse);
-                }
-
-            } catch (IOException e) {
-                request.abort();
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+                // workaround for TEMPO-2311: cs.dll returns a 500 on zero-byte uploads instead of
+                // ok=false, so we generate a more appropriate response here
+                EntityUtils.consume(httpResponse.getEntity());
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            } else {
+                duplicateResponse(response, httpResponse);
             }
-        } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+
+        } catch (IOException e) {
+            request.abort();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -326,7 +275,7 @@ public class HTTPRequestManager {
             request.addHeader("Cookie", ContentServiceConstants.CS_COOKIE_NAME + "=" +
                     URLEncoder.encode(llcookie, ContentServiceConstants.CHAR_ENCODING));
             // set headers for Content Server validation
-            RequestHeader headers = new RequestHeader(requestToForward);
+            CSForwardHeaders headers = new CSForwardHeaders(requestToForward);
             headers.addTo(request);
 
             try {
@@ -390,38 +339,7 @@ public class HTTPRequestManager {
         return jsonString;
     }
 
-    /**
-     * Sends an HTTP POST request to a url, first setting the given cookie, then
-     * removing all cookies once the response has been read.
-     * <p>
-     * Note that this method is synchronized: only one thread can use it at a
-     * time, so that cookies don't overlap
-     *
-     * @param serverUrl  - The URL of the server
-     * @param parameters - all the request parameters (Example:
-     *                   "param1=val1&param2=val2")
-     * @param cookieName The name of the cookie to set for this request only
-     * @param value      The value of the cookie to set for this request only
-     * @return
-     * @throws IOException
-     */
-    public String postDataWithTemporaryCookie(String serverUrl, Map<String, String> parameters,
-                                              String cookieName, String value,
-                                              RequestHeader headers) throws IOException {
-
-        synchronized (httpClient) {
-            setTemporaryCookie(cookieName, value);
-
-            String result = postData(serverUrl, parameters, headers);
-
-            clearTemporaryCookie();
-
-            return result;
-        }
-    }
-
-    public ResponseWithStatus post(String serverUrl, Map<String, String> parameters,
-                                   String cookieName, String value, RequestHeader headers) throws IOException {
+    public ResponseWithStatus post(String serverUrl, Map<String, String> parameters, CSForwardHeaders headers) throws IOException {
         ResponseWithStatus result = new ResponseWithStatus();
         result.response = "";
         result.status = null;
@@ -438,10 +356,8 @@ public class HTTPRequestManager {
         UrlEncodedFormEntity entity = encodeParameters(parameters);
         request.setEntity(entity);
 
-        HttpContext httpContext = getContextWithCookie(cookieName, value);
-
         try {
-            HttpResponse response = httpClient.execute(request, httpContext);
+            HttpResponse response = httpClient.execute(request);
             result.status = response.getStatusLine();
             result.response = EntityUtils.toString(response.getEntity());
 
@@ -451,43 +367,6 @@ public class HTTPRequestManager {
         }
 
         return result;
-    }
-
-    public HttpContext getContextWithCookie(String cookieName, String value) throws MalformedURLException {
-        HttpContext httpContext = new BasicHttpContext();
-        if (cookieName != null) {
-            CookieStore cookieStore = new BasicCookieStore();
-            httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-
-            // set the user's cookie
-            BasicClientCookie cookie = new BasicClientCookie(cookieName, value);
-            cookie.setVersion(0);
-            cookie.setDomain(getServerHostName());
-            cookie.setPath("/");
-            cookie.setExpiryDate(getCookieExpiryTime());
-            cookieStore.addCookie(cookie);
-        }
-        return httpContext;
-    }
-
-    private void setTemporaryCookie(String cookieName, String value) throws UnsupportedEncodingException {
-        try {
-
-            BasicClientCookie cookie = new BasicClientCookie(cookieName, value);
-            cookie.setVersion(0);
-            cookie.setDomain(getServerHostName());
-            cookie.setPath("/");
-            cookie.setExpiryDate(getCookieExpiryTime());
-
-            httpClient.getCookieStore().addCookie(cookie);
-
-        } catch (MalformedURLException e) {
-            log.error("Could not set cookie; problem parsing server url", e);
-        }
-    }
-
-    private void clearTemporaryCookie() {
-        httpClient.getCookieStore().clear();
     }
 
     private static Date getCookieExpiryTime() {
@@ -517,7 +396,7 @@ public class HTTPRequestManager {
     //realFilename is the actual name of the file stored in the multipart post, and boundary is the boundary
     //string separating each part of the multipart post.
     public void streamMultipartPost(HttpServletResponse servletResponse, String url, String tempFullpath,
-                                    String boundary, String llcookie, RequestHeader headers) throws IOException {
+                                    String boundary, CSForwardHeaders headers) throws IOException {
 
         File file = new File(tempFullpath);
 
@@ -532,9 +411,6 @@ public class HTTPRequestManager {
             httpPost = new HttpPost(url);
             httpPost.setEntity(entity);
             httpPost.setParams(getUploadParams());
-
-            // for SEA compatibility, we must include the llcookie
-            httpPost.addHeader("Cookie", ContentServiceConstants.CS_COOKIE_NAME + "=" + llcookie);
 
             // set headers for Content Server validation
             headers.addTo(httpPost);

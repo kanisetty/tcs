@@ -29,7 +29,7 @@ public class FeedsService implements AppworksServiceContextHandler {
         serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl("ContentServer", "10.5");
+            EIMConnectorClient csConnector = new EIMConnectorClientImpl("ContentServer", "16");
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();

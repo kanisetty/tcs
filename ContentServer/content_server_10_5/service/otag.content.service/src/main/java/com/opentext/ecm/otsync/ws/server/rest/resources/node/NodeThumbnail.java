@@ -2,11 +2,11 @@ package com.opentext.ecm.otsync.ws.server.rest.resources.node;
 
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.otag.ContentServerService;
 import com.opentext.ecm.otsync.ws.server.rest.AdminAPI;
 import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
@@ -44,11 +44,11 @@ public class NodeThumbnail extends ResourcePath {
     }
 
     private void downloadThumbnail(HttpServletRequest req, String nodeID, HttpServletResponse resp) {
-        String llcookie = getCSToken(req);
+        String otcsticket = getOTCSTicket(req);
         String allowDefault = req.getParameter(Message.ALLOW_DEFAULT);
         String type = req.getParameter(Message.TYPE);
 
-        if (llcookie != null) {
+        if (otcsticket != null) {
             String url = new StringBuilder()
                     .append(ContentServerService.getCsUrl())
                     .append("?func=otsync.GetNodeThumbnail&nodeID=")
@@ -62,11 +62,9 @@ public class NodeThumbnail extends ResourcePath {
             AsyncContext asyncRequest = req.startAsync();
             asyncRequest.setTimeout(getSettingsService().getServlet3RequestTimeout());
 
-            RequestHeader headers = new RequestHeader(req, llcookie);
-
             HTTPRequestManager serverConnection = getServerConnection();
 
-            SuspendedAction action = new RESTDownloadAction(serverConnection, asyncRequest, headers, url, llcookie);
+            SuspendedAction action = new RESTDownloadAction(serverConnection, asyncRequest, new CSForwardHeaders(req), url);
 
             getContentChannel().sendDownload(action, false);
         } else {

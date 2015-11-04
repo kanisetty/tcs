@@ -128,104 +128,6 @@ public class ServletConfig {
         return (settingsClient != null) ? settingsClient.getSettingAsString(REPO) : "";
     }
 
-    public static int getMaxAllowedStoredResponses() {
-        return MAX_ALLOWED_STORED_RESPONSES;
-    }
-
-    public static String getContentNodeIDParameterName() {
-        return CONTENT_NODEID_PARAMETER_NAME;
-    }
-
-    public static String getContentVersionNumParameterName() {
-        return CONTENT_VERNUM_PARAMETER_NAME;
-    }
-
-    public static String getContentUrlParameterName() {
-        return CONTENT_URL_PARAMETER_NAME;
-    }
-
-    public static String getBackChannelServeletPath() {
-        return BACK_CHANNEL_SERVLET_PATH;
-    }
-
-    public static String getNotifyChannelServeletPath() {
-        return NOTIFY_CHANNEL_SERVLET_PATH;
-    }
-
-    public static String getFrontChannelServeletPath() {
-        return FRONT_CHANNEL_SERVLET_PATH;
-    }
-
-    public static String getContentChannelServeletPath() {
-        return CONTENT_CHANNEL_SERVLET_PATH;
-    }
-
-    public static String getChunkedContentChannelServeletPath() {
-        return CHUNKED_CONTENT_CHANNEL_SERVLET_PATH;
-    }
-
-    public static String getWadlUri() {
-        return WADL_URI;
-    }
-
-    private static void setClientProperties() {
-
-        Properties clientProperties = new Properties();
-
-        try {
-            clientProperties.load(new FileInputStream(System.getProperty("catalina.base") + "/conf/tempo.clients.properties"));
-        } catch (FileNotFoundException e) {
-            LOG.error("Cannot load tempo.clients.properties. Going into server meltdown mode (tempo.clients.properties must be in "
-                    + System.getProperty("catalina.base") + "/conf).");
-        } catch (IOException e) {
-            LOG.error("Cannot load tempo.clients.properties. Going into server meltdown mode (fix your config).");
-        }
-
-
-        // Add all client information to the clientInfo Map
-        clientInfo = new HashMap<>();
-
-        // Loop through all properties building up client information
-        for (Map.Entry<Object, Object> entry : clientProperties.entrySet()) {
-            String key = ((String) entry.getKey()).toUpperCase();
-            String value = (String) entry.getValue();
-            String prefix;
-            String languageKey = "";
-            ClientType client = null;
-
-            LOG.debug("Properties: key=" + key + ", value=" + value);
-
-            // Initialize client
-            if (key.contains("CLIENT")) {
-                // Get the Client Type, including language for use as the client key prefix
-                prefix = key.substring(0, key.indexOf("CLIENT"));
-
-                if (key.contains("_")) {
-                    languageKey = key.substring(key.indexOf("_") + 1, key.length());
-                }
-
-                // Retrieve the client info from the clientInfo map, or create new client info map if this is a new client
-                if (clientInfo.containsKey(prefix)) {
-                    client = clientInfo.get(prefix);
-                } else {
-                    client = new ClientType(prefix);
-                    clientInfo.put(prefix, client);
-                }
-            }
-
-            if (client != null) {
-                // Get the Minimum Version, Current Version and Client Link
-                if (key.contains("CLIENTVERSIONFORDOWNLOAD")) {
-                    client.setCurrentVersion(value);
-                } else if (key.contains("CLIENTVERSION")) {
-                    client.setMinVersion(value);
-                } else if (key.contains("CLIENT")) {
-                    client.setClientLink(value, languageKey);
-                }
-            }
-        }
-    }
-
     /*
      * Get client information for the default client, WIN64
      * This exists so that legacy Windows clients can still check version
@@ -233,6 +135,7 @@ public class ServletConfig {
      */
     public static ClientType getClient() {
         LOG.info("Legacy Windows client connecting");
+        clientInfo = ContentServerService.getClientInfo();
         return clientInfo.get("WIN64");
     }
 
@@ -248,6 +151,8 @@ public class ServletConfig {
         String osVersion = (clientOSVersion == null) ? "" : clientOSVersion.toUpperCase();
         String bitness = (clientBitness == null) ? "" : clientBitness.toUpperCase();
 
+        clientInfo = ContentServerService.getClientInfo();
+
         if (clientInfo.containsKey(os)) {
             return clientInfo.get(os);
         } else if (clientInfo.containsKey(os + osVersion)) {
@@ -257,6 +162,7 @@ public class ServletConfig {
         }
 
         LOG.info("Unknown client type connecting: os=" + os + ", osVersion=" + osVersion + ", bitness=" + bitness);
+
         return null;
     }
 

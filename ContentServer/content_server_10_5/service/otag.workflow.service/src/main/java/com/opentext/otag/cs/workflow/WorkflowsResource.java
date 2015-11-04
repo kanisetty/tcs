@@ -1,10 +1,7 @@
 package com.opentext.otag.cs.workflow;
 
 import com.opentext.otag.api.CSRequest;
-import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
-import com.opentext.otag.api.shared.util.ForwardHeaders;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -12,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,41 +17,27 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class WorkflowsResource {
 
-    private static final Log LOG = LogFactory.getLog(WorkflowsResource.class);
-
-    /**
-     * Our Appworks service component
-     */
-    private WorkflowAppworksService workflowService;
-
     @GET
     @Path("{mapID}")
-    public StreamingOutput getWorkflow(@QueryParam("cstoken") String cstoken,
-                                       @CookieParam("LLCookie") String llcookie,
-                                       @PathParam("mapID") String mapID,
+    public StreamingOutput getWorkflow(@PathParam("mapID") String mapID,
                                        @QueryParam("nextUrl") String nextUrl,
                                        @Context HttpServletRequest request) {
-        if (llcookie != null)
-            cstoken = llcookie;
 
         List<NameValuePair> params = new ArrayList<>(2);
         params.add(new BasicNameValuePair("nodeID", mapID));
         params.add(new BasicNameValuePair("nextUrl", nextUrl));
-        return new CSRequest(getCsUrl(), "otag.workflowget", cstoken, params, new ForwardHeaders(request));
+        return new CSRequest(WorkflowAppworksService.getCsUrl(), "otag.workflowget", params,
+                new CSForwardHeaders(request));
     }
 
     @POST
     @Path("{mapID}")
-    public StreamingOutput initiateWorkflow(@FormParam("cstoken") String cstoken,
-                                            @CookieParam("LLCookie") String llcookie,
-                                            @PathParam("mapID") String mapID,
+    public StreamingOutput initiateWorkflow(@PathParam("mapID") String mapID,
                                             @FormParam("title") String title,
                                             @FormParam("comment") String comment,
                                             @FormParam("atts") String atts,
                                             @FormParam("dueDate") String dueDate,
                                             @Context HttpServletRequest request) {
-        if (llcookie != null)
-            cstoken = llcookie;
 
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("nodeID", mapID));
@@ -67,55 +49,49 @@ public class WorkflowsResource {
             params.add(new BasicNameValuePair("atts", atts));
         if (dueDate != null)
             params.add(new BasicNameValuePair("dueDate", dueDate));
-        return new CSRequest(getCsUrl(), "otag.workflowinit", cstoken, params, new ForwardHeaders(request));
+        return new CSRequest(WorkflowAppworksService.getCsUrl(), "otag.workflowinit", params,
+                                new CSForwardHeaders(request));
     }
 
     @GET
     @Path("{workID}/tasks/{taskID}")
-    public StreamingOutput getWorkflowStep(@QueryParam("cstoken") String cstoken,
-                                           @CookieParam("LLCookie") String llcookie,
-                                           @PathParam("workID") String workID,
+    public StreamingOutput getWorkflowStep(@PathParam("workID") String workID,
                                            @PathParam("taskID") String taskID,
                                            @QueryParam("stepDoneUrl") String stepDoneUrl,
                                            @QueryParam("formDoneUrl") String formDoneUrl,
                                            @Context HttpServletRequest request) {
-        if (llcookie != null)
-            cstoken = llcookie;
-        return getStep(workID, workID, taskID, stepDoneUrl, formDoneUrl, cstoken, request);
+
+        return getStep(workID, workID, taskID, stepDoneUrl, formDoneUrl, request);
     }
 
     @GET
     @Path("{workID}/subwork/{subworkID}/tasks/{taskID}")
-    public StreamingOutput getSubworkflowStep(@QueryParam("cstoken") String cstoken,
-                                              @CookieParam("LLCookie") String llcookie,
-                                              @PathParam("workID") String workID,
+    public StreamingOutput getSubworkflowStep(@PathParam("workID") String workID,
                                               @PathParam("subworkID") String subworkID,
                                               @PathParam("taskID") String taskID,
                                               @QueryParam("stepDoneUrl") String stepDoneUrl,
                                               @QueryParam("formDoneUrl") String formDoneUrl,
                                               @Context HttpServletRequest request) {
-        if (llcookie != null) cstoken = llcookie;
 
-        return getStep(workID, subworkID, taskID, stepDoneUrl, formDoneUrl, cstoken, request);
+        return getStep(workID, subworkID, taskID, stepDoneUrl, formDoneUrl, request);
     }
 
     private StreamingOutput getStep(String workID, String subworkID, String taskID,
-                                    String stepDoneUrl, String formDoneUrl, String cstoken,
-                                    HttpServletRequest request) {
+                                    String stepDoneUrl, String formDoneUrl, HttpServletRequest request) {
+
         List<NameValuePair> params = new ArrayList<>(7);
         params.add(new BasicNameValuePair("workID", workID));
         params.add(new BasicNameValuePair("subworkID", subworkID));
         params.add(new BasicNameValuePair("taskID", taskID));
         params.add(new BasicNameValuePair("stepDoneUrl", stepDoneUrl));
         params.add(new BasicNameValuePair("formDoneUrl", formDoneUrl));
-        return new CSRequest(getCsUrl(), "otag.workflowstepget", cstoken, params, new ForwardHeaders(request));
+        return new CSRequest(WorkflowAppworksService.getCsUrl(), "otag.workflowstepget", params,
+                                new CSForwardHeaders(request));
     }
 
     @PUT
     @Path("{workID}/tasks/{taskID}")
-    public StreamingOutput sendWorkflowStepOn(@QueryParam("cstoken") String cstoken,
-                                              @CookieParam("LLCookie") String llcookie,
-                                              @PathParam("workID") String workID,
+    public StreamingOutput sendWorkflowStepOn(@PathParam("workID") String workID,
                                               @PathParam("taskID") String taskID,
                                               @QueryParam("comment") String comment,
                                               @QueryParam("disposition") String disposition,
@@ -126,19 +102,14 @@ public class WorkflowsResource {
                                               @QueryParam("duration") String duration,
                                               @QueryParam("stepName") String stepName,
                                               @Context HttpServletRequest request) {
-        if (llcookie != null)
-            cstoken = llcookie;
 
-        return putStep(cstoken, workID, workID, taskID, comment,
-                disposition, atts, request, userID, xAction,
-                instructions, duration, stepName);
+        return putStep(workID, workID, taskID, comment, disposition, atts, request, userID, xAction,
+                        instructions, duration, stepName);
     }
 
     @PUT
     @Path("{workID}/subwork/{subworkID}/tasks/{taskID}")
-    public StreamingOutput sendSubworkflowStepOn(@QueryParam("cstoken") String cstoken,
-                                                 @CookieParam("LLCookie") String llcookie,
-                                                 @PathParam("workID") String workID,
+    public StreamingOutput sendSubworkflowStepOn(@PathParam("workID") String workID,
                                                  @PathParam("subworkID") String subworkID,
                                                  @PathParam("taskID") String taskID,
                                                  @QueryParam("comment") String comment,
@@ -150,42 +121,38 @@ public class WorkflowsResource {
                                                  @QueryParam("duration") String duration,
                                                  @QueryParam("stepName") String stepName,
                                                  @Context HttpServletRequest request) {
-        if (llcookie != null)
-            cstoken = llcookie;
 
-        return putStep(cstoken, workID, subworkID, taskID, comment,
+        return putStep(workID, subworkID, taskID, comment,
                 disposition, atts, request, userID, xAction,
                 instructions, duration, stepName);
     }
 
     @POST
     @Path("{workID}/subwork/{subworkID}/tasks/{taskID}")
-    public StreamingOutput acceptAssignment(@QueryParam("cstoken") String cstoken,
-                                            @CookieParam("LLCookie") String llcookie,
-                                            @PathParam("workID") String workID,
+    public StreamingOutput acceptAssignment(@PathParam("workID") String workID,
                                             @PathParam("subworkID") String subworkID,
                                             @PathParam("taskID") String taskID,
                                             @Context HttpServletRequest request) {
-        if (llcookie != null)
-            cstoken = llcookie;
 
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("workID", workID));
         params.add(new BasicNameValuePair("subworkID", subworkID));
         params.add(new BasicNameValuePair("taskID", taskID));
 
-        return new CSRequest(getCsUrl(), "otag.assignmentaccept", cstoken, params, new ForwardHeaders(request));
+        return new CSRequest(WorkflowAppworksService.getCsUrl(), "otag.assignmentaccept", params,
+                                new CSForwardHeaders(request));
     }
 
-    private StreamingOutput putStep(String cstoken, String workID,
-                                    String subworkID, String taskID, String comment,
+    private StreamingOutput putStep(String workID, String subworkID, String taskID, String comment,
                                     String disposition, String atts, HttpServletRequest request,
                                     String userID, String xAction, String instructions,
                                     String duration, String stepName) {
+
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("workID", workID));
         params.add(new BasicNameValuePair("subworkID", subworkID));
         params.add(new BasicNameValuePair("taskID", taskID));
+
         if (comment != null)
             params.add(new BasicNameValuePair("comment", comment));
         if (disposition != null)
@@ -203,27 +170,7 @@ public class WorkflowsResource {
         if (stepName != null)
             params.add(new BasicNameValuePair("stepName", stepName));
 
-        return new CSRequest(getCsUrl(), "otag.workflowstepput", cstoken, params, new ForwardHeaders(request));
+        return new CSRequest(WorkflowAppworksService.getCsUrl(), "otag.workflowstepput", params,
+                                new CSForwardHeaders(request));
     }
-
-    /**
-     * Resolve the Content Server using the workflow service as it manages the EIM Connector.
-     *
-     * @return content server URL
-     * @throws WebApplicationException 403 if we cannot resolve the connector URL
-     */
-    public String getCsUrl() {
-        if (workflowService == null)
-            workflowService = AppworksComponentContext.getComponent(WorkflowAppworksService.class);
-
-        if (workflowService != null) {
-            String csConnection = workflowService.getCsConnection();
-            if (csConnection != null)
-                return csConnection;
-        }
-
-        LOG.error("Unable to resolve Content Server connection, all requests will be rejected");
-        throw new WebApplicationException(Response.Status.FORBIDDEN);
-    }
-
 }

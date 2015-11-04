@@ -35,7 +35,13 @@ public class DocumentConversionFileCache {
     public synchronized static DocumentConversionFileCache createFolder(String name) throws IOException {
         String tmpPath = getDcsCachePath();
 
+        Path tempPath = Paths.get(tmpPath);
         Path path = Paths.get(tmpPath, name);
+
+        if (!Files.exists(tempPath)) {
+            Files.createDirectory(tempPath);
+        }
+
         if (!Files.exists(path)) {
             Files.createDirectory(path);
         }

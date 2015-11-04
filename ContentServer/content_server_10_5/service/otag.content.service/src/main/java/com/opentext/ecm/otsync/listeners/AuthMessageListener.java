@@ -2,12 +2,12 @@ package com.opentext.ecm.otsync.listeners;
 
 import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.message.SynchronousMessageListener;
 import com.opentext.ecm.otsync.ws.ServletConfig;
 import com.opentext.ecm.otsync.ws.message.MessageConverter;
 import com.opentext.ecm.otsync.ws.server.ClientType;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -39,8 +39,8 @@ public class AuthMessageListener implements SynchronousMessageListener {
         String password;
 
         // remove header values from the payload while it is being JSONified
-        RequestHeader headers = (RequestHeader) message.get(RequestHeader.REQUEST_HEADER_KEY);
-        message.remove(RequestHeader.REQUEST_HEADER_KEY);
+        CSForwardHeaders headers = (CSForwardHeaders) message.get(CSForwardHeaders.REQUEST_HEADER_KEY);
+        message.remove(CSForwardHeaders.REQUEST_HEADER_KEY);
 
         // Put characters around the password incase it has spaces
         // at the front or end to avoid issue with CS core parse JSON

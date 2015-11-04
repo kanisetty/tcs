@@ -1,6 +1,6 @@
 package com.opentext.otag.cs.dcs;
 
-import com.opentext.otag.api.shared.util.ForwardHeaders;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.ref.SoftReference;
@@ -32,10 +32,10 @@ public class NodeFactory {
     return softReference.get();
   }
 
-  public CSNodeResource newCSNodeResource(String nodeID, String csToken, HttpServletRequest request) {
-    CSDocumentDownloader csDocumentDownloader = new CSDocumentDownloader(nodeID, csToken, new ForwardHeaders(request));
-    CSDocumentPageUploader csDocumentPageUploader = new CSDocumentPageUploader(nodeID, csToken, new ForwardHeaders(request));
+  public CSNodeResource newCSNodeResource(String nodeID, HttpServletRequest request) {
+    CSDocumentDownloader csDocumentDownloader = new CSDocumentDownloader(nodeID, new CSForwardHeaders(request));
+    CSDocumentPageUploader csDocumentPageUploader = new CSDocumentPageUploader(nodeID, new CSForwardHeaders(request));
 
-    return new CSNodeResource(nodeID, new CSRequestBuilderFactory(csToken, new ForwardHeaders(request)), csDocumentDownloader, csDocumentPageUploader);
+    return new CSNodeResource(nodeID, new CSRequestBuilderFactory(new CSForwardHeaders(request)), csDocumentDownloader, csDocumentPageUploader);
   }
 }

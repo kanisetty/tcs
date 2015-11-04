@@ -1,5 +1,6 @@
 package com.opentext.otag.cs.connector;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.opentext.otag.api.HttpClient;
 import com.opentext.otag.cs.connector.auth.trustedprovider.TrustedServerKeyRegistrationHandler;
 import com.opentext.otag.sdk.client.ServiceClient;
@@ -58,6 +59,7 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
 
     public static final String CS_COOKIE_NAME = "LLCookie";
     private static final String HTTP_REFERER_HEADER = "REFERER";
+    private static final String HTTP_OTCSTICKET_HEADER = "OTCSTICKET";
 
     private HttpClient httpClient;
 
@@ -138,7 +140,7 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
 
     @Override
     public String getConnectorVersion() {
-        return "10.5";
+        return "16";
     }
 
     @Override
@@ -165,8 +167,9 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
     public boolean registerTrustedServerKey(String serverName, String key) {
         String connectionString = getConnectionString();
 
-        String cstoken = getCsToken(csAdminUser, csAdminPassword);
-        if (cstoken == null) {
+        String otcsticket = getOTCSTicket(csAdminUser, csAdminPassword);
+
+        if (otcsticket == null) {
             LOG.warn("Unable to resolve CS token, we wont be able to register the Trusted Provider key");
             return false;
         }
@@ -185,12 +188,12 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
                 params.add(new BasicNameValuePair("engine", otagUrl + '/'));
                 params.add(new BasicNameValuePair("destination_uri", otagUrl));
 
-                HttpContext cookie = httpClient.getContextWithCookie(CS_COOKIE_NAME, URLEncoder.encode(cstoken, "UTF-8"), csUrl);
                 HttpUriRequest req = httpClient.getPostRequest(csUrl, params);
                 req.addHeader(HTTP_REFERER_HEADER, csUrl);
+                req.addHeader(HTTP_OTCSTICKET_HEADER, otcsticket);
                 // ForwardHeaders instance was passed here
                 // headers.addTo(req);
-                HttpClient.DetailedResponse response = httpClient.executeRequestWithDetails(req, cookie);
+                HttpClient.DetailedResponse response = httpClient.executeRequestWithDetails(req, null);
 
                 int statusCode = response.status.getStatusCode();
                 if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
@@ -210,21 +213,20 @@ public class ContentServerConnector extends AbstractMultiSettingChangeHandler
         return false;
     }
 
-    private String getCsToken(String csAdminUser, String csAdminPassword) {
+    private String getOTCSTicket(String csAdminUser, String csAdminPassword) {
 
         if (isAuthRegistered()) {
             if (csAdminUser != null && !csAdminUser.isEmpty() &&
                     csAdminPassword != null && !csAdminPassword.isEmpty()) {
                 ContentServerAuthHandler authHandler = (ContentServerAuthHandler) getAuthHandler();
                 AuthHandlerResult result = authHandler.auth(csAdminUser, csAdminPassword, new ForwardHeaders());
-                Map<String, Cookie> cookies = result.getCookies();
-                if (cookies != null) {
-                    Cookie llCookie = cookies.get(CS_COOKIE_NAME);
-                    if (llCookie != null) {
-                        return llCookie.getValue();
-                    }
+                JsonNode additionalParams = result.getAddtlRespFields();
+
+                if (additionalParams != null) {
+
+                    String otcsticket = additionalParams.get("otcsticket").asText();
+                    return otcsticket;
                 }
-                LOG.info("Failed to extract LLCookie from auth response");
             } else {
                 LOG.info("The Content Server credentials have not been set yet so we " +
                         "cannot attempt to retrieve a cs token");

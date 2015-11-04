@@ -1,5 +1,6 @@
 package com.opentext.otag.cs.assignments;
 
+import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
 import com.opentext.otag.sdk.client.ServiceClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
@@ -9,6 +10,9 @@ import com.opentext.otag.api.shared.types.management.DeploymentResult;
 import com.opentext.otag.api.shared.types.sdk.EIMConnector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 public class AssignmentsService implements AppworksServiceContextHandler {
 
@@ -24,7 +28,7 @@ public class AssignmentsService implements AppworksServiceContextHandler {
         serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl("ContentServer", "10.5");
+            EIMConnectorClient csConnector = new EIMConnectorClientImpl("ContentServer", "16");
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
@@ -46,6 +50,19 @@ public class AssignmentsService implements AppworksServiceContextHandler {
 
     public String getCsConnection() {
         return (csConnection != null) ? csConnection.getConnectionUrl() : null;
+    }
+
+    public static String getCsUrl() {
+        AssignmentsService assignmentsService = AppworksComponentContext.getComponent(AssignmentsService.class);
+
+        if (assignmentsService != null) {
+            String csConnection = assignmentsService.getCsConnection();
+            if (csConnection != null)
+                return csConnection;
+        }
+
+        LOG.error("Unable to service assignments request, unable to get CS connection URL");
+        throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
 
     private void failBuild(String errMsg) {

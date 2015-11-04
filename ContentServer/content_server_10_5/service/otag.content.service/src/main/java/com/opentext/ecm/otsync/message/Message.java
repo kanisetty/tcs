@@ -18,7 +18,6 @@ public class Message extends SuspendedAction {
 	public final static String USERNAME_KEY_NAME = "username";
 	public static final String REST_USERNAME_KEYNAME = "userName";
 	public final static String PASSWORD_KEY_NAME = "password";
-	public final static String ERROR_KEY_NAME = "error";
 	public final static String CLIENT_ID_KEY_NAME = "clientID";
 	public final static String PARENT_ID_KEY_NAME = "parentID";
 	public final static String PAYLOAD_KEY_NAME = "payload";
@@ -26,17 +25,13 @@ public class Message extends SuspendedAction {
 	public static final String PHOTO_FILE_KEY_NAME = "photo";
 	public final static String LAST_PART_KEY_NAME = "lastpart";
 	public final static String NAME_KEY_NAME = "name";
-	public final static String TOKEN_KEY_NAME = "token";
 	public final static String SUBTYPE_KEY_NAME = "subtype";
 	public final static String NODE_ID_KEY_NAME = "nodeID";
-	public final static String URL_KEY_NAME = "url";
 	public final static String REMOTE_ADDRESS_KEY_NAME = "remoteAddress";
 	public final static String ID_KEY_NAME = "id";
 	public final static String TRANSACTIONID_KEY_NAME = "transactionID";
 	public final static String IN_PROGRESS_KEY_NAME = "pending";
 	public final static String MAX_STORED_RESPONSES_KEY_NAME = "storeResponses";
-	public final static String NOTIFY_CHANNEL_KEY_NAME = "key";
-	public final static String OTDSTICKET_KEY_NAME = "otdsticket";
 	public final static String ATTRIBUTES_KEY_NAME = "attributes";
 	public final static String FOLDER_ID_KEY_NAME = "folderID";
 	public final static String ASSIGNED_TO_KEY_NAME = "assignedTo";
@@ -47,13 +42,10 @@ public class Message extends SuspendedAction {
 	public final static String AUTH_KEY_VALUE = "auth";
 	public final static String OK_KEY_VALUE = "ok";
 	public final static String NOTIFY_KEY_VALUE = "request";
-	public final static String NOTIFY_CLIENTS_KEY_VALUE = "notification";
 	public final static String PULSE_KEY_VALUE = "pulse";
 	public final static String CONTENT_KEY_VALUE = "contentRequest";
 	public final static String CHUNKED_CONTENT_KEY_VALUE = "chunkedContentRequest";
 	public final static String SERVER_CHECK_KEY_VALUE = "serverCheck";
-	
-	public final static String BACKCHANNEL_SUBTYPE_SHORT_POLL = "RespondImmediately";
 	
 	public final static String CONTENT_SUBTYPE_DOWNLOAD = "DownloadRequest";
 	public final static String CONTENT_SUBTYPE_UPLOAD = "UploadRequest";
@@ -65,29 +57,15 @@ public class Message extends SuspendedAction {
 	public static final String SYNC_RECOMMENDED_KEY_NAME = "doSync";
 
 	public final static String AUTH_KEY_RESPONSE = "auth";
-	public final static String LLCOOKIE_KEY_RESPONSE = "cookie";
 	public final static String USER_ID_KEY_RESPONSE = "userID";
 	public final static String ERROR_KEY_RESPONSE = "errMsg";
-	public final static String CONTENT_SERVER_USER_ID = "cs_user_id";
 
-	public final static String TYPE_RESPONSE = "response";
-	public final static String USER_LIST = "users";
 	public final static String INFO_KEY_NAME = "info";
-	public final static String CSTOKEN_KEY_NAME = "cstoken";
 	public final static String PULSE_KEY_RESPONSE = INFO_KEY_NAME;
 	public final static String CS_BASE_URL_KEY_NAME = "csBaseURL";
 	public final static String CS_BASE_URL_OLD_KEY_NAME = "csbaseurl";
-	    	
-	public static final Object EXTERNAL_USER_MSG_TYPE = "externalUserAPI";
-	public static final String FIRST_NAME_KEY = "firstName";
-	public static final String LAST_NAME_KEY = "lastName";
-	public static final String LANGUAGE_KEY = "lang";
+
 	public static final String NEW_PASSWORD_KEY = "newPassword";
-	public static final String ACTIVATION_SUBTYPE = "activateUser";
-	public static final String TRANSFER_SHARE_SUBTYPE = "mergeUsers";
-	public static final String PASSWORD_UPDATE_SUBTYPE = "updatePassword";
-	public static final String REJECTED_EMAIL_KEY = "rejectedEmail";
-	public static final String GET_EXTERNAL_USER_INFO_SUBTYPE ="getUserInfo";
 	
 	public static final String GET_SYNC_TREE_VALUE = "getsynctree";
 	public static final String GET_OBJECT_INFO_VALUE = "getobjectinfo";
@@ -170,13 +148,9 @@ public class Message extends SuspendedAction {
 	public final static String RESERVE_KEY_NAME = "reserve";
 	public final static String RESERVE_VALUE = "reserve";
 	public final static String UNRESERVE_VALUE = "unreserve";
-	public static final String GET_EVENTS_VALUE = "getEvents";
-	public static final String SEQ_NO_KEY_NAME = "seqNo";
 	public static final String SEQ_NO_REST_KEY_NAME = "since";
 	public static final String EVENT_LOG_KEY_NAME = "eventLog";
 	public static final String AUTO_MODE_KEY_NAME = "auto";
-	public static final int ALL_USERS = 0;
-	public static final String EVENTS_KEY_NAME = "events";
 	public static final String STORAGE_LIMIT_VALUE = "getUserStorageLimit";
 	public static final String GET_TEMPO_TASKS_VALUE = "getTempoTasks";
 	public static final String CREATE_TEMPO_TASKS_VALUE = "createTempoTasks";
@@ -187,11 +161,8 @@ public class Message extends SuspendedAction {
     public static final String CLIENT_VERSION_KEY_NAME = "version";
     public static final String CLIENT_BITNESS_KEY_NAME = "bitness";
     public static final String CLIENT_LANGUAGE_KEY_NAME = "language";
-    public static final String CLIENT_OSDATA_KEY_VALUE = "osData";
     public final static String CLIENT_CURRENTVERSION_KEY_VALUE = "clientVersion";
-    public final static String CLIENT_VERSION_MIN_KEY_VALUE = "clientMinVersion";
 	public final static String CLIENT_NEEDS_UPGRADE = "clientNeedsUpgrade";
-    public final static String CLIENT_CURRENTLINK_KEY_VALUE = "clientLink";
 	public final static String CLIENT_CURRENT_RET_KEY = "clientCurVersion";
 	public final static String CLIENT_MIN_RET_KEY = "clientMinVersion";
 	public final static String CLIENT_LINK_RET_KEY = "clientLink";
@@ -200,7 +171,6 @@ public class Message extends SuspendedAction {
 	public static final String CLIENT_DEVICE_ID_KEY_NAME = "deviceID";
 	public static final String CLIENT_LOCATION_KEY_NAME = "location";
 	public static final String CLIENT_CLOUD_PUSH_KEY_NAME = "cloudPushKey";
-	public static final String WIPE_KEY_VALUE = "wipe";
 	public static final String GET_SETINGS_VALUE = "getsettings";
 	public static final String SET_SETINGS_VALUE = "setsettings";
 	public static final String SET_NOTIFY_VALUE = "setsharenotify";
@@ -214,8 +184,8 @@ public class Message extends SuspendedAction {
 	public static final String SET_CAT_ATTS_FUNC = "otsync.UpdateCategoryData";
     public static final String DELETE_THUMBNAIL_FUNC = "otsync.deletefolderthumbnail";
     public static final String SET_THUMBNAIL_FUNC = "otsync.setfolderthumbnail";
-    public static final String GET_PROPERTIES_FUNC = "otsync.properties";
-    public static final String APPLY_PERMS_FUNC = "otsync.applyperms";
+	public static final String GET_PROPERTIES_FUNC = "otsync.properties";
+	public static final String APPLY_PERMS_FUNC = "otsync.applyperms";
 
     public static final String CREATE_APP_ROOT_FUNC = "otsync.createapproot";
     public static final String GET_SUB_APP_ROOTS_FUNC = "otsync.getsubapproots";
@@ -241,8 +211,6 @@ public class Message extends SuspendedAction {
     public static final String REMOVE_APP_ROOT_USER_FUNC = "otsync.removeapprootuser";
 
     public static final String GET_APP_ROOT_NODE_ID_FUNC = "otsync.getapprootid";
-
-    public static String TYPE_ALL = "*";
 
 	public String getType() {
 		return (String)_map.get(TYPE_KEY_NAME.toLowerCase());

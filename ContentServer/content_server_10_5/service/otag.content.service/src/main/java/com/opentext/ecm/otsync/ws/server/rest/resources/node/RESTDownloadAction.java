@@ -1,10 +1,9 @@
 package com.opentext.ecm.otsync.ws.server.rest.resources.node;
 
-import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.ws.server.rest.RESTServlet;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletResponse;
@@ -14,25 +13,22 @@ public class RESTDownloadAction extends SuspendedAction {
     private final HTTPRequestManager serverConnection;
     private final AsyncContext async;
     private final String url;
-    private final RequestHeader headers;
+    private final CSForwardHeaders headers;
     private final HttpServletResponse response;
-    private final String llcookie;
 
     public RESTDownloadAction(HTTPRequestManager serverConnection, AsyncContext async,
-                              RequestHeader headers, String url, String llcookie) {
+                             CSForwardHeaders headers, String url) {
         this.serverConnection = serverConnection;
         this.async = async;
         this.response = (HttpServletResponse) async.getResponse();
         this.headers = headers;
         this.url = url;
-        this.llcookie = llcookie;
     }
 
     @Override
     public void resume() {
         try {
-            serverConnection.streamGetResponseWithUserCookie(url, response,
-                    ContentServiceConstants.CS_COOKIE_NAME, llcookie, headers);
+            serverConnection.streamGetResponseWithHeaders(url, response, headers);
             async.complete();
         } catch (IOException e) {
             try {

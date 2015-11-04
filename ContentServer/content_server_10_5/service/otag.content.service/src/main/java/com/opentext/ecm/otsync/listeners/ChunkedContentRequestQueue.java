@@ -4,14 +4,15 @@ import com.opentext.ecm.otsync.ContentServiceConstants;
 import com.opentext.ecm.otsync.engine.core.SuspendedAction;
 import com.opentext.ecm.otsync.engine.core.SuspendedActionQueue;
 import com.opentext.ecm.otsync.http.HTTPRequestManager;
-import com.opentext.ecm.otsync.http.RequestHeader;
 import com.opentext.ecm.otsync.message.Message;
 import com.opentext.ecm.otsync.otag.SettingsService;
 import com.opentext.ecm.otsync.payload.Payload;
 import com.opentext.ecm.otsync.ws.ServletUtil;
 import com.opentext.ecm.otsync.ws.message.MessageConverter;
 import com.opentext.ecm.otsync.ws.server.AbstractChunkedContentChannel;
+import com.opentext.ecm.otsync.ws.server.rest.ResourcePath;
 import com.opentext.otag.api.shared.types.notification.NotificationRequest;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 import com.opentext.otag.sdk.client.NotificationsClient;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
@@ -58,7 +59,7 @@ public class ChunkedContentRequestQueue {
     private class Request {
         public String id;
         public String ip;
-        public String llcookie;
+        public String otcsticket;
         public String tempFilename;
         public String realFilename;
         public long offset;
@@ -68,7 +69,7 @@ public class ChunkedContentRequestQueue {
         public Request(final String id, final String ip) {
             this.id = id;
             this.ip = ip;
-            this.llcookie = "";
+            this.otcsticket = "";
             this.tempFilename = "";
             this.realFilename = "";
             this.offset = (long) 0;
@@ -100,10 +101,10 @@ public class ChunkedContentRequestQueue {
         cleanAllCacheFiles();  // make sure there are no orphaned cache files
     }
 
-    public void downloadFile(final HttpServletRequest request, final HttpServletResponse response, final String url,
-                             final String llcookie) {
+    public void downloadFile(final HttpServletRequest request, final HttpServletResponse response, final String url) {
         final String remoteAddr = request.getRemoteAddr();
-        Request dlReq = getDownloadInProgressRequest(remoteAddr, url, llcookie);
+        String otcsticket = ResourcePath.getOTCSTicket(request);
+        Request dlReq = getDownloadInProgressRequest(remoteAddr, url, otcsticket);
         final String key = remoteAddr + url;
 
         if (dlReq == null) {    //download has not been started yet; enqueue for an available thread
@@ -114,10 +115,10 @@ public class ChunkedContentRequestQueue {
             SuspendedAction downloadAction =
                     new Download(async)
                             .url(url)
-                            .llcookie(llcookie)
+                            .otcsticket(otcsticket)
                             .remoteAddr(remoteAddr)
                             .key(key)
-                            .headers(new RequestHeader(request));
+                            .headers(new CSForwardHeaders(request));
 
             sharedThreadPool.sendImmediately(downloadAction);
             // suspended action will close the request later
@@ -167,8 +168,8 @@ public class ChunkedContentRequestQueue {
     public class Download extends SuspendedAction {
         private AsyncContext asyncRequest;
         private String url;
-        private String llcookie;
-        private RequestHeader headers;
+        private String otcsticket;
+        private CSForwardHeaders headers;
         private String remoteAddr;
         private String key;
 
@@ -184,12 +185,12 @@ public class ChunkedContentRequestQueue {
             return this;
         }
 
-        private Download llcookie(String llcookie) {
-            this.llcookie = llcookie;
+        private Download otcsticket(String otcsticket) {
+            this.otcsticket = otcsticket;
             return this;
         }
 
-        private Download headers(RequestHeader headers) {
+        private Download headers(CSForwardHeaders headers) {
             this.headers = headers;
             return this;
         }
@@ -211,12 +212,7 @@ public class ChunkedContentRequestQueue {
             HttpServletResponse response = (HttpServletResponse) asyncRequest.getResponse();
 
             try {
-                if (llcookie != null) {
-                    realFilename = contentServerConnection.storeGetResponseWithUserCookie(
-                            url, response, ContentServiceConstants.CS_COOKIE_NAME, llcookie, tempFilename, headers);
-                } else {
-                    realFilename = contentServerConnection.storeGetResponse(url, response, tempFilename);
-                }
+                realFilename = contentServerConnection.storeGetResponseWithHeaders(url, response, tempFilename, headers);
             } catch (IOException e) {
                 ServletUtil.error(response, NO_RESPONSE_ERROR_MSG, HttpServletResponse.SC_NO_CONTENT);
                 asyncRequest.complete();
@@ -229,7 +225,7 @@ public class ChunkedContentRequestQueue {
                 // sending an authorization, so we set it to null we could get it from the
                 // request if it turns out to be necessary
                 newDownloadRequest = new Request(null, remoteAddr);
-                newDownloadRequest.llcookie = llcookie;
+                newDownloadRequest.otcsticket = otcsticket;
                 newDownloadRequest.tempFilename = tempFilename;
                 newDownloadRequest.realFilename = realFilename;
                 downloadsInProgress.put(key, newDownloadRequest);
@@ -250,7 +246,7 @@ public class ChunkedContentRequestQueue {
                                         final HttpServletResponse response) throws IOException {
         String key = null;
         String nodeID = null;
-        String llcookie = null;
+        String otcsticket = null;
         String filename = null;
 
         boolean isLastPart = false;
@@ -263,7 +259,6 @@ public class ChunkedContentRequestQueue {
         final Map<String, Object> jsonPayload = new HashMap<>();
         int chunkDataLen = 0;
 
-        final RequestHeader headers = new RequestHeader(request);
         final String remoteAddr = request.getRemoteAddr();
 
         // unfortunately, we have to parse the full multipart request before we can check
@@ -321,7 +316,9 @@ public class ChunkedContentRequestQueue {
                             nodeID = (String) ((isUpload) ?
                                     info.get(Message.PARENT_ID_KEY_NAME) : info.get(Message.NODE_ID_KEY_NAME));
                         }
-                        llcookie = (String) payload.get(Message.CSTOKEN_KEY_NAME);
+
+                        otcsticket = ResourcePath.getOTCSTicket(request);
+
                         if (info != null) {
                             isLastPart = Boolean.parseBoolean((String) info.get(Message.LAST_PART_KEY_NAME));
                         }
@@ -330,7 +327,7 @@ public class ChunkedContentRequestQueue {
                         jsonPayload.put(Message.USERNAME_KEY_NAME, payload.get(Message.USERNAME_KEY_NAME));
                         jsonPayload.put(Message.PASSWORD_KEY_NAME, payload.get(Message.PASSWORD_KEY_NAME));
                     } catch (EOFException ex) {
-                        //llcookie, parentID are already null, and there is logic below to handle this exception
+                        //otcsticket, parentID are already null, and there is logic below to handle this exception
                     }
                 }
             }
@@ -338,23 +335,26 @@ public class ChunkedContentRequestQueue {
             ServletUtil.error(response, INTERNAL_SERVER_ERROR_MESSAGE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
-        if (filename != null && (isPhoto || nodeID != null) && llcookie != null && chunkData != null) {
-            performUpload(request, response, nodeID, llcookie, filename, isLastPart, isFirstPart, isUpload, isPhoto, chunkData, jsonPayload, chunkDataLen, headers, remoteAddr);
-        } else { //no file, or parentID, or llcookie was included with this multipart post! invalidate tokens
+        if (filename != null && (isPhoto || nodeID != null) && otcsticket != null && chunkData != null) {
+            performUpload(request, response, nodeID, otcsticket, filename, isLastPart, isFirstPart, isUpload, isPhoto, chunkData, jsonPayload, chunkDataLen,
+                    new CSForwardHeaders(request), remoteAddr);
+        } else { //no file, or parentID, or otcsticket was included with this multipart post! invalidate tokens
             ServletUtil.error(response, INTERNAL_SERVER_ERROR_MESSAGE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             uploadsInProgress.remove(key);
         }
     }
 
-    private void performUpload(HttpServletRequest request, HttpServletResponse response, String nodeID, String llcookie, String filename, boolean isLastPart, boolean isFirstPart, boolean isUpload, boolean isPhoto, byte[] chunkData, Map<String, Object> jsonPayload, int chunkDataLen, RequestHeader headers, String remoteAddr) throws IOException {
+    private void performUpload(HttpServletRequest request, HttpServletResponse response, String nodeID, String otcsticket, String filename, boolean isLastPart,
+                               boolean isFirstPart, boolean isUpload, boolean isPhoto, byte[] chunkData, Map<String, Object> jsonPayload, int chunkDataLen,
+                               CSForwardHeaders headers, String remoteAddr) throws IOException {
         String key;
         Request ulReq;
         key = remoteAddr + nodeID + filename;
-        ulReq = getUploadInProgressRequest(remoteAddr, nodeID, filename, llcookie);
+        ulReq = getUploadInProgressRequest(remoteAddr, nodeID, filename, otcsticket);
 
         if (ulReq == null) {    //upload has not been started yet
 
-            ulReq = startUpload(key, llcookie, filename, remoteAddr);
+            ulReq = startUpload(key, otcsticket, filename, remoteAddr);
             isFirstPart = true;
         }
 
@@ -379,7 +379,7 @@ public class ChunkedContentRequestQueue {
         }
     }
 
-    private Request startUpload(final String key, final String llcookie, final String filename,
+    private Request startUpload(final String key, final String otcsticket, final String filename,
                                 final String remoteAddr) {
 
         final UUID uuid = UUID.randomUUID();
@@ -387,7 +387,7 @@ public class ChunkedContentRequestQueue {
         // we only needed the client id (Request constructor's 1st parameter) when sending an
         // authorization, so we set it to null we could get it from the payload if it becomes useful in future
         final Request ulReq = new Request(null, remoteAddr);
-        ulReq.llcookie = llcookie;
+        ulReq.otcsticket = otcsticket;
         ulReq.tempFilename = uuid.toString();
         ulReq.realFilename = filename;
         uploadsInProgress.put(key, ulReq);
@@ -442,7 +442,7 @@ public class ChunkedContentRequestQueue {
 
     private void completeUpload(final HttpServletRequest request, final String key,
                                 final Request ulReq, final FileOutputStream out,
-                                final RequestHeader headers)
+                                final CSForwardHeaders headers)
             throws IOException {
 
         //add end of multipart data
@@ -461,7 +461,7 @@ public class ChunkedContentRequestQueue {
                 new Upload(async)
                         .boundary(ulReq.boundary)
                         .headers(headers)
-                        .llcookie(ulReq.llcookie)
+                        .otcsticket(ulReq.otcsticket)
                         .localFilePath(getTempfileDir() + ulReq.tempFilename)
                         .realFilename();
 
@@ -473,8 +473,8 @@ public class ChunkedContentRequestQueue {
         private AsyncContext async;
         private String localFilePath;
         private String boundary;
-        private String llcookie;
-        private RequestHeader headers;
+        private String otcsticket;
+        private CSForwardHeaders headers;
 
         private Upload(AsyncContext async) {
             this.async = async;
@@ -494,12 +494,12 @@ public class ChunkedContentRequestQueue {
             return this;
         }
 
-        private Upload llcookie(String llcookie) {
-            this.llcookie = llcookie;
+        private Upload otcsticket(String otcsticket) {
+            this.otcsticket = otcsticket;
             return this;
         }
 
-        private Upload headers(RequestHeader headers) {
+        private Upload headers(CSForwardHeaders headers) {
             this.headers = headers;
             return this;
         }
@@ -508,7 +508,7 @@ public class ChunkedContentRequestQueue {
         public void resume() {
             try {
                 contentServerConnection.streamMultipartPost((HttpServletResponse) async.getResponse(),
-                        settingsService.getContentServerUrl(), localFilePath, boundary, llcookie, headers);
+                        settingsService.getContentServerUrl(), localFilePath, boundary, headers);
 
             } catch (IOException e) {
                 log.error("Error during chunked upload", e);
@@ -529,11 +529,11 @@ public class ChunkedContentRequestQueue {
 
     }
 
-    public Request getDownloadInProgressRequest(String remoteAddress, String url, String llcookie) {
+    public Request getDownloadInProgressRequest(String remoteAddress, String url, String otcsticket) {
         final String key = remoteAddress + url;
         final Request req = downloadsInProgress.get(key);
         if (req != null) {
-            if (req.llcookie.equals(llcookie)) {
+            if (req.otcsticket.equals(otcsticket)) {
                 return req;
             } else {
                 //remove the req from the list and return null, bad authorization!
@@ -546,11 +546,11 @@ public class ChunkedContentRequestQueue {
     }
 
     public Request getUploadInProgressRequest(final String remoteAddress, final String parentID,
-                                              final String filename, final String llcookie) {
+                                              final String filename, final String otcsticket) {
         final String key = remoteAddress + parentID + filename;
         final Request req = uploadsInProgress.get(key);
         if (req != null) {
-            if (req.llcookie.equals(llcookie)) {
+            if (req.otcsticket.equals(otcsticket)) {
                 return req;
             } else {
                 //remove the req from the list and return null, bad authorization!
