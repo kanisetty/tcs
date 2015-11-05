@@ -56,6 +56,9 @@ public class Servlet3FrontChannel {
                 // use in authorization by message listeners
                 Map<String, Object> payload = _messageConverter.getDeserializer().deserialize(in);
                 payload.put(Message.REMOTE_ADDRESS_KEY_NAME, request.getRemoteAddr());
+                payload.put("request_scheme", request.getScheme());
+                payload.put("request_port", request.getServerPort());
+                payload.put("request_server_name", request.getServerName());
 
                 // enqueue certain requests unless auto=false (desktop clients may make these calls all at once on Engine restart)
                 String subtype = (String) payload.get(Message.SUBTYPE_KEY_NAME);

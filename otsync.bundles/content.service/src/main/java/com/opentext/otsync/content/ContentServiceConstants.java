@@ -19,6 +19,12 @@ public class ContentServiceConstants {
     public static final String REPO = "content.repo";
     public static final String IS_TEMPO_BOX_ENABLED = "content.enableTempoBox";
     public static final String CS_AUTH_ONLY = "content.csAuthOnly";
+    public static final String MIN_VERSION_MAC = "content.clientMinVersionMac";
+    public static final String CUR_VERSION_MAC = "content.clientCurrentVersionMac";
+    public static final String INSTALL_FOLDER_MAC = "content.clientInstallerFolderMac";
+    public static final String MIN_VERSION_WIN = "content.clientMinVersionWin";
+    public static final String CUR_VERSION_WIN = "content.clientCurrentVersionWin";
+    public static final String INSTALL_FOLDER_WIN = "content.clientInstallerFolderWin";
 
     public final static String OTSYNC_WEB_APP_NAME = "OTSyncServer";
     public final static String BACK_CHANNEL_NAME = "BackChannel";

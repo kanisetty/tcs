@@ -106,4 +106,18 @@ public class SettingsService {
             return "";
         }
     }
+
+    public String getMinVersionMac(){ return settingsClient.getSettingAsString(ContentServiceConstants.MIN_VERSION_MAC); }
+
+    public String getCurVersionMac(){ return settingsClient.getSettingAsString(ContentServiceConstants.CUR_VERSION_MAC); }
+
+    public String getInstallerFolderMac(){ return settingsClient.getSettingAsString(ContentServiceConstants.INSTALL_FOLDER_MAC); }
+
+    public String getMinVersionWin(){ return settingsClient.getSettingAsString(ContentServiceConstants.MIN_VERSION_WIN); }
+
+    public String getCurVersionWin(){ return settingsClient.getSettingAsString(ContentServiceConstants.CUR_VERSION_WIN); }
+
+    public String getInstallerFolderWin(){ return settingsClient.getSettingAsString(ContentServiceConstants.INSTALL_FOLDER_WIN); }
+
+
 }

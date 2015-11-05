@@ -1,280 +1,290 @@
 package com.opentext.otsync.content.listeners;
 
-import com.opentext.otsync.content.message.SynchronousMessageListener;
-import com.opentext.otsync.content.ws.server.ClientType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opentext.otag.rest.util.CSForwardHeaders;
 import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.http.HTTPRequestManager;
 import com.opentext.otsync.content.message.Message;
+import com.opentext.otsync.content.message.SynchronousMessageListener;
 import com.opentext.otsync.content.ws.ServletConfig;
 import com.opentext.otsync.content.ws.message.MessageConverter;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.content.ws.server.ClientTypeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import static com.opentext.otsync.content.ContentServiceConstants.MAX_ALLOWED_STORED_RESPONSES;
-
-// TODO FIXME we really need to ask clients to auth via OTAG not this endpoint,
-// TODO FIXME the Tempo desktop wipe probably needs to be reimplemented
+// TODO FIXME this legacy endpoint should be deprecated once AppWorks implements all required features
+// and clients can be updated
 public class AuthMessageListener implements SynchronousMessageListener {
 
     private MessageConverter _messageConverter;
-    private HTTPRequestManager _serverConnection;
-    public static Log log = LogFactory.getLog(AuthMessageListener.class);
+    private static Log log = LogFactory.getLog(AuthMessageListener.class);
+    private ClientTypeSet _clientSet;
 
     public AuthMessageListener(MessageConverter messageConverter, HTTPRequestManager serverConnection) {
         _messageConverter = messageConverter;
-        _serverConnection = serverConnection;
+
+        _clientSet = new ClientTypeSet();
     }
 
+    /**
+     * Authenticate the user based on the incoming auth parameters
+     * if an IOException is thrown, the message service will catch it
+     * and return an HTTP error to the client indicating that the message could not be forwarded
+     *
+     * @param message - incoming request map with legacy FrontChannel format
+     * @return - Map containing all fields to be returned to the requesting client
+     * @throws IOException
+     */
     public Map<String, Object> onMessage(Map<String, Object> message) throws IOException {
-//		EntityManager manager = Setting.emf.createEntityManager();
-        boolean isRest = false;
+        Map<String, Object> combinedResult = generateDefaultResponse();
 
-        Map<String, String> params = new HashMap<>();
-        String password;
+        Map<String, Object> awAuthResult = doAppWorksAuth(message);
+        combinedResult.putAll(awAuthResult);
 
-        // remove header values from the payload while it is being JSONified
+        Map<String, Object> csAuthResult = doContentServerAuth(message);
+        combinedResult.putAll(csAuthResult);
+
+        Map<String, Object> versionData = _clientSet.doClientVersionCheck(message);
+        combinedResult.putAll(versionData);
+
+        return combinedResult;
+    }
+
+    /**
+     * Take the incoming request map and pull out the values required for AppWorks Auth
+     *
+     * @param message - Incoming request map
+     * @return - JSON string containing the expected AppWorks Auth string
+     */
+    private String buildAWAuthRequestString(Map<String, Object> message) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userName", message.getOrDefault(Message.USERNAME_KEY_NAME, ""));
+        params.put("password", message.getOrDefault(Message.PASSWORD_KEY_NAME, ""));
+
+        //If the client has passed in its ID, include it
+        if (message.containsKey(Message.CLIENT_ID_KEY_NAME)) {
+            params.put("clientId", message.getOrDefault(Message.CLIENT_ID_KEY_NAME, ""));
+        }
+
+        Map<String, Object> clientData = new HashMap<>();
+        params.put("clientData", clientData);
+        Map<String, Object> clientInfo = new HashMap<>();
+        clientData.put("clientInfo", clientInfo);
+
+        clientInfo.put("type", message.getOrDefault(Message.CLIENT_TYPE_KEY_NAME, ""));
+        clientInfo.put("version", message.getOrDefault(Message.CLIENT_CURRENTVERSION_KEY_VALUE, ""));
+        clientInfo.put("os", message.getOrDefault(Message.CLIENT_OS_KEY_NAME, ""));
+        clientInfo.put("osVersion", message.getOrDefault(Message.CLIENT_OSVERSION_KEY_NAME, ""));
+        clientInfo.put("bitness", message.getOrDefault(Message.CLIENT_BITNESS_KEY_NAME, ""));
+
+        ObjectMapper mapper = new ObjectMapper();
+        String requestJSON = null;
+
+        try {
+            requestJSON = mapper.writeValueAsString(params);
+        } catch (JsonProcessingException e) {
+            log.error(e);
+        }
+
+        return requestJSON;
+    }
+
+    /**
+     * Authenticate with AppWorks to get authentication tokens required for AppWorks services
+     *
+     * @param message - Map containing the incoming request body
+     * @return - Map containing required tokens and info mapped to the legacy API response format
+     * @throws IOException
+     */
+    private Map<String, Object> doAppWorksAuth(Map<String, Object> message) throws IOException {
+        Map<String, Object> result = new HashMap<>();
+        String requestJSON = buildAWAuthRequestString(message);
         CSForwardHeaders headers = (CSForwardHeaders) message.get(CSForwardHeaders.REQUEST_HEADER_KEY);
-        message.remove(CSForwardHeaders.REQUEST_HEADER_KEY);
 
-        // Put characters around the password incase it has spaces
-        // at the front or end to avoid issue with CS core parse JSON
-        // triming passwords.
-        password = (String) message.remove(Message.PASSWORD_KEY_NAME);
-        if (password != null) {
-            password = "<" + password + ">";
-            message.put(Message.PASSWORD_KEY_NAME, password);
+
+        //Build up AppWorks Auth request using incoming request's URL
+        String requestScheme = (String) message.getOrDefault("request_scheme", "http");
+        Integer requestPort = (Integer) message.getOrDefault("request_port", 8080);
+        String requestServer = (String) message.getOrDefault("request_server_name", "localhost");
+        HttpResponse response;
+
+        HttpClient httpClient = new DefaultHttpClient();
+        try {
+            URL requestURL = new URL(requestScheme, requestServer, requestPort, "/admin/auth");
+            HttpPost request = new HttpPost(requestURL.toString());
+
+            //Add in headers from the incoming request e.g. X-Forwarded-For
+            if (headers != null) {
+                headers.addTo(request);
+            }
+            request.addHeader("content-type", "application/json");
+            request.setEntity(new StringEntity(requestJSON));
+            response = httpClient.execute(request);
+        } catch (Exception e) {
+            log.error(e);
+            throw e;
         }
 
-        // TODO TO MAKE SURE THAT EVEN IF THE CLIENT ISNT AUTHED IT STILL GETS WIPED
-        // TODO direct access to our clients is not permitted, expose as a service so deployments can grab client rows???
-//		// check whether this client has been set to wipe
-        String id = (String) message.get(Message.CLIENT_ID_KEY_NAME);
-//		if(id != null){
-//			com.opentext.otag.common.tracking.Client clientInfo = manager.find(com.opentext.otag.common.tracking.Client.class, id);
-//
-//			// the client should be wiped if wipe status is either pending or complete
-//			// (in the latter case, it is mistakenly trying to connect again using the old client id)
-//			boolean isWipeRequested = (clientInfo != null) && clientInfo.getWipe() != null;
-//
-//			if(isWipeRequested){
-//				String username = clientInfo.getUsername();
-//				OTSyncServer.log.info("Wipe request pending for authorizing client " + id + " for user " + username);
-//
-//				// Get a one-time-only otag token the client can use to validate it's "I have finished wiping" call
-//				// we use an empty username because the client will not provide it when it makes the wipe-complete call
-//                String token = IdentityProvider.getService().getOneTimeToken("", id, ClientID.WIPE_OPERATION_NAME);
-//
-//    			Map<String, Object> wipeMessage = new HashMap<String, Object>();
-//                wipeMessage.put(Message.AUTH_KEY_VALUE, false);
-//                wipeMessage.put(Message.OK_KEY_VALUE, false);
-//                wipeMessage.put(Message.WIPE_KEY_VALUE, true);
-//                wipeMessage.put(Message.TOKEN_KEY_NAME, token);
-//
-//                return wipeMessage;
-//			}
-//		}
-//
-        // Send the auth request to CS
-        params.put("func", "otsync.otsyncrequest");
-        params.put("payload", _messageConverter.getSerializer().serialize(message));
-
-        String in = _serverConnection.postData(ServletConfig.getContentServerUrl(), params, headers);
-
-        // Get the payload and info member from the response string
-        Map<String, Object> ret = _messageConverter.getDeserializer().deserialize(in);
-        @SuppressWarnings("unchecked")
-        Map<String, Object> info = (Map<String, Object>) ret.get(Message.INFO_KEY_NAME);
-        // for rest-style responses, there is no info (the response itself is takes its place)
-        if (info == null) {
-            info = ret;
-            isRest = true;
-        }
-
-        //Get the client properties associated with the currently connected client type
-        ClientType currentClient;
-
-        if (message.containsKey(Message.CLIENT_CURRENTVERSION_KEY_VALUE) && !message.containsKey(Message.CLIENT_OS_KEY_NAME)) {
-            //Get default Windows client as this is a legacy client making the request
-            currentClient = ServletConfig.getClient();
+        if (response.getStatusLine().getStatusCode() == 200) {
+            result.put("auth", Boolean.TRUE);
         } else {
-            String clientOS = (String) message.get(Message.CLIENT_OS_KEY_NAME);
-            String clientOSVersion = (String) message.get(Message.CLIENT_OSVERSION_KEY_NAME);
-            String clientBitness = (String) message.get(Message.CLIENT_BITNESS_KEY_NAME);
-
-            currentClient = ServletConfig.getClient(clientOS, clientOSVersion, clientBitness);
+            // If auth was unsuccessful, return the expected legacy error data structure
+            result.put("info", generateErrorInfo(
+                    response.getStatusLine().getReasonPhrase(),
+                    response.getStatusLine().getStatusCode()));
+            return result;
         }
 
-
-        //Get the client version information from the server to be returned to the client
-        if (currentClient != null) {
-            String language = (String) message.get(Message.CLIENT_LANGUAGE_KEY_NAME);
-
-            ret.put(Message.CLIENT_OS_RET_KEY, currentClient.getOS()); //OS of current client type
-            ret.put(Message.CLIENT_CURRENT_RET_KEY, currentClient.getCurrentVersion()); //current downloadable version of client
-            ret.put(Message.CLIENT_MIN_RET_KEY, currentClient.getMinVersion()); //minimum allowed version of client
-            ret.put(Message.CLIENT_LINK_RET_KEY, currentClient.getLink(language)); //link to current downloadable version
+        String responseString;
+        Map<String, Object> workingMap;
+        try {
+            responseString = EntityUtils.toString(response.getEntity());
+            workingMap = _messageConverter.getDeserializer().deserialize(responseString);
+        } catch (IOException e) {
+            log.error(e);
+            throw e;
         }
 
-        //Get the legacy client version if no version is reported
-        String clientVersion = (String) message.get(Message.CLIENT_VERSION_KEY_NAME);
-        if (clientVersion == null) {
-            clientVersion = (String) message.get(Message.CLIENT_CURRENTVERSION_KEY_VALUE);
+        //Map AW response fields to expected API response
+        result.put("token", workingMap.getOrDefault("otagtoken", ""));
+        result.put("isOTAG", workingMap.getOrDefault("isOTAG", false));
+        result.put("clientID", workingMap.getOrDefault("id", ""));
+
+        if (workingMap.get("wipe") != null) {
+            result.put("wipe", workingMap.get("wipe"));
         }
 
-        //Confirm that current reported version meets the minimum requirements
-        if (currentClient != null && clientVersion != null) {
+        return result;
+    }
 
-            if (!currentClient.isVersionAllowed(clientVersion)) {
-                ret.put(Message.AUTH_KEY_RESPONSE, false);
-                ret.put(Message.CLIENT_NEEDS_UPGRADE, true);
-                return ret;
-            }
+    /**
+     * Authenticate with Content Service module to get authentication token required for Content Server calls
+     * Also returns system preferences and user info required by the legacy desktop and web clients
+     *
+     * @param message - Map containing the incoming request body
+     * @return - Map containing required tokens and info mapped to the legacy API response format
+     * @throws IOException
+     */
+    private Map<String, Object> doContentServerAuth(Map<String, Object> message) throws IOException {
+        Map<String, Object> result = new HashMap<>();
+        CSForwardHeaders headers = (CSForwardHeaders) message.get(CSForwardHeaders.REQUEST_HEADER_KEY);
+        ArrayList<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("func", "otsync.otsyncrequest"));
+
+        try {
+            params.add(new BasicNameValuePair("payload", _messageConverter.getSerializer().serialize(message)));
+        } catch (IOException e) {
+            log.error(e);
+            return new HashMap<>();
         }
 
-        if (Boolean.TRUE.equals(info.get(Message.AUTH_KEY_RESPONSE))) {
+        HttpResponse response;
+        HttpClient httpClient = new DefaultHttpClient();
 
-            // if the client does not yet have an id, we assign a pseudo-random string as
-            // its id
-            String clientID;
-            Object clientIDObj;
-
-            clientIDObj = message.get(Message.CLIENT_ID_KEY_NAME);
-            if (clientIDObj != null) {
-                clientID = clientIDObj.toString();
-            } else {
-                UUID uuid = UUID.randomUUID();
-                clientID = uuid.toString();
+        try {
+            HttpPost request = new HttpPost(ServletConfig.getContentServerUrl());
+            //Add in headers from the incoming request e.g. X-Forwarded-For
+            if (headers != null) {
+                headers.addTo(request);
             }
 
+            request.setEntity(new UrlEncodedFormEntity(params));
+            response = httpClient.execute(request);
+        } catch (IOException e) {
+            log.error(e);
+            throw e;
+        }
 
-            String user = getUser(isRest, info);
-            if (user == null || user.length() == 0) {
-                log.error("Authorized user has no known username. Client id is " + clientID);
-            }
-            int maxStoredResponses = getMaxStoredResponses(message);
+        String responseString;
+        Map<String, Object> workingMap;
 
-            // TODO FIXME no forceAuth in current impl check old one out
-            // authorize the user with OTAG and use the otagtoken as the back-channel token and tell the client it has just been authorized
-//			String token = IdentityProvider.getService()
-//					.forceAuthForUser(
-//							user,
-//							clientID,
-//							(boolean) info.get("isExternal"));
+        try {
+            responseString = EntityUtils.toString(response.getEntity());
+            workingMap = _messageConverter.getDeserializer().deserialize(responseString);
+        } catch (IOException e) {
+            log.error(e);
+            throw e;
+        }
 
-            // track this client connection event
-            // TODO needs a Gateway call again here if you want to track a client, just use otag
-            //track(user, clientID, message, headers.getOriginalAddr(), manager);
-
-            if (Boolean.TRUE.equals(message.get(Message.REST_API_KEY_NAME))) {
-                info.put(Message.CS_BASE_URL_KEY_NAME, ServletConfig.getContentServerBaseUrl());
-            } else {
-                info.put(Message.CS_BASE_URL_OLD_KEY_NAME, ServletConfig.getContentServerBaseUrl());
-            }
+        //Insert extra required info data
+        Map<String, Object> info = (Map<String, Object>) workingMap.get("info");
+        if (info != null) {
             info.put(Message.SYNC_RECOMMENDED_KEY_NAME, false);
-
-            ret.put(Message.CLIENT_ID_KEY_NAME, clientID);
-            // TODO this is the OneTimeToken issued as part of a wipe, this service needs to implement its
-            // TODO own ideas around wipe if it wants to fulfil desktop client wiping
-            //ret.put(Message.TOKEN_KEY_NAME, token);
-            ret.put(Message.MAX_STORED_RESPONSES_KEY_NAME, maxStoredResponses);
-            ret.put("isOTAG", true);
-
-            return ret;
-
-        } else {
-            ret.put(Message.AUTH_KEY_RESPONSE, false);
-            return ret;
-        }
-
-        // if an IOException is thrown during the above operations, the message service will catch it
-        // and return an HTTP error to the client indicating that the message could not be forwarded
-    }
-
-
-//    private void track(String user, String id, Map<String, Object> data, String ip, EntityManager manager) {
-//
-//		manager.getTransaction().begin();
-//
-//    	com.opentext.otag.common.tracking.Client client = manager.find(com.opentext.otag.common.tracking.Client.class, id);
-//
-//		Timestamp now = new Timestamp(System.currentTimeMillis());
-//
-//		if(client == null){
-//			client = new com.opentext.otag.common.tracking.Client(id);
-//			client.setFirstConnect(now);
-//		}
-//
-//		String userID = (String)data.get(Message.USER_ID_KEY_RESPONSE);
-//		String app = "Tempo";
-//		String type = (String)data.get(Message.CLIENT_TYPE_KEY_NAME);
-//		String os = (String)data.get(Message.CLIENT_OS_KEY_NAME);
-//		String version = (String)data.get(Message.CLIENT_VERSION_KEY_NAME);
-//		String bitness = (String)data.get(Message.CLIENT_BITNESS_KEY_NAME);
-//		String deviceID = (String)data.get(Message.CLIENT_DEVICE_ID_KEY_NAME);
-//		String location = (String)data.get(Message.CLIENT_LOCATION_KEY_NAME);
-//		String language = (String)data.get(Message.CLIENT_LANGUAGE_KEY_NAME);
-//		String osVersion = (String)data.get(Message.CLIENT_OSVERSION_KEY_NAME);
-//		String cloudPushKey = (String)data.get(Message.CLIENT_CLOUD_PUSH_KEY_NAME);
-//
-//		// don't track legacy clients that don't declare a type
-//		if(type == null) return;
-//
-//		if(Setting.getBoolean(com.opentext.otag.common.tracking.Client.CLIENT_TRACKING_ENABLED)){
-//			client.setUsername(user);
-//			if(userID != null) client.setUserID(userID);
-//			if(app != null) client.setApp(app);
-//			if(type != null) client.setType(type);
-//			if(os != null) client.setOs(os);
-//			if(version != null) client.setVersion(version);
-//			if(bitness != null) client.setBitness(bitness);
-//			if(deviceID != null) client.setDeviceID(deviceID);
-//			if(location != null) client.setLocation(location);
-//			if(language != null) client.setLanguage(language);
-//			if(osVersion != null) client.setOsVersion(osVersion);
-//			if(ip != null) client.setIp(ip);
-//			if(cloudPushKey != null) client.setCloudPushKey(cloudPushKey);
-//		}
-//		client.setLastConnect(now);
-//
-//		manager.merge(client);
-//
-//		manager.getTransaction().commit();
-//
-//	}
-
-    private String getUser(boolean isRest, Map<String, Object> info) {
-        if (isRest) {
-            return (String) info.get(Message.REST_USERNAME_KEYNAME);
-        } else {
-            return (String) info.get(Message.USERNAME_KEY_NAME);
-        }
-    }
-
-    public int getMaxStoredResponses(Map<String, Object> message) {
-
-        int maxStoredResponses = ContentServiceConstants.DEFAULT_STORED_RESPONSES;
-
-        // if the client passed in a request for a certain number of stored responses,
-        // honour it if it is well-formed, but cap it at the configured maximum
-        if (message.containsKey(Message.MAX_STORED_RESPONSES_KEY_NAME)) {
-            try {
-                maxStoredResponses = Integer.parseInt(message.get(Message.MAX_STORED_RESPONSES_KEY_NAME).toString());
-
-                if (MAX_ALLOWED_STORED_RESPONSES < maxStoredResponses) {
-                    maxStoredResponses = MAX_ALLOWED_STORED_RESPONSES;
-                }
-
-            } catch (NumberFormatException e) {
-                log.warn("Client sent non-integer for max stored responses", e);
-                // continue using the default value
+            if (Boolean.FALSE.equals(info.get("auth"))) {
+                result.put("auth", Boolean.FALSE);
             }
         }
-        return maxStoredResponses;
+
+        //Map CS response fields to current expected API response
+        result.put("APIVersion", workingMap.getOrDefault("APIVersion", 4));
+        result.put("cstoken", workingMap.getOrDefault("otcsticket", ""));
+        result.put("info", workingMap.get("info"));
+        result.put("serverDate", workingMap.get("serverDate"));
+        result.put("subtype", workingMap.getOrDefault("subtype", "auth"));
+        result.put("type", workingMap.getOrDefault("type", "auth"));
+
+        return result;
+    }
+
+    /**
+     * Legacy clients expect the nested info structure from Content Server whether the auth/version check succeed or not
+     * If authentication is blocked prior to hitting Content Server, fake this structure
+     *
+     * @param errMsg     - English description of the error for logging
+     * @param statusCode - HTTP status code
+     * @return - Info map with info on the error condition
+     */
+    private Map<String, Object> generateErrorInfo(String errMsg, int statusCode) {
+        Map<String, Object> info = new HashMap<>();
+        info.put("auth", Boolean.FALSE);
+        info.put("errMsg", errMsg);
+        info.put("statusCode", statusCode);
+        info.put("exceptionCode", "badlogin");
+        info.put("ok", Boolean.FALSE);
+
+        return info;
+    }
+
+    /**
+     * Legacy clients expect default fields to be present and can crash if missing
+     * Add these fields with defaults to the response prior to any validation.
+     *
+     * @return - map containing default fields and values
+     */
+    private Map<String, Object> generateDefaultResponse() {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("APIVersion", 4);
+        result.put("clientID", null);
+        result.put("info", generateErrorInfo("Unknown request error", 400));
+        result.put("serverDate", null);
+        result.put("subtype", "auth");
+        result.put("type", "auth");
+        result.put("clientOS", null);
+        result.put("clientCurVersion", null);
+        result.put("clientMinVersion", null);
+        result.put("clientLink", null);
+        result.put("auth", false);
+        result.put("clientNeedsUpgrade", false);
+        result.put(Message.MAX_STORED_RESPONSES_KEY_NAME, ContentServiceConstants.DEFAULT_STORED_RESPONSES);
+        result.put("isOTAG", false);
+
+        return result;
     }
 }
