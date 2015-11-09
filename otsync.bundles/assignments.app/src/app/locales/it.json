@@ -1,0 +1,21 @@
+{
+  "error": {
+    "NoViewerIsAvailableForThisTypeOfAssignment": "Nessun visualizzatore disponibile per questo tipo di assegnazione"
+  },
+  "label": {
+    "Assignments": "Assegnazioni",
+    "Cancel": "Annulla",
+    "Due": "Scadenza",
+    "Error": "Errore: ",
+    "Location": "Posizione",
+    "None": "Nessuno",
+    "OK": "OK",
+    "Priority": "Priorità",
+    "Status": "Stato"
+  },
+  "priority": {
+    "Low": "Basso",
+    "Medium": "Medio",
+    "High": "Alto"
+  }
+}

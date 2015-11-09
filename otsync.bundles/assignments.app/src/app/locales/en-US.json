@@ -1,0 +1,23 @@
+{
+	"error" : {
+        "Authentication failed":"Authentication Failed.",
+		"NoViewerIsAvailableForThisTypeOfAssignment":"No viewer is available for this type of assignment",
+        "Unable to perform action" : "Unable to Perform Action"
+	},
+	"label" : {
+		"Assignments":"Assignments",
+		"Cancel":"Cancel",
+		"Due":"Due",
+		"Error":"Error: ",
+		"Location":"Location",
+		"None":"None",
+		"OK":"OK",
+		"Priority":"Priority",
+		"Status":"Status"
+	},
+	"priority" : {
+		"Low":"Low",
+		"Medium":"Medium",
+		"High":"High"
+	}
+}

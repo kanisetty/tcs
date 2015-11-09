@@ -1,0 +1,21 @@
+{
+  "error": {
+    "NoViewerIsAvailableForThisTypeOfAssignment": "No hi ha cap visor disponible per a aquest tipus d'assignació"
+  },
+  "label": {
+    "Assignments": "Assignacions",
+    "Cancel": "Cancel·la",
+    "Due": "Venciment",
+    "Error": "Error: ",
+    "Location": "Ubicació",
+    "None": "Cap",
+    "OK": "D'acord",
+    "Priority": "Prioritat",
+    "Status": "Estat"
+  },
+  "priority": {
+    "Low": "Baixa",
+    "Medium": "Mitjana",
+    "High": "Alta"
+  }
+}

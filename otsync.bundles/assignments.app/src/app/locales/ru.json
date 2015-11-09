@@ -1,0 +1,21 @@
+{
+  "error": {
+    "NoViewerIsAvailableForThisTypeOfAssignment": "Для этого типа заданий просмотр недоступен"
+  },
+  "label": {
+    "Assignments": "Назначения",
+    "Cancel": "Отмена",
+    "Due": "До",
+    "Error": "Ошибка: ",
+    "Location": "Местоположение",
+    "None": "Нет",
+    "OK": "ОК",
+    "Priority": "Приоритет",
+    "Status": "Состояние"
+  },
+  "priority": {
+    "Low": "Низкий",
+    "Medium": "Средний",
+    "High": "Высокий"
+  }
+}

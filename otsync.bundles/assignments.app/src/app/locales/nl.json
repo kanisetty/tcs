@@ -1,0 +1,21 @@
+{
+  "error": {
+    "NoViewerIsAvailableForThisTypeOfAssignment": "Er is geen viewer beschikbaar voor dit type opdracht"
+  },
+  "label": {
+    "Assignments": "Opdrachten",
+    "Cancel": "Annuleren",
+    "Due": "Vervaldatum",
+    "Error": "Fout: ",
+    "Location": "Locatie",
+    "None": "Geen",
+    "OK": "OK",
+    "Priority": "Prioriteit",
+    "Status": "Status"
+  },
+  "priority": {
+    "Low": "Laag",
+    "Medium": "Normaal",
+    "High": "Hoog"
+  }
+}

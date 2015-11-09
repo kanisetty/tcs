@@ -1,0 +1,21 @@
+{
+  "error": {
+    "NoViewerIsAvailableForThisTypeOfAssignment": "此类分配没有可用查看器"
+  },
+  "label": {
+    "Assignments": "任务分配",
+    "Cancel": "取消",
+    "Due": "到期",
+    "Error": "错误: ",
+    "Location": "位置",
+    "None": "无",
+    "OK": "确定",
+    "Priority": "优先级",
+    "Status": "状态"
+  },
+  "priority": {
+    "Low": "低",
+    "Medium": "中",
+    "High": "高"
+  }
+}

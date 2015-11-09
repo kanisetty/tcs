@@ -1,0 +1,21 @@
+{
+  "error": {
+    "NoViewerIsAvailableForThisTypeOfAssignment": "Für diesen Zuweisungstyp ist keine Anzeige verfügbar."
+  },
+  "label": {
+    "Assignments": "Zuweisungen",
+    "Cancel": "Abbrechen",
+    "Due": "Fällig",
+    "Error": "Fehler: ",
+    "Location": "Speicherort",
+    "None": "Keine",
+    "OK": "OK",
+    "Priority": "Priorität",
+    "Status": "Status"
+  },
+  "priority": {
+    "Low": "Niedrig",
+    "Medium": "Mittel",
+    "High": "Hoch"
+  }
+}

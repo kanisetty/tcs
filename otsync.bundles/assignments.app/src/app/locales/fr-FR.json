@@ -1,0 +1,23 @@
+﻿{
+  "error": {
+    "Authentication failed" : "Échec de l'authentification.",
+    "NoViewerIsAvailableForThisTypeOfAssignment": "Aucune visionneuse n'est disponible pour ce type d'affectation",
+    "Unable to perform action" : "Impossible d’exécuter l’action"
+  },
+  "label": {
+    "Assignments": "Tâches assignées",
+    "Cancel": "Annuler",
+    "Due": "Date d'échéance",
+    "Error": "Erreur : ",
+    "Location": "Emplacement",
+    "None": "Aucun",
+    "OK": "OK",
+    "Priority": "Priorité",
+    "Status": "Statut"
+  },
+  "priority": {
+    "Low": "Faible",
+    "Medium": "Moyen",
+    "High": "Élevé"
+  }
+}

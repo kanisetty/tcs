@@ -1,0 +1,21 @@
+{
+  "error": {
+    "NoViewerIsAvailableForThisTypeOfAssignment": "このタイプの割り当てに使用できるビューアーがありません。"
+  },
+  "label": {
+    "Assignments": "割り当て",
+    "Cancel": "キャンセル",
+    "Due": "期限",
+    "Error": "エラー: ",
+    "Location": "場所",
+    "None": "なし",
+    "OK": "OK",
+    "Priority": "優先順位",
+    "Status": "ステータス"
+  },
+  "priority": {
+    "Low": "低",
+    "Medium": "中",
+    "High": "高"
+  }
+}
