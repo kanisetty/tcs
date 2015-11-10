@@ -1,0 +1,22 @@
+{
+  "label": {
+    "Audit": "Eventi",
+    "byte": "byte",
+    "bytes": "byte",
+    "Created:": "Creato:",
+    "Created By:": "Creato da:",
+    "Categories": "Categorie",
+    "Description:": "Descrizione:",
+    "Document": "Documento",
+    "ErrorInvalidNodeID": "Errore: ID nodo non valido.",
+    "GB": "GB",
+    "KB": "KB",
+    "MB": "MB",
+    "Modified:": "Modificato:",
+    "NoCategoriesDefined": "Nessuna categoria definita.",
+    "Properties": "Proprietà",
+    "Size:": "Dimensioni:",
+    "TB": "TB",
+    "Type:": "Tipo:"
+  }
+}

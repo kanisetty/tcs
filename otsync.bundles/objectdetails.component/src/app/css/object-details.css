@@ -1,0 +1,91 @@
+/* OTAG App */
+
+.otag-header {
+  background: #2f6699;
+  color: #ffffff;
+  padding: 0.3em;
+}
+
+.otag-content {
+  margin: 1em;
+}
+
+.content-top,
+.share-node {
+  margin: 0 1em;
+}
+
+.overlay {
+  position:absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8) url(../img/ajax-loader.gif) no-repeat center center;
+  z-index: 999999;
+}
+
+.loading {
+  background: rgba(0, 0, 0, 0.8) url(../img/ajax-loader.gif) no-repeat center center;
+  min-height: 48px;
+}
+
+#categories {
+  display: none;
+}
+
+.node-name {
+  display: inline-block;
+  font-size: 18px;
+  font-weight: normal;
+  margin: 0;
+  min-height: 1.3em;
+}
+.otag-header .node-name {
+  display: block;
+  text-align: center;
+}
+
+.node-icon {
+  height: 48px;
+  margin: 1em 0.5em;
+  width: 48px;
+}
+
+.node-list {
+  margin-left: 1em;
+  margin-right: 1em;
+  list-style: none;
+}
+.node-list > li {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.5em 0.7em;
+}
+
+.share-node, .share-node .btn {
+  display: block;
+  margin-bottom: 2em;
+}
+
+.grid-heading {
+  font-weight: bold;
+}
+
+.page-header {
+  margin: 1em 0 1em;
+  padding-bottom: 0;
+}
+
+.btn-group-center {
+  margin-top:25px;
+  text-align: center;
+}
+
+.audit-action {
+  color: #000;
+  font-weight: bolder;
+}
+
+.audit-info {
+  color: #666;
+}

@@ -1,0 +1,28 @@
+﻿{
+  "label": {
+    "Audit": "Audit",
+    "byte": "octet",
+    "bytes": "octets",
+    "Created:": "Créé le :",
+    "Created By:": "Créé par :",
+    "Categories": "Catégories",
+    "Description:": "Description :",
+    "Document": "Document",
+    "ErrorInvalidNodeID": "Erreur : ID de nœud non valide.",
+    "GB": "Go",
+    "KB": "Ko",
+    "MB": "Mo",
+    "Modified:": "Modifié :",
+    "NoCategoriesDefined": "Aucune catégorie définie.",
+    "Properties": "Propriétés",
+    "Size:": "Taille :",
+    "TB": "To",
+    "Type:": "Type :"
+  },
+
+  "error": {
+    "Authentication failed" : "Échec de l'authentification.",
+    "NoViewerIsAvailableForThisTypeOfAssignment": "Aucune visionneuse n'est disponible pour ce type d'affectation",
+    "Unable to perform action" : "Impossible d’exécuter l’action"
+  }
+}

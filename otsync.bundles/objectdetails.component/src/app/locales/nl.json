@@ -1,0 +1,22 @@
+{
+  "label": {
+    "Audit": "Audit",
+    "byte": "byte",
+    "bytes": "bytes",
+    "Created:": "Gemaakt:",
+    "Created By:": "Gemaakt door:",
+    "Categories": "Categorieën",
+    "Description:": "Beschrijving:",
+    "Document": "Document",
+    "ErrorInvalidNodeID": "Fout: ongeldige knooppunt-id.",
+    "GB": "GB",
+    "KB": "kB",
+    "MB": "MB",
+    "Modified:": "Gewijzigd:",
+    "NoCategoriesDefined": "Geen categorieën gedefinieerd.",
+    "Properties": "Eigenschappen",
+    "Size:": "Grootte:",
+    "TB": "TB",
+    "Type:": "Type:"
+  }
+}

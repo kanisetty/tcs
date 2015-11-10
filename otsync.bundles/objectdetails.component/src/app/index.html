@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Object Details</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=max-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/object-details.css">
+
+    <script src="cordova.js"></script>
+    <script src="lib/appworks-js/appworks.min.js"></script>
+    <script src="lib/jquery/jquery.min.js"></script>
+    <script src="lib/moment/moment.min.js"></script>
+  </head>
+  <body>
+
+    <header class="otag-header">
+      <h4 id="node-name" class="node-name field"></h4>
+    </header>
+
+    <div class="content-top">
+      <div class="btn-group-center">
+        <div id="tab-navigation" class="btn-group">
+          <a href="#general" title="Properties" class="btn localize">Properties</a>
+          <a href="#categories" title="Categories" class="btn localize">Categories</a>
+          <a href="#history" title="Audit" class="btn localize">Audit</a>
+        </div>
+      </div>
+    </div><!--/.content-top-->
+
+    <div class="otag-content">
+      <div id="general" class="container-fluid active">
+        <div class="row-fluid">
+          <div class="span6 grid-heading localize">Description:</div>
+          <div id="node-desc" class="span6 field"></div>
+        </div>
+        <div class="row-fluid">
+          <div class="span6 grid-heading localize">Created:</div>
+          <div id="node-created" class="span6 field"></div>
+        </div>
+        <div class="row-fluid">
+          <div class="span6 grid-heading localize">Created By:</div>
+          <div id="node-created-by" class="span6 field"></div>
+        </div>
+        <div class="row-fluid">
+          <div class="span6 grid-heading localize">Modified:</div>
+          <div id="node-modified" class="span6 field"></div>
+        </div>
+        <div class="row-fluid">
+          <div class="span6 grid-heading localize">Type:</div>
+          <div id="node-type" class="span6 field"></div>
+        </div>
+        <div class="row-fluid">
+          <div class="span6 grid-heading localize">Size:</div>
+          <div id="node-size" class="span6 field"></div>
+        </div>
+      </div><!--/#general-->
+
+      <div id="categories" class="field">
+      </div><!--/#categories-->
+
+      <div id="history">
+        <ul id="audit-history" class="node-list field"></ul>
+      </div><!--/#history-->
+    </div><!--/.otag-content-->
+
+    <!--div class="share-node">
+      <a href="mailto:" id="email-link" class="btn">Email Link</a>
+      <a href="#" id="add-favourite" class="btn">Add to Favorites</a>
+    </div--><!--/.share-node-->
+
+    <div class="overlay" id="overlay"></div>
+    <script src="js/vendor/jquery.jsperanto.js"></script>
+    <script src="js/deviceStrategies.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/object-details.js"></script>
+  </body>
+</html>

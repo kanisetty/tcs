@@ -1,0 +1,22 @@
+{
+  "label": {
+    "Audit": "Auditoria",
+    "byte": "byte",
+    "bytes": "bytes",
+    "Created:": "Criado:",
+    "Created By:": "Criado por:",
+    "Categories": "Categorias",
+    "Description:": "Descrição:",
+    "Document": "Documento",
+    "ErrorInvalidNodeID": "Erro: ID de nó inválido.",
+    "GB": "GB",
+    "KB": "KB",
+    "MB": "MB",
+    "Modified:": "Modificado:",
+    "NoCategoriesDefined": "No categories defined.",
+    "Properties": "Propriedades",
+    "Size:": "Tamanho:",
+    "TB": "TB",
+    "Type:": "Tipo:"
+  }
+}

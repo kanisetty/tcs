@@ -1,0 +1,27 @@
+{
+	"label" : {
+        "Audit":"Audit",
+        "byte":"byte",
+		"bytes":"bytes",
+		"Created:":"Created:",
+		"Created By:":"Created By:",
+        "Categories":"Categories",
+        "Description:":"Description:",
+        "Document":"Document",
+        "ErrorInvalidNodeID":"Error: Invalid Node ID.",
+		"GB":"GB",
+		"KB":"KB",
+		"MB":"MB",
+		"Modified:":"Modified:",
+		"NoCategoriesDefined":"No categories defined.",
+		"Properties":"Properties",
+		"Size:":"Size:",
+		"TB":"TB",
+		"Type:":"Type:"
+	},
+    "error" : {
+      "Authentication failed":"Authentication Failed.",
+      "NoViewerIsAvailableForThisTypeOfAssignment":"No viewer is available for this type of assignment",
+      "Unable to perform action" : "Unable to Perform Action"
+    }
+}
