@@ -28,7 +28,7 @@ public class ClientTypeSet {
     private static final String[] BITNESS_LIST = {"32","64"};
     private static final String[] LANGUAGE_LIST = {"cn", "de", "es", "en", "fr", "it", "ja", "nl", "pt", "ru"};
     private static final String DEFAULT_LANGUAGE = "en";
-    private static final String MAC_CLIENT_KEY = "mac";
+    private static final String MAC_CLIENT_KEY = "macOS";
     private static final String WIN_CLIENT_KEY = "win";
 
     public ClientTypeSet(){
