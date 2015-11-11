@@ -17,6 +17,7 @@
 
     // Create the application
     var ObjDetails = new App();
+    var deviceStrategy = ObjDetails.getDeviceStrategy();
     var objectData = ObjDetails.getParameters().data;
     var nodeID = objectData.id;
     /**
@@ -74,7 +75,7 @@
 
         // Send request to server if the node is valid
         if (isValidNode(nodeId)) {
-            $.when(ObjDetails.runRequestWithAuth({url: ObjDetails.deviceStrategy.getGatewayURL() + "/content/v5/nodes/" + nodeId + "/details"}))
+            $.when(ObjDetails.runRequestWithAuth({url: deviceStrategy.getGatewayURL() + "/content/v5/nodes/" + nodeId + "/details"}))
                 .done(function (data) {
                     // Make sure there is data to show
                     showData(data);
@@ -95,7 +96,7 @@
         // Make sure the node is valid
         if (isValidNode(nodeId) && $("#audit-history").children().length === 0) {
             $("").addClass("loading");
-            $.when(ObjDetails.runRequestWithAuth({url: ObjDetails.deviceStrategy.getGatewayURL() + "/content/v5/nodes/" + nodeId + "/history"}))
+            $.when(ObjDetails.runRequestWithAuth({url: deviceStrategy.getGatewayURL() + "/content/v5/nodes/" + nodeId + "/history"}))
                 .done(function (data) {
                     if (data.ok) {
                         showHistory(data.history);
@@ -402,7 +403,7 @@
                 break;
         }
 
-        return ObjDetails.deviceStrategy.getGatewayURL() + "/content/icons/" +
+        return deviceStrategy.getGatewayURL() + "/content/icons/" +
             node.subtype + (type !== "" ? "_" + type : "") + ".png";
     }
 

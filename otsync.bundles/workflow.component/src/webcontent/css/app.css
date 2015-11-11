@@ -7,6 +7,7 @@ body {
   background: #2f6699;
   color: #ffffff;
   padding: 0.3em;
+  width: 100%;
 }
 
 .otag-content {
@@ -23,11 +24,15 @@ body {
   z-index: 999999;
 }
 
-.page-title {
+.node-name {
+  display: inline-block;
   font-size: 18px;
   font-weight: normal;
   margin: 0;
   min-height: 1.3em;
+}
+.otag-header .node-name {
+  display: block;
   text-align: center;
 }
 
@@ -46,24 +51,19 @@ body {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding: 0.5em 0.7em;
 }
-
-.grid-heading {
+#step {
+  padding: 0 10px;
+}
+label {
   font-weight: bold;
 }
-
-.overdue { color: #ff0000; }
-.priority-high { color: #990000; }
-.priority-medium { color: #0000cc; }
-.priority-low { color: #660000; }
-
-.metadata {
-  display: none;
+label.checkbox {
+  font-weight: normal;
 }
-
-.open-assignment {
-  padding: 1.7em 0;
+.bootstrap-datetimepicker-widget table {
+  margin: 0 auto;
+  width: inherit;
 }
-
-.btn-circle {
-  border-radius: 155px;
+label.control-label strong.text-error {
+  font-size: 1.5em;
 }

@@ -17,6 +17,7 @@
 
   // Create the application
   var Assignments = new App();
+  var deviceStrategy = Assignments.getDeviceStrategy();
 
   /**
    * ## Initialization
@@ -74,7 +75,7 @@
    */
   function getAssignments () {
     clearData();
-    $.when(Assignments.runRequestWithAuth({url: Assignments.deviceStrategy.getGatewayURL() + "/assignments/v5/assignments"}))
+    $.when(Assignments.runRequestWithAuth({url: deviceStrategy.getGatewayURL() + "/assignments/v5/assignments"}))
       .done(function (data) {
         showData(data.assignments);
       }).fail(function (error) {

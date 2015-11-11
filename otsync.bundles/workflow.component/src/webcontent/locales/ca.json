@@ -1,0 +1,9 @@
+{
+  "label": {
+    "Back": "Torna",
+    "OK": "D'acord",
+    "Success! The form has been submitted": "Correcte. El formulari s'ha enviat.",
+    "Success! The form has been updated": "Correcte. El formulari s'ha actualitzat.",
+    "Success! The workflow has been sent on": "Correcte. El flux de treball s'ha enviat."
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "label": {
+    "Back": "Volver",
+    "OK": "Aceptar",
+    "Success! The form has been submitted": "Correcto. El formulario se ha enviado.",
+    "Success! The form has been updated": "Correcto. El formulario se ha actualizado.",
+    "Success! The workflow has been sent on": "Correcto. El flujo de trabajo se ha enviado en fecha."
+  }
+}

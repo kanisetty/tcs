@@ -1,0 +1,7 @@
+{
+  "name": "workflow-component",
+  "version": "16.0.0",
+  "dependencies": {
+    "appworks-js": "*"
+  }
+}

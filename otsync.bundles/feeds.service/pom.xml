@@ -22,7 +22,7 @@
 
         <!-- Output artifacts properties -->
         <appworks.service.name>feeds</appworks.service.name>
-        <appworks.service.version>16.0</appworks.service.version>
+        <appworks.service.version>16.0.0</appworks.service.version>
         <appworks.service.zip.name>${appworks.service.name}_${appworks.service.version}</appworks.service.zip.name>
     </properties>
 

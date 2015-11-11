@@ -2,8 +2,6 @@
   "name": "assignment-app",
   "version": "16.0.0",
   "dependencies": {
-    "appworks-js": "*",
-    "jquery": "~2.1.4",
-    "moment": "~2.10.6"
+    "appworks-js": "*"
   }
 }

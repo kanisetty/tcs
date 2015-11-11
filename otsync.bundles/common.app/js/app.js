@@ -25,19 +25,24 @@
      *
      * @return    App object.
      */
+    var deviceStrategy = null;
+
     var App = function () {
         // Haven't initialized yet
         this.initialized = false;
-        this.deviceStrategy = null;
+
+        this.getDeviceStrategy = function(){
+            return deviceStrategy;
+        };
 
         try{
             if (cordova.isBB()){
-                this.deviceStrategy = new BlackBerryStrategy();
+                deviceStrategy = new BlackBerryStrategy();
             }else{
-                this.deviceStrategy = new NonBlackBerryStrategy();
+                deviceStrategy = new NonBlackBerryStrategy();
             }
         }catch(error){
-            this.deviceStrategy = new NonBlackBerryStrategy();
+            deviceStrategy = new NonBlackBerryStrategy();
         }
 
         // Return the app reference
@@ -55,41 +60,42 @@
      * Start the application.
      */
     App.prototype.start = function () {
-        var _this = this,
-            onAuthFinished = function () {
-                _this.deviceStrategy.getDefaultLanguage()
-                    .done(function(lang){
-                        $.jsperanto.init(function(){
-                                var key;
-                                // find all 'localize' classes and translate them: both text and title attr (if present)
-                                $('.localize').each(function() {
-                                    key = $(this).text().replace(/\./g, '');
-                                    $(this).text( apputil.T('label.' + key) );
+        var _this = this;
 
-                                    var title = $(this).attr('title');
-                                    if(title){
-                                        key = title.replace(/\./g, '');
-                                        $(this).attr('title', apputil.T('label.' + key));
-                                    }
-                                });
+        var onAuthFinished = function () {
+            deviceStrategy.getDefaultLanguage()
+                .done(function(lang){
+                    $.jsperanto.init(function(){
+                            var key;
+                            // find all 'localize' classes and translate them: both text and title attr (if present)
+                            $('.localize').each(function() {
+                                key = $(this).text().replace(/\./g, '');
+                                $(this).text( apputil.T('label.' + key) );
 
-                                // Hide the loading overlay
-                                _this.hideLoading();
-
-                                // Execute the init function, if it exists
-                                if (_this.init) {
-                                    _this.init();
+                                var title = $(this).attr('title');
+                                if(title){
+                                    key = title.replace(/\./g, '');
+                                    $(this).attr('title', apputil.T('label.' + key));
                                 }
-                            },
-                            {lang:lang});
-                        })
-                    .fail(function(data){
-                        alert(data);
-                    });
+                            });
+
+                            // Hide the loading overlay
+                            _this.hideLoading();
+
+                            // Execute the init function, if it exists
+                            if (_this.init) {
+                                _this.init();
+                            }
+                        },
+                        {lang:lang});
+                    })
+                .fail(function(data){
+                    alert(data);
+                });
             };
 
         // Display the loading overlay
-        this.showLoading();
+        _this.showLoading();
 
         // Trigger authentication when appworks is ready
         document.addEventListener('appworksjs.auth', onAuthFinished, false);
@@ -123,8 +129,8 @@
      */
     App.prototype.getParameters = function () {
         var query = window.location.search.toString().substring(1);
-
-        var params = this.deviceStrategy.processQueryParameters(query);
+        
+        var params = deviceStrategy.processQueryParameters(query);
 
         if (params.data == undefined) {
             params.data = {id: params.nodeID};
@@ -136,29 +142,27 @@
     App.prototype.runRequestWithAuth = function(data) {
         data.cache = false;
 
-        return this.deviceStrategy.runRequestWithAuth(data);
+        return deviceStrategy.runRequestWithAuth(data);
     };
 
     App.prototype.close = function() {
 
-        return this.deviceStrategy.close();
+        return deviceStrategy.close();
     };
 
     App.prototype.openWindow = function(url) {
 
-        return this.deviceStrategy.openWindow(url);
+        return deviceStrategy.openWindow(url);
     };
 
     App.prototype.browseObject = function(nodeID, title, refreshOnReturn) {
-        var app = this;
 
-        return this.deviceStrategy.browseObject(app, nodeID, title, refreshOnReturn);
+        return deviceStrategy.browseObject(nodeID, title, refreshOnReturn);
     };
 	
 	App.prototype.openComponent = function(data, refreshOnReturn) {
-        var app = this;
 
-        return this.deviceStrategy.openComponent(app, data, refreshOnReturn);
+        return deviceStrategy.openComponent(data, refreshOnReturn);
     };
 
 

@@ -246,6 +246,10 @@ var NonBlackBerryStrategy = function(){
         return dfd.promise();
     };
 
+    this.getClientOS = function(){
+        return window.clientInformation.platform;
+    };
+
     this.getDefaultLanguage = function(){
         var deferred = $.Deferred();
 

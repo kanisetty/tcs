@@ -24,7 +24,7 @@
         <!-- General app.properties -->
         <app.properties.displayName>Tempo Content Service</app.properties.displayName>
         <app.properties.description>Content Server Tempo Content Service</app.properties.description>
-        <app.properties.version>16.0</app.properties.version>
+        <app.properties.version>16.0.0</app.properties.version>
         <app.properties.minimumClientVersion>2</app.properties.minimumClientVersion>
         <app.properties.type>service</app.properties.type>
 
