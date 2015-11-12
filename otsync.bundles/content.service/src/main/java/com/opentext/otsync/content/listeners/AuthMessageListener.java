@@ -22,6 +22,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -52,9 +53,11 @@ public class AuthMessageListener implements SynchronousMessageListener {
      * @throws IOException
      */
     public Map<String, Object> onMessage(Map<String, Object> message) throws IOException {
+        HttpServletRequest request = (HttpServletRequest)message.remove(ContentServiceConstants.INCOMING_REQUEST_KEY);
+
         Map<String, Object> combinedResult = generateDefaultResponse();
 
-        Map<String, Object> awAuthResult = doAppWorksAuth(message);
+        Map<String, Object> awAuthResult = doAppWorksAuth(message, request);
         combinedResult.putAll(awAuthResult);
 
         Map<String, Object> csAuthResult = doContentServerAuth(message);
@@ -77,13 +80,14 @@ public class AuthMessageListener implements SynchronousMessageListener {
         params.put("userName", message.getOrDefault(Message.USERNAME_KEY_NAME, ""));
         params.put("password", message.getOrDefault(Message.PASSWORD_KEY_NAME, ""));
 
-        //If the client has passed in its ID, include it
-        if (message.containsKey(Message.CLIENT_ID_KEY_NAME)) {
-            params.put("clientId", message.getOrDefault(Message.CLIENT_ID_KEY_NAME, ""));
-        }
-
         Map<String, Object> clientData = new HashMap<>();
         params.put("clientData", clientData);
+
+        //If the client has passed in its ID, include it
+        if (message.containsKey(Message.CLIENT_ID_KEY_NAME)) {
+            clientData.put("clientId", message.getOrDefault(Message.CLIENT_ID_KEY_NAME, ""));
+        }
+
         Map<String, Object> clientInfo = new HashMap<>();
         clientData.put("clientInfo", clientInfo);
 
@@ -112,16 +116,16 @@ public class AuthMessageListener implements SynchronousMessageListener {
      * @return - Map containing required tokens and info mapped to the legacy API response format
      * @throws IOException
      */
-    private Map<String, Object> doAppWorksAuth(Map<String, Object> message) throws IOException {
+    private Map<String, Object> doAppWorksAuth(Map<String, Object> message, HttpServletRequest incomingRequest) throws IOException {
         Map<String, Object> result = new HashMap<>();
         String requestJSON = buildAWAuthRequestString(message);
         CSForwardHeaders headers = (CSForwardHeaders) message.get(CSForwardHeaders.REQUEST_HEADER_KEY);
 
-
         //Build up AppWorks Auth request using incoming request's URL
-        String requestScheme = (String) message.getOrDefault("request_scheme", "http");
-        Integer requestPort = (Integer) message.getOrDefault("request_port", 8080);
-        String requestServer = (String) message.getOrDefault("request_server_name", "localhost");
+        String requestScheme = (String) incomingRequest.getScheme();
+        Integer requestPort = (Integer) incomingRequest.getServerPort();
+        String requestServer = (String) incomingRequest.getServerName();
+
         HttpResponse response;
 
         HttpClient httpClient = new DefaultHttpClient();
@@ -233,7 +237,7 @@ public class AuthMessageListener implements SynchronousMessageListener {
 
         //Map CS response fields to current expected API response
         result.put("APIVersion", workingMap.getOrDefault("APIVersion", 4));
-        result.put("cstoken", workingMap.getOrDefault("otcsticket", ""));
+        result.put(ContentServiceConstants.CS_AUTH_TOKEN, workingMap.getOrDefault(ContentServiceConstants.CS_AUTH_TOKEN, ""));
         result.put("info", workingMap.get("info"));
         result.put("serverDate", workingMap.get("serverDate"));
         result.put("subtype", workingMap.getOrDefault("subtype", "auth"));

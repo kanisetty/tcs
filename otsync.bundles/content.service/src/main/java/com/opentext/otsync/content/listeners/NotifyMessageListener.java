@@ -1,15 +1,16 @@
 package com.opentext.otsync.content.listeners;
 
-import com.opentext.otsync.content.http.HTTPRequestManager;
-import com.opentext.otsync.content.otag.ContentServerService;
-import com.opentext.otsync.content.message.Message;
-import com.opentext.otsync.content.payload.Payload;
 import com.opentext.otag.api.shared.types.notification.NotificationSeqBounds;
-import com.opentext.otag.rest.util.CSForwardHeaders;
 import com.opentext.otag.sdk.client.NotificationsClient;
+import com.opentext.otsync.content.ContentServiceConstants;
+import com.opentext.otsync.content.http.HTTPRequestManager;
+import com.opentext.otsync.content.message.Message;
+import com.opentext.otsync.content.otag.ContentServerService;
+import com.opentext.otsync.content.payload.Payload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,14 +32,13 @@ public class NotifyMessageListener implements MessageForwarder {
 
         Map<String, String> params = new HashMap<>();
 
-        // remove header values from the payload while it is being JSONified
-        CSForwardHeaders headers = (CSForwardHeaders) payload.getValue(CSForwardHeaders.REQUEST_HEADER_KEY);
-        payload.remove(CSForwardHeaders.REQUEST_HEADER_KEY);
+        HttpServletRequest incoming = (HttpServletRequest)payload.getValue(ContentServiceConstants.INCOMING_REQUEST_KEY);
+        payload.remove(ContentServiceConstants.INCOMING_REQUEST_KEY);
 
         params.put("func", "otsync.otsyncrequest");
         params.put("payload", payload.getJsonString());
 
-        String in = _serverConnection.postData(ContentServerService.getCsUrl(), params, headers);
+        String in = _serverConnection.postData(ContentServerService.getCsUrl(), params, incoming);
 
         Payload result = new Payload(in);
 

@@ -1,15 +1,14 @@
 package com.opentext.otsync.content.ws.server.servlet3;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.opentext.otsync.content.listeners.SynchronousMessageSwitch;
-import com.opentext.otsync.content.ws.server.ResponseHandler;
 import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.engine.core.SuspendedActionQueue;
+import com.opentext.otsync.content.listeners.SynchronousMessageSwitch;
 import com.opentext.otsync.content.message.Message;
 import com.opentext.otsync.content.otag.SettingsService;
 import com.opentext.otsync.content.ws.ServletUtil;
 import com.opentext.otsync.content.ws.message.MessageConverter;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.content.ws.server.ResponseHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -56,9 +55,6 @@ public class Servlet3FrontChannel {
                 // use in authorization by message listeners
                 Map<String, Object> payload = _messageConverter.getDeserializer().deserialize(in);
                 payload.put(Message.REMOTE_ADDRESS_KEY_NAME, request.getRemoteAddr());
-                payload.put("request_scheme", request.getScheme());
-                payload.put("request_port", request.getServerPort());
-                payload.put("request_server_name", request.getServerName());
 
                 // enqueue certain requests unless auto=false (desktop clients may make these calls all at once on Engine restart)
                 String subtype = (String) payload.get(Message.SUBTYPE_KEY_NAME);
@@ -110,9 +106,8 @@ public class Servlet3FrontChannel {
 
     private void sendFrontChannelPayload(HttpServletRequest request, AsyncContext asyncRequest, Map<String, Object> payload,
                                          Map<String, Object> extraData, boolean enqueue) {
-        // get the forwarded-for header if it exists
-        CSForwardHeaders headers = new CSForwardHeaders(request);
-        payload.put(CSForwardHeaders.REQUEST_HEADER_KEY, headers);
+
+        payload.put(ContentServiceConstants.INCOMING_REQUEST_KEY, request);
 
         // create a response handler that will connect the message to this comet event, and
         // pass the message on to the notification service for handling by registered listeners

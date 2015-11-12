@@ -75,5 +75,7 @@ public class ContentServiceConstants {
     public static final String TRUE_STRING = Boolean.TRUE.toString();
     public static final String FILE_UPLOAD_TYPE = "multipart/form-data";
 
-    public static String CS_COOKIE_NAME = "LLCookie";
+    public final static String CS_COOKIE_NAME = "LLCookie";
+    public final static String INCOMING_REQUEST_KEY = "http_request";
+    public final static String CS_AUTH_TOKEN = "otcsticket";
 }

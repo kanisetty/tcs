@@ -1,11 +1,11 @@
 package com.opentext.otsync.content.http;
 
-import com.opentext.otsync.content.ContentServiceConstants;
-import com.opentext.otsync.content.otag.SettingsService;
-import com.opentext.otsync.content.ws.ServletUtil;
 import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
 import com.opentext.otag.rest.util.CSForwardHeaders;
 import com.opentext.otag.sdk.handlers.AbstractSettingChangeHandler;
+import com.opentext.otsync.content.ContentServiceConstants;
+import com.opentext.otsync.content.otag.SettingsService;
+import com.opentext.otsync.content.ws.ServletUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.*;
@@ -103,13 +103,22 @@ public class HTTPRequestManager {
         httpPost.setEntity(entity);
         httpPost.setParams(getFrontChannelParams());
 
-        // set headers for Content Server validation
-        if (headers != null) {
-            headers.addTo(httpPost);
-        }
-
         // send the request and get the response
         String result = completeRequest(httpPost);
+
+        return result;
+    }
+
+    public String postData(String serverUrl, Map<String, String> parameters, HttpServletRequest incoming) throws IOException {
+
+        // prepare the post arguments as an http entity
+        UrlEncodedFormEntity entity = encodeParameters(parameters);
+        HttpPost httpPost = new HttpPost(serverUrl);
+        httpPost.setEntity(entity);
+        httpPost.setParams(getFrontChannelParams());
+
+        // send the request and get the response
+        String result = completeRequest(httpPost, incoming);
 
         return result;
     }
@@ -268,16 +277,9 @@ public class HTTPRequestManager {
         request.setParams(getUploadParams());
 
         // for SEA compatibility, we must include the llcookie
-        String llcookie = ServletUtil.getCookie(requestToForward, ContentServiceConstants.CS_COOKIE_NAME);
+        addForwardHeaders(request, requestToForward);
 
-        // Check if we got a valid cookie otherwise we respond with an error message.
-        if (llcookie != null) {
-            request.addHeader("Cookie", ContentServiceConstants.CS_COOKIE_NAME + "=" +
-                    URLEncoder.encode(llcookie, ContentServiceConstants.CHAR_ENCODING));
-            // set headers for Content Server validation
-            CSForwardHeaders headers = new CSForwardHeaders(requestToForward);
-            headers.addTo(request);
-
+        if (ServletUtil.getCookie(requestToForward, ContentServiceConstants.CS_COOKIE_NAME) != null){
             try {
                 HttpResponse httpResponse = httpClient.execute(request);
 
@@ -323,6 +325,12 @@ public class HTTPRequestManager {
         try (FileOutputStream fos = new FileOutputStream(settingsService.getTempfileDir() + filename)) {
             httpResponse.getEntity().writeTo(fos);
         }
+    }
+
+    private String completeRequest(HttpUriRequest request, HttpServletRequest incoming) throws IOException{
+
+        addForwardHeaders(request, incoming);
+        return completeRequest(request);
     }
 
     private String completeRequest(HttpUriRequest request) throws IOException {
@@ -432,6 +440,23 @@ public class HTTPRequestManager {
 
     private HttpParams getFrontChannelParams() {
         return ConnectionProfileManager.getFrontChannelParams();
+    }
+
+    private void addForwardHeaders(HttpUriRequest request, HttpServletRequest incoming){
+
+        String authCookie = ServletUtil.getCookie(incoming, ContentServiceConstants.CS_COOKIE_NAME);
+
+        try {
+            request.addHeader("Cookie", ContentServiceConstants.CS_COOKIE_NAME + "=" +
+                    URLEncoder.encode(authCookie, ContentServiceConstants.CHAR_ENCODING));
+        } catch (Exception e) {
+            log.error(e);
+        }
+
+        // set headers for Content Server validation
+        CSForwardHeaders headers = new CSForwardHeaders(incoming);
+        headers.addTo(request);
+
     }
 
 }

@@ -1,10 +1,12 @@
 package com.opentext.otsync.content.ws.server.servlet3;
 
+import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.ws.message.MessageConverter;
 import com.opentext.otsync.content.ws.server.ResponseHandler;
 import com.opentext.otsync.content.ws.ServletUtil;
 
 import javax.servlet.AsyncContext;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -16,12 +18,6 @@ public class Servlet3ResponseHandler implements ResponseHandler {
     private final MessageConverter _messageConverter;
     private final AsyncContext _asyncRequest;
     private final Map<String, Object> _extraData;
-
-    public Servlet3ResponseHandler(AsyncContext asyncRequest, MessageConverter messageConverter) {
-        _asyncRequest = asyncRequest;
-        _messageConverter = messageConverter;
-        _extraData = null;
-    }
 
     public Servlet3ResponseHandler(AsyncContext asyncRequest,
                                    MessageConverter messageConverter,
@@ -48,7 +44,19 @@ public class Servlet3ResponseHandler implements ResponseHandler {
 
             String responseString = _messageConverter.getSerializer().serialize(responseDataShallowCopy);
 
-            ServletUtil.write((HttpServletResponse) _asyncRequest.getResponse(), responseString);
+            // If present add the authentication token as a Cookie on the response
+            HttpServletResponse response = (HttpServletResponse) _asyncRequest.getResponse();
+            String authToken = (String) responseData.get(ContentServiceConstants.CS_AUTH_TOKEN);
+            if (authToken != null){
+                Cookie authCookie = new Cookie(ContentServiceConstants.CS_COOKIE_NAME, authToken);
+                authCookie.setHttpOnly(true);
+                authCookie.setPath("/");
+                response.addCookie(authCookie);
+                responseData.remove(ContentServiceConstants.CS_AUTH_TOKEN);
+            }
+
+
+            ServletUtil.write(response, responseString);
             _asyncRequest.complete();
         } else {
             // send non-JSON terminal failure
