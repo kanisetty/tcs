@@ -28,7 +28,7 @@ module.exports = function(grunt) {
             },
             final: {
                 options: {
-                    archive: 'dist/workflow-app_16.0.0.zip'
+                    archive: 'dist/workflow-component_16.0.0.zip'
                 },
                 files: [{
                     expand: true,
