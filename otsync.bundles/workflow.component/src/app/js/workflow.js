@@ -384,7 +384,7 @@ $(document).ready(function () {
                 return function (query, process) {
 
                     return $.when(workflow.runRequestWithAuth({
-                        url: gatewayURL + '/content/v4/users?filter=' + encodeURIComponent(query)
+                        url: gatewayURL + '/content/v5/users?filter=' + encodeURIComponent(query)
                     })).done(function (data) {
 
                         var options = [];
@@ -453,7 +453,7 @@ $(document).ready(function () {
                 return function (query, process) {
 
                     return $.when(workflow.runRequestWithAuth({
-                        url: gatewayURL + '/content/v4/users?filter=' + encodeURIComponent(query)
+                        url: gatewayURL + '/content/v5/users?filter=' + encodeURIComponent(query)
                     })).done(function (data) {
 
                         var options = [];
@@ -1100,7 +1100,7 @@ $(document).ready(function () {
                             return function (query, process) {
 
                                 return $.when(workflow.runRequestWithAuth({
-                                    url: gatewayURL + '/content/v4/users?filter=' + encodeURIComponent(query)
+                                    url: gatewayURL + '/content/v5/users?filter=' + encodeURIComponent(query)
                                 })).done(function (data) {
                                     var options = [];
 
@@ -1212,7 +1212,7 @@ $(document).ready(function () {
                                 var baseFoldersStr = baseFolders.join(',');
 
                                 return $.when(workflow.runRequestWithAuth({
-                                    url: gatewayURL + '/content/v4/nodes',
+                                    url: gatewayURL + '/content/v5/nodes',
                                     data: {
                                         filter: '*' + query + '*',
                                         ids: baseFoldersStr,
@@ -1389,7 +1389,7 @@ $(document).ready(function () {
             if (baseFolders == null) {
 
                 $.when(workflow.runRequestWithAuth({
-                    url: gatewayURL + '/content/v4/properties',
+                    url: gatewayURL + '/content/v5/properties',
                     async: false,
                     cache: false,
                     type: 'GET'

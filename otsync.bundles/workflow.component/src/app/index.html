@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="lib/bootstrap/bootstrap.min.css"/>
     <link rel="stylesheet" href="lib/bootstrap/bootstrap-datetimepicker.min.css"/>
     <link rel="stylesheet" href="css/app.css"/>
+    <link rel="stylesheet" href="css/workflow.css"/>
 
     <script src="cordova.js"></script>
     <script src="lib/appworks-js/appworks.min.js"></script>
@@ -134,22 +135,37 @@
     <div id="Review-form" class="control-group ">
         <div class="controls">
 
-            <label class="control-label localize" id="Assignee-label" for="Review-Assignee">Assignee</label>
-            <input id="Review-Assignee" type="hidden" data-type="User" data-dirty="false"/>
-            <input class="ajax-typeahead" type="text" id="attrTypeaheadAssignee"/>
-            <label class="control-label localize" id="StepName-label" for="Review-StepName">Step Name</label>
-            <input id="Review-StepName" type="text" placeholder="Step Name"/>
-            <label class="control-label localize" id="Instructions-label" for="Review-Instructions">Instructions</label>
+            <div class="otag-content">
+                <div class="fill-width">
+                    <label class="control-label localize" id="Assignee-label" for="Review-Assignee">Assignee</label>
+                </div>
+                <input id="Review-Assignee" type="hidden" data-type="User" data-dirty="false"/>
+                <input class="ajax-typeahead" type="text" id="attrTypeaheadAssignee"/>
+            </div>
 
-            <textarea id="Review-Instructions" class="input-large" placeholder="Instructions"></textarea>
+            <div class="otag-content">
+                <div class="fill-width">
+                    <label class="fill-width control-label localize" id="StepName-label" for="Review-StepName">Step Name</label>
+                </div>
+                <input id="Review-StepName" type="text" placeholder="Step Name"/>
+            </div>
 
-            <label class="control-label localize" id="Duration-label" for="Review-Duration">Duration</label>
-            <input id="Review-Duration" type="number" placeholder="hours"/>
+            <div class="otag-content">
+                <div class="fill-width">
+                    <label class="fill-width control-label localize" id="Instructions-label" for="Review-Instructions">Instructions</label>
+                </div>
+                <textarea id="Review-Instructions" class="input-large" placeholder="Instructions"></textarea>
+            </div>
 
-            <div class="control-group">
-                <button id="Review-send-btn" class="btn btn-primary localize disabled" disabled="disabled">Send For
-                    Review
-                </button>
+            <div class="otag-content">
+                <div class="fill-width">
+                    <label class="fill-width control-label localize" id="Duration-label" for="Review-Duration">Duration</label>
+                </div>
+                <input id="Review-Duration" type="number" placeholder="hours"/>
+            </div>
+
+            <div class="otag-content control-group">
+                <button id="Review-send-btn" class="btn btn-primary localize disabled" disabled="disabled">Send For Review</button>
             </div>
         </div>
     </div>
