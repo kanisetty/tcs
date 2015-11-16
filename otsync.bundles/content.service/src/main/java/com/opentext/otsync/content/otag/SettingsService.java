@@ -38,13 +38,6 @@ public class SettingsService {
         return settingsClient.getSettingAsInt(ContentServiceConstants.CS_SYNCTHREADS_MAX);
     }
 
-    public long getChunkSize() {
-        return settingsClient.getSettingAsLong(ContentServiceConstants.CHUNKSIZE);
-    }
-
-    public long getChunkedContentCacheExpiryTime() {
-        return settingsClient.getSettingAsLong(ContentServiceConstants.CHUNKEDCONTENT_CACHE_EXPIRY);
-    }
 
     public String[] getValidURLWhiteList() {
         String[] validURLWhiteList = {};

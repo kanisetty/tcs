@@ -12,7 +12,6 @@ import com.opentext.otsync.content.ws.message.MessageConverter;
 import com.opentext.otsync.content.ws.server.CleanUpThread;
 import com.opentext.otsync.content.ws.server.ClientSet;
 import com.opentext.otsync.content.ws.server.servlet3.Servlet3BackChannel;
-import com.opentext.otsync.content.ws.server.servlet3.Servlet3ChunkedContentChannel;
 import com.opentext.otsync.content.ws.server.servlet3.Servlet3ContentChannel;
 import com.opentext.otsync.content.ws.server.servlet3.Servlet3FrontChannel;
 import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
@@ -77,7 +76,7 @@ public class ContentServiceEngine {
     private CleanUpThread cleanUpThread;
     private MessageConverter messageConverter;
     private HTTPRequestManager serverConnection;
-    private ChunkedContentRequestQueue chunkedContentRequestQueue;
+
 
     // Connected clients
     private ClientSet clients;
@@ -86,7 +85,7 @@ public class ContentServiceEngine {
     private Servlet3BackChannel backChannel;
     private Servlet3FrontChannel frontChannel;
     private Servlet3ContentChannel contentChannel;
-    private Servlet3ChunkedContentChannel chunkedContentChannel;
+
 
     // Gateway clients
     private SettingsService settingsService;
@@ -105,30 +104,16 @@ public class ContentServiceEngine {
         sharedThreadPool = SuspendedActionQueue.getThreadPool(
                 settingsService.getSharedThreadPoolSize(), "mainQueue-");
 
-        try {
-            // chunked uploads and downloads use the same thread pools as regular uploads and downloads
-            chunkedContentRequestQueue = new ChunkedContentRequestQueue(
-                    serverConnection, messageConverter, sharedThreadPool,
-                    settingsService, notificationsClient);
-            LOG.debug("ChunkedContentRequestQueue initialised");
-        } catch (ServletException e) {
-            throw new RuntimeException("Failed to create ChunkedContentRequestQueue, " + e.getMessage(), e);
-        }
-
         initListeners();
 
         sharedThreadPool.start();
 
         // start a thread to periodically discard inactive clients
-        cleanUpThread = new CleanUpThread(clients, chunkedContentRequestQueue);
+        cleanUpThread = new CleanUpThread(clients);
         cleanUpThread.start();
 
         // initialise channels
         initialiseChannels();
-    }
-
-    public Servlet3ChunkedContentChannel getChunkedContentChannel() {
-        return chunkedContentChannel;
     }
 
     public Servlet3ContentChannel getContentChannel() {
@@ -161,8 +146,6 @@ public class ContentServiceEngine {
                 backChannel.handle(request, response);
             } else if (ServletUtil.isContentChannelRequest(request)) {
                 contentChannel.handle(request, response);
-            } else if (ServletUtil.isChunkedContentChannelRequest(request)) {
-                chunkedContentChannel.handle(request, response);
             }
         } catch (Throwable te) {
             LOG.error(te);
@@ -177,8 +160,6 @@ public class ContentServiceEngine {
         LOG.info("Initialised Front Channel successfully");
         contentChannel = new Servlet3ContentChannel(serverConnection, sharedThreadPool, settingsService);
         LOG.info("Initialised Content Channel successfully");
-        chunkedContentChannel = new Servlet3ChunkedContentChannel(chunkedContentRequestQueue);
-        LOG.info("Initialised Chunked Content Channel successfully");
         backChannel = new Servlet3BackChannel();
         LOG.info("Initialised Back Channel successfully");
 
@@ -205,10 +186,6 @@ public class ContentServiceEngine {
 
         ServerCheckListener serverCheckListener = new ServerCheckListener();
         messageHandler.setHandler(serverCheckListener, Message.SERVER_CHECK_KEY_VALUE);
-
-        ChunkedContentRequestListener chunkedContentRequestListener =
-                new ChunkedContentRequestListener(chunkedContentRequestQueue);
-        messageHandler.setHandler(chunkedContentRequestListener, Message.CHUNKED_CONTENT_KEY_VALUE);
 
         ContentRequestListener contentRequestListener = new ContentRequestListener(notificationsClient);
         messageHandler.setHandler(contentRequestListener, Message.CONTENT_KEY_VALUE);

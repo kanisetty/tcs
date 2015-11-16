@@ -110,10 +110,6 @@ public class ServletUtil {
         return ContentServiceConstants.CONTENT_CHANNEL_SERVLET_PATH.equalsIgnoreCase(request.getServletPath());
     }
 
-    public static boolean isChunkedContentChannelRequest(HttpServletRequest request) {
-        return ContentServiceConstants.CHUNKED_CONTENT_CHANNEL_SERVLET_PATH.equalsIgnoreCase(request.getServletPath());
-    }
-
     public static void nullRead(HttpServletRequest request) throws IOException {
         InputStream is = request.getInputStream();
         byte[] buf = new byte[512];

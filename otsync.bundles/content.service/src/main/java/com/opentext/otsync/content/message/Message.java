@@ -44,7 +44,6 @@ public class Message extends SuspendedAction {
 	public final static String NOTIFY_KEY_VALUE = "request";
 	public final static String PULSE_KEY_VALUE = "pulse";
 	public final static String CONTENT_KEY_VALUE = "contentRequest";
-	public final static String CHUNKED_CONTENT_KEY_VALUE = "chunkedContentRequest";
 	public final static String SERVER_CHECK_KEY_VALUE = "serverCheck";
 	
 	public final static String CONTENT_SUBTYPE_DOWNLOAD = "DownloadRequest";
@@ -263,7 +262,7 @@ public class Message extends SuspendedAction {
 	}
 	
 	public static HashMap<String, Object> makePayload(String type, String subtype, HttpServletRequest req) {
-		HashMap<String, Object> payload = new HashMap<String, Object>();
+		HashMap<String, Object> payload = new HashMap<>();
 		payload.put(TYPE_KEY_NAME, type);
 		if(subtype != null){
 			payload.put(SUBTYPE_KEY_NAME, subtype);

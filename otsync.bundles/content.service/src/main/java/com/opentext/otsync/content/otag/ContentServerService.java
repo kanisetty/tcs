@@ -276,8 +276,6 @@ public class ContentServerService implements AppworksServiceContextHandler {
         importSetting(properties, ContentServiceConstants.REPO, "repo");
         importSetting(properties, ContentServiceConstants.TEMPDIR, "TempfileDir");
         importSetting(properties, ContentServiceConstants.CS_SYNCTHREADS_MAX, "cs.syncthreads.max");
-        importSetting(properties, ContentServiceConstants.CHUNKSIZE, "ChunkSize");
-        importSetting(properties, ContentServiceConstants.CHUNKEDCONTENT_CACHE_EXPIRY, "ChunkedContentCacheExpiryTime");
         importSetting(properties, ContentServiceConstants.WHITELIST, "ValidURLWhiteList");
         importSetting(properties, ContentServiceConstants.LOGGING_VERBOSE, "WantFrontChannelLogs");
         importSetting(properties, ContentServiceConstants.CS_CONNECTIONS_MAX, "cs.connections.max");

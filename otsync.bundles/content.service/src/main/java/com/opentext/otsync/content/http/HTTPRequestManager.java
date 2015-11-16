@@ -28,12 +28,10 @@ import org.apache.http.util.EntityUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -46,11 +44,9 @@ public class HTTPRequestManager {
 
     public static final String ZERO_BYTE_ERROR_RESPONSE = "{\"auth\"=true,\"ok\"=false,\"errMsg\"=\"Cannot upload zero-byte file.\",\"info\":{\"auth\"=true,\"ok\"=false,\"errMsg\"=\"Cannot upload zero-byte file.\"}}";
 
-    private static final int TEMP_COOKIE_LIFETIME = 60 * 1000; // in ms
     private static final String MISSING_COOKIE_ERROR = "Missing or invalid Cookie: Failed to extract cookie data from request.";
 
     private static final ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager();
-    private static final DefaultHttpClient httpClient = new DefaultHttpClient(connectionManager);
     private static SettingsService settingsService;
 
     // listens for Gateway messages regarding the CS thread pool max size
@@ -95,20 +91,6 @@ public class HTTPRequestManager {
         connectionManager.setMaxTotal(settingsService.getCSConnectionPoolSize());
     }
 
-    public String postData(String serverUrl, Map<String, String> parameters, CSForwardHeaders headers) throws IOException {
-
-        // prepare the post arguments as an http entity
-        UrlEncodedFormEntity entity = encodeParameters(parameters);
-        HttpPost httpPost = new HttpPost(serverUrl);
-        httpPost.setEntity(entity);
-        httpPost.setParams(getFrontChannelParams());
-
-        // send the request and get the response
-        String result = completeRequest(httpPost);
-
-        return result;
-    }
-
     public String postData(String serverUrl, Map<String, String> parameters, HttpServletRequest incoming) throws IOException {
 
         // prepare the post arguments as an http entity
@@ -118,9 +100,7 @@ public class HTTPRequestManager {
         httpPost.setParams(getFrontChannelParams());
 
         // send the request and get the response
-        String result = completeRequest(httpPost, incoming);
-
-        return result;
+        return completeRequest(httpPost, incoming);
     }
 
     /**
@@ -141,50 +121,9 @@ public class HTTPRequestManager {
         }
     }
 
-    /**
-     * Use for chunked file downloads. Sets the given cookie, just for this request (other threads should be unaffected),
-     * and stores the results of the GET request directly to the tempfiles directory. Also, the response headers will be set
-     * so the file name is properly set.
-     *
-     * @param url             The exact URL to download, including any parameters
-     * @param servletResponse
-     * @return String
-     * @throws IOException
-     */
-    public String storeGetResponseWithHeaders(String url, HttpServletResponse servletResponse, String filename,
-                                              CSForwardHeaders headers) throws IOException {
-        HttpRequestPair requestPair = doGETWithHeaders(url, headers);
-        try {
-            return stripHeadersAndReturnFilename(servletResponse, filename, requestPair.response);
-        } catch (IOException e) {
-            requestPair.request.abort();
-            throw e;
-        }
-    }
-
-    //strips out the content-length and filename headers, which are properly added as part of the chunked download logic
-    private String stripHeadersAndReturnFilename(HttpServletResponse servletResponse, String filename, HttpResponse httpResponse) throws IOException {
-        HeaderIterator headers = httpResponse.headerIterator();
-        String ret = "";
-
-        while (headers.hasNext()) {
-            Header header = headers.nextHeader();
-            if (!"content-length".equalsIgnoreCase(header.getName())) {
-                if ("content-disposition".equalsIgnoreCase(header.getName())) {
-                    int filenameIndex = header.getValue().indexOf("filename=") + 9;
-                    ret = header.getValue().substring(filenameIndex);
-                } else {
-                    servletResponse.addHeader(header.getName(), header.getValue());
-                }
-            }
-        }
-
-        storeResponse(filename, httpResponse);
-        return ret;
-    }
-
     public HttpRequestPair doGETWithHeaders(String url, CSForwardHeaders headers) throws IOException {
         HttpContext httpContext = new BasicHttpContext();
+        DefaultHttpClient httpClient = new DefaultHttpClient(connectionManager);
 
         // send the request using the local cookie, disallowing redirects
         HttpUriRequest request = new HttpGet(url);
@@ -192,6 +131,7 @@ public class HTTPRequestManager {
 
         // set headers for Content Server validation
         headers.addTo(request);
+        headers.setCookies(httpClient, request);
 
         HttpResponse httpResponse = httpClient.execute(request, httpContext);
 
@@ -221,6 +161,7 @@ public class HTTPRequestManager {
             CSForwardHeaders headers,
             HttpServletResponse response) throws IOException {
 
+        DefaultHttpClient httpClient = new DefaultHttpClient(connectionManager);
         ContentBody filePart = new FixedInputStreamBody(stream, filename, filesize);
 
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
@@ -236,6 +177,7 @@ public class HTTPRequestManager {
         request.setParams(getUploadParams());
 
         headers.addTo(request);
+        headers.setCookies(httpClient, request);
 
         try {
             HttpResponse httpResponse = httpClient.execute(request);
@@ -272,12 +214,13 @@ public class HTTPRequestManager {
         InputStreamEntity entity = new InputStreamEntity(requestToForward.getInputStream(), requestToForward.getContentLength());
         entity.setChunked(false);
         entity.setContentType(requestToForward.getContentType());
+        DefaultHttpClient httpClient = new DefaultHttpClient(connectionManager);
         HttpPost request = new HttpPost(url);
         request.setEntity(entity);
         request.setParams(getUploadParams());
 
         // for SEA compatibility, we must include the llcookie
-        addForwardHeaders(request, requestToForward);
+        addForwardHeaders(request, httpClient, requestToForward);
 
         if (ServletUtil.getCookie(requestToForward, ContentServiceConstants.CS_COOKIE_NAME) != null){
             try {
@@ -321,20 +264,11 @@ public class HTTPRequestManager {
         }
     }
 
-    private void storeResponse(String filename, HttpResponse httpResponse) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(settingsService.getTempfileDir() + filename)) {
-            httpResponse.getEntity().writeTo(fos);
-        }
-    }
-
     private String completeRequest(HttpUriRequest request, HttpServletRequest incoming) throws IOException{
-
-        addForwardHeaders(request, incoming);
-        return completeRequest(request);
-    }
-
-    private String completeRequest(HttpUriRequest request) throws IOException {
         String jsonString;
+        DefaultHttpClient httpClient = new DefaultHttpClient(connectionManager);
+
+        addForwardHeaders(request, httpClient, incoming);
 
         try {
             HttpResponse response = httpClient.execute(request);
@@ -349,6 +283,7 @@ public class HTTPRequestManager {
 
     public ResponseWithStatus post(String serverUrl, Map<String, String> parameters, CSForwardHeaders headers) throws IOException {
         ResponseWithStatus result = new ResponseWithStatus();
+        DefaultHttpClient httpClient = new DefaultHttpClient(connectionManager);
         result.response = "";
         result.status = null;
 
@@ -358,6 +293,7 @@ public class HTTPRequestManager {
         // set headers for Content Server validation
         if (headers != null) {
             headers.addTo(request);
+            headers.setCookies(httpClient, request);
         }
 
         // prepare the post arguments as an http entity
@@ -377,16 +313,6 @@ public class HTTPRequestManager {
         return result;
     }
 
-    private static Date getCookieExpiryTime() {
-        Date expiryDate = new Date();
-        expiryDate.setTime(expiryDate.getTime() + TEMP_COOKIE_LIFETIME);
-        return expiryDate;
-    }
-
-    private String getServerHostName() throws MalformedURLException {
-        return new URL(settingsService.getContentServerUrl()).getHost();
-    }
-
     private UrlEncodedFormEntity encodeParameters(Map<String, String> parameters) throws UnsupportedEncodingException {
 
         // first read the parameters into a list of NameValuePair, the required
@@ -400,40 +326,6 @@ public class HTTPRequestManager {
                 ContentServiceConstants.CHAR_ENCODING);
     }
 
-    //assumes tempFilename is the filename of a file containing the multipart post data, except the headers
-    //realFilename is the actual name of the file stored in the multipart post, and boundary is the boundary
-    //string separating each part of the multipart post.
-    public void streamMultipartPost(HttpServletResponse servletResponse, String url, String tempFullpath,
-                                    String boundary, CSForwardHeaders headers) throws IOException {
-
-        File file = new File(tempFullpath);
-
-        HttpPost httpPost = null;
-
-        try (FileInputStream in = new FileInputStream(tempFullpath)) {
-            InputStreamEntity entity = new InputStreamEntity(in, file.length());
-            entity.setContentType("multipart/form-data; boundary=" + boundary);
-            entity.setChunked(false);
-            entity.setContentEncoding(ContentServiceConstants.CHAR_ENCODING);
-
-            httpPost = new HttpPost(url);
-            httpPost.setEntity(entity);
-            httpPost.setParams(getUploadParams());
-
-            // set headers for Content Server validation
-            headers.addTo(httpPost);
-
-            // send the request and get the response
-            HttpResponse response = httpClient.execute(httpPost);
-            duplicateResponse(servletResponse, response);
-
-        } catch (IOException e) {
-            if (httpPost != null)
-                httpPost.abort();
-            throw e;
-        }
-    }
-
     private HttpParams getUploadParams() {
         return ConnectionProfileManager.getUploadParams();
     }
@@ -442,21 +334,12 @@ public class HTTPRequestManager {
         return ConnectionProfileManager.getFrontChannelParams();
     }
 
-    private void addForwardHeaders(HttpUriRequest request, HttpServletRequest incoming){
+    private void addForwardHeaders(HttpUriRequest request, DefaultHttpClient httpClient, HttpServletRequest incoming){
 
-        String authCookie = ServletUtil.getCookie(incoming, ContentServiceConstants.CS_COOKIE_NAME);
-
-        try {
-            request.addHeader("Cookie", ContentServiceConstants.CS_COOKIE_NAME + "=" +
-                    URLEncoder.encode(authCookie, ContentServiceConstants.CHAR_ENCODING));
-        } catch (Exception e) {
-            log.error(e);
-        }
-
-        // set headers for Content Server validation
+        // Set headers and cookies for Content Server validation
         CSForwardHeaders headers = new CSForwardHeaders(incoming);
         headers.addTo(request);
-
+        headers.setCookies(httpClient, request);
     }
 
 }

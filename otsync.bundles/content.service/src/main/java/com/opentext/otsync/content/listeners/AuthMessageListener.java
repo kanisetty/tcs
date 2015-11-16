@@ -60,7 +60,7 @@ public class AuthMessageListener implements SynchronousMessageListener {
         Map<String, Object> awAuthResult = doAppWorksAuth(message, request);
         combinedResult.putAll(awAuthResult);
 
-        Map<String, Object> csAuthResult = doContentServerAuth(message);
+        Map<String, Object> csAuthResult = doContentServerAuth(message, request);
         combinedResult.putAll(csAuthResult);
 
         Map<String, Object> versionData = _clientSet.doClientVersionCheck(message);
@@ -119,12 +119,12 @@ public class AuthMessageListener implements SynchronousMessageListener {
     private Map<String, Object> doAppWorksAuth(Map<String, Object> message, HttpServletRequest incomingRequest) throws IOException {
         Map<String, Object> result = new HashMap<>();
         String requestJSON = buildAWAuthRequestString(message);
-        CSForwardHeaders headers = (CSForwardHeaders) message.get(CSForwardHeaders.REQUEST_HEADER_KEY);
+        CSForwardHeaders headers = new CSForwardHeaders(incomingRequest);
 
         //Build up AppWorks Auth request using incoming request's URL
-        String requestScheme = (String) incomingRequest.getScheme();
-        Integer requestPort = (Integer) incomingRequest.getServerPort();
-        String requestServer = (String) incomingRequest.getServerName();
+        String requestScheme = incomingRequest.getScheme();
+        Integer requestPort = incomingRequest.getServerPort();
+        String requestServer = incomingRequest.getServerName();
 
         HttpResponse response;
 
@@ -133,10 +133,7 @@ public class AuthMessageListener implements SynchronousMessageListener {
             URL requestURL = new URL(requestScheme, requestServer, requestPort, "/admin/auth");
             HttpPost request = new HttpPost(requestURL.toString());
 
-            //Add in headers from the incoming request e.g. X-Forwarded-For
-            if (headers != null) {
-                headers.addTo(request);
-            }
+            headers.addTo(request);
             request.addHeader("content-type", "application/json");
             request.setEntity(new StringEntity(requestJSON));
             response = httpClient.execute(request);
@@ -185,9 +182,9 @@ public class AuthMessageListener implements SynchronousMessageListener {
      * @return - Map containing required tokens and info mapped to the legacy API response format
      * @throws IOException
      */
-    private Map<String, Object> doContentServerAuth(Map<String, Object> message) throws IOException {
+    private Map<String, Object> doContentServerAuth(Map<String, Object> message, HttpServletRequest incoming) throws IOException {
         Map<String, Object> result = new HashMap<>();
-        CSForwardHeaders headers = (CSForwardHeaders) message.get(CSForwardHeaders.REQUEST_HEADER_KEY);
+        CSForwardHeaders headers = new CSForwardHeaders(incoming);
         ArrayList<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("func", "otsync.otsyncrequest"));
 
@@ -199,14 +196,12 @@ public class AuthMessageListener implements SynchronousMessageListener {
         }
 
         HttpResponse response;
-        HttpClient httpClient = new DefaultHttpClient();
+        DefaultHttpClient httpClient = new DefaultHttpClient();
 
         try {
             HttpPost request = new HttpPost(ServletConfig.getContentServerUrl());
-            //Add in headers from the incoming request e.g. X-Forwarded-For
-            if (headers != null) {
-                headers.addTo(request);
-            }
+            headers.addTo(request);
+            headers.setCookies(httpClient, request);
 
             request.setEntity(new UrlEncodedFormEntity(params));
             response = httpClient.execute(request);

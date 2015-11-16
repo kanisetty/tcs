@@ -12,8 +12,6 @@ public class ContentServiceConstants {
     public static final String CS_CONNECTIONS_MAX = "content.csConnectionsMax";
     public static final String LOGGING_VERBOSE = "content.loggingVerbose";
     public static final String WHITELIST = "content.whitelist";
-    public static final String CHUNKEDCONTENT_CACHE_EXPIRY = "content.chunkedcontentCacheExpiry";
-    public static final String CHUNKSIZE = "content.chunksize";
     public static final String CS_SYNCTHREADS_MAX = "content.csSyncthreadsMax";
     public static final String TEMPDIR = "otag.tmp.path";
     public static final String REPO = "content.repo";
@@ -31,7 +29,6 @@ public class ContentServiceConstants {
     public final static String NOTIFY_CHANNEL_NAME = "NotifyChannel";
     public final static String FRONT_CHANNEL_NAME = "FrontChannel";
     public final static String CONTENT_CHANNEL_NAME = "ContentChannel";
-    public final static String CHUNKED_CONTENT_CHANNEL_NAME = "ChunkedContentChannel";
     public final static String RESOURCE_CONTEXT_NAME = "resources";
     public final static String WADL_NAME = "application.wadl";
     public final static String OTSYNC_URI = "/" + OTSYNC_WEB_APP_NAME + "/";
@@ -39,13 +36,10 @@ public class ContentServiceConstants {
     public final static String BACK_CHANNEL_URI = OTSYNC_URI + BACK_CHANNEL_NAME + "/";
     public final static String FRONT_CHANNEL_URI = OTSYNC_URI + FRONT_CHANNEL_NAME + "/";
     public final static String CONTENT_CHANNEL_URI = OTSYNC_URI + CONTENT_CHANNEL_NAME + "/";
-    public final static String CHUNKED_CONTENT_CHANNEL_URI = OTSYNC_URI + CHUNKED_CONTENT_CHANNEL_NAME + "/";
     public final static String BACK_CHANNEL_SERVLET_PATH = "/" + BACK_CHANNEL_NAME;
     public final static String NOTIFY_CHANNEL_SERVLET_PATH = "/" + NOTIFY_CHANNEL_NAME;
     public final static String FRONT_CHANNEL_SERVLET_PATH = "/" + FRONT_CHANNEL_NAME;
     public final static String CONTENT_CHANNEL_SERVLET_PATH = "/" + CONTENT_CHANNEL_NAME;
-    public final static String CHUNKED_CONTENT_CHANNEL_SERVLET_PATH = "/" + CHUNKED_CONTENT_CHANNEL_NAME;
-    public final static int MAX_MULTIPART_REQUEST_SIZE = 262144; //256kb (should be enough for chunked uploads)
     public static final String URL_FROM_NODEID_PREFIX = "?func=otsyncll&objId=";
     public static final String URL_FROM_NODEID_POSTFIX = "&objAction=download&viewType=1";
     public static final String URL_VERNUM_PREFIX = "&vernum=";

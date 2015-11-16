@@ -1,11 +1,12 @@
 package com.opentext.otsync.content.listeners;
 
+import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.http.HTTPRequestManager;
 import com.opentext.otsync.content.message.Message;
 import com.opentext.otsync.content.otag.ContentServerService;
 import com.opentext.otsync.content.payload.Payload;
-import com.opentext.otag.rest.util.CSForwardHeaders;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,14 +58,13 @@ public class PulseMessageListener implements MessageForwarder {
         Map<String, String> params = new HashMap<>();
         String url = ContentServerService.getCsUrl() + PULSE_COMMENTS_PATH;
 
+        HttpServletRequest incoming = (HttpServletRequest)payload.getValue(ContentServiceConstants.INCOMING_REQUEST_KEY);
+        incoming.removeAttribute(ContentServiceConstants.INCOMING_REQUEST_KEY);
+
         //Add Params
         params.put(PULSE_NODE_ID, info.getValueAsString(Message.NODE_ID_KEY_NAME));
 
-        // remove header values from the payload
-        CSForwardHeaders headers = (CSForwardHeaders) payload.getValue(CSForwardHeaders.REQUEST_HEADER_KEY);
-        payload.remove(CSForwardHeaders.REQUEST_HEADER_KEY);
-
-        String in = _serverConnection.postData(url, params, headers);
+        String in = _serverConnection.postData(url, params, incoming);
 
         return preparePulseResponse(in);
     }
@@ -84,17 +84,16 @@ public class PulseMessageListener implements MessageForwarder {
         Payload info = payload.getInfo();
         Map<String, String> params = new HashMap<>();
 
+        HttpServletRequest incoming = (HttpServletRequest)payload.getValue(ContentServiceConstants.INCOMING_REQUEST_KEY);
+        incoming.removeAttribute(ContentServiceConstants.INCOMING_REQUEST_KEY);
+
         // prepare url and parameters
         params.put(PULSE_STATUS_KEY, info.getValueAsString(Message.PULSE_STATUS_KEY_NAME));
         params.put(PULSE_REPLYTO_KEY, PULSE_REPLYTO_DEFAULT);
         params.put(PULSE_NODE_ID_KEY, info.getValueAsString(Message.NODE_ID_KEY_NAME));
         String url = ContentServerService.getCsUrl() + PULSE_UPDATE_PATH;
 
-        // remove header values from the payload
-        CSForwardHeaders headers = (CSForwardHeaders) payload.getValue(CSForwardHeaders.REQUEST_HEADER_KEY);
-        payload.remove(CSForwardHeaders.REQUEST_HEADER_KEY);
-
-        String in = _serverConnection.postData(url, params, headers);
+        String in = _serverConnection.postData(url, params, incoming);
 
         return preparePulseResponse(in);
     }
