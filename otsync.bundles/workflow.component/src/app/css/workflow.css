@@ -1,0 +1,16 @@
+#step {
+    padding: 0 10px;
+}
+
+#sendForReview {
+    padding: 0 10px;
+}
+
+#delegateArea {
+    padding: 0 10px;
+}
+
+.fill-width {
+    width: 100%;
+    vertical-align:middle;
+}
