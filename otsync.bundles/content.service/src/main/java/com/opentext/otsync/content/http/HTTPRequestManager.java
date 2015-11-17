@@ -131,7 +131,7 @@ public class HTTPRequestManager {
 
         // set headers for Content Server validation
         headers.addTo(request);
-        headers.setCookies(httpClient, request);
+        headers.getLLCookie().addLLCookieToRequest(httpClient, request);
 
         HttpResponse httpResponse = httpClient.execute(request, httpContext);
 
@@ -177,7 +177,7 @@ public class HTTPRequestManager {
         request.setParams(getUploadParams());
 
         headers.addTo(request);
-        headers.setCookies(httpClient, request);
+        headers.getLLCookie().addLLCookieToRequest(httpClient, request);
 
         try {
             HttpResponse httpResponse = httpClient.execute(request);
@@ -293,7 +293,7 @@ public class HTTPRequestManager {
         // set headers for Content Server validation
         if (headers != null) {
             headers.addTo(request);
-            headers.setCookies(httpClient, request);
+            headers.getLLCookie().addLLCookieToRequest(httpClient, request);
         }
 
         // prepare the post arguments as an http entity
@@ -339,7 +339,7 @@ public class HTTPRequestManager {
         // Set headers and cookies for Content Server validation
         CSForwardHeaders headers = new CSForwardHeaders(incoming);
         headers.addTo(request);
-        headers.setCookies(httpClient, request);
+        headers.getLLCookie().addLLCookieToRequest(httpClient, request);
     }
 
 }
