@@ -1,12 +1,11 @@
 package com.opentext.otsync.content.ws.server.servlet3;
 
-import com.opentext.otsync.content.ContentServiceConstants;
+import com.opentext.otsync.content.util.ReturnHeaders;
+import com.opentext.otsync.content.ws.ServletUtil;
 import com.opentext.otsync.content.ws.message.MessageConverter;
 import com.opentext.otsync.content.ws.server.ResponseHandler;
-import com.opentext.otsync.content.ws.ServletUtil;
 
 import javax.servlet.AsyncContext;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -32,6 +31,8 @@ public class Servlet3ResponseHandler implements ResponseHandler {
         Map<String, Object> responseDataShallowCopy;
 
         if (responseData != null) {
+            ReturnHeaders returnHeaders = (ReturnHeaders)responseData.getOrDefault(ReturnHeaders.MAP_KEY, new ReturnHeaders());
+            responseData.remove(ReturnHeaders.MAP_KEY);
 
             // make a shallow copy of the responseData, so when we modify it we dont affect other
             // client's messages. This is only a shallow copy though, so do not modify anything off
@@ -44,26 +45,11 @@ public class Servlet3ResponseHandler implements ResponseHandler {
 
             String responseString = _messageConverter.getSerializer().serialize(responseDataShallowCopy);
 
-            // If present add the authentication tokens as Cookies on the response
             HttpServletResponse response = (HttpServletResponse) _asyncRequest.getResponse();
-            String authToken = (String) responseData.get(ContentServiceConstants.CS_AUTH_TOKEN);
-            String otagToken = (String) responseData.get("token");
 
-            if (authToken != null){
-                Cookie authCookie = new Cookie(ContentServiceConstants.CS_COOKIE_NAME, authToken);
-                authCookie.setHttpOnly(true);
-                authCookie.setPath("/");
-                response.addCookie(authCookie);
-                responseData.remove(ContentServiceConstants.CS_AUTH_TOKEN);
-            }
+            //Add the cookies from the CS and AppWorks auth calls to the response
+            returnHeaders.addToResponse(response);
 
-            if (otagToken != null){
-                Cookie authCookie = new Cookie(ContentServiceConstants.OTAG_TOKEN, otagToken);
-                authCookie.setHttpOnly(true);
-                authCookie.setPath("/");
-                response.addCookie(authCookie);
-                responseData.remove(ContentServiceConstants.OTAG_TOKEN);
-            }
 
             ServletUtil.write(response, responseString);
             _asyncRequest.complete();

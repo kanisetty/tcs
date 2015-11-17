@@ -7,6 +7,7 @@ import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.http.HTTPRequestManager;
 import com.opentext.otsync.content.message.Message;
 import com.opentext.otsync.content.message.SynchronousMessageListener;
+import com.opentext.otsync.content.util.ReturnHeaders;
 import com.opentext.otsync.content.ws.ServletConfig;
 import com.opentext.otsync.content.ws.message.MessageConverter;
 import com.opentext.otsync.content.ws.server.ClientTypeSet;
@@ -54,18 +55,20 @@ public class AuthMessageListener implements SynchronousMessageListener {
      */
     public Map<String, Object> onMessage(Map<String, Object> message) throws IOException {
         HttpServletRequest request = (HttpServletRequest)message.remove(ContentServiceConstants.INCOMING_REQUEST_KEY);
+        ReturnHeaders returnHeaders = new ReturnHeaders();
 
         Map<String, Object> combinedResult = generateDefaultResponse();
 
-        Map<String, Object> awAuthResult = doAppWorksAuth(message, request);
+        Map<String, Object> awAuthResult = doAppWorksAuth(message, request, returnHeaders);
         combinedResult.putAll(awAuthResult);
 
-        Map<String, Object> csAuthResult = doContentServerAuth(message, request);
+        Map<String, Object> csAuthResult = doContentServerAuth(message, request, returnHeaders);
         combinedResult.putAll(csAuthResult);
 
         Map<String, Object> versionData = _clientSet.doClientVersionCheck(message);
         combinedResult.putAll(versionData);
 
+        combinedResult.put(ReturnHeaders.MAP_KEY, returnHeaders);
         return combinedResult;
     }
 
@@ -116,7 +119,7 @@ public class AuthMessageListener implements SynchronousMessageListener {
      * @return - Map containing required tokens and info mapped to the legacy API response format
      * @throws IOException
      */
-    private Map<String, Object> doAppWorksAuth(Map<String, Object> message, HttpServletRequest incomingRequest) throws IOException {
+    private Map<String, Object> doAppWorksAuth(Map<String, Object> message, HttpServletRequest incomingRequest, ReturnHeaders returnHeaders) throws IOException {
         Map<String, Object> result = new HashMap<>();
         String requestJSON = buildAWAuthRequestString(message);
         CSForwardHeaders headers = new CSForwardHeaders(incomingRequest);
@@ -171,6 +174,8 @@ public class AuthMessageListener implements SynchronousMessageListener {
             result.put("wipe", workingMap.get("wipe"));
         }
 
+        returnHeaders.extractHeaders(response);
+
         return result;
     }
 
@@ -182,7 +187,7 @@ public class AuthMessageListener implements SynchronousMessageListener {
      * @return - Map containing required tokens and info mapped to the legacy API response format
      * @throws IOException
      */
-    private Map<String, Object> doContentServerAuth(Map<String, Object> message, HttpServletRequest incoming) throws IOException {
+    private Map<String, Object> doContentServerAuth(Map<String, Object> message, HttpServletRequest incoming, ReturnHeaders returnHeaders) throws IOException {
         Map<String, Object> result = new HashMap<>();
         CSForwardHeaders headers = new CSForwardHeaders(incoming);
         ArrayList<NameValuePair> params = new ArrayList<>();
@@ -237,6 +242,8 @@ public class AuthMessageListener implements SynchronousMessageListener {
         result.put("serverDate", workingMap.get("serverDate"));
         result.put("subtype", workingMap.getOrDefault("subtype", "auth"));
         result.put("type", workingMap.getOrDefault("type", "auth"));
+
+        returnHeaders.extractHeaders(response);
 
         return result;
     }
