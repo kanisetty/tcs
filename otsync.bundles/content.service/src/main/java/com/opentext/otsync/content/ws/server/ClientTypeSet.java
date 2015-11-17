@@ -137,21 +137,33 @@ public class ClientTypeSet {
      *
      */
     public Map<String,Object> doClientVersionCheck(Map<String,Object> message){
+        ClientType client = null;
         Map<String,Object> result = new HashMap<>();
+
         String os = (String) message.getOrDefault(Message.CLIENT_OS_KEY_NAME, "");
         String bitness = (String) message.getOrDefault(Message.CLIENT_BITNESS_KEY_NAME, "");
         String version = (String) message.getOrDefault(Message.VERSION_KEY_NAME, "");
 
         String clientKey = os;
-        if (os.equalsIgnoreCase(WIN_CLIENT_KEY)){
-            clientKey += bitness;
-        }
 
-        ClientType client = _clientInstallers.get(clientKey.toLowerCase());
-        if (client == null){
+        if ( clientKey != null ){
+
+            if (clientKey.equalsIgnoreCase(WIN_CLIENT_KEY)){
+                clientKey += bitness;
+            }
+
+            if ( clientKey != null )
+                client = _clientInstallers.get(clientKey.toLowerCase());
+
+            if (client == null){
+                log.warn("Client reported an unknown type:" + clientKey);
+                return result;
+            }
+        } else {
             log.warn("Client reported an unknown type:" + clientKey);
             return result;
         }
+
 
         result.put(Message.CLIENT_OS_RET_KEY, clientKey);                        //OS of current client type
         result.put(Message.CLIENT_CURRENT_RET_KEY, client.getCurrentVersion());  //current downloadable version of client

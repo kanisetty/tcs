@@ -201,7 +201,7 @@ public class AuthMessageListener implements SynchronousMessageListener {
         try {
             HttpPost request = new HttpPost(ServletConfig.getContentServerUrl());
             headers.addTo(request);
-            headers.setCookies(httpClient, request);
+            headers.getLLCookie().addLLCookieToRequest(httpClient, request);
 
             request.setEntity(new UrlEncodedFormEntity(params));
             response = httpClient.execute(request);
