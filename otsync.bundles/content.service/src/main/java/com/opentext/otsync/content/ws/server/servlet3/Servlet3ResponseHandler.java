@@ -44,9 +44,11 @@ public class Servlet3ResponseHandler implements ResponseHandler {
 
             String responseString = _messageConverter.getSerializer().serialize(responseDataShallowCopy);
 
-            // If present add the authentication token as a Cookie on the response
+            // If present add the authentication tokens as Cookies on the response
             HttpServletResponse response = (HttpServletResponse) _asyncRequest.getResponse();
             String authToken = (String) responseData.get(ContentServiceConstants.CS_AUTH_TOKEN);
+            String otagToken = (String) responseData.get("token");
+
             if (authToken != null){
                 Cookie authCookie = new Cookie(ContentServiceConstants.CS_COOKIE_NAME, authToken);
                 authCookie.setHttpOnly(true);
@@ -55,6 +57,13 @@ public class Servlet3ResponseHandler implements ResponseHandler {
                 responseData.remove(ContentServiceConstants.CS_AUTH_TOKEN);
             }
 
+            if (otagToken != null){
+                Cookie authCookie = new Cookie(ContentServiceConstants.OTAG_TOKEN, otagToken);
+                authCookie.setHttpOnly(true);
+                authCookie.setPath("/");
+                response.addCookie(authCookie);
+                responseData.remove(ContentServiceConstants.OTAG_TOKEN);
+            }
 
             ServletUtil.write(response, responseString);
             _asyncRequest.complete();

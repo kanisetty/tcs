@@ -72,4 +72,5 @@ public class ContentServiceConstants {
     public final static String CS_COOKIE_NAME = "LLCookie";
     public final static String INCOMING_REQUEST_KEY = "http_request";
     public final static String CS_AUTH_TOKEN = "otcsticket";
+    public final static String OTAG_TOKEN = "otagtoken";
 }
