@@ -285,32 +285,34 @@ var NonBlackBerryStrategy = function(){
     this.processQueryParameters = function(query){
         var params = {};
 
-        var pairs = query.split("&");
-        var len = pairs.length;
-        var idx, pair, key;
+        if ( typeof(query) === 'string'){
+            var pairs = query.split("&");
+            var len = pairs.length;
+            var idx, pair, key;
 
-        // Iterate through each pair and build the array
-        for (idx = 0; idx < len; idx += 1) {
-            pair = pairs[idx].split("=");
-            key = pair[0];
+            // Iterate through each pair and build the array
+            for (idx = 0; idx < len; idx += 1) {
+                pair = pairs[idx].split("=");
+                key = pair[0];
 
-            switch(typeof params[key]) {
-                // Key has not been found, create entry
-                case "undefined":
-                    params[key] = pair[1];
-                    break;
-                // Key exists, create an array
-                case "string":
-                    params[key] = [params[key], pair[1]];
-                    break;
-                // Add to the array
-                default:
-                    params[key].push(pair[1]);
+                switch(typeof params[key]) {
+                    // Key has not been found, create entry
+                    case "undefined":
+                        params[key] = pair[1];
+                        break;
+                    // Key exists, create an array
+                    case "string":
+                        params[key] = [params[key], pair[1]];
+                        break;
+                    // Add to the array
+                    default:
+                        params[key].push(pair[1]);
+                }
             }
-        }
 
-        if (params.data != null)
-            params.data = JSON.parse(decodeURIComponent(params.data));
+            if (params.data != null)
+                params.data = JSON.parse(decodeURIComponent(params.data));
+        }
 
         return params;
     };
@@ -318,10 +320,6 @@ var NonBlackBerryStrategy = function(){
     this.runRequestWithAuth = function(requestData){
         var _this = this;
         var deferred = $.Deferred();
-
-        requestData.beforeSend =  function(request){
-            request.setRequestHeader("OTCSTICKET", _this.getOTCSTicket());
-        };
 
         $.ajax(requestData).then(
             function(data){
@@ -344,7 +342,7 @@ var NonBlackBerryStrategy = function(){
                             deferred.reject(error);
                         });
                 }else{
-                    deferred.reject(jqXHR);
+                    deferred.reject(jqXHR.statusText);
                 }
             });
 

@@ -1,14 +1,16 @@
 package com.opentext.otsync.dcs;
 
 import com.opentext.otag.api.CSRequest;
-import com.opentext.otag.api.HttpClient;
 import com.opentext.otag.rest.util.CSForwardHeaders;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
@@ -24,12 +26,12 @@ public class CSDocumentDownloader {
 
     private String nodeID;
     private CSForwardHeaders headers;
-    private String csurl;
+    private String csUrl;
 
     public CSDocumentDownloader(String nodeID, CSForwardHeaders forwardHeaders) {
         this.nodeID = nodeID;
         this.headers = forwardHeaders;
-        csurl = DocumentConversionService.getCsUrl();
+        csUrl = DocumentConversionService.getCsUrl();
     }
 
     public void download(File file) throws IOException {
@@ -39,18 +41,22 @@ public class CSDocumentDownloader {
         params.add(new BasicNameValuePair("objAction", "download"));
         params.add(new BasicNameValuePair("viewType", "1"));
 
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpPost request = new HttpPost(csUrl);
+        request.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
-        HttpClient client = new HttpClient();
-        HttpUriRequest req = client.getPostRequest(csurl, params);
         try {
-            headers.addTo(req);
-            HttpResponse response = client.executeRaw(req, null);
+            headers.addTo(request);
+            headers.getLLCookie().addLLCookieToRequest(httpClient, request);
+
+            HttpResponse response = httpClient.execute(request);
 
             if (response.getHeaders("Warning").length > 0) {
                 throw new IOException(response.getHeaders("Warning")[0].toString());
             }
 
             final StatusLine statusLine = response.getStatusLine();
+
             if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
                 EntityUtils.consume(response.getEntity());
                 throw new WebApplicationException(Response.status(new Response.StatusType() {
@@ -67,12 +73,13 @@ public class CSDocumentDownloader {
                     }
                 }).build());
             }
+
             InputStream downloadStream = response.getEntity().getContent();
             FileUtils.copyInputStreamToFile(downloadStream, file);
             downloadStream.close();
 
         } catch (IOException e) {
-            req.abort();
+            request.abort();
             throw e;
         }
     }

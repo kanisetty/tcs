@@ -1,14 +1,22 @@
 package com.opentext.otsync.dcs;
 
 import com.opentext.otag.api.CSRequest;
+import com.opentext.otag.api.FixedInputStreamBody;
 import com.opentext.otag.api.HttpClient;
 import com.opentext.otag.rest.util.CSForwardHeaders;
 import com.opentext.otag.sdk.client.TrustedProviderClient;
 import com.opentext.otag.api.shared.types.TrustedProvider;
+import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 
 import javax.ws.rs.WebApplicationException;
@@ -37,7 +45,8 @@ public class CSDocumentPageUploader {
     public void upload(Integer pageNumber, String file) throws Exception {
         TrustedProvider provider = trustedProviderClient.getOrCreate("ContentServer");
 
-        if (provider == null) throw new IOException("Unable to get ContentServer Provider");
+        if (provider == null)
+            throw new IOException("Unable to get ContentServer Provider");
 
         List<NameValuePair> params = new ArrayList<>(5);
         params.add(new BasicNameValuePair(CSRequest.FUNC_PARAM_NAME, "otag.renderedpagepost"));
@@ -46,23 +55,33 @@ public class CSDocumentPageUploader {
         params.add(new BasicNameValuePair("key", provider.getKey()));
 
         Long size = new File(file).length();
-        HttpUriRequest request = null;
+        HttpPost request = null;
+
         try (InputStream in = new FileInputStream(file)) {
-            HttpClient client = new HttpClient();
-            request = client.getMultipartPostRequest(
-                    csUrl,
-                    in,
-                    params,
-                    "file",
-                    "otag-dcs.png",
-                    size);
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+
+            ContentBody filePart = new FixedInputStreamBody(in, "otag-dcs.png", size);
+
+            MultipartEntity entity = new MultipartEntity();
+
+            for(NameValuePair param : params){
+                entity.addPart(param.getName(), new StringBody(param.getValue()));
+            }
+
+            entity.addPart("file", filePart);
+
+            request = new HttpPost(csUrl);
+            request.setEntity(entity);
 
             headers.addTo(request);
+            headers.getLLCookie().addLLCookieToRequest(httpClient, request);
 
-            HttpClient.DetailedResponse response = client.executeRequestWithDetails(request, null);
+            HttpResponse response = httpClient.execute(request);
 
-            final StatusLine statusLine = response.status;
+            final StatusLine statusLine = response.getStatusLine();
+
             if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
+
                 throw new WebApplicationException(Response.status(new Response.StatusType() {
                     public int getStatusCode() {
                         return statusLine.getStatusCode();
