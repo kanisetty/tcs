@@ -1,0 +1,34 @@
+{
+	"label" : {
+		"Assigned To":"Assigned To",
+		"Cancelled":"Cancelled",  
+		"Comments":"Comments",
+		"Completed":"Completed",	
+		"Due Date":"Due Date", 	
+		"High":"High",	
+		"Instructions":"Instructions",
+		"In Process":"In Process",
+		"Issue":"Issue",
+		"Low":"Low",	
+		"Medium":"Medium",
+		"Name":"Name",
+		"OK":"OK",	
+		"On Hold":"On Hold",
+		"Pending":"Pending",
+		"Priority":"Priority",
+		"Start Date":"Start Date",
+		"Status":"Status",
+		"Success! The task has been updated":"Success! The task has been updated",
+		"Task":"Task",
+		"Update":"Update"
+	},
+	"error" : {
+        "Authentication failed":"Authentication Failed.",
+		"Invalid task ID":"Invalid task ID.",
+		"Problem closing app":"Problem closing app: ",
+		"Name is required":"Name is required",
+        "NoViewerIsAvailableForThisTypeOfAssignment":"No viewer is available for this type of assignment",
+		"Start Date is required":"Start Date is required",
+        "Unable to perform action" : "Unable to Perform Action"
+	}
+}

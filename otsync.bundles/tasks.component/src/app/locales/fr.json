@@ -1,0 +1,34 @@
+﻿{
+  "label": {
+    "Assigned To": "Assigné à",
+    "Cancelled": "Annulé",
+    "Comments": "Commentaires",
+    "Completed": "Achevé",
+    "Due Date": "Date d'échéance",
+    "High": "Élevé",
+    "Instructions": "Instructions",
+    "In Process": "En cours",
+    "Issue": "Problème",
+    "Low": "Faible",
+    "Medium": "Moyen",
+    "Name": "Nom",
+    "OK": "OK",
+    "On Hold": "En suspens",
+    "Pending": "En attente",
+    "Priority": "Priorité",
+    "Start Date": "Date de début",
+    "Status": "Statut",
+    "Success! The task has been updated": "Réussite de la mise à jour de la tâche.",
+    "Task": "Tâche",
+    "Update": "Mettre à jour"
+  },
+  "error": {
+    "Authentication failed" : "Échec de l'authentification.",
+    "Invalid task ID": "ID de tâche non valide.",
+    "Problem closing app": "Problème lors de la fermeture de l'application : ",
+    "Name is required": "Le nom doit être renseigné",
+    "NoViewerIsAvailableForThisTypeOfAssignment": "Aucune visionneuse n'est disponible pour ce type d'affectation",
+    "Start Date is required": "La date de début doit être renseignée",
+    "Unable to perform action" : "Impossible d’exécuter l’action"
+  }
+}

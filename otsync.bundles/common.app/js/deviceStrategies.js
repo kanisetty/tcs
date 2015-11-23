@@ -342,7 +342,7 @@ var NonBlackBerryStrategy = function(){
                             deferred.reject(error);
                         });
                 }else{
-                    deferred.reject(jqXHR.statusText);
+                    deferred.reject(jqXHR.status + " " + jqXHR.statusText);
                 }
             });
 

@@ -1,0 +1,31 @@
+{
+  "label": {
+    "Assigned To": "Assignada a",
+    "Cancelled": "Cancel·lada",
+    "Comments": "Comentaris",
+    "Completed": "Finalitzada",
+    "Due Date": "Data de venciment",
+    "High": "Alta",
+    "Instructions": "Instruccions",
+    "In Process": "En procés",
+    "Issue": "Problema",
+    "Low": "Baixa",
+    "Medium": "Mitjana",
+    "Name": "Nom",
+    "OK": "D'acord",
+    "On Hold": "En espera",
+    "Pending": "Pendent",
+    "Priority": "Prioritat",
+    "Start Date": "Data d'inici",
+    "Status": "Estat",
+    "Success! The task has been updated": "Correcte. La tasca s'ha actualitzat",
+    "Task": "Tasca",
+    "Update": "Actualitza"
+  },
+  "error": {
+    "Invalid task ID": "ID de tasca no vàlid.",
+    "Problem closing app": "Problema en tancar l'aplicació: ",
+    "Name is required": "El nom és obligatori",
+    "Start Date is required": "La data d'inici és obligatòria"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "label": {
+    "Assigned To": "Assegnato a",
+    "Cancelled": "Annullata",
+    "Comments": "Commenti",
+    "Completed": "Completata",
+    "Due Date": "Data completamento",
+    "High": "Alto",
+    "Instructions": "Istruzioni",
+    "In Process": "In corso",
+    "Issue": "Problema",
+    "Low": "Basso",
+    "Medium": "Medio",
+    "Name": "Nome",
+    "OK": "OK",
+    "On Hold": "Sospesa",
+    "Pending": "In sospeso",
+    "Priority": "Priorità",
+    "Start Date": "Data di inizio",
+    "Status": "Stato",
+    "Success! The task has been updated": "Operazione riuscita! L'attività è stata aggiornata",
+    "Task": "Attività",
+    "Update": "Aggiorna"
+  },
+  "error": {
+    "Invalid task ID": "ID attività non valido.",
+    "Problem closing app": "Problema durante la chiusura dell'applicazione: ",
+    "Name is required": "Nome obbligatorio",
+    "Start Date is required": "Data inizio obbligatoria"
+  }
+}

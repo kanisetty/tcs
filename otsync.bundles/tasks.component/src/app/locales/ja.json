@@ -1,0 +1,31 @@
+{
+  "label": {
+    "Assigned To": "割り当て",
+    "Cancelled": "キャンセル",
+    "Comments": "コメント",
+    "Completed": "完了",
+    "Due Date": "期限日時",
+    "High": "高",
+    "Instructions": "指示",
+    "In Process": "処理中",
+    "Issue": "問題",
+    "Low": "低",
+    "Medium": "中",
+    "Name": "名前",
+    "OK": "OK",
+    "On Hold": "一時保留",
+    "Pending": "保留中",
+    "Priority": "優先順位",
+    "Start Date": "開始日",
+    "Status": "ステータス",
+    "Success! The task has been updated": "タスクの更新が正常に完了しました",
+    "Task": "タスク",
+    "Update": "更新"
+  },
+  "error": {
+    "Invalid task ID": "タスク ID が無効です。",
+    "Problem closing app": "アプリを閉じるときに問題が発生しました: ",
+    "Name is required": "名前が必要です",
+    "Start Date is required": "開始日が必要です"
+  }
+}
