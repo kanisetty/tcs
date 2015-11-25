@@ -1,0 +1,9 @@
+{
+	"error" : {
+		"Authentication failed":"Authentication Failed.",
+		"Could not get link":"Could not get link--",
+		"Missing nodeID":"Missing nodeID",
+		"NoViewerIsAvailableForThisTypeOfAssignment":"No viewer is available for this type of assignment",
+		"Unable to perform action" : "Unable to Perform Action"
+	}
+}

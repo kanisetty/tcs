@@ -1,0 +1,9 @@
+{
+                "error" : {
+                                "Authentication failed" : "Échec de l'authentification.",
+                                "Could not get link" : "Impossible d’obtenir le lien--",
+                                "Missing nodeID" : "ID du noeud manquant",
+                                "NoViewerIsAvailableForThisTypeOfAssignment" : "Aucune visionneuse n'est disponible pour ce type de tâche assignée",
+                                "Unable to perform action" : "Impossible d'effectuer l'action"
+                }
+}
