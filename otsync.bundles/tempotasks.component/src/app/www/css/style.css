@@ -1,0 +1,42 @@
+/* Empty. Add your own CSS if you like */
+
+
+.task-item .task-row{
+  position: relative;
+  margin: 5px 0;
+}
+
+.task-description {
+  white-space: normal;
+  margin-right: 12px;
+  display: inline-block;
+}
+
+.delete-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+	width:40px;
+	text-align:right;
+}
+
+.task-assignee-box{
+  color:#2288cc;
+  margin-right: 130px;
+}
+
+.task-assignee-box div{
+	white-space:normal;
+}
+.task-status{
+  position: absolute;
+  top:0;
+  right: 0;
+}
+.form-error{
+  color: red;
+}
+
+.no-tasks{
+	text-align:center;
+}

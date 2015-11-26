@@ -1,0 +1,21 @@
+{
+  "CREATE_TASK": "Create Task",
+  "ASSIGNEE": "Assignee",
+  "DUE_DATE": "Due Date",
+  "TASK_DESCRIPTION": "Task Description",
+  "DUE": "Due",
+  "LOADING": "Loading...",
+  "INITIALIZATION_FAILED":"Initialization failed.",
+  "CREATE_TASK_FAILED":"Create task failed.",
+  "UPDATE_TASK_FAILED":"Update task failed.",
+  "DELETE_TASK_FAILED":"Create task failed.",
+  "PENDING":"Pending",
+  "ONHOLD":"On Hold",
+  "INPROCESS":"In Process",
+  "ISSUE":"Issue",
+  "COMPLETED":"Completed",
+  "CANCELLED":"Cancelled",
+  "TASK_DESCRIPTION_IS_REQUIRED":"Task description is required.",
+  "DUE_DATE_MUST_BE_IN_THE_FUTURE":"Due date must be in the future",
+  "NO_TASKS_FOUND":"No tasks"
+}
