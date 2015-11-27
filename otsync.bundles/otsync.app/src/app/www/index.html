@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>EWS</title>
+
+    <link rel="stylesheet" href="lib/ionic/ionic.min.css" />
+
+    <link rel="stylesheet" href="modules/browse/browse.css">
+    <link rel="stylesheet" href="modules/node/node.css">
+    <link rel="stylesheet" href="modules/feed/browse/feed.css">
+    <link rel="stylesheet" href="modules/feed/feedItemDetail/feedItemDetail.css">
+    <link rel="stylesheet" href="modules/favorites/favorites.css">
+    <link rel="stylesheet" href="modules/header/header.css">
+    <link rel="stylesheet" href="modules/collaborators/collaborators.css">
+    <link rel="stylesheet" href="modules/menu/menu.css">
+    <link rel="stylesheet" href="lib/ionicons/css/ionicons.min.css">
+
+    <script src="lib/ionic/ionic.bundle.min.js"></script>
+    <script src="lib/angular-ios9-uiwebview-patch/angular-ios9-uiwebview-patch.js"></script>
+    <script src="lib/angular-translate/angular-translate.min.js"></script>
+    <script src="lib/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
+    <script src="lib/angular-appworks/angular-appworks.js"></script>
+
+    <script src="cordova.js"></script>
+
+      <!-- build:js scripts/scripts.js -->
+    <script src="appSettings.js"></script>
+    <script src="app.js"></script>
+    <script src="modules/browse/browseController.js"></script>
+    <script src="modules/browse/browseDecorator.js"></script>
+    <script src="modules/browse/browseService.js"></script>
+    <script src="modules/browse/browseStrategyFactory.js"></script>
+    <script src="modules/cache/cacheService.js"></script>
+    <script src="modules/cache/cacheStrategies.js"></script>
+    <script src="modules/collaborators/collaborator.js"></script>
+    <script src="modules/collaborators/collaboratorDirectives.js"></script>
+    <script src="modules/collaborators/collaboratorFactory.js"></script>
+    <script src="modules/collaborators/collaboratorMenuService.js"></script>
+    <script src="modules/collaborators/collaboratorsController.js"></script>
+    <script src="modules/collaborators/collaboratorsService.js"></script>
+    <script src="modules/email/emailService.js"></script>
+    <script src="modules/favorites/favoritesBrowseStrategy.js"></script>
+    <script src="modules/favorites/favoritesHeader.js"></script>
+    <script src="modules/favorites/favoritesService.js"></script>
+    <script src="modules/feed/feedService.js"></script>
+    <script src="modules/feed/addToFeed/addToFeedCommentStrategy.js"></script>
+    <script src="modules/feed/addToFeed/addToFeedController.js"></script>
+    <script src="modules/feed/addToFeed/addToFeedProviderStrategy.js"></script>
+    <script src="modules/feed/addToFeed/addToFeedStatusStrategy.js"></script>
+    <script src="modules/feed/browse/feedBrowseDecoratingService.js"></script>
+    <script src="modules/feed/browse/feedBrowseStrategy.js"></script>
+    <script src="modules/feed/browse/feedBrowseStrategyFactory.js"></script>
+    <script src="modules/feed/browse/feedHeader.js"></script>
+    <script src="modules/feed/browse/feedItemBrowseDecorator.js"></script>
+    <script src="modules/feed/comments/feedCommentHeader.js"></script>
+    <script src="modules/feed/comments/feedCommentsBrowseStrategy.js"></script>
+    <script src="modules/feed/feedItemDetail/feedItemDetailController.js"></script>
+    <script src="modules/feed/likes/feedLikesBrowseStrategy.js"></script>
+    <script src="modules/feed/model/feed.js"></script>
+    <script src="modules/feed/model/feedItem.js"></script>
+    <script src="modules/feed/model/feedProvider.js"></script>
+    <script src="modules/feed/thread/feedThreadBrowseStrategy.js"></script>
+    <script src="modules/feed/thread/feedThreadHeader.js"></script>
+    <script src="modules/file/debugFileStrategy.js"></script>
+    <script src="modules/file/file.js"></script>
+    <script src="modules/file/fileActionService.js"></script>
+    <script src="modules/file/fileMenuService.js"></script>
+    <script src="modules/file/fileService.js"></script>
+    <script src="modules/file/fileStrategy.js"></script>
+    <script src="modules/file/fileStrategyFactory.js"></script>
+    <script src="modules/header/header.js"></script>
+    <script src="modules/header/headerController.js"></script>
+    <script src="modules/header/headerService.js"></script>
+    <script src="modules/menu/menu.js"></script>
+    <script src="modules/menu/menuitem.js"></script>
+    <script src="modules/menu/menuItemFactory.js"></script>
+    <script src="modules/menu/modalMenu.js"></script>
+    <script src="modules/menu/popoverMenu.js"></script>
+    <script src="modules/node/node.js"></script>
+    <script src="modules/node/nodeActionService.js"></script>
+    <script src="modules/node/nodeBrowseDecoratingService.js"></script>
+    <script src="modules/node/nodeBrowseDecorator.js"></script>
+    <script src="modules/node/nodeBrowseStrategy.js"></script>
+    <script src="modules/node/nodeHeader.js"></script>
+    <script src="modules/node/nodeMenuService.js"></script>
+    <script src="modules/node/nodeOpenService.js"></script>
+    <script src="modules/node/nodeService.js"></script>
+    <script src="modules/node/sharing.js"></script>
+    <script src="modules/session/DebugSessionStrategy.js"></script>
+    <script src="modules/session/OTAGSessionStrategy.js"></script>
+    <script src="modules/session/request.js"></script>
+    <script src="modules/session/requestService.js"></script>
+    <script src="modules/session/sessionService.js"></script>
+    <script src="modules/session/sessionStrategyFactory.js"></script>
+    <script src="modules/session/tokenService.js"></script>
+    <script src="modules/utilities/dateService.js"></script>
+    <script src="modules/utilities/displayMessageService.js"></script>
+    <script src="modules/utilities/navigationService.js"></script>
+    <script src="modules/utilities/urlEncodingService.js"></script>
+    <script src="modules/utilities/userDisplayService.js"></script>
+  </head>
+
+  <body ng-app="ews">
+    <ion-nav-view></ion-nav-view>
+  </body>
+</html>

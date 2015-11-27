@@ -1,0 +1,44 @@
+<ion-view ng-controller="collaboratorsController" ng-init="initialize()">
+    <div class="search-bar has-header">
+        <span ng-hide="!isShareable" class="item item-input">
+            <button class="button button-small search-bar-image" style="background-image: url('{{collaboratorPermImgURL}}')" ng-click="toggleCollaboratorPerms(collaborator)"></button>
+            <i class="placeholder-icon search-placeholder"></i>
+            <input type="search" placeholder='{{"SEARCH FOR COLLABORATORS" | translate}}' ng-model="collaboratorQuery" search-change="collaboratorSearch">
+            <button class="button button-small button-icon ion-android-close search-icon" ng-click="clearSearchBar()"></button>
+        </span>
+    </div>
+    <ion-content ng-class="{'has-subheader':isShareable}">
+        <ion-refresher pulling-text="{{'PULL TO REFRESH' | translate}}" on-refresh="reloadPage()">
+        </ion-refresher>
+        <ion-list>
+            <ion-item ng-repeat="collaborator in collaborators">
+                <div class="display-item">
+                    <div class="image-container">
+                        <div class="image-outer">
+                            <div class="display-image" style="background-image: url('{{collaborator.getPhotoURL()}}')"></div>
+                        </div>
+                    </div>
+                    <div class="display-text-with-buttons">
+                        <div class='display-name'>{{collaborator.getDisplayName()}}</div>
+                        <div class='display-detail-collaborator' ng-show="collaborator.isExternalCollaborator() == true">
+                            <span>{{"EXTERNAL COLLABORATOR" | translate}}</span>
+                        </div>
+                        <div class='display-detail-collaborator' ng-show="collaborator.isPendingCollaborator() == true">
+                            <span>({{"PENDING" | translate}})</span>
+                        </div>
+                        <div class='display-detail-collaborator' ng-show="collaborator.isOwnerOfShare() == true">
+                            <span>{{"OWNER" | translate}}</span>
+                        </div>
+                        <div class='display-detail-collaborator' ng-show="collaborator.isReadOnlyCollaborator() == true">
+                            <span>({{"READ ONLY" | translate}})</span>
+                        </div>
+                    </div>
+                    <div ng-show="collaborator.isRemovable()">
+                        <button class="button button-small button-icon ion-android-close removeCollaboratorButton" ng-click="removeCollaborator(collaborator)"></button>
+                    </div>
+                </div>
+            </ion-item>
+            <ion-item class="center-item-text" ng-show="collaborators.length == 0">{{"NO COLLABORATORS" | translate}}</ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

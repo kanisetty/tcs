@@ -1,0 +1,13 @@
+<ion-view ng-app="ews">
+    <ion-nav-bar class="bar-stable">
+        <ion-nav-title class="title-text">{{header.getTitle() | translate}}</ion-nav-title>
+        <ion-nav-back-button></ion-nav-back-button>
+        <ion-nav-buttons side="right">
+            <button class="button button-icon button-clear ion-clipboard right-button" ng-show="pasteData.itemInClipboard && header.shouldShowButton()" ng-click="pasteClick()"></button>
+            <button class="button button-icon button-clear {{header.getShowButtonCSS()}} right-button" ng-show="header.shouldShowButton()" ng-click="doButtonAction()"></button>
+        </ion-nav-buttons>
+    </ion-nav-bar>
+    <ion-nav-view name="menuContent" animation="slide-left-right"></ion-nav-view>
+</ion-view>
+
+

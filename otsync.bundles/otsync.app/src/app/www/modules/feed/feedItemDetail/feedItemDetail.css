@@ -1,0 +1,82 @@
+.feed-item-detail-container{
+	float: left;
+	width: 100%;
+	margin-top: 1.5em;
+}
+
+.feed-item-detail-image-container{
+	float: left;
+	margin-top: 1em;
+	margin-left: 1em;
+	width: 95%;
+}
+
+.feed-item-detail-image{
+	float:left;
+	height: 2.5em;
+}
+
+.feed-item-detail-image-text{
+	float: left;
+	margin-top: 0.5em;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	font-size: 1.5em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	text-decoration: underline;
+	width: 67%;
+}
+
+.feed-item-detail-like-container{
+	float: left;
+	width: 100%;
+	margin-top: 1em;
+}
+
+.feed-item-detail-message{
+	float: left;
+	width: 95%;
+	margin-top: 1em;
+	margin-left: 1em;
+}
+
+.feed-item-detail-message-text{
+	margin-right: 0.5em;
+}
+
+.feed-item-detail-profile{
+	float: left;
+	width: 100%;
+}
+
+.feed-item-detail-profile-image{
+	float: left;
+	height: 100%;
+	width: 100%
+}
+
+.feed-item-detail-profile-image-container{
+	float: left;
+	height: 10em;
+	width: 10em;
+	margin-top: 0.5em;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+}
+
+.feed-item-detail-text{
+	float: left;
+	margin-top: 0.5em;
+	font-size: 1.5em;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	width: 100%;
+}
+
+.feed-item-detail-text-container{
+	float: left;
+	margin-left: 0.5em;
+	width: 50%;
+}

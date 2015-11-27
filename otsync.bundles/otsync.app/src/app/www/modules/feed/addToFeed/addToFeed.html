@@ -1,0 +1,19 @@
+<div class="item item-input">
+	<i class="placeholder-icon"></i>
+	<input type="text" placeholder='{{messagePlaceholder}}' ng-model="feedMessage.message">
+	<button class="button button-small button-icon ion-android-close search-icon" ng-click="clearFeedMessage()"></button>
+</div>
+<div class="button-bar">
+	<a class="button button-stable button-outline button-large" ng-show="showCancel" ng-click="goBack()">{{"CANCEL" | translate}}</a>
+	<a class="button button-stable button-outline button-large" ng-show="file.getName() == null" ng-click="getFile()">{{"ATTACH" | translate}}</a>
+	<a class="button button-stable button-outline button-large" ng-show="file.getName() != null" ng-click="removeFile()">{{"REMOVE" | translate}}</a>
+	<a class="button button-stable button-outline button-large" ng-click="doPost()">{{"POST" | translate}}</a>
+</div>
+<div ng-show="file.getName() != null">
+	<div class="feed-display-light-grey add-feed-attachment-div">
+		{{"ATTACHED FILE" | translate}}
+	</div>
+	<div class="add-feed-attachment-div">
+		{{file.getName()}}
+	</div>
+</div>

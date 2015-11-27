@@ -1,0 +1,95 @@
+.center-item-text {
+	text-align: center;
+}
+
+.display-image {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-size: cover;
+}
+
+.display-item {
+	position: relative;
+	height: 100%;
+	width: 100%;
+}
+
+.display-name {
+	float: left;
+	font-weight: bold;
+	text-overflow: ellipsis;
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	margin-bottom: 0.2em;
+	padding-left: 0.5em;
+}
+
+.display-text{
+	float: left;
+	width: 85%;
+}
+
+.do-indent {
+	position: relative;
+	height: 100%;
+	width: 96%;
+	margin-left:1em;
+}
+
+.hide {
+	display: none;
+}
+
+.image-container {
+	float: left;
+	display: block;
+	position: relative;
+	width: 15%;
+	max-height: 80px;
+	max-width: 80px;
+}
+
+.image-outer {
+	padding-top: 100%;
+}
+
+.overlay {
+	position: relative;
+	float: right;
+	height: 30%;
+	margin-top: 75%;
+	max-width: 29%;
+}
+
+.overlay-position-bottom-right {
+	margin-right: -6%;
+}
+
+.overlay-position-bottom-middle {
+	margin-right: 2px;
+}
+
+.overlay-position-bottom-left {
+	margin-right: 2px;
+}
+
+.right-button {
+	float: left;
+}
+
+.search-bar{
+	background: none;
+	position:absolute;
+	width: 100%;
+	height: 40px;
+	z-index: 3;
+}
+
+.search-icon{
+	font-size:24px;
+	margin-right:6px;
+}

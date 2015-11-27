@@ -1,0 +1,28 @@
+.display-detail-collaborator {
+	float: left;
+	padding-left: 0.5em;
+	margin-bottom: 0.2em;
+}
+
+.display-text-with-buttons{
+    float: left;
+    width: 70%;
+}
+
+.removeCollaboratorButton {
+	float:left;
+	font-size:24px;
+	margin-top:3%;
+	padding-left: 0.5em;
+}
+
+.search-bar-image{
+    background-repeat: no-repeat;
+    float:left;
+    background-position: center;
+}
+
+.search-placeholder{
+    float:left;
+    padding-left: 1em;
+}

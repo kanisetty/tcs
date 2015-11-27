@@ -1,0 +1,9 @@
+<ion-popover-view class="fit">
+    <ion-content scroll="false">
+        <ion-list>
+            <ion-item class="center-item-text" ng-repeat="menuItem in menu.getMenuItems()" ng-click="menuItemClicked(menuItem)">
+                {{menuItem.getText()}}
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-popover-view>

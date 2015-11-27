@@ -1,0 +1,24 @@
+<div class="feed-display feed-display-light-grey" ng-show='browseDecorator.getDecoratedObject().getCommentedOn() != null'>
+	<span class="feed-display-text-wrap">{{browseDecorator.getDecoratedObject().getCommentedOn()}}</span>
+</div>
+<div class="feed-display">
+	<span class="feed-display-text-wrap">{{browseDecorator.getDecoratedObject().getMessage()}}</span>
+</div>
+<div class="feed-display" ng-show='browseDecorator.getDecoratedObject().getAttachmentName() != null'>
+	<img class="feed-attachment-image feed-image-container">
+	<img class ="feed-image-container" ng-src="{{browseDecorator.getDecoratedObject().getAttachmentMimeTypeImgURL()}}">
+	<span class="feed-image-text feed-attachment-image-text">{{browseDecorator.getDecoratedObject().getAttachmentName()}}</span>
+</div>
+<div class="feed-display">
+	<span class="feed-time-ago-text feed-display-light-grey">
+		{{browseDecorator.getCreateDateDisplay()}}
+	</span>
+	<span ng-show='browseDecorator.getDecoratedObject().getLikeCount() > 0' class='feed-image-container'>
+	    <img class="feed-image feed-like-image">
+		<span class="feed-image-text">{{browseDecorator.getDecoratedObject().getLikeCount()}}</span>
+	</span>
+	<span ng-show='browseDecorator.getDecoratedObject().getCommentCount() > 0' class='feed-image-container'>
+	    <img class="feed-image feed-comment-image">
+		<span class="feed-image-text">{{browseDecorator.getDecoratedObject().getCommentCount()}}</span>
+	</span>
+</div>

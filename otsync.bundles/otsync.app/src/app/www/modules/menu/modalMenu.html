@@ -1,0 +1,11 @@
+<div class="modal-content-container">
+    <header class="bar bar-header bar-stable">
+        <h1 class="title">{{menu.getMenuTitleText()}}</h1>
+        <button class="button button-clear button-primary" ng-click="menu.hide()">{{menu.getMenuCancelText()}}</button>
+    </header>
+    <ion-content class="has-header" padding="true">
+        <ion-item class="center-item-text" ng-repeat="menuItem in menu.getMenuItems()" ng-click="menuItemClicked(menuItem)">
+            {{menuItem.getText()}}
+        </ion-item>
+    </ion-content>
+</div>

@@ -1,0 +1,70 @@
+.add-feed-attachment-div{
+	text-align: center;
+	margin-top: 0.5em;
+	margin-bottom: 0.25em;
+	font-size: 15px;
+}
+
+.feed-attachment{
+	float: left;
+	margin-left: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.feed-attachment-image{
+	content:url('../img/attachment_blue.png');
+}
+
+.feed-attachment-image-text{
+	width: 75%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-right: 0.5em;
+}
+
+.feed-comment-image{
+	content:url('../img/comment.png');
+}
+
+.feed-display{
+	float: left;
+	margin-left: 0.5em;
+	margin-bottom: 0.2em;
+	width: 100%;
+}
+
+.feed-display-light-grey{
+	color: #999999;
+}
+
+.feed-display-text-wrap{
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+.feed-image{
+	float:left;
+	margin-left: 0.5em;
+	margin-bottom: 0.2em;
+	height: 100%;
+}
+
+.feed-image-container{
+	float:left;
+	height: 1.5em;
+}
+
+.feed-image-text{
+	float:left;
+	margin-top: 0.2em;
+	margin-left: 0.5em;
+}
+
+.feed-like-image{
+	content:url('../img/like.png');
+}
+
+.feed-time-ago-text{
+	float:left;
+	margin-top: 0.2em;
+}

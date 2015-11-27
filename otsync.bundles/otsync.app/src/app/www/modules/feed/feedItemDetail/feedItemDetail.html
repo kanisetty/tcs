@@ -1,0 +1,39 @@
+<ion-view ng-controller="feedItemDetailController" ng-init="initialize()">
+	<ion-content class="has-header">
+		<div class="feed-item-detail-profile">
+			<div class="feed-item-detail-profile-image-container">
+				<img class="feed-item-detail-profile-image" ng-src="{{feedItem.getIconURL()}}">
+			</div>
+			<div class="feed-item-detail-text-container">
+				<span class="feed-item-detail-text">{{feedItem.getDisplayName()}}</span>
+				<span class="feed-item-detail-text feed-display-light-grey">{{feedItem.getPosition()}}</span>
+				<span class="feed-item-detail-text feed-display-light-grey">{{feedItem.getLocation()}}</span>
+			</div>
+		</div>
+		<div class="feed-item-detail-like-container button-bar">
+			<a class="button button-stable button-outline button-large" ng-show="feedItem.isLiked() != true" ng-click="toggleIsLiked(feedItem)">{{"LIKE" | translate}}</a>
+			<a class="button button-stable button-outline button-large" ng-show="feedItem.isLiked() == true" ng-click="toggleIsLiked(feedItem)">{{"UNLIKE" | translate}}</a>
+			<a class="button button-stable button-outline button-large" ng-show="showFollowing && feedItem.isFollowing() != true" ng-click="toggleIsFollowing(feedItem)">{{"FOLLOW" | translate}}</a>
+			<a class="button button-stable button-outline button-large" ng-show="showFollowing && feedItem.isFollowing() == true" ng-click="toggleIsFollowing(feedItem)">{{"UNFOLLOW" | translate}}</a>
+		</div>
+		<div class="feed-item-detail-message">
+			<span class="feed-item-detail-text feed-item-detail-message-text">{{feedItem.getMessage()}}</span>
+		</div>
+		<div class="feed-item-detail-image-container" ng-show='feedItem.getAttachmentName() != null'>
+			<img class="feed-attachment-image feed-item-detail-image">
+			<img class ="feed-item-detail-image" ng-src="{{feedItem.getAttachmentMimeTypeImgURL()}}">
+			<span class="feed-item-detail-image-text" ng-click="doOpen()">{{feedItem.getAttachmentName()}}</span>
+		</div>
+		<div class="feed-item-detail-container">
+			<div ng-include src="'modules/feed/addToFeed/addToFeed.html'"></div>
+		</div>
+		<div ng-show='feedItem.getCommentCount() > 0' class="feed-item-detail-image-container" ng-click="viewThread()">
+			<img class="feed-item-detail-image feed-comment-image">
+			<span class="feed-item-detail-image-text">{{viewThreadMessage}}</span>
+		</div>
+		<div ng-show='feedItem.getLikeCount() > 0' class="feed-item-detail-image-container" ng-click="viewLikes()">
+			<img class="feed-item-detail-image feed-like-image">
+			<span class="feed-item-detail-image-text">{{viewLikesMessage}}</span>
+		</div>
+	</ion-content>
+</ion-view>

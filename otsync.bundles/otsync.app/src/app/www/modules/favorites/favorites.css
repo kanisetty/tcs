@@ -1,0 +1,7 @@
+.favorite-overlay {
+    content:url('img/favorite_overlay.png');
+}
+
+.favorite-unavailable-overlay {
+    content:url('img/favorite_unavailable_overlay.png');
+}
