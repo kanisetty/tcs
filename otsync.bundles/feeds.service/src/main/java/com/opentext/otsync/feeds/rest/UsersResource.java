@@ -15,7 +15,7 @@ import java.util.List;
 
 @Path("users")
 @Produces(MediaType.APPLICATION_JSON)
-public class Users {
+public class UsersResource {
 
 	private static final String FOLLOW_FUNC = "otag.friendPost";
 	private static final String UNFOLLOW_FUNC = "otag.friendDelete";

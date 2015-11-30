@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.opentext.otag.api.CSMultiPartRequest;
 import com.opentext.otag.api.CSRequest;
-import com.opentext.otag.api.shared.util.ForwardHeaders;
 import com.opentext.otag.rest.util.CSForwardHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,9 +26,9 @@ import java.util.List;
 
 @Path("feeds")
 @Produces(MediaType.APPLICATION_JSON)
-public class Feeds {
+public class FeedsResource {
 
-    public static final Log log = LogFactory.getLog(Feeds.class);
+    public static final Log log = LogFactory.getLog(FeedsResource.class);
 
     private static final ObjectReader bookmarkReader = new ObjectMapper().reader(Bookmark.class);
     public static final String POST_STATUS_FUNC = "otag.feedPost";
@@ -217,7 +216,7 @@ public class Feeds {
         return new CSRequest(csUrl(), UNLIKE_FUNC, params, new CSForwardHeaders(request));
     }
 
-    FeedItem getFeedItem(FeedItem.Provider provider, int seqNo, ForwardHeaders headers) {
+    FeedItem getFeedItem(FeedItem.Provider provider, int seqNo, CSForwardHeaders headers) {
         Feed singletonFeed = new FeedGetter(seqNo + 1, seqNo - 1, 1,  headers)
                 .setProvider(provider)
                 .getFeed();

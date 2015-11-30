@@ -23,21 +23,21 @@ import java.util.List;
 
 @Path("nodes")
 @Produces(MediaType.APPLICATION_JSON)
-public class Nodes {
+public class NodesResource {
 
-    private static final Log LOG = LogFactory.getLog(Nodes.class);
+    private static final Log LOG = LogFactory.getLog(NodesResource.class);
 
     @GET
     @Path("{provider}/{nodeID}")
-    public Response getFeedForObject(@QueryParam("before") Feeds.Bookmark before,
-                                     @QueryParam("after") Feeds.Bookmark after,
+    public Response getFeedForObject(@QueryParam("before") FeedsResource.Bookmark before,
+                                     @QueryParam("after") FeedsResource.Bookmark after,
                                      @QueryParam("count") @DefaultValue("20") int count,
                                      @QueryParam("isRecursive") @DefaultValue("false") boolean isRecursive,
                                      @PathParam("provider") FeedItem.Provider provider,
                                      @PathParam("nodeID") String nodeID,
                                      @Context HttpServletRequest request) {
 
-        Feeds.Feed feed = new FeedGetter(before, after, count, new CSForwardHeaders(request))
+        FeedsResource.Feed feed = new FeedGetter(before, after, count, new CSForwardHeaders(request))
                 .setNodeID(nodeID)
                 .setRecursive(isRecursive)
                 .setProvider(provider)
@@ -56,7 +56,7 @@ public class Nodes {
         List<NameValuePair> params = new ArrayList<>(5);
         params.add(new BasicNameValuePair("status", status));
         params.add(new BasicNameValuePair("in_comment_on_obj_id", Long.toString(nodeId)));
-        return new CSRequest(FeedsService.getCsUrl(), Feeds.POST_STATUS_FUNC,
+        return new CSRequest(FeedsService.getCsUrl(), FeedsResource.POST_STATUS_FUNC,
                 params, new CSForwardHeaders(request));
     }
 
@@ -79,14 +79,14 @@ public class Nodes {
         if (fileInfo != null) {
             String filename = fileInfo.getFileName();
             if (filename != null) {
-                return new CSMultiPartRequest(csUrl, Feeds.POST_STATUS_FUNC, params,
+                return new CSMultiPartRequest(csUrl, FeedsResource.POST_STATUS_FUNC, params,
                         inputStream, "AddDesktopDoc", filename,
                         new CSForwardHeaders(request));
             } else {
                 throw new WebApplicationException(Status.BAD_REQUEST);
             }
         } else {
-            return new CSRequest(csUrl, Feeds.POST_STATUS_FUNC,
+            return new CSRequest(csUrl, FeedsResource.POST_STATUS_FUNC,
                     params, new CSForwardHeaders(request));
         }
     }

@@ -7,12 +7,12 @@ public class FeedItem {
 	public enum Provider{PulseStatus, PulseContent, PulseMentions, PulseFollows}
 
     public String username;
-	public String userID;
+	public Integer userID;
 	public String firstName;
 	public String lastName;
 	public String userTitle;
 	public String userLocation;
-	public String id;
+	public Integer id;
 	public String name = null;
 	public Integer subType = null;
 	public String header;
@@ -38,17 +38,15 @@ public class FeedItem {
 	public String inReplyToFirstName = null;
 	public String inReplyToLastName = null;
 	
-	public FeedItem(){}
-	
 	public FeedItem(JsonNode node){
 		feed = Provider.valueOf(node.get("feed").asText());
-		username = node.get("userName").asText();
-		userID = node.get("userID").asText();
-		firstName = node.get("firstName").asText();
-		lastName = node.get("lastName").asText();
-		userTitle = node.get("userTitle").asText();
-		userLocation = node.get("userLocation").asText();
-		id = node.get("id").asText();
+		username = node.get("userName").asText(null);
+		userID = node.get("userID").asInt();
+		firstName = node.get("firstName").asText(null);
+		lastName = node.get("lastName").asText(null);
+		userTitle = node.get("userTitle").asText(null);
+		userLocation = node.get("userLocation").asText(null);
+		id = node.get("id").asInt();
 		if (feed == Provider.PulseContent){
 			name = node.get("name").asText();
 			subType = node.get("subType").asInt();

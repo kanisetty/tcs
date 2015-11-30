@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 
 @Path("providers")
 @Produces(MediaType.APPLICATION_JSON)
-public class Providers {
+public class ProvidersResource {
 
     public static class FeedProvider {
         public String name;

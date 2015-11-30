@@ -9,12 +9,12 @@ import javax.ws.rs.core.Response;
 
 @Path("conversations")
 @Produces(MediaType.APPLICATION_JSON)
-public class Conversations {
+public class ConversationsResource {
 	
 	@GET
 	@Path("{provider}/{conversationID}")
-	public Response getConversationList(@QueryParam("before") Feeds.Bookmark before,
-                                        @QueryParam("after") Feeds.Bookmark after,
+	public Response getConversationList(@QueryParam("before") FeedsResource.Bookmark before,
+                                        @QueryParam("after") FeedsResource.Bookmark after,
                                         @QueryParam("count") @DefaultValue("20") int count,
                                         @PathParam("provider") FeedItem.Provider provider,
                                         @PathParam("conversationID") int conversationID,
@@ -22,7 +22,7 @@ public class Conversations {
 
 
 		
-		Feeds.Feed feed = new FeedGetter(before, after, count,
+		FeedsResource.Feed feed = new FeedGetter(before, after, count,
                 new CSForwardHeaders(request)).setConversationID(conversationID).getFeed();
 			
 		return Response.ok(feed).build();
