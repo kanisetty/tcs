@@ -2,7 +2,6 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        clean: ["dist"],
         copy: {
             build: {
                 files: [
@@ -29,24 +28,12 @@ module.exports = function(grunt) {
                     src: ['**/*'],
                     dest: ''
                 }]
-            },
-            final: {
-                options: {
-                    archive: 'dist/assignments-app_16.0.0.zip'
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'dist/build/',
-                    src: ['**/*'],
-                    dest: ''
-                }]
             }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-compress');
-    grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('default', ['clean', 'copy', 'compress']);
+    grunt.registerTask('default', ['copy', 'compress']);
 };

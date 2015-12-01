@@ -8,12 +8,12 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.bundles.parent</artifactId>
-        <version>16.01-ALPHA-4-SNAPSHOT</version>
+        <version>16.0.0</version>
     </parent>
 
     <artifactId>tempocontent.service</artifactId>
     <packaging>war</packaging>
-    <name>Content Server Tempo Content AppWorks Service</name>
+    <name>Tempo Service</name>
     <description>TODO</description>
 
     <properties>

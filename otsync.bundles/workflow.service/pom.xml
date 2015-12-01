@@ -8,12 +8,12 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.bundles.parent</artifactId>
-        <version>16.01-ALPHA-4-SNAPSHOT</version>
+        <version>16.0.0</version>
     </parent>
 
     <artifactId>workflow.service</artifactId>
     <packaging>war</packaging>
-    <name>Content Server Workflow Appworks Service</name>
+    <name>Workflow Service</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -8,12 +8,12 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.bundles.parent</artifactId>
-        <version>16.01-ALPHA-4-SNAPSHOT</version>
+        <version>16.0.0</version>
     </parent>
 
     <artifactId>content.service</artifactId>
     <packaging>war</packaging>
-    <name>Appworks Content Service</name>
+    <name>Content Service</name>
     <description>Content Server-backed APIs for document management and sharing</description>
 
     <properties>

@@ -8,11 +8,12 @@
     <groupId>com.opentext.otsync</groupId>
     <artifactId>otsync.bundles.parent</artifactId>
     <packaging>pom</packaging>
-    <version>16.01-ALPHA-4-SNAPSHOT</version>
+    <version>16.0.0</version>
 
     <name>OTSync bundles parent</name>
 
     <modules>
+        <module>assignments.app</module>
         <module>assignments.service</module>
         <module>content.service</module>
         <module>dcs.service</module>

@@ -8,12 +8,12 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.bundles.parent</artifactId>
-        <version>16.01-ALPHA-4-SNAPSHOT</version>
+        <version>16.0.0</version>
     </parent>
 
     <artifactId>assignments.service</artifactId>
     <packaging>war</packaging>
-    <name>Content Server Assignments AppWorks Service</name>
+    <name>Assignments Service</name>
     <description>TODO</description>
 
     <properties>
@@ -23,7 +23,7 @@
 
         <!-- General app.properties -->
         <app.properties.displayName>Assignments Service</app.properties.displayName>
-        <app.properties.description>Content Server Assignments service</app.properties.description>
+        <app.properties.description>Assignments Service</app.properties.description>
         <app.properties.version>16.0.0</app.properties.version>
         <app.properties.minimumClientVersion>2</app.properties.minimumClientVersion>
         <app.properties.type>service</app.properties.type>
