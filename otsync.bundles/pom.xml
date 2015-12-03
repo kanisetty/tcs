@@ -16,6 +16,7 @@
         <module>assignments.app</module>
         <module>assignments.service</module>
         <module>content.service</module>
+        <module>dcs.component</module>
         <module>dcs.service</module>
         <module>favorites.service</module>
         <module>feeds.service</module>
