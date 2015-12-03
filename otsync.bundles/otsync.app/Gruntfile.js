@@ -2,7 +2,6 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        clean: ["dist"],
         copy: {
             build_ews: {
                 files: [
@@ -150,68 +149,12 @@ module.exports = function(grunt) {
                     src: ['**/*'],
                     dest: ''
                 }]
-            },
-            final_ews: {
-                options: {
-                    archive: 'dist/ews-app_16.0.0.zip'
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'dist/build/ews',
-                    src: ['**/*'],
-                    dest: ''
-                }]
-            },
-            final_favorites: {
-                options: {
-                    archive: 'dist/favorites-app_16.0.0.zip'
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'dist/build/favorites',
-                    src: ['**/*'],
-                    dest: ''
-                }]
-            },
-            final_feeds: {
-                options: {
-                    archive: 'dist/feeds-app_16.0.0.zip'
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'dist/build/feeds',
-                    src: ['**/*'],
-                    dest: ''
-                }]
-            },
-            final_pws: {
-                options: {
-                    archive: 'dist/pws-app_16.0.0.zip'
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'dist/build/pws',
-                    src: ['**/*'],
-                    dest: ''
-                }]
-            },
-            final_tempo: {
-                options: {
-                    archive: 'dist/tempo-app_16.0.0.zip'
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'dist/build/tempo',
-                    src: ['**/*'],
-                    dest: ''
-                }]
             }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-compress');
-    grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('default', ['clean', 'copy', 'compress']);
+    grunt.registerTask('default', ['copy', 'compress']);
 };

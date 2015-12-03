@@ -13,16 +13,24 @@
     <name>OTSync bundles parent</name>
 
     <modules>
+        <module>assignments</module>
         <module>assignments.app</module>
-        <module>assignments.service</module>
-        <module>content.service</module>
-        <module>dcs.service</module>
-        <module>favorites.service</module>
-        <module>feeds.service</module>
-        <module>shares.service</module>
-        <module>tasks.service</module>
-        <module>tempocontent.service</module>
-        <module>workflow.service</module>
+        <module>content</module>
+        <module>dcs</module>
+        <module>dcs.component</module>
+        <module>favorites</module>
+        <module>feeds</module>
+        <module>objectdetails.component</module>
+        <module>otsync.app</module>
+        <module>shares</module>
+        <module>tasks.component</module>
+        <module>tasks</module>
+        <module>tempotasks.component</module>
+        <module>tempocontent</module>
+        <module>url.component</module>
+        <module>workflow</module>
+        <module>workflow.component</module>
+        <module>otsync.bundles.assembly</module>
     </modules>
 
     <properties>
@@ -75,7 +83,6 @@
                 <version>2.9</version>
 
                 -->
-             
             </plugins>
         </pluginManagement>
     </build>

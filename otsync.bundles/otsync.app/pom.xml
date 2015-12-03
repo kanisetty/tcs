@@ -9,8 +9,8 @@
         <version>16.0.0</version>
     </parent>
 
-    <artifactId>assignments.app</artifactId>
-	<name>Assignments App</name>
+    <artifactId>otsync.app</artifactId>
+	<name>OTSync App</name>
     <description></description>
 
 	<properties>
@@ -19,12 +19,12 @@
         <appworks.platform.version>16.01-ALPHA-4</appworks.platform.version>
 
         <!-- General app.properties -->
-        <app.properties.displayName>Assignments App</app.properties.displayName>
-        <app.properties.description>Assignments App</app.properties.description>
+        <app.properties.displayName>OTSync App</app.properties.displayName>
+        <app.properties.description>OTSync App</app.properties.description>
         <app.properties.version>16.0.0</app.properties.version>
         <app.properties.type>app</app.properties.type>
     </properties>
-    
+
 	<build>
 		<plugins>
             <!-- Clear down the local front end dependencies and  node/npm install -->
@@ -104,38 +104,73 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>create-distribution</id>
+                        <id>create-ews-distribution</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
                         <configuration>
+                            <finalName>ews-app-${app.properties.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
                             <descriptors>
-                                <descriptor>assembly/assembly.xml</descriptor>
+                                <descriptor>assembly/ews.xml</descriptor>
                             </descriptors>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.3</version>
-                <executions>
                     <execution>
-                        <id>attach-distribution</id>
+                        <id>create-favorites-distribution</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>attach-artifact</goal>
+                            <goal>single</goal>
                         </goals>
                         <configuration>
-                            <artifacts>
-                                <artifact>
-                                    <file>target/assignments.app_${app.properties.version}.zip</file>
-                                    <type>zip</type>
-                                </artifact>
-                            </artifacts>
+                            <finalName>favorites-app-${app.properties.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>assembly/favorites.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>create-feeds-distribution</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>feeds-app-${app.properties.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>assembly/feeds.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>create-pws-distribution</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>pws-app-${app.properties.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>assembly/pws.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>create-tempo-distribution</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>tempo-app-${app.properties.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>assembly/tempo.xml</descriptor>
+                            </descriptors>
                         </configuration>
                     </execution>
                 </executions>

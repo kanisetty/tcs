@@ -11,7 +11,7 @@
         <version>16.0.0</version>
     </parent>
 
-    <artifactId>workflow.service</artifactId>
+    <artifactId>workflow</artifactId>
     <packaging>war</packaging>
     <name>Workflow Service</name>
 
@@ -30,7 +30,6 @@
         <!-- Output artifacts properties -->
         <appworks.service.name>workflow</appworks.service.name>
         <appworks.service.version>${app.properties.versionNumber}</appworks.service.version>
-        <appworks.service.zip.name>${appworks.service.name}_${appworks.service.version}</appworks.service.zip.name>
     </properties>
 
     <build>
@@ -87,7 +86,6 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>${appworks.service.zip.name}</finalName>
                             <descriptors>
                                 <descriptor>assembly/assembly.xml</descriptor>
                             </descriptors>

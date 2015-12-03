@@ -11,7 +11,7 @@
         <version>16.0.0</version>
     </parent>
 
-    <artifactId>shares.service</artifactId>
+    <artifactId>shares</artifactId>
     <packaging>war</packaging>
     <name>Shares Service</name>
     <description>TODO</description>
@@ -31,7 +31,6 @@
         <!-- Output artifacts properties -->
         <appworks.service.name>shares</appworks.service.name>
         <appworks.service.version>${app.properties.version}</appworks.service.version>
-        <appworks.service.zip.name>${appworks.service.name}_${appworks.service.version}</appworks.service.zip.name>
     </properties>
 
     <build>
@@ -88,7 +87,7 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>${appworks.service.zip.name}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
                             <descriptors>
                                 <descriptor>assembly/assembly.xml</descriptor>
                             </descriptors>

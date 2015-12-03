@@ -4,33 +4,26 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
                              
     <modelVersion>4.0.0</modelVersion>
-
+	
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.bundles.parent</artifactId>
         <version>16.0.0</version>
     </parent>
 
-    <artifactId>favorites.service</artifactId>
+    <artifactId>dcs</artifactId>
     <packaging>war</packaging>
-    <name>Favorites Service</name>
+    <name>Document Conversion Service</name>
+    <description>Provides rendered views of documents</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
         <appworks.platform.version>16.01-ALPHA-4</appworks.platform.version>
 
-        <!-- General app.properties -->
-        <app.properties.displayName>Favorites Service</app.properties.displayName>
-        <app.properties.description>Content Server Favorites service</app.properties.description>
-        <app.properties.version>16.0.0</app.properties.version>
-        <app.properties.minimumClientVersion>2</app.properties.minimumClientVersion>
-        <app.properties.type>service</app.properties.type>
-
         <!-- Output artifacts properties -->
-        <appworks.service.name>favorites</appworks.service.name>
-        <appworks.service.version>${app.properties.version}</appworks.service.version>
-        <appworks.service.zip.name>${appworks.service.name}_${appworks.service.version}</appworks.service.zip.name>
+        <appworks.service.name>dcs</appworks.service.name>
+        <appworks.service.version>16.0.0</appworks.service.version>
     </properties>
 
     <build>
@@ -87,7 +80,6 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>${appworks.service.zip.name}</finalName>
                             <descriptors>
                                 <descriptor>assembly/assembly.xml</descriptor>
                             </descriptors>
@@ -101,11 +93,17 @@
 
     <dependencies>
 
-        <!-- OTAG dependencies -->
+        <!-- OTAG dependencies are provided in here -->
         <dependency>
             <groupId>com.opentext.cs.otag</groupId>
             <artifactId>cs-otag-service-tools</artifactId>
             <version>${appworks.platform.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20141113</version>
         </dependency>
   
         <dependency>

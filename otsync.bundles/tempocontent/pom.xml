@@ -11,9 +11,9 @@
         <version>16.0.0</version>
     </parent>
 
-    <artifactId>tasks.service</artifactId>
+    <artifactId>tempocontent</artifactId>
     <packaging>war</packaging>
-    <name>Tasks Service</name>
+    <name>Tempo Service</name>
     <description>TODO</description>
 
     <properties>
@@ -22,16 +22,15 @@
         <appworks.platform.version>16.01-ALPHA-4</appworks.platform.version>
 
         <!-- General app.properties -->
-        <app.properties.displayName>Tasks Service</app.properties.displayName>
-        <app.properties.description>Content Server task view and update service</app.properties.description>
+        <app.properties.displayName>Tempo Content Service</app.properties.displayName>
+        <app.properties.description>Content Server Tempo Content Service</app.properties.description>
         <app.properties.version>16.0.0</app.properties.version>
         <app.properties.minimumClientVersion>2</app.properties.minimumClientVersion>
         <app.properties.type>service</app.properties.type>
 
         <!-- Output artifacts properties -->
-        <appworks.service.name>tasks</appworks.service.name>
+        <appworks.service.name>tempocontent</appworks.service.name>
         <appworks.service.version>${app.properties.version}</appworks.service.version>
-        <appworks.service.zip.name>${appworks.service.name}_${appworks.service.version}</appworks.service.zip.name>
     </properties>
 
     <build>
@@ -88,7 +87,6 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>${appworks.service.zip.name}</finalName>
                             <descriptors>
                                 <descriptor>assembly/assembly.xml</descriptor>
                             </descriptors>
@@ -108,7 +106,7 @@
             <artifactId>cs-otag-service-tools</artifactId>
             <version>${appworks.platform.version}</version>
         </dependency>
-  
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -116,6 +114,17 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-servlet</artifactId>
+            <version>1.19</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
     </dependencies>
 
     <distributionManagement>

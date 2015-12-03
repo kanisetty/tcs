@@ -11,7 +11,7 @@
         <version>16.0.0</version>
     </parent>
 
-    <artifactId>feeds.service</artifactId>
+    <artifactId>feeds</artifactId>
     <packaging>war</packaging>
     <name>Feeds Service</name>
 
@@ -23,7 +23,6 @@
         <!-- Output artifacts properties -->
         <appworks.service.name>feeds</appworks.service.name>
         <appworks.service.version>16.0.0</appworks.service.version>
-        <appworks.service.zip.name>${appworks.service.name}_${appworks.service.version}</appworks.service.zip.name>
     </properties>
 
     <build>
@@ -88,7 +87,6 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>${appworks.service.zip.name}</finalName>
                             <descriptors>
                                 <descriptor>assembly/assembly.xml</descriptor>
                             </descriptors>

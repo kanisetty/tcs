@@ -29,17 +29,6 @@ module.exports = function(grunt) {
                     src: ['**/*'],
                     dest: ''
                 }]
-            },
-            final: {
-                options: {
-                    archive: 'dist/objectdetails-component_16.0.0.zip'
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'dist/build/',
-                    src: ['**/*'],
-                    dest: ''
-                }]
             }
         }
     });

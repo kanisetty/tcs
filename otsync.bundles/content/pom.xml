@@ -11,10 +11,10 @@
         <version>16.0.0</version>
     </parent>
 
-    <artifactId>dcs.service</artifactId>
+    <artifactId>content</artifactId>
     <packaging>war</packaging>
-    <name>Document Conversion Service</name>
-    <description>Provides rendered views of documents</description>
+    <name>Content Service</name>
+    <description>Content Server-backed APIs for document management and sharing</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,9 +22,8 @@
         <appworks.platform.version>16.01-ALPHA-4</appworks.platform.version>
 
         <!-- Output artifacts properties -->
-        <appworks.service.name>dcs</appworks.service.name>
+        <appworks.service.name>content</appworks.service.name>
         <appworks.service.version>16.0.0</appworks.service.version>
-        <appworks.service.zip.name>${appworks.service.name}_${appworks.service.version}</appworks.service.zip.name>
     </properties>
 
     <build>
@@ -81,7 +80,6 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>${appworks.service.zip.name}</finalName>
                             <descriptors>
                                 <descriptor>assembly/assembly.xml</descriptor>
                             </descriptors>
@@ -95,19 +93,49 @@
 
     <dependencies>
 
-        <!-- OTAG dependencies are provided in here -->
+        <!-- OTAG dependencies -->
         <dependency>
             <groupId>com.opentext.cs.otag</groupId>
             <artifactId>cs-otag-service-tools</artifactId>
             <version>${appworks.platform.version}</version>
         </dependency>
 
+        <!-- Make sure these elderly gents don't drag our Servlet level down -->
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20141113</version>
+            <groupId>javax.servlet.jsp.jstl</groupId>
+            <artifactId>jstl-api</artifactId>
+            <version>1.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>servlet-api</artifactId>
+                    <groupId>javax.servlet</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
-  
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jstl-impl</artifactId>
+            <version>1.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>servlet-api</artifactId>
+                    <groupId>javax.servlet</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
