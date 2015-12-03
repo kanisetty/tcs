@@ -19,3 +19,8 @@ x86/
 # Maven
 log/
 target/
+
+dcs.component/src/main/webapp/bower_components
+dcs.component/src/main/webapp/node_modules
+dcs.component/src/main/webapp/node
+dcs.component/src/main/webapp/dist
