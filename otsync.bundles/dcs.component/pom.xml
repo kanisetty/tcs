@@ -10,55 +10,66 @@
     </parent>
 
     <artifactId>dcs.component</artifactId>
-    <packaging>war</packaging>
-    <name>Document Conversion Component</name>
-    <description>Provides reusable DCS component for mobile deployment</description>
-
-	<!-- AppWorks team Maven repository-->
-	<distributionManagement>
-        <repository>
-            <id>deployment</id>
-            <name>Internal Releases</name>
-            <url>${nexus.base.url}/content/repositories/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>deployment</id>
-            <name>Internal Releases</name>
-            <url>${nexus.base.url}/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+	<name>Document Conversion Component</name>
+    <description></description>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
+        <appworks.platform.version>16.01-ALPHA-4</appworks.platform.version>
 
-        <component.name>dcs-component</component.name>
-        <component.version>16.0.0</component.version>
-        <component.zip.name>${component.name}_${component.version}</component.zip.name>
+        <!-- General app.properties -->
+        <app.properties.displayName>Document Conversion Component</app.properties.displayName>
+        <app.properties.description>Document Conversion Component</app.properties.description>
+        <app.properties.version>16.0.0</app.properties.version>
+        <app.properties.type>component</app.properties.type>
     </properties>
-    
+
 	<build>
+        <resources>
+            <resource>
+                <directory>src/resources</directory>
+                <!-- Do not include the libs we provide for the Gateway's Tomcat
+                    deployment environment in the built artifact (i.e. gateway.war) -->
+                <excludes>
+                    <exclude>tomcat/**</exclude>
+                    <exclude>server.xml</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/resources</directory>
+                <!-- Filter file location into log4j.properties -->
+                <includes>
+                    <include>*.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        
 		<plugins>
-
+            <!-- Clear down the local front end dependencies and  node/npm install -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.2</version>
-                <executions>
-                    <execution>
-                        <id>default-deploy</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Ignore the fact we don't have a web.xml file, we don't need one here! -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.6</version>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
                 <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/dependencies</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/dist</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/node</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/node_modules</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
                 </configuration>
             </plugin>
 
@@ -67,12 +78,11 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-
-                <version>0.0.23</version>
+                <version>0.0.26</version>
 
                 <configuration>
                     <!-- location of package.json, gulpfile.js etc -->
-                    <workingDirectory>src/main/webapp</workingDirectory>
+                    <workingDirectory>${project.basedir}</workingDirectory>
                 </configuration>
 
                 <executions>
@@ -84,9 +94,9 @@
 
                         <phase>generate-resources</phase>
                         <configuration>
-                            <nodeVersion>v0.10.4</nodeVersion>
-                            <npmVersion>1.4.9</npmVersion>
-                         </configuration>
+                            <nodeVersion>v5.1.0</nodeVersion>
+                            <npmVersion>3.5.1</npmVersion>
+                        </configuration>
                     </execution>
 
                     <!-- Get npm to pull the dependencies into a /node_modules dir within /webapp -->
@@ -95,18 +105,6 @@
                         <goals>
                             <goal>npm</goal>
                         </goals>
-                        <phase>generate-resources</phase>
-                    </execution>
-
-                    <execution>
-
-                        <id>bower install</id>
-                        <goals>
-                            <goal>bower</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
                         <phase>generate-resources</phase>
                     </execution>
 
@@ -121,32 +119,32 @@
                 </executions>
             </plugin>
 
-            <!-- We want to deploy the AppWorks ready zip file to the team repo so we
-               can access and release them via CI and wrap it up easily in the bundle with Maven. -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.3</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>attach-AppWorks-zip-to-distribution</id>
+                        <id>create-distribution</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>attach-artifact</goal>
+                            <goal>single</goal>
                         </goals>
                         <configuration>
-                            <artifacts>
-                                <artifact>
-                                    <file>${project.basedir}/src/main/webapp/dist/${component.zip.name}.zip</file>
-                                    <type>zip</type>
-                                </artifact>
-                            </artifacts>
+                            <descriptors>
+                                <descriptor>assembly/assembly.xml</descriptor>
+                            </descriptors>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
-
 		</plugins>
 	</build>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-clean-plugin</artifactId>
+            <version>3.0.0</version>
+            <type>maven-plugin</type>
+        </dependency>
+    </dependencies>
 </project>
