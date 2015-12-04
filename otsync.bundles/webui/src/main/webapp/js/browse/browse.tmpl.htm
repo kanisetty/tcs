@@ -1,0 +1,184 @@
+<script id="backupLevel" type="text/x-jquery-tmpl">
+	<div id="backUpLevelNavWrapper">
+		<div id="backUpLevelNav">
+			<div id="backUpLevelNavIcon"></div>
+			<div id="backUpLevelNavText"><a href="#" onclick="return false;">${T('LABEL.BackupALevel')}</a></div>
+		</div>
+		<div id="backUpLevelNav2"/>
+		<div id="backUpLevelNav3"/>
+		<div id="backUpLevelNav4"/>
+	</div>
+</script>
+
+<script id="breadcrumb" type="text/x-jquery-tmpl">
+		<div id="breadcrumb">
+			{{tmpl(breadcrumbItem) "breadcrumbItem"}}
+		</div>
+</script>
+
+<script id="breadcrumbItem" type="text/x-jquery-tmpl">
+		{{if last}}
+			{{if nodeID===info.userRootFolderID}}
+				<li class="breadcrumbLast" title="${name}" alt="${name}">
+				{{if info.isAdminModeRequested}}
+					<img id="breadcrumbHomeIcon" src="${info.repo}/img/tempo-home-admin.png" />
+				{{else}}
+					<img id="breadcrumbHomeIcon" src="${info.repo}/img/tempo-home.png" />
+				{{/if}}
+				</li>
+				{{if info.isAdminModeRequested}}
+					<li>
+						<a id="adminBrowseUserName" href="#" title="${name}" onclick="return false;" class='notClickable'> (${info.browseUserName})</a>
+					</li>
+				{{/if}}
+			{{else}}
+				<li class="breadcrumbLast" title="${name}" alt="${name}">${shortName}
+				</li>
+			{{/if}}
+		{{else}}
+			<li>
+				{{if nodeID===null}}
+					<a href="#" title="${name}" onclick="return false;" class='notClickable'>${shortName}</a>
+				{{else nodeID===info.userRootFolderID}}
+					<a href="#" title="${T('LABEL.Display',$data)}" onclick="return false;">
+					{{if info.isAdminModeRequested}}
+						<img id="breadcrumbHomeIcon" src="${info.repo}/img/tempo-home-admin.png" />
+					{{else}}
+						<img id="breadcrumbHomeIcon" src="${info.repo}/img/tempo-home.png" />
+					{{/if}}
+					</a>
+					{{if info.isAdminModeRequested}}
+						</li>
+						<li>
+							<a id="adminBrowseUserName" href="#" title="${T('LABEL.Display',$data)}" onclick="return false;">(${info.browseUserName})</a>
+						</li>
+					{{/if}}
+				{{else}}
+					<a href="#" title="${T('LABEL.Display',$data)}" onclick="return false;">${shortName}</a>
+				{{/if}}
+				<span class="breadcrumbSeparator"></span>
+			</li>
+		{{/if}}
+</script>
+
+<script id="browseItem" type="text/x-jquery-tmpl">
+		{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT && utils.IsSupportedImageMimetype(MIMETYPE)}}
+			<div style="display: none;"><a id="node${DATAID}" href="${ui.FormatDownloadFileURL(DATAID)}" class="gallery" rel="gallery" nodeid="${DATAID}" title="${NAME}">${NAME}</a></div>
+		{{/if}}
+		{{if ( SUBTYPE===CONST_SUBTYPE.DOCUMENT ) || ( SUBTYPE in info.supportedCSShareTypes )}}
+			<div class="browseItem {{if last}}itemLast{{/if}}" id="browseFile-${DATAID}">
+				<div class="itemInfo">				
+					<div class="itemCheckBoxWrapper">
+					<div class="itemCheckBox">
+						<a id="a${DATAID}" href="#" onclick="return false;"><img src="${uncheckedImage}" /></a>
+					</div>
+					</div>
+				
+					<div class="itemIconNameActionWrapper">
+					{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
+						<div class="itemIcon" style="background: url(${ui.GetThumbnailImage(DATAID, MIMETYPE, ui.ThumbnailSize.small)}) no-repeat;" title="${T('LABEL.Download')} ${NAME}">
+						{{if ISREADONLY}}
+							<img src="${info.repo}/img/readonly16.png" class="overlayIcons"/>
+						{{/if}}
+						{{if RESERVEDBYUSERNAME}}
+							<img src="${info.repo}/img/reserved16.png" class="overlayIconsReserve"/>
+						{{/if}}
+						</div>
+					{{else}}
+						<div class="itemIcon ${utils.FolderIcon(SHAREDFOLDER, ISREADONLY, ISSUBSCRIBED, SHARECLASS)}" title="Open ${NAME}"></div>
+					{{/if}}
+				
+					{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
+						<div class="itemNameContainer"><a href="#" onclick="return false;" class="itemName" title="${T('LABEL.Download')} ${NAME}">${NAME}</a>
+							{{if HASBRAVAMARKUP}}
+								<img class="bravaIcon" src="${info.repo}/img/markup.gif" />
+							{{/if}}
+						</div>
+						<div class="BrowseMoreMenu"> {{tmpl(ui.moreMenuFile(ISBRAVA, ISREADONLY,ISDELETABLE,ISRESERVABLE,RESERVEDBYUSERNAME,info.userName)) "dropDown"}} </div>
+					{{else}}
+						<div class="itemNameContainer">
+							<a href="#" onclick="return false;" class="itemName folderItem" title="${T('LABEL.Open')} ${NAME}" >${NAME}</a>
+							{{if HASTASKS}}
+								<img class="taskIcon" src="${info.repo}/img/taskIcon.png" />
+							{{/if}}							
+						</div>
+						<div class="BrowseMoreMenu">{{tmpl(ui.moreMenuFolder(SHAREDFOLDER, ISSHARED, ISREADONLY, ISROOTSHARE, ISSHAREABLE, ISCOPYABLE, ISSUBSCRIBED)) "dropDown"}}</div>
+					{{/if}}
+					</div>
+					
+					<div class="itemLastModifiedWrapper">
+						<div class="itemLastModified">${utils.DateStringToShortDate(DISPLAYMODIFYDATE)} <span class="itemLastModifiedBy">${MODIFYUSERNAME}</span></div>
+					</div>
+
+					<div class="itemSizeWrapper">
+						{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
+							<div class="itemSize">${utils.FormatFileSize(DATASIZE)}</div>							
+						{{else}}
+							<div class="itemSize">${utils.FormatFolderSize(CHILDCOUNT)}</div>							
+					{{/if}}
+					</div>
+
+					<div class="newLine"></div>
+				</div>
+			</div>
+		{{/if}}
+</script>
+
+<script id="browseItemThumbnail" type="text/x-jquery-tmpl">
+		{{if SUBTYPE===CONST_SUBTYPE.FOLDER || SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
+			<div class="thumbnailViewBrowseItem {{if last}}itemLast{{/if}}" id="browseFile-${DATAID}">
+				<div class="itemInfo">
+					<div class="itemCheckBoxWrapper">
+						<div class="itemCheckBox">
+							<a id="a${DATAID}" href="#" onclick="return false;"><img src="${uncheckedImage}" /></a>
+						</div>
+					</div>
+					<div class="thumbnailViewBrowseItemImage" >
+						{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
+							{{if utils.IsSupportedImageMimetype(MIMETYPE)}}
+								<div style="display: none;"><a id="node${DATAID}" href="${ui.FormatDownloadFileURL(DATAID)}" class="gallery" rel="gallery" nodeid="${DATAID}" title="${NAME}">${NAME}</a></div>
+							{{/if}}
+							<div class="itemIcon" style="background: url(${ui.GetThumbnailImage(DATAID, MIMETYPE, ui.ThumbnailSize.large)}) no-repeat;" title="${T('LABEL.Download')} ${NAME}">
+								{{if ISREADONLY}}
+									<img src="${info.repo}/img/readonly64.png" class="overlayIconsThumbnail"/>
+								{{/if}}
+								{{if RESERVEDBYUSERNAME}}
+									<img src="${info.repo}/img/reserved64.png" class="overlayIconsThumbnailReserve"/>
+								{{/if}}
+								{{if HASBRAVAMARKUP}}
+									<img src="${info.repo}/img/markup_thumbnail.png" class="overlayIconsThumbnailBrava"/>
+								{{/if}}
+							</div>
+						{{else}}
+							<div class="itemIcon ${utils.FolderIcon(SHAREDFOLDER, ISREADONLY, ISSUBSCRIBED, SHARECLASS)}" title="Open ${NAME}"></div>
+						{{/if}}
+					</div>
+					{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
+						<div class="BrowseMoreMenu"> {{tmpl(ui.moreMenuFile(ISBRAVA, ISREADONLY,ISDELETABLE,ISRESERVABLE,RESERVEDBYUSERNAME,info.userName)) "dropDown"}} </div>
+					{{else}}
+						<div class="BrowseMoreMenu">{{tmpl(ui.moreMenuFolder(SHAREDFOLDER, ISSHARED, ISREADONLY, ISROOTSHARE, ISSHAREABLE, ISCOPYABLE, ISSUBSCRIBED)) "dropDown"}}</div>
+					{{/if}}
+					<div class="thumbnailViewBrowseItemInfo" >
+						{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
+							<div class="itemNameContainer"><a href="#" onclick="return false;" class="itemName" title="${T('LABEL.Download')} ${NAME}">${utils.TrimLongString(NAME,15)}</a> 	</div>							
+						{{else}}
+							<div class="itemNameContainer"><a href="#" onclick="return false;" class="itemName folderItem" title="${T('LABEL.Open')} ${NAME}" >${utils.TrimLongString(NAME,15)}</a> </div>							
+						{{/if}}
+						{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
+							<div class="itemSize">${utils.FormatFileSize(DATASIZE)} -</div>							
+						{{else}}
+							<div class="itemSize">${utils.FormatFolderSize(CHILDCOUNT)} -</div>							
+						{{/if}}
+							<div class="itemLastModified">${utils.DateStringToShortDate(DISPLAYMODIFYDATE,true)}</div>
+					</div>
+				</div>
+			</div>
+		{{/if}}
+</script>
+
+<script id="selectAllMessage" type="text/x-jquery-tmpl">
+		<div class="selectAllMessage">
+            ${text}
+            <a href="#" onclick="return false;" id="${linkId}">${linkText}</a>
+        </div>
+</script>

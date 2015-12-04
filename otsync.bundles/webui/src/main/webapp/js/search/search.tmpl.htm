@@ -1,0 +1,54 @@
+<script id="searchInfo" type="text/x-jquery-tmpl">
+		<div class="searchResultInfo">
+			${countString} <b>${termString}</b>
+		</div>
+</script>
+
+<script id="searchCount" type="text/x-jquery-tmpl">
+		<div class="searchCount">${countString}</div>
+</script>
+
+<script id="searchItem" type="text/x-jquery-tmpl">
+		<div class="searchItem {{if last}}itemLast{{/if}}" id="searchFile-${dataID}">
+			{{if subtype===CONST_SUBTYPE.FOLDER || subtype===CONST_SUBTYPE.DOCUMENT}}
+				<div class="itemInfo">
+                    <div class="itemIconNameWrapper">
+                        {{if subtype===CONST_SUBTYPE.DOCUMENT}}
+                            <a href="${ui.FormatDownloadFileURL(dataID)}" title="Download ${name}">
+								<div class="itemIcon" style="background: url(${ui.GetThumbnailImage(dataID, mimeType, ui.ThumbnailSize.small)}) no-repeat;" title="${T('LABEL.Download')} ${NAME}">
+								{{if isReadOnly}}
+									<img src="${info.repo}/img/readonly16.png" class="overlayIcons"/>
+								{{/if}}
+								{{if reservedByUserName}}
+									<img src="${info.repo}/img/reserved16.png" class="overlayIcons"/>
+								{{/if}}
+								</div>
+							</a>
+                        {{else}}
+							<div class="itemIcon ${utils.FolderIcon(sharedFolder, isReadOnly, isSubscribed, shareClass)}" title="Open ${name}"></div>
+                        {{/if}}
+						 <div class="itemNameContainer">
+							{{if subtype===CONST_SUBTYPE.DOCUMENT}}  
+								<div class="itemNameWrapper"><a href="${ui.FormatDownloadFileURL(dataID)}" class="itemName" title="${T('LABEL.Download')} ${name}">${name}</a></div>
+							{{else}} 
+								<div class="itemNameWrapper"><a href="#" onclick="return false;" class="itemName folderItem" title="${T('LABEL.Open')} ${name}" >${name}</a></div>
+							{{/if}}
+							<div class="foundIn">${T('LABEL.FoundIn')} <a href="#" onclick="return false;" parentID="${parentID}">${parentName}</a></div>
+						</div>
+						
+                    </div>
+                    <div class="itemLastModifiedWrapper">
+						<div class="itemLastModified">${utils.DateStringToShortDate(displayModifyDate)} <span class="itemLastModifiedBy">${modifyUserName}</span></div>
+					</div>
+                    <div class="itemSizeWrapper">
+						{{if subtype===CONST_SUBTYPE.DOCUMENT}}
+							<div class="itemSize">${utils.FormatFileSize(size)}</div>							
+						{{else}}
+							<div class="itemSize">${utils.FormatFolderSize(size)}</div>							
+                        {{/if}}
+					</div>
+                    <div class="newLine"></div>
+                </div>
+			{{/if}}
+		</div>
+</script>

@@ -1,0 +1,119 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<META NAME="bookrevnum" CONTENT="SYNCPCWB100510-H-UGD-RU-1">
+<META name="pvScheme" content="010203">
+<META name="verttl" content="10.5.10">
+<title>Управление файлами и папками </title>
+<META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.44">
+<META NAME="SECTLVL" CONTENT="1">
+<LINK REL="HOME" TITLE="OpenText Tempo Box" HREF="syncpcwb-h-ugd.htm">
+<LINK REL="PREVIOUS" TITLE="Выход из веб-клиента" HREF="syncpcwb-logout-p.htm">
+<LINK REL="NEXT" TITLE="Создание папки" HREF="syncpcwb-createfolder-p.htm">
+<META NAME="ut" CONTENT=""><LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21.css">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21ohp.css">
+<SCRIPT language="JavaScript" type="text/javascript">
+  <!--
+   window.focus()
+   if (self.name.match(/pirefwin_/i)) {
+     var s = new String(self.location);
+     var pos1 = s.indexOf("#");
+     if (pos1 > 0) { self.location=s.substring(pos1); }
+   } else if (self.name.substring(0,8) != "noframe_") {
+     if ((self.name != "frame2") && (self.name.substring(0,3) != "Add")) {
+       var laStr=new String(self.location.hash);
+       var quStr=new String(self.location.search.replace(/\?/, "&"));
+       self.location="jsframe.htm?syncpcwb-fileman-so" + quStr + laStr
+       function PutInfoToClipboard(FullId) { return }
+       
+     } else if ((parent.TocUpdCnt < 3) || (parent.TocUpdateBy!="syncpcwb-fileman-so.htm")) {
+       piInfoCounter=0;
+       document.onkeyup = parent.handleKeyCode;  
+       parent.MarkCurrentTocLink("syncpcwb-fileman-so.htm", 0, "", "syncpcwb-h-ugd");
+       function PutInfoToClipboard(FullId,evt) { parent.PutInfoToClipboard(FullId,this.location,evt) }
+     }  
+
+     if (self.name == "frame2") {
+       parent.SetLinks("syncpcwb-logout-p.htm", "syncpcwb-createfolder-p.htm", "sync-icons-bg.htm", "syncpcwb-settings-so.htm", "CurTocLevel")
+       var s = new String(self.location);
+       var pos1 = s.indexOf("#");
+       if (pos1 > 0) { s=s.substring(pos1); self.location=s.toUpperCase(); }
+     };
+   }  
+     
+  //-->
+  </SCRIPT>
+  <SCRIPT  for="document" event="onkeydown()" language="JScript" type="text/jscript">
+  <!--
+  if (window.event.keyCode==27) { self.scrollTo(0,0); parent.focus() }
+  //-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#000099" VLINK="#9090ba" ALINK="#006666" ONLOAD="if (top.highLight) top.highLight(self,top.ftsSrchExpr,top.ftsSrchMode)"><A NAME="TOPofPAGE"></A>
+<DIV CLASS="navheader">
+<TABLE CLASS="navheader" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD WIDTH="1500px" ALIGN="left" VALIGN="bottom">
+<p CLASS="h5">OpenText Tempo Box: <NOBR>Пользовательская справка по веб-клиентам</NOBR></p></TD>
+<TD WIDTH="10%" ROWSPAN="2" ALIGN="right" VALIGN="top" CLASS="td4pnavbtn">
+<A ID="NAV1PREV" HREF="syncpcwb-logout-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_prevhpg.gif" ONMOUSEOVER="this.src='hpi_prevhpg.gif'" ONMOUSEOUT="this.src='pi_prevhpg.gif'" ALT=".:Выход из веб-клиента"></IMG></A>&nbsp;&nbsp;<A ID="NAV1NEXT" HREF="syncpcwb-createfolder-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_nexthpg.gif" ONMOUSEOVER="this.src='hpi_nexthpg.gif'" ONMOUSEOUT="this.src='pi_nexthpg.gif'" ALT=".:Создание папки"></IMG></A></TD></TR>
+<TR>
+<TD WIDTH="90%" ALIGN="left" VALIGN="bottom">
+</TD></TR></TABLE></DIV>
+<DIV ID="HL4SRCH">
+<DIV CLASS="pagecontent" ID="PAGECONTENT">
+<H1 class="pagehd"><A NAME="SYNCPCWB-FILEMAN-SO">Глава 2 – Управление файлами и папками </A></H1>
+<P class="nr1"><A NAME="TMPID220"></A>Веб-клиент можно использовать для добавления, копирования или перемещения элементов и папок в другое место в своей папке <B CLASS="guilabel">Tempo Box</B>. Можно также просматривать версию и контрольный журнал, переименовывать или удалять элементы и папки в своей папке. Любые внесенные изменения автоматически синхронизируются с вашей папкой <B CLASS="guilabel">Tempo Box</B> во всех других клиентах, которые находятся в оперативном режиме.</P>
+<table CLASS="note">
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR>
+<TR FRAME="VOID">
+<TD ALIGN="LEFT" VALIGN="TOP" CLASS="iconcell">
+<P CLASS="note"><A NAME="TMP4REF2"></A><IMG ALT="Замечание" SRC="pi_note.gif"></IMG></P></TD>
+<TD ALIGN="LEFT" CLASS="percontscell">
+<P CLASS="note" ALIGN="LEFT"><B>Примечания: </B></P><A NAME="AEN221"></A>
+<UL class="note">
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN222"></A><A NAME="TMPID228"></A>Веб-клиент невозможно использовать для изменения файлов в папке <B CLASS="guilabel"> Tempo Box</B>. Для обновлением файла с использованием веб-клиента необходимо <A HREF="syncpcwb-downloadfile-p.htm">загрузить его на свой настольный компьютер</A>, отредактировать, затем <A HREF="syncpcwb-addversion-p.htm">добавить его опять как новую версию</A> . </P></LI>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN228"></A><A NAME="TMPID234"></A>Результаты перемещения, переименования или удаления общей папки изменяются в зависимости от того, являетесь ли вы владельцем общей папки. Дополнительные сведения см. в разделе <span><A HREF="syncpc-renamedelmoveshare-bg.htm">Перемещение, переименование и удаление общих папок </A></span> . </P></LI></UL></TD></TR>
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR></table>
+<table CLASS="important">
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR>
+<TR FRAME="VOID">
+<TD ALIGN="LEFT" VALIGN="TOP" CLASS="iconcell">
+<P CLASS="important"><IMG ALT="Важно" SRC="pi_important.gif"></IMG></P></TD>
+<TD ALIGN="LEFT" CLASS="percontscell">
+<P><A NAME="TMPID237"></A><B CLASS="important">Важно: </B><BR>При просмотре файлов в общей папке с разрешением на чтение и запись файлы не резервируются автоматически. Может оказаться, что вы загружаете и редактируете файл в то же время, когда пользователь с общим доступом вносит в него изменения. Чтобы это предотвратить, можно <A HREF="syncpcwb-reserve-p.htm"> зарезервировать файл</A>. Папки для чтения-записи обозначаются <IMG alt="Shared Folder icon" SRC="help_Shared_RW.png">  или <IMG SRC="help_Enterprise_RW.png">. </P></TD></TR>
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR></table>
+<P><A NAME="TMPID241"></A>Администратор может определить лимит размера вашей папки <B CLASS="guilabel">Tempo Box</B>. Если совокупный размер всех элементов в папке, исключая элементы в папках с общим для вас доступом, превышает ограничение, потребуется удаление или перемещение элементов из папки <B CLASS="guilabel">Tempo Box</B>, пока объем не окажется меньше максимума. Подробнее см. в разделе <span><A HREF="syncpcwb-checkfoldersize-p.htm">Проверка размера папки Tempo Box</A></span>.</P>
+<P><A NAME="TMPID247"></A>Фотографии и изображения в папке Tempo Box отображаются с помощью эскизов изображений. Чтобы увидеть более крупное представление, можно <A HREF="syncpcwb-switchthumbnail-p.htm">переключиться на представление эскиза</A> или выбрать изображение. </P>
+<P><A NAME="TMPID250"></A>Можно также <A HREF="syncpcwb-publish-p.htm">опубликовать элементы и папки в Content Server</A>. Этот параметр недоступен для <A HREF="syncpcwb-sharing-so.htm#SYNCPCWB-EXTUSER-BG">внешних пользователей</A>. Иным образом, если вы подписались на папку Enterprise и имеете доступ к папке для чтения-записи, можно непосредственно взаимодействовать с элементами в папке. Дополнительные сведения о добавлении папки Enterprise к своей папке <B CLASS="guilabel">Tempo Box</B> см. в разделе <span><XPROC NAME="ExtXrefStart" HREF="synclles-h-ugd.-" FMT="" NO1ST><i>OpenText Tempo Box, Content Server Edition - User Online Help (SYNCLLES-H-UGD)</i><XPROC NAME="ExtXrefEnd" HREF="synclles-h-ugd.-" FMT=""></span>.</P>
+<DIV CLASS="localtoc">
+<h2 CLASS="localtoc"><A NAME="LOCALTOC"></A>Содержание&nbsp;&nbsp;</h2>
+<A class="toc3" HREF="syncpcwb-createfolder-p.htm" revision="">Создание папки</A></p>
+<A class="toc3" HREF="syncpcwb-uploadfile-p.htm" revision="">Добавление элемента</A></p>
+<A class="toc3" HREF="syncpcwb-addversion-p.htm" revision="">Добавление версии элемента</A></p>
+<A class="toc3" HREF="syncpcwb-downloadfile-p.htm" revision="">Загрузка элемента</A></p>
+<A class="toc3" HREF="syncpcwb-copymove-p.htm" revision="">Перемещение или копирование файла или папки</A></p>
+<A class="toc3" HREF="syncpcwb-rename-p.htm" revision="">Переименование файла или папки</A></p>
+<A class="toc3" HREF="syncpcwb-reserve-p.htm" revision="">Резервирование и отмена резервирования файла</A></p>
+<A class="toc3" HREF="syncpcwb-delete-p.htm" revision="">Удаление файла или папки</A></p>
+<A class="toc3" HREF="syncpcwb-delete-shared-folder-p.htm" revision="">Удаление общей папки</A></p>
+<A class="toc3" HREF="syncpcwb-viewhistory-p.htm" revision="">Просмотр журнала элементов или папок</A></p>
+<A class="toc3" HREF="syncpcwb-publish-p.htm" revision="">Публикация элемента или папки</A></p>
+<A class="toc3" HREF="syncpcwb-search-p.htm" revision="">Поиск элемента или папки </A></p>
+<A class="toc3" HREF="syncpcwb-checkfoldersize-p.htm" revision="">Проверка размера папки Tempo Box</A></p></DIV>
+<P ALIGN="RIGHT"><A HREF="#TOPofPAGE">Верх страницы</A></P></DIV></DIV>
+<DIV CLASS="navfooter">
+<TABLE CLASS="navfooter" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD WIDTH="30pt" ALIGN="left" VALIGN="middle"><A ID="NAV1PREV" HREF="syncpcwb-logout-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_prevhpg_ft.gif" ONMOUSEOVER="this.src='hpi_prevhpg_ft.gif'" ONMOUSEOUT="this.src='pi_prevhpg_ft.gif'" ALT=".:Выход из веб-клиента"></IMG></A></TD>
+<TD WIDTH="750px" ALIGN="left" VALIGN="middle"><A CLASS="navttl" HREF="syncpcwb-logout-p.htm">Выход из веб-клиента</A></TD>
+<TD WIDTH="25pt" ALIGN="center" VALIGN="middle">&nbsp;</TD>
+<TD WIDTH="750px" ALIGN="right" VALIGN="middle"><A CLASS="navttl" HREF="syncpcwb-createfolder-p.htm">Создание папки</A></TD>
+<TD WIDTH="30pt" ALIGN="right" VALIGN="middle"><A ID="NAV1NEXT" HREF="syncpcwb-createfolder-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_nexthpg_ft.gif" ONMOUSEOVER="this.src='hpi_nexthpg_ft.gif'" ONMOUSEOUT="this.src='pi_nexthpg_ft.gif'" ALT=".:Создание папки"></IMG></A></TD></TR></TABLE></DIV>
+</BODY></HTML>

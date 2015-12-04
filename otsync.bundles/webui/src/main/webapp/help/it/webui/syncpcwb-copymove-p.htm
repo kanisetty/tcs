@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<META NAME="bookrevnum" CONTENT="SYNCPCWB100510-H-UGD-IT-1">
+<META name="pvScheme" content="010203">
+<META name="verttl" content="10.5.10">
+<title>Spostamento o copia di un file o di una cartella</title>
+<META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.44">
+<META NAME="SECTLVL" CONTENT="1">
+<LINK REL="HOME" TITLE="OpenText Tempo Box" HREF="syncpcwb-h-ugd.htm">
+<LINK REL="UP" TITLE="Gestione di elementi e cartelle " HREF="syncpcwb-fileman-so.htm">
+<LINK REL="PREVIOUS" TITLE="Download di un elemento" HREF="syncpcwb-downloadfile-p.htm">
+<LINK REL="NEXT" TITLE="Ridenominazione di un file o di una cartella" HREF="syncpcwb-rename-p.htm">
+<META NAME="ut" CONTENT=""><LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21.css">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21ohp.css">
+<SCRIPT language="JavaScript" type="text/javascript">
+  <!--
+   window.focus()
+   if (self.name.match(/pirefwin_/i)) {
+     var s = new String(self.location);
+     var pos1 = s.indexOf("#");
+     if (pos1 > 0) { self.location=s.substring(pos1); }
+   } else if (self.name.substring(0,8) != "noframe_") {
+     if ((self.name != "frame2") && (self.name.substring(0,3) != "Add")) {
+       var laStr=new String(self.location.hash);
+       var quStr=new String(self.location.search.replace(/\?/, "&"));
+       self.location="jsframe.htm?syncpcwb-copymove-p" + quStr + laStr
+       function PutInfoToClipboard(FullId) { return }
+       
+     } else if ((parent.TocUpdCnt < 3) || (parent.TocUpdateBy!="syncpcwb-copymove-p.htm")) {
+       piInfoCounter=0;
+       document.onkeyup = parent.handleKeyCode;  
+       parent.MarkCurrentTocLink("syncpcwb-copymove-p.htm", 0, "", "syncpcwb-h-ugd");
+       function PutInfoToClipboard(FullId,evt) { parent.PutInfoToClipboard(FullId,this.location,evt) }
+     }  
+
+     if (self.name == "frame2") {
+       parent.SetLinks("syncpcwb-downloadfile-p.htm", "syncpcwb-rename-p.htm", "sync-icons-bg.htm", "syncpcwb-settings-so.htm", "CurTocLevel")
+       var s = new String(self.location);
+       var pos1 = s.indexOf("#");
+       if (pos1 > 0) { s=s.substring(pos1); self.location=s.toUpperCase(); }
+     };
+   }  
+     
+  //-->
+  </SCRIPT>
+  <SCRIPT  for="document" event="onkeydown()" language="JScript" type="text/jscript">
+  <!--
+  if (window.event.keyCode==27) { self.scrollTo(0,0); parent.focus() }
+  //-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#000099" VLINK="#9090ba" ALINK="#006666" ONLOAD="if (top.highLight) top.highLight(self,top.ftsSrchExpr,top.ftsSrchMode)"><A NAME="TOPofPAGE"></A>
+<DIV CLASS="navheader">
+<TABLE CLASS="navheader" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD WIDTH="1500px" ALIGN="left" VALIGN="bottom">
+<p CLASS="h5">OpenText Tempo Box: <NOBR>Guida dell'utente del client Web</NOBR></p></TD>
+<TD WIDTH="10%" ROWSPAN="2" ALIGN="right" VALIGN="top" CLASS="td4pnavbtn">
+<A ID="NAV1PREV" HREF="syncpcwb-downloadfile-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_prevhpg.gif" ONMOUSEOVER="this.src='hpi_prevhpg.gif'" ONMOUSEOUT="this.src='pi_prevhpg.gif'" ALT="Indietro:Download di un elemento"></IMG></A>&nbsp;&nbsp;<A ID="NAV1NEXT" HREF="syncpcwb-rename-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_nexthpg.gif" ONMOUSEOVER="this.src='hpi_nexthpg.gif'" ONMOUSEOUT="this.src='pi_nexthpg.gif'" ALT="Avanti:Ridenominazione di un file o di una cartella"></IMG></A></TD></TR>
+<TR>
+<TD WIDTH="90%" ALIGN="left" VALIGN="bottom">
+</TD></TR></TABLE></DIV>
+<DIV ID="HL4SRCH">
+<DIV CLASS="pagecontent" ID="PAGECONTENT">
+<H1 CLASS="sect1 pagehd">Spostamento o copia di un file o di una cartella</A></H1>
+<DIV title="Per spostare o copiare un file:" CLASS="procedure">
+<P><B><A NAME="AEN415ttl"></A>Per spostare o copiare un file:</B></P>
+<OL TYPE="1">
+<LI>
+<P class="nr1"><A NAME="TMPID423"></A>Selezionare il menu funzionale dell'elemento <IMG alt="Function menu icon" SRC="file_dropdown_sel.png">  e fare clic su <B CLASS="guilabel">Sposta</B> o <B CLASS="guilabel">Copia</B>.</P>
+<P><A NAME="TMPID427"></A>È unicamente possibile copiare un file da una cartella per la quale si dispone dell'accesso in sola lettura. Le cartelle in sola lettura sono identificate dall'overlay di blocco. Ad esempio, <IMG alt="Read-Only Shared Folder icon" SRC="help_Shared_RO.png">  o <IMG SRC="help_Enterprise_RO.png">.</P>
+<P><A NAME="TMPID430"></A>Inoltre, è possibile copiare un file solamente se è riservato da un altro collaboratore in una cartella per cui si dispone dei diritti di lettura/scrittura. Le cartelle in lettura/scrittura sono identificate da <IMG alt="Shared Folder icon" SRC="help_Shared_RW.png">  o <IMG SRC="help_Enterprise_RW.png">. I file riservati sono contrassegnati con l'overlay <IMG alt="Reserved File overlay" SRC="reserved16.png">.  Ad esempio, <IMG alt="Reserved file " SRC="reserved_file.png">. Per stabilire chi ha riservato il file, è possibile verificare la cronologia eventi del file. Per ulteriori dettagli, vedere <span><A HREF="syncpcwb-viewhistory-p.htm">Visualizzazione della cronologia di elementi e cartelle</A></span> .</P></LI>
+<LI>
+<P class="nr1"><A NAME="TMPID437"></A>Passare alla cartella desiderata, quindi fare clic su <B CLASS="guilabel">Copia</B> o <B CLASS="guilabel">Sposta</B>. Se la cartella risulta disattivata, significa che non si dispone dell'accesso in lettura/scrittura alla cartella.</P></LI></OL></DIV>
+<DIV title="Per spostare o copiare una cartella:" CLASS="procedure">
+<P><B><A NAME="AEN435ttl"></A>Per spostare o copiare una cartella:</B></P>
+<OL TYPE="1">
+<LI>
+<P class="nr1"><A NAME="TMPID443"></A>Selezionare il menu funzionale dell'elemento <IMG alt="Function menu icon" SRC="file_dropdown_sel.png">  e fare clic su <B CLASS="guilabel">Sposta</B> o <B CLASS="guilabel">Copia</B>.</P>
+<P><A NAME="TMPID447"></A>È possibile spostare cartelle condivise di cui si è proprietari in qualsiasi posizione nella cartella Tempo Box, ma non in un'altra cartella condivisa. Le cartelle condivise dell'utente visualizzano solamente il nome della cartella e sono identificate come <IMG alt="Read/Write Shared Folder icon" SRC="help_Shared_RW.png">. </P>
+<P><A NAME="TMPID450"></A>È possibile copiare solo la radice di una cartella che viene condivisa con l'utente. Così facendo, viene creata una copia privata della cartella nella nuova posizione, ma la cartella condivisa originale rimane nella radice della propria cartella Tempo Box. Le cartelle che vengono condivise con l'utente aggiungono il nome utente del proprietario della cartella nel nome cartella e sono identificate come <IMG alt="Read/Write Shared Folder icon" SRC="help_Shared_RW.png">   (lettura/scrittura) o <IMG alt="Read-only Shared Folder icon" SRC="help_Shared_RO.png">   (sola lettura).</P>
+<P><A NAME="TMPID454"></A>La radice della cartella Enterprise può essere solo copiata, indipendentemente dal livello di accesso. È inoltre possibile copiare solamente sottocartelle all'interno di una cartella Enterprise per la quale si dispone dell'accesso in sola lettura. In questo modo, viene creata una copia privata della cartella nella nuova posizione, ma la cartella Enterprise originale rimane nella radice della cartella Tempo Box. Le cartelle Enterprise sono identificate come <IMG SRC="help_Enterprise_RW.png">  (lettura/scrittura) o <IMG SRC="help_Enterprise_RO.png">  (sola lettura).</P>
+<P><A NAME="TMPID458"></A>Nella comunità Tempo Social è possibile copiare solo la radice di una libreria di file, identificata come <IMG SRC="help_Community_RW.png">  (lettura/scrittura) o <IMG SRC="help_Community_RO.png">  (sola lettura). In questo modo, viene creata una copia privata della libreria di file nella nuova posizione, ma la libreria di file originale rimane nella radice della propria cartella Tempo Box.</P>
+<P><A NAME="TMPID463"></A>Per ulteriori informazioni sullo spostamento delle cartelle condivise, vedere <span><A HREF="syncpc-renamedelmoveshare-bg.htm">Spostamento, ridenominazione ed eliminazione delle cartelle condivise </A></span>. </P></LI>
+<LI>
+<P class="nr1"><A NAME="TMPID466"></A>Fare clic sulla cartella desiderata, quindi su <B CLASS="guilabel">Copia</B> o <B CLASS="guilabel">Sposta</B>. Se la cartella risulta disattivata, significa che non si dispone dell'accesso in lettura/scrittura alla cartella.</P></LI></OL></DIV>
+<table CLASS="tip">
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR>
+<TR FRAME="VOID">
+<TD ALIGN="LEFT" VALIGN="TOP" CLASS="iconcell">
+<P CLASS="tip"><IMG ALT="Suggerimento" SRC="pi_tip.gif"></IMG></P></TD>
+<TD ALIGN="LEFT" CLASS="percontscell">
+<P CLASS="tip" ALIGN="LEFT"><B>Suggerimenti: </B></P><A NAME="AEN465"></A>
+<UL class="tip">
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN466"></A><A NAME="TMPID472"></A>È possibile copiare o spostare più elementi o cartelle selezionando la casella di controllo a sinistra di ogni elemento o cartella, posizionando il puntatore su <B CLASS="guilabel">Altro</B> nel riquadro centrale, quindi facendo clic su <B CLASS="guilabel">Copia</B> o <B CLASS="guilabel">Sposta</B>. </P></LI>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN471"></A><A NAME="TMPID477"></A>È inoltre possibile selezionare la casella di controllo nell'intestazione della colonna per selezionare tutti gli elementi nella pagina.</P></LI></UL></TD></TR>
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR></table>
+<P ALIGN="RIGHT"><A HREF="#TOPofPAGE">Inizio pagina</A></P></DIV></DIV>
+<DIV CLASS="navfooter">
+<TABLE CLASS="navfooter" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD WIDTH="30pt" ALIGN="left" VALIGN="middle"><A ID="NAV1PREV" HREF="syncpcwb-downloadfile-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_prevhpg_ft.gif" ONMOUSEOVER="this.src='hpi_prevhpg_ft.gif'" ONMOUSEOUT="this.src='pi_prevhpg_ft.gif'" ALT="Indietro:Download di un elemento"></IMG></A></TD>
+<TD WIDTH="750px" ALIGN="left" VALIGN="middle"><A CLASS="navttl" HREF="syncpcwb-downloadfile-p.htm">Download di un elemento</A></TD>
+<TD WIDTH="25pt" ALIGN="center" VALIGN="middle">&nbsp;</TD>
+<TD WIDTH="750px" ALIGN="right" VALIGN="middle"><A CLASS="navttl" HREF="syncpcwb-rename-p.htm">Ridenominazione di un file o di una cartella</A></TD>
+<TD WIDTH="30pt" ALIGN="right" VALIGN="middle"><A ID="NAV1NEXT" HREF="syncpcwb-rename-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_nexthpg_ft.gif" ONMOUSEOVER="this.src='hpi_nexthpg_ft.gif'" ONMOUSEOUT="this.src='pi_nexthpg_ft.gif'" ALT="Avanti:Ridenominazione di un file o di una cartella"></IMG></A></TD></TR></TABLE></DIV>
+</BODY></HTML>

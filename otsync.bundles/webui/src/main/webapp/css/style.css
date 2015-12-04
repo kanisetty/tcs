@@ -1,0 +1,2017 @@
+/** sprite: sprite; sprite-image: url('../img/sprite.png'); sprite-layout: vertical */
+/*------------------------------------*\
+	MAIN
+\*------------------------------------*/
+
+html {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background: #fff;
+    min-width: 1000px;
+    width: 100%;
+    overflow-y: auto;
+}
+
+body {
+    background: none;
+    min-width: 1000px;
+    width: 100%;
+}
+
+button {
+    color: #f1f1f1;
+    font: 11px Arial, Helvetica, sans-serif;
+    padding: 2px 6px;
+    height: 22px;
+    cursor: pointer;
+}
+
+label {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+h1 {
+    font-weight: bold;
+    font-size: 3em;
+    line-height: 1;
+}
+
+a {
+    color: inherit;
+}
+
+a:link {
+    color: #1370b5;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.clearBoth {
+    clear: both;
+}
+
+.floatLeft {
+    float: left;
+}
+
+/***************************** page structure starts****************************/
+#page {
+    margin: 0 auto;
+    float: none;
+    text-align: center;
+    min-width: 1000px;
+    width: 100%;
+}
+
+#toolBar {
+    height: 35px;
+    width: 100%;
+    min-width: 532px;
+}
+
+#pageSummary {
+    float: left;
+    width: 200px;
+    background-image: url('../img/grey-divider.png');
+    background-repeat: no-repeat;
+    background-position: right 3px;
+    height: 50px;
+}
+
+#pageSummaryImage {
+    background-image: url('../img/grey-folder.png');
+    height: 30px;
+    width: 35px;
+    margin-left: 20px;
+    margin-top: 12px;
+    float: left;
+}
+
+#pageSummaryHeading {
+    margin-top: 2px;
+    margin-left: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    width: 85px;
+    float: left;
+}
+
+#pageSummaryText {
+    margin-left: 11px;
+    font-size: 9px;
+    float: left;
+    text-align: left;
+    width: 130px;
+}
+
+#pageActions {
+    float: left;
+    margin-top: 6px;
+    text-align: left;
+}
+
+#pageSearch {
+    float: right;
+    width: 200px;
+}
+
+#content {
+    width: 100%;
+    min-width: 1024px;
+    float: left;
+}
+
+#leftColumnWrapper {
+    float: left;
+    width: 220px;
+}
+
+#leftColumn {
+    position: relative;
+    float: left;
+    z-index: 1;
+    margin: 0;
+    height: 100%;
+    background-image: url(../img/left-background.png);
+    background-repeat: repeat-y;
+    width: 200px;
+}
+
+.leftColumnTabItem {
+    width: 220px;
+    cursor: pointer;
+}
+
+.leftColumnItemHeader {
+    width: 200px;
+    border-bottom: 1px solid #f1f1f1;
+    float: left;
+    height: 45px;
+    color: #000;
+}
+
+.leftColumnItemHeader a, a:hover, a:active, a:focus {
+    text-decoration: none;
+    position: inherit;
+    color: #666;
+}
+
+.leftColumnItemHeader.selected a {
+    color: #fff;
+}
+
+.leftColumnTabItem .leftColumnItemHeader.selected {
+    background-color: #0072AA;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.leftColumnItemArrow {
+    width: 13px;
+    float: left;
+    height: 45px;
+}
+
+.leftColumnIcon {
+    float: left;
+    height: 16px;
+    margin-left: 31px;
+    margin-top: 11px;
+}
+
+.itemNameContainer a:hover {
+    text-decoration: underline;
+}
+
+.leftColumnText {
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 15px;
+    margin-top: 13px;
+}
+
+#centerColumnWrapper {
+    float: left;
+    width: 100%;
+    min-width: 530px;
+    line-height: 1;
+    position: absolute;
+    left: 0;
+}
+
+#centerColumn {
+    margin: 0 250px 0 200px;
+    padding: 0 20px;
+    min-width: 550px;
+    position: relative;
+    z-index: 51;
+}
+
+#rightColumnWrapper {
+    position: relative;
+    float: right;
+    z-index: 1;
+    width: 250px;
+}
+
+#rightColumn {
+    width: 235px;
+    float: right;
+    padding: 0 14px 0 0;
+}
+
+/***************************** page structure end****************************/
+
+.topButton {
+    color: #333;
+    font: 11px Arial, Helvetica, sans-serif;
+    margin: 10px 8px 0px 0px;
+    padding: 0px 4px 4px 1px;
+    height: 27px;
+    text-align: left;
+    font-weight: bold;
+}
+
+#newFolderButton {
+    float: left;
+    white-space: nowrap;
+}
+
+#newFolderButton span {
+    position: relative;
+    top: -1px;
+}
+
+#uploadButton {
+    float: left;
+    white-space: nowrap;
+}
+
+#pictureUploadButton {
+    white-space: nowrap;
+}
+
+button img {
+    margin-left: 5px;
+    margin-right: 3px;
+    margin-top: 0px;
+    margin-bottom: -2px;
+}
+
+button.ui-button .ui-button-text {
+    display: block;
+}
+
+.topButton > img {
+    max-width: none;
+}
+
+#rightheadSearch {
+    position: relative;
+    float: right;
+}
+
+#searchfield {
+    float: right;
+    border-radius: 5px;
+    border: 1px solid #999;
+    font: 11px Arial, Helvetica, sans-serif;
+    background-repeat: no-repeat;
+    height: 25px;
+    padding-left: 5px;
+    padding-right: 26px;
+    margin-top: 8px;
+    width: 151px;
+}
+
+#searchMagIcon {
+    background-position: 2px 1px;
+    background-image: url(../img/mag.png);
+    position: absolute;
+    top: 12px;
+    left: 158px;
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+}
+
+.searchFieldCancel {
+    background-position: 2px 3px !important;
+    background-image: url('../img/search-cancel.png') !important;
+    background-repeat: no-repeat;
+}
+
+.newLine {
+    margin: 0;
+    clear: both;
+}
+
+.dropdown {
+    overflow: visible;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#sortMenu .dropdown {
+    margin: 0 0 0 -75px;
+    padding: 0;
+    position: absolute;
+    z-index: 6000;
+    display: none;
+}
+
+.dropdown li {
+    text-align: right;
+    position: relative;
+    display: block;
+    width: auto; /*should be overwriten by specific dropdown*/
+}
+
+#sortMenu .dropdown li {
+    text-align: left;
+    display: block;
+    width: 115px;
+    height: 18px;
+}
+
+.dropdown > li > a {
+    border: 0;
+    color: #999;
+}
+
+.dropdown ul li:last-child a {
+    border-bottom: none;
+}
+
+.dropdown ul {
+    /* Set up the dropdown */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #999;
+    display: block;
+    background: #efefef;
+    background-clip: padding-box;
+    border-radius: 5px;
+    font-weight: bold;
+    min-width: 80px;
+}
+
+#sortMenu .dropdown ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #999;
+    display: block;
+    background: #efefef;
+    border-radius: 5px;
+    font-weight: bold;
+    min-width: 80px;
+    background-color: #fff;
+}
+
+.sortDropdownArrow {
+    position: relative !important;
+    margin-left: 96px !important;
+    margin-top: -9px !important;
+    width: 8px;
+    height: 4px;
+}
+
+.sortDropdownArrow.down {
+    background-image: url(../img/sortmenu-arrow-down.png);
+}
+
+.sortDropdownArrow.up {
+    background-image: url(../img/sortmenu-arrow-up.png);
+}
+
+.dropdown ul li:last-child div {
+    position: relative;
+    margin-left: 96px;
+    margin-top: -20px;
+    margin-bottom: 8px;
+}
+
+.dropdown .dropDownMenu {
+    /* Hide it off-screen. */
+    position: absolute;
+    left: -4px;
+    display: none;
+    z-index: 1000;
+}
+
+.dropdown li:hover .dropDownMenu {
+    /* Bring the dropdown back onto screen when you hover its parent li. */
+    display: inline-block;
+}
+
+.dropdown ul li {
+    /* Remove floats etc from dropdown list items. */
+    font: 11px Arial, Helvetica, sans-serif;
+    width: auto;
+}
+
+.dropdown ul li a {
+    white-space: nowrap; /* Stop the list items breaking. */
+    padding: 3px;
+    color: #999;
+    font-weight: bold;
+    display: block;
+    color: #999;
+    padding: 5px 6px;
+}
+
+#sortMenu .dropdown ul li {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+#sortMenu .dropdown ul li a {
+    padding: 10px;
+    color: #999;
+    font-weight: bold;
+    display: block;
+    color: #999;
+    padding: 2px 0 0 0;
+}
+
+#sortMenu .itemLast {
+    margin: 0px;
+}
+
+#sortMenu .dropdown ul li:hover {
+    background-color: #f1faff
+}
+
+#sortMenu .dropdown ul li:hover a {
+    text-decoration: none;
+    color: #000;
+}
+
+#sortMenu .dropdown ul li:last-child:hover {
+    background-color: #f1faff;
+    border: 1px solid #f1faff;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+#sortMenu .dropdown ul li:first-child:hover {
+
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.dropdown .dropDownMenu img.arrowUp {
+    margin-top: 0;
+    float: right;
+    margin-right: 4px;
+}
+
+/*--- HOVER STYLES ---*/
+.dropdown li:hover a {
+    /* These create persistent hover states, meaning the top-most link stays hovered when your cursor has moved down the list. */
+    text-decoration: underline;
+}
+
+.dropdown li:hover ul a {
+    /* The persistent hover state does however create a global style for links even before they're hovered. Here we undo these effect. */
+    text-decoration: none;
+}
+
+.dropdown ul li a:hover {
+    /* Here we define the most explicit hover states--what happens when you hover each individual link. */
+    text-decoration: underline;
+}
+
+.itemData {
+    color: #666666;
+    font-size: 12px;
+    margin-left: 48px;
+    width: 360px;
+}
+
+#actionConfirmation {
+    word-wrap: break-word;
+}
+
+#shareInfo {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    color: #666666;
+}
+
+.noSharesMessage {
+    font-size: 12px;
+    color: #333;
+    margin: 20px;
+    float: left;
+}
+
+.shareUserStatus {
+    float: right;
+    text-align: right;
+    width: 62px;
+}
+
+.removeShareUser {
+    border: 0px solid;
+    width: 80px;
+    float: right;
+    text-align: right;
+    color: #5397c8;
+    font-weight: bold;
+
+}
+
+.removeShareUser:hover {
+    cursor: pointer;
+}
+
+#shareNowTools {
+    border: 0 solid;
+    float: right;
+    text-align: right;
+    width: 177px
+}
+
+#shareNowPermissions {
+    float: left;
+}
+
+#shareNowButton {
+    margin-top: 10px;
+}
+
+#shareInvitation {
+    float: left;
+    text-align: left;
+    font-size: .75em;
+    color: #666666;
+    font-weight: 600;
+}
+
+.shareInvitationAll {
+    padding-bottom: 30px;
+}
+
+#inviteeinput {
+    resize: none;
+}
+
+.shareInput {
+	border: 1px solid #E0E0E0;
+	border-radius: 3px 3px 3px 3px;
+	height: 30px;
+	margin-top: -9px;
+	margin-left: 38px;
+	width: 177px;
+	display: block;
+}
+
+.inviteMessageInput {	
+	border: 1px solid #E0E0E0;
+    border-radius: 3px 3px 3px 3px;
+    height: 65px;
+    width: 428px;
+	display:block;
+}
+
+#shareTools {
+    border: 0px solid;
+    float: left;
+    width: 340px;
+    margin-bottom: 40px;
+    background-color: #cccccc;
+    padding: 0px 0px 8px 0px;
+}
+
+/************** BOF publish ****************/
+table.publishFileOptionTable {
+    font-size: 12px;
+    color: #555;
+}
+
+table.publishFileOptionTable tr {
+    background: none;
+}
+
+table.publishFileOptionTable td {
+    border: none;
+    padding: 5px;
+}
+
+table.publishFileOptionTable td:last-child {
+    padding-left: 15px;
+}
+
+table.publishFileOptionTable tr:last-child td {
+    background: none;
+    padding-top: 20px;
+}
+
+a.publishToFileLink, a.publishToFolderLink {
+    white-space: nowrap;
+    display: block;
+    padding: 5px;
+    background: #29B5ED;
+    border: 1px solid #00f;
+    border-radius: 5px;
+    border-color: #29B5FD;
+    height: auto;
+    width: auto;
+    cursor: pointer;
+    color: #fff;
+}
+
+.publishDialogInputs {
+    margin-top: 20px;
+}
+
+.publishOptions {
+    margin-top: 20px;
+}
+
+.publishDestinationPath {
+    width: 200px;
+    height: 25px;
+    padding: 0;
+}
+
+.publishOptionInstruction {
+    margin-top: 10px;
+}
+
+.browseDestinationInput {
+    margin-right: 5px;
+    float: left;
+}
+
+.browseCSButton {
+    margin-top: 0px;
+    height: auto;
+    padding: 2px 5px;
+    float: left;
+    color: #000;
+    overflow: visible;
+}
+
+/************** EOF publish ****************/
+
+.ui-dialog .ui-widget-content {
+
+    background: none;
+}
+
+.ui-dialog {
+    background: white;
+    background-position: bottom;
+    background-image: url(../img/dialog-bg.png); /* DO NOT PUT IN SPRITE */
+    background-repeat: repeat-x;
+
+}
+
+.dialogWordWrap {
+    width: 450px;
+    word-wrap: break-word;
+}
+
+.shareRequestAcceptButton {
+    background-image: url(../img/button-green-bg.png); /** sprite-ref: sprite;sprite-alignment: repeat; */
+}
+
+.shareRequestDeclineButton {
+    background-image: url(../img/button-red-bg.png); /** sprite-ref: sprite;sprite-alignment: repeat; */
+}
+
+.treeList, .treeList ul {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    font-family: "Helvetica", sans-serif;
+    font-size: 13px;
+    line-height: 20px;
+}
+
+.treeList .iconForFolder {
+    height: 16px;
+    width: 43px;
+    display: inline-block;
+    float: left;
+}
+
+.nameForFolder {
+    float: left;
+    width: 357px;
+}
+
+.treeList li {
+    margin: 7px 0 3px 0;
+    line-height: 16px;
+    cursor: pointer;
+}
+
+.treeList li .iconForFolder {
+    background-repeat: no-repeat;
+    background-image: url(../img/folder-popup-closed.png); /** sprite-ref: sprite; */
+}
+
+.treeList li a:focus {
+    border: 1px solid #fff;
+}
+
+.treeList li.noselect {
+    color: #BBB;
+    cursor: auto;
+}
+
+.treeList li.noselect .iconForFolder {
+    background-image: url(../img/folder-popup-disabled.png); /** sprite-ref: sprite; */
+}
+
+.treeList li.isparent, li.readOnly {
+    color: #BBB;
+    cursor: auto;
+}
+
+.treeList li.open {
+    background-position: left 0px;
+}
+
+.treeList li.open > .iconForFolder {
+    background-image: url(../img/folder-popup-open.png); /* DO NOT ADD TO SPRITE! */
+    background-position: left 0px;
+}
+
+.treeList li.nochildren .iconForFolder {
+    background-image: url(../img/folder-popup-nochildren.png); /** sprite-ref: sprite; */
+}
+
+.treeList > li {
+    background-image: none;
+    background-repeat: no-repeat;
+    cursor: auto;
+    padding: 1px
+}
+
+.treeList > li > img {
+    height: 16px;
+}
+
+.treeList ul {
+    margin-left: 23px;
+}
+
+.selectedBar {
+    height: 21px;
+    background: #2fa3e0;
+    position: fixed;
+    z-index: -1;
+}
+
+.treeList .selected > a {
+    color: white;
+    font-weight: bold;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+#containingDiv {
+    width: 50%;
+    border: 1px solid black;
+    padding: 10px;
+}
+
+/************************** BOF invite collaborators auto completion *****************/
+.searchUserAutoComplete {
+    padding: 1px;
+}
+
+.ui-menu .ui-menu-item {
+    padding: 0;
+}
+
+#inviteeinput.ui-menu-item {
+    width: 40px;
+    margin: 0;
+}
+
+.searchUserAutoComplete .ui-menu-item a {
+    display: block;
+    padding: 5px 0 5px 10px;
+}
+
+.searchUserAutoComplete .ui-menu-item a.ui-state-hover,
+.searchUserAutoComplete .ui-menu-item a.ui-state-active {
+    background: #DDE9F2;
+    border: none;
+    margin: 0;
+}
+
+.AutoCompName {
+    border: 0px solid;
+    float: left;
+    margin-left: 10px;
+    text-align: left;
+    padding-left: 5px;
+    font-family: Arial, Sans-Serif;
+    font-size: 13px;
+    width: 75%;
+    word-wrap: break-word;
+}
+
+.AutoCompDisplay {
+    display: block;
+}
+
+.AutoCompImg {
+    float: left;
+}
+
+.autoCompSmall {
+    word-wrap: break-word;
+}
+
+/************************** EOF invite collaborators auto completion *****************/
+
+.inline {
+    display: inline;
+}
+
+.thumbnailViewBrowseItem .inline {
+    display: inline;
+    float: left;
+}
+
+.notification {
+    width: 99%;
+    font-size: 12px;
+    padding: 10px 0;
+}
+
+.message {
+    background: #E7F5F8;
+    margin: 0;
+    border: none;
+}
+
+.error {
+    background: #FFEBEC;
+    margin: 0;
+    border: none;
+}
+
+.processInfo {
+    background: #E8F3F7;
+}
+
+.notificationIcon {
+    float: left;
+    height: 19px;
+    width: 19px;
+    margin-left: 30px;
+}
+
+.message .notificationIcon {
+    background-image: url(../img/correct.png); /** sprite-ref: sprite; */
+}
+
+.error .notificationIcon {
+    background-image: url(../img/error.png); /** sprite-ref: sprite; */
+}
+
+.processInfo .notificationIcon {
+    background-image: url(../img/ajax-loader.gif);
+    height: 16px;
+    width: 16px;
+}
+
+.notificationText {
+    float: left;
+    margin-left: 10px;
+    margin-top: 3px;
+    width: 82%;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+.processInfo .notificationText {
+    width: 75%;
+}
+
+.notificationPercent {
+    float: left;
+    margin-left: 5px;
+    margin-top: 3px;
+    width: 5%;
+}
+
+.notificationOperation {
+    float: right;
+    margin-right: 20px;
+    margin-top: 3px;
+    width: 15px;
+    height: 15px;
+    background-image: url('../img/notification-cancel.png');
+    cursor: pointer;
+}
+
+.errorText {
+    left: auto;
+    width: auto;
+    height: auto;
+    color: #CD0A0A;
+    display: none;
+}
+
+.showError {
+    display: block;
+}
+
+.displayNone {
+    padding-top: 20px;
+    display: none;
+}
+
+.loadingTree {
+    text-align: center;
+}
+
+/***************** BOF Right Side Collaborators Area ************************/
+
+.collaborator {
+    border: 0px solid;
+    margin-bottom: 5px;
+    float: left;
+    width: 215px;
+    font-size: 12px;
+    margin-bottom: 11px;
+}
+
+.collaborator.all {
+    width: 415px;
+}
+
+#editCollaborators {
+    min-height: 0;
+    width: auto;
+    height: auto !important;
+}
+
+#allCollaborators {
+    clear: both;
+    float: left;
+    height: 250px;
+    margin-top: 5px;
+}
+
+.editAllCollaboratorsDialog .ui-dialog-buttonpane {
+    float: left;
+    margin-top: 30px;
+}
+
+#objectInfo {
+    position: relative;
+}
+
+#objectInfoIcon {
+    width: 32px;
+    height: 32px;
+    background-repeat: no-repeat;
+    float: left;
+}
+
+#objectInfoDetail {
+    float: left;
+    margin-left: 10px;
+    text-align: left;
+}
+
+#objectInfoName {
+    margin-left: 8px;
+    width: 220px;
+    font-size: 12px;
+    word-wrap: break-word;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+#objectInfoNameImg {
+    padding: 1px 8px 2px 0px;
+    float: left;
+}
+
+#objectInfoNameText {
+    padding-left: 18px;
+}
+
+#objectInfoCount {
+    font-size: 12px;
+}
+
+#objectInfoHeading {
+    width: 235px;
+    min-height: 25px;
+    background-color: #0072AA;
+    text-align: left;
+    padding: 7px 0px 2px;
+}
+
+#objectInfoHeadingReadOnly {
+    width: 235px;
+    min-height: 25px;
+    background-color: #0072AA;
+    text-align: left;
+    padding: 7px 0px 2px;
+}
+
+#objectInfoDetails {
+    width: 235px;
+    min-height: 44px;
+    margin-top: 1px;
+    background-image: url(../img/right-grey-background.png);
+    background-repeat: repeat-x;
+}
+
+#objectInfoOptions {
+    border-bottom: thin solid #A0C4DD;
+    border-top: thin solid #A0C4DD;
+    color: #2288CC;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: 8px;
+    margin-top: 3px;
+    padding: 6px 3px;
+    text-align: left;
+    width: 211px;
+}
+
+#folderNotifyCheckBox {
+    float: right;
+    margin-top: 1px;
+}
+
+#objectInfoOptionsIcon {
+    float: left;
+    margin-right: 8px;
+    margin-top: 3px;
+}
+
+#folderNotifyCheckBox {
+    float: right;
+    margin-right: 1px;
+}
+
+.envelope-icon {
+    background-image: url(../img/envelope.png);
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    display: inline-block;
+    height: 11px;
+    width: 15px;
+}
+
+.userImage {
+    border: 0 solid;
+    float: left;
+    margin-left: 8px;
+    margin-top: 8px;
+    width: 25px;
+}
+
+.userImage img {
+    border-radius: 50%;
+}
+
+.objectOwnerName {
+    float: left;
+    font-size: 11px;
+    margin-left: 5px;
+    margin-top: 7px;
+    text-align: left;
+    width: 150px;
+}
+
+.objectOwnerNameText {
+    float: left
+}
+
+.objectOwner {
+    font-weight: bold;
+    width: 100px;
+    word-wrap: break-word;
+    float: left;
+    padding-left: 2px;
+}
+
+.objectLastModified {
+    color: #AAA9A9;
+    float: left;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 5px;
+    margin-top: -4px;
+    text-align: left;
+    width: 150px;
+}
+
+.objectInfoDetailsText {
+    float: left;
+    width: 150px;
+}
+
+#shareInfoWrapper {
+    border: 1px solid #f0f0f0;
+    min-height: 50px;
+    color: #666666;
+}
+
+#shareInfoInnerWrapper {
+    margin-top: 10px;
+    margin-left: 8px;
+    width: 215px;
+}
+
+#collaboratorsHeading {
+    background-image: url("../img/collaborators-blue-line.png");
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    font-size: 12px;
+    font-weight: bold;
+    height: 25px;
+    margin-bottom: 15px;
+    text-align: left;
+    text-transform: uppercase;
+    width: 215px;
+}
+
+#collaboratorTitle {
+    background-color: #ffffff;
+    padding-right: 10px;
+    color: #176A9F;
+}
+
+.shareUserImage {
+    border: 0px solid;
+    width: 25px;
+    float: left;
+}
+
+.shareUserName {
+    float: left;
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 0;
+    padding-left: 5px;
+    text-align: left;
+    width: 150px;
+    word-wrap: break-word;
+}
+
+.shareUserName.all {
+    width: 270px;
+}
+
+.shareUserName.pending {
+    color: #ccc;
+    font-weight: normal;
+}
+
+.shareUserName.markForAdd {
+    color: blue;
+}
+
+.shareUserName.markForEdit {
+    color: green;
+}
+
+.shareUserName.markForDelete {
+    color: red;
+}
+
+.shareUserStatusText {
+    color: #999999;
+    float: left;
+    font-size: 10px;
+    margin-top: -3px;
+    padding-left: 5px;
+    text-align: left;
+    width: 150px;
+    word-wrap: break-word;
+}
+
+.shareUserStatusText.all {
+    width: 297px;
+}
+
+.shareUserStatusText.pending {
+    color: #ccc;
+}
+
+img.pending {
+    opacity: 0.5;
+}
+
+.cancelShareIcon a {
+    float: right;
+    background-image: url("../img/del_unsel.png");
+    width: 20px;
+    height: 20px;
+    margin-right: 3px;
+}
+
+.cancelShareIcon a:hover {
+    background-image: url("../img/del_sel.png");
+}
+
+.shareUserNameWrapper {
+    float: left;
+    width: 100px;
+}
+
+.shareUserImage img {
+    border-radius: 50%;
+}
+
+#editAllCollaboratorsButton {
+    color: #555555;
+    font-weight: bold;
+    height: 28px;
+    left: 0;
+    text-align: center;
+    width: 100%;
+    font-size: 11px;
+}
+
+#editCollaboratorsObjectInfo #objectInfoDetails {
+    width: 433px;
+}
+
+#editCollaboratorsObjectInfo #objectInfoDetails .objectOwnerName {
+    width: 350px;
+}
+
+#editCollaboratorsObjectInfo #objectInfoDetails .objectLastModified {
+    width: 350px;
+}
+
+#editCollaboratorsObjectInfo #objectInfoDetails .objectOwner {
+    width: 300px;
+}
+
+#editCollaborators #allCollaborators {
+
+}
+
+#editCollaborators #allCollaborators .collaborator.all {
+    width: 405px;
+    min-height: 33px;
+    padding-left: 10px;
+}
+
+#editCollaborators #allCollaborators .collaborator.all.lastPending {
+    border-bottom: 2px solid #EEEEEE;
+    padding-bottom: 11px;
+}
+
+#inviteeinputEditCollaborators {
+    width: 390px;
+}
+
+#inviteMessageInputSidebar {
+    width: 215px;
+	margin-bottom: 15px;
+	margin-left: -1px;
+}
+
+#dropdownShareTypeEditAll {
+    padding-left: 2px;
+
+}
+
+#dropdownShareTypeInvite {
+    margin-top: 7px;
+    padding-left: 2px;
+}
+
+#editCollaborators .cancelShareIcon {
+    margin-right: 8px;
+}
+
+.collaborator.all.selected {
+    background-color: #BFD7E9;
+    padding-bottom: 5px;
+    padding-top: 10px;
+}
+
+.collaborator.all:last-child {
+    padding-bottom: 80px;
+}
+
+.collaborator.all.selected .shareUserName {
+    color: #4F5457;
+}
+
+.collaborator.all.selected .shareUserStatusText {
+    color: #999;
+}
+
+#ownerActions {
+    float: right;
+    width: 90px;
+}
+
+.cancelCollaboratorIcon a {
+    float: right;
+    background-image: url("../img/del_unsel.png");
+    height: 20px;
+    width: 20px;
+    margin-top: -1px;
+    margin-right: 20px;
+}
+
+.cancelCollaboratorIcon a:hover {
+    background-image: url("../img/del_sel.png");
+}
+
+.selected .cancelCollaboratorIcon {
+    display: none;
+}
+
+.confirmDeleteCollaboratorButtons {
+    float: right;
+}
+
+.confirmDeleteCollaboratorButtons a {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.confirmDeleteCollaboratorButtons .shareConfirmRejectButtonMid, .confirmDeleteCollaboratorButtons .shareCancelRejectButtonMid {
+    height: 18px;
+    padding: 2px;
+}
+
+.confirmDeleteCollaboratorButtons .shareConfirmRejectButton, .confirmDeleteCollaboratorButtons .shareCancelRejectButton {
+    margin-top: -2px;
+}
+
+.dialogWithConfirmation {
+    padding-bottom: 50px !important;
+}
+
+.confirmationMessageUnshareAll {
+    font-size: 17px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/***************** EOF Right Side Collaborators Area ************************/
+
+#pageActions button {
+    background: none;
+    border: none;
+    margin: 0;
+}
+
+#pageActions .btn {
+    float: left;
+    margin: 0px 8px 0 0;
+}
+
+#pageActions .btnLeft {
+    background: url(../img/grey-btn-left.png) no-repeat;
+    width: 4px;
+    height: 27px;
+    float: left;
+}
+
+#pageActions .btn:hover .btnLeft {
+    background: url(../img/grey-btn-hover-left.png) no-repeat;
+}
+
+#pageActions .btnMid {
+    background: url(../img/grey-btn-bg.png) repeat-x;
+    height: 26px;
+    padding-top: 1px;
+    float: left;
+}
+
+#pageActions .btn:hover .btnMid {
+    background: url(../img/grey-btn-hover-bg.png) repeat-x;
+}
+
+#pageActions .btnRight {
+    background: url(../img/grey-btn-right.png) no-repeat;
+    width: 4px;
+    height: 27px;
+    float: left;
+}
+
+#pageActions .btn:hover .btnRight {
+    background: url(../img/grey-btn-hover-right.png) no-repeat;
+}
+
+#multiActionDropDown:hover {
+    border-radius: 5px 5px 0 0;
+    border: 1px solid #999;
+}
+
+#multiActionDropDown:hover .dropDownMenu {
+    display: block;
+}
+
+#multiActionDropDown:hover .btnLeft {
+    background: #fff !important;
+    width: 0;
+}
+
+#multiActionDropDown .btnMid {
+    padding: 1px 4px 4px 4px;
+}
+
+#multiActionDropDown:hover .btnMid {
+    background: #fff !important;
+    padding: 0px 0 4px 0;
+    border-radius: 5px 5px 0 0;
+}
+
+#multiActionDropDown:hover button {
+    padding: 5px 11px 0 8px;
+    margin-top: -8px;
+}
+
+#multiActionDropDown:hover .btnRight {
+    background: #fff !important;
+    width: 0;
+}
+
+#multiActionDropDown:hover .btnUnder {
+    border-bottom: 1px solid #fff;
+    height: 0;
+    margin: 3px 0 0 0;
+    position: relative;
+    top: 24px;
+    width: 100%;
+    z-index: 500;
+}
+
+#multiActionDropDown {
+    float: right;
+    white-space: nowrap;
+}
+
+#multiActionDropDown ul {
+    background: #fff;
+    border-radius: 0 5px 5px 5px;
+}
+
+#multiActionDropDown ul li a,
+#multiActionDropDown ul li a:link,
+#multiActionDropDown ul li a:visited,
+#multiActionDropDown ul li a:hover,
+#multiActionDropDown ul li a:active {
+    padding: 5px 15px 5px 15px;
+    text-align: left;
+    color: #222;
+    font-weight: normal;
+    text-decoration: none;
+}
+
+#multiActionDropDown .dropDownMenu ul li {
+    height: 26px;
+}
+
+#multiActionDropDown .dropDownMenu ul li:hover {
+    background: #BFD7E9;
+}
+
+#multiActionDropDown .dropDownMenu ul li:last-child {
+    border-radius: 0 0 5px 5px;
+}
+
+#multiActionDropDown .dropDownMenu ul li:first-child {
+    border-radius: 0 5px 0 0;
+}
+
+#multiActionDropDown .dropDownMenu {
+    margin-top: 24px;
+    margin-left: 3px;
+    width: 160%;
+}
+
+#multiActionDropDownButton {
+    float: left;
+    margin-right: 0;
+}
+
+#multiActionDropDownButton img {
+    margin-bottom: 0;
+}
+
+#aboutDialogContent {
+    margin: -15px 33% auto 20%;
+    font-size: 12px;
+    text-align: center;
+    width: 300px;
+}
+
+/***************** BOF Profile/Password ************************/
+.changeProfileSectionTitle {
+    font-size: 13px;
+    font-weight: bold;
+    color: #073455;
+    text-align: left;
+    padding-bottom: 5px;
+}
+
+#profilePhoto {
+    float: left;
+    width: 80px;
+    height: 80px;
+    border-radius: 5px;
+}
+
+#changeProfileRightWrapper {
+    float: left;
+    margin-left: 20px;
+    width: 300px;
+    text-align: left;
+}
+
+.uploadPicDescription {
+    color: #073455;
+    font-size: 11px;
+    margin-top: 10px;
+}
+
+#profilePictureContent {
+    font-size: 12px;
+    text-align: center;
+    width: 100%;
+    margin: 0 auto;
+}
+
+#useDefaultProfile a {
+    margin-top: 5px;
+    color: #639FCE;
+}
+
+#useDefaultProfile a:hover {
+    text-decoration: underline;
+}
+
+#changePassword {
+    margin-top: 20px;
+}
+
+#changePassword input {
+    height: 20px;
+    width: 290px;
+    padding: 0;
+}
+
+.currentPasswordTextRight, .newPassword1TextRight, .newPassword2TextRight {
+    font-size: 12px;
+    color: #666;
+    padding-left: 10px;
+}
+
+.currentPasswordWrapper {
+    margin-top: 10px;
+}
+
+.newPassword1Wrapper, .newPassword2Wrapper {
+    margin-top: 28px;
+}
+
+#profilePictureError {
+    margin-top: 5px;
+    font-size: 12px;
+    color: red;
+}
+
+#passwordMismatchError {
+    font-size: 12px;
+    color: red;
+    display: none;
+}
+
+.passwordOK {
+    display: inline-block;
+    height: 19px;
+    background-image: url(../img/correct.png); /** don't put in sprite **/
+    background-position: right;
+    background-repeat: no-repeat;
+    padding-right: 25px;
+}
+
+.passwordError {
+    display: inline-block;
+    height: 19px;
+    background-image: url(../img/error.png); /** don't put in sprite **/
+    background-position: right;
+    background-repeat: no-repeat;
+    padding-right: 25px;
+}
+
+/***************** EOF Profile/Password ************************/
+
+.aboutInfo {
+    font-size: 12px;
+}
+
+.productNameLogo {
+    font-weight: bold;
+    font-size: 15px;
+    margin-bottom: 10px;
+    margin-top: 15px;
+}
+
+.copyright {
+    margin-top: 20px;
+}
+
+/* highlight input and button on focus */
+input[type="text"]:focus, input[type="radio"]:focus, input[type="password"]:focus {
+    border: 1px solid #ffd700 !important;
+}
+
+.inputInstruction {
+    font-size: 0.7em;
+}
+
+#emptyFolderMessage, #noSharedFoldersMessage {
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+/************ select widget ********************/
+.select-box {
+    position: relative;
+    height: 0px;
+}
+
+#allCollaborators .select-box {
+    padding-right: 50px;
+    margin-top: 8px;
+    float: left;
+}
+
+.select-left {
+    float: left;
+    width: 32px;
+    height: 32px;
+    margin: -9px 0px 0px -3px;
+    border: 1px solid #E0E0E0;
+    border-radius: 3px 3px 3px 3px;
+    background-color: #EEEEEE;
+
+}
+
+#allCollaborators .select-left {
+    margin-top: -9px;
+}
+
+.select-left img {
+    padding: 4px;
+
+}
+
+.moreMenuButtonActive {
+    z-index: 5000;
+}
+
+.select-left:hover {
+    cursor: pointer;
+}
+
+.select-mid:hover {
+    cursor: pointer;
+}
+
+.select-open .select-left {
+    border: 1px solid #E0E0E0;
+    border-radius: 3px 3px 0 0;
+    height: 36px;
+}
+
+.select-open .hideBorder {
+    border-bottom: 1px solid #EEEEEE;
+    position: absolute;
+    left: 0;
+    top: 28px;
+    height: 0;
+    width: 32px;
+    z-index: 500;
+}
+
+.collaborator.all .select-open .hideBorder {
+    left: -2px;
+}
+
+.selectOptionImg {
+    padding: 6px 10px 0px 3px;
+    float: left;
+}
+
+.select-left a {
+    float: left;
+}
+
+.select-mid {
+    float: left;
+    margin-left: -31px;
+    height: 24px;
+    border: none;
+    padding: 0px 5px 0px 5px;
+    font-size: 10pt;
+}
+
+.select-right {
+    float: left;
+}
+
+.select-value a {
+    display: none;
+}
+
+.select-box ul {
+    list-style: none;
+    padding: 0 0 0 0;
+    margin: 28px 0px 0px -8px;
+    border-radius: 0px 3px 3px 3px;
+    border: 1px solid #E0E0E0;
+    position: absolute;
+    z-index: 5;
+    display: none;
+    min-width: 115px;
+    drop-shadow: 3px #222;
+    font-weight: 600;
+}
+
+.collaborator.all .select-box ul {
+    margin-right: -38px;
+}
+
+.select-open ul {
+    display: block;
+}
+
+.select-box.select-open {
+    z-index: 500;
+}
+
+.select-box li {
+    padding: 0;
+    margin: 0;
+    height: 36px;
+}
+
+.select-box li.last,
+.select-box li.last a {
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.select-box ul a,
+.select-box ul a:link,
+.select-box ul a:visited {
+    background: #eee;
+    color: #2288CC;
+    text-decoration: none;
+    padding: 0 14px 0 2px;
+    display: block;
+    height: 36px;
+    line-height: 36px;
+    outline: none !important;
+    white-space: nowrap;
+    width: 115px;
+}
+
+.select-box ul a:hover,
+.select-box ul a:active,
+.select-box ul a:focus {
+    background: #BFD7E9;
+    text-decoration: none;
+}
+
+.select-option {
+    font-size: 0.9em;
+}
+
+.selected .select-box {
+    display: none;
+}
+
+/****************** accordion *****************/
+
+#accordionContainer {
+    margin-top: 7px;
+    display: none;
+}
+
+#accordionContainer .ui-accordion-content {
+    padding: 0;
+    border-radius: 0;
+    border: none;
+}
+
+#accordionContainer .ui-accordion-header {
+    border: none;
+    background: none;
+    border-radius: 0;
+    background-color: #0072aa;
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 33px;
+    text-align: left;
+    padding-left: 8px;
+
+}
+
+#accordionContainer .ui-accordion-header.ui-state-active {
+    background-color: #fff;
+    color: #176a9f;
+    border: 1px solid #f0f0f0;
+    border-radius: 0;
+}
+
+#accordionContainer .ui-accordion-header .ui-icon {
+    position: static;
+    float: right;
+    margin-right: 10px;
+    margin-top: 9px;
+}
+
+#accordionContainer .ui-accordion-header-icon.ui-icon.ui-custom-icon-circle-triangle-down {
+    background-image: url(../img/down-arrow.png) !important;
+    background-repeat: no-repeat;
+}
+
+#accordionContainer .ui-accordion-header-icon.ui-icon.ui-custom-icon-circle-triangle-up {
+    background-image: url(../img/up-arrow.png) !important;
+    background-repeat: no-repeat;
+}
+
+/************** Task ******************************/
+
+.taskName {
+    float: left;
+    font-size: 11px;
+    text-align: left;
+    width: 190px;
+    word-wrap: break-word;
+}
+
+.taskDetail {
+    padding-top: 3px;
+    font-size: 10px;
+    text-align: left;
+}
+
+.taskAssigneeName {
+    color: #2288cc;
+    font-size: 10px;
+    text-align: left;
+    word-wrap: break-word;
+    margin-bottom: 2px;
+}
+
+.taskDueDate {
+    color: #2288cc;
+    font-size: 10px;
+    text-align: left;
+}
+
+.taskStatus {
+    float: right;
+    font-size: 10px;
+    text-align: left;
+}
+
+.task {
+    border-top: 1px solid #f0f0f0;
+    padding: 7px 8px 10px 15px;
+}
+
+.taskCancel {
+    float: right;
+    cursor: pointer;
+}
+
+.taskNameWrapper {
+    overflow: auto;
+}
+
+#tasks {
+    border-bottom: 1px solid #f0f0f0;
+    border-left: 1px solid #f0f0f0;
+    border-right: 1px solid #f0f0f0;
+
+}
+
+.pastDate {
+    color: #ff0000;
+}
+
+.nothingToDisplay {
+    font-size: 12px;
+    color: #333;
+    margin: 20px;
+    float: left;
+}
+
+.createTask {
+    border: 1px solid #f0f0f0;
+    padding: 5px 5px 5px 5px;
+    font-size: 11px !important;
+}
+
+.taskAssigneeInput {
+    border: 1px solid #E0E0E0;
+    border-radius: 3px;
+    float: left;
+    width: 212px;
+    height: 27px;
+    margin: 3px;
+}
+
+.taskDescriptionInput {
+    width: 210px;
+    float: left;
+    resize: none;
+    margin: 3px;
+}
+
+.taskCreateDueDate {
+    float: left;
+}
+
+.createTaskButton {
+    width: 100%;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+.ui-datepicker {
+    font-size: 10px;
+}
+
+.ui-datepicker-trigger {
+    margin: 7px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.taskIcon {
+    padding-left: 5px;
+}
+
+.taskCancel .ui-icon-close {
+    margin: 1px;
+}
+
+/************** Folder Description ******************************/
+
+#folderDescriptionInfo {
+    font-size: 11px;
+}
+
+.accordionItemRow{
+	text-align:left;
+    padding: 5px;
+	min-height: 25px;
+    border: 1px solid #f0f0f0;
+}
+
+#folderDescriptionInput {
+	width:215px;
+}
+
+#updateDescriptionButton {
+	text-align:center;
+    width: 100%;
+    font-weight: bold;
+    cursor: pointer;
+}

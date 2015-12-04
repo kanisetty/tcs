@@ -1,0 +1,34 @@
+<script id="profilePictureAndPasswordDialogTemplate" type="text/x-jquery-tmpl">
+        <div id="profilePictureDialogView" title="${title}">
+            <div id="profilePictureContent">       
+                {{tmpl(changeProfilePictureSection) "changeProfilePictureTemplate"}}
+            </div>
+            {{if info.canChangePassword}}
+                <div id="changePassword">
+                    {{tmpl(changePasswordSection) "changePasswordTemplate"}}
+				</div>				
+            {{/if}}
+		</div>
+</script>
+
+<script id="changeProfilePictureTemplate" type="text/x-jquery-tmpl">
+        <div class="changeProfileSectionTitle">Photo</div>
+        <img id="profilePhoto" src="${userProfileImageUrl}" />
+        <div id="changeProfileRightWrapper">
+            <div class="uploadPicWidgetWrapper"></div>
+            <div class="uploadPicDescription">${T('LABEL.UploadANewPhotoDescription')}</div>
+            <div id="useDefaultProfile"><a href="#" onclick="return false;">${T('LABEL.UseDefault')}</a></div>
+        </div>
+        <div class="newLine"></div>
+        <div id="profilePictureError"></div>
+</script>
+
+<script id="changePasswordTemplate" type="text/x-jquery-tmpl">
+        <div class="changeProfileSectionTitle">Password</div>
+        <div id="passwordDialogContent">
+            {{tmpl(currentPasswordInput) "input"}}
+            {{tmpl(newPasswordInput1) "input"}}
+            {{tmpl(newPasswordInput2) "input"}}
+            <div id='passwordMismatchError'>${mismatchMessage}</div>
+	</div>
+</script>

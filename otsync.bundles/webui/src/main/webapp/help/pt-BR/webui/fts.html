@@ -1,0 +1,86 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <meta http-equiv="expires" content="0">
+      <meta http-equiv="pragma" content="no-cache">
+      <meta http-equiv="cache-control" content="no-cache, must-revalidate">
+      <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+      <meta name="creator" content="DocBook V4.3-Based Variant DbXixos V0.6 XSL transformation">
+      <meta name="date" content="2007-01-09 15:12:50+01:00">
+      <META name="bookrevnum" content="SYNCPCWB100510-H-UGD-PT-1">
+      <base target="frame2">
+      <link rel="stylesheet" type="text/css" href="static/dynamics.css">
+      <link rel="STYLESHEET" type="text/css" href="ix21.css">
+      <title>Buscar</title>
+      <script language="JavaScript" type="text/javascript" src="static/searchFunctions.js"></script>
+      <script language="JavaScript" type="text/javascript" src="static/fts_ot.js"></script>
+      <script language="JavaScript" type="text/javascript" src="searchIndex.js"></script></head>
+      <script language="JavaScript" type="text/javascript">SetDocLang("de")</script>
+
+<body class="fts" onload="document.searchForm.searchField.focus()">
+<div class="tocheader">
+<h1 class="toc">&nbsp;</h1>
+<table class="buttbar" border="0" cellpadding="0" cellspacing="0" width="100%"><tr>
+<td width="1"><A HREF="toc1.htm" CLASS="totoc" ONCLICK="parent.switchingToc=1" target="_self"><img border="0" src="pi_toclgr1.gif" ONMOUSEOVER="this.src='pi_toclgr1h.gif'" ONMOUSEOUT="this.src='pi_toclgr1.gif'" ALT="Exibir somente nível TOC 1"  width="45" height="18"></img></a></td>
+<td width="1"><A HREF="toc2.htm" CLASS="totoc" ONCLICK="parent.switchingToc=1" target="_self"><img border="0" src="pi_toclgr2.gif" ONMOUSEOVER="this.src='pi_toclgr2h.gif'" ONMOUSEOUT="this.src='pi_toclgr2.gif'" ALT="Exibir somente níveis 1-2"  width="27" height="18"></img></a></td>
+<td width="1"><A HREF="fts.html" CLASS="totoc" target="_self"><img border="0" CLASS="active" src="pi_toclgrS.gif"width="27" height="18"></img></A></td>
+<td>&nbsp;</td>
+</tr></table></div>
+
+   <a name="top_of_page"></a>
+   <form class="fts" name="searchForm" onSubmit="return preSubmit();" target="_self" action="fts.html">
+         <table border="0" cellpadding="0" cellspacing="0">
+            <tbody>
+               <tr>
+                  <td colspan="2" class="ftslist"><br>
+                  <input type="text" size="12" id="searchField" name="searchField" value=""/>
+                  <script language="Javascript" type="text/javascript">setQueryString();</script>
+                  </td>
+               </tr>
+               <tr>
+                  <td><input type="radio" name="searchMode" value="any"></td>
+                  <td class="ftslistmdl">qualquer uma das palavras</td>
+               </tr>
+               <tr>
+                  <td><input type="radio" name="searchMode" value="all" checked="true"></td>
+                  <td class="ftslistmdl">todas as palavras</td>
+               </tr>
+               <tr>
+                  <td><input type="radio" name="searchMode" value="phrase"></td>
+                  <td class="ftslistmdl">esta frase</td>
+               </tr>
+            </tbody>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0">
+            <tbody>
+               <tr>
+                  <td class="ftslistbut" colspan="2"><br><input type="Submit" name="Submit" value="Buscar"><input type="checkbox" name="searchWhere" value="current">apenas a página atual
+                  <div id="ftsRes"><br/></div>
+                  </td>
+               </tr>
+               <tr id="ftsnotes">
+                  <td class="ftslistsmall" colspan="2">
+                  <div><b>Observação:</b><br/>Caracteres de preenchimento aceitos:<br/>   ? representa exatamente um caractere ou número,<br/>   * representa 0 ou mais caracteres exceto espaços, abas e avanço de linha.</div>
+                  <div>Correspondências em referências cruzadas são ignoradas na lista de ocorrências, mas destacadas em cinza no texto.</div>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+      </form><script language="Javascript" type="text/javascript">
+	radioidx=1;
+	if (parseInt(getQueryString('searchMode'))==0||getQueryString('searchMode')=="any"){radioidx=0}
+	if (parseInt(getQueryString('searchMode'))==2||getQueryString('searchMode')=="phrase"){radioidx=2}
+	document.searchForm.searchMode[radioidx].checked=true;
+	document.searchForm.searchWhere.checked=(getQueryString('searchWhere')=="current");
+	if (getQueryString('searchWhere')=="searchpg") {
+    document.searchForm.searchWhere.checked=true;
+    preSubmit();
+  } else if (!document.searchForm.searchWhere.checked) { 
+    doSearch();
+  }
+	</script></body>
+</html>

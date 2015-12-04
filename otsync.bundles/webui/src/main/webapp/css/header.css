@@ -1,0 +1,412 @@
+#header {
+  background: url(../img/header-bg.png) repeat-x;
+  height: 41px;
+  min-width: 1000px;
+  width: 100%;
+  position: absolute;
+  z-index: 150;
+}
+#pageLogo {
+  padding: 7px 20px;
+  float: left;
+}
+#shareRequest {
+  float: left;
+  margin: 0px;
+  width: 42px;
+}
+.shareRequest {
+  display: none; /* ui.js will unhide this if the user has share requests */
+}
+.shareRequestTitle {
+  font-size: 10pt;
+  font-weight: bold;
+}
+#shareRequest.active .menuTop {
+  background: url(../img/user-action-arrow-up.png) no-repeat 50% 35px;
+}
+#shareRequest a:hover,
+#shareRequest a:active {
+  text-decoration: none;
+}
+.menuDivider {
+  background: url(../img/separator.png) no-repeat;
+  width: 2px;
+  height: 41px;
+  float: left;
+}
+#shareRequestCount  {
+  color: #fff;
+  font-weight: bold;
+}
+.shareRequestCount {
+	background: url("../img/share-count.png") no-repeat scroll 2px 8px transparent;
+    font-size: 8pt;
+    height: 23px;
+    line-height: 13px;
+    padding: 13px 0 0 11px;
+    width: 19px;
+}
+.shareRequestCountMedium {
+	background: url("../img/share-count.png") no-repeat scroll 2px 8px transparent;
+    font-size: 8pt;
+    height: 23px;
+    line-height: 13px;
+    padding: 13px 0 0 8px;
+    width: 19px;
+}
+.shareRequestCountBig {
+	background: url("../img/share-count.png") no-repeat scroll 2px 8px transparent;
+    font-size: 8pt;
+    height: 23px;
+    line-height: 13px;
+    padding: 13px 0 0 5px;
+    width: 21px;
+}
+#shareRequestSummary {
+  width: 284px;
+  position: relative;
+  left: -242px;
+  border: 0px;
+  border-left: 0px;
+  border-right: 0px;
+  border-bottom: 0px;
+}
+#shareRequestSummary li {
+  min-height: 42px;
+  padding: 10px;
+  color: #fff;
+  background: #083457;
+  float: left;
+  width: 264px;
+  border-top: 1px solid #2B5F7F;
+  border-left: 1px solid #192229;
+  border-right: 1px solid #192229;
+}
+#shareRequestSummary li:first-child {
+	border-top: none;
+}
+#shareRequestSummary li:hover {
+  font-weight: normal !important;
+  color: #073455;
+}
+.shareRequestHighlight {
+  background: #bfd7e9 !important;
+  color: #073455 !important;
+}
+#shareRequestSummary li:last-child {
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom: 1px solid #192229;
+}
+#shareRequestMenuBottom {
+  border-top: 1px solid #4FA0D6 !important;
+  background: #28c !important;
+  min-height: 28px !important;
+  height: 28px !important;
+  width: 264px;
+  padding: 0 10px !important;
+  line-height: 28px;
+  text-align: center;
+  display: block;
+  border: 0px;
+}
+#shareRequestMenuBottom a,
+#shareRequestMenuBottom a:link,
+#shareRequestMenuBottom a:visited,
+#shareRequestMenuBottom a:hover,
+#shareRequestMenuBottom a:active {
+  color: #fff !important;
+  font-weight: bold;
+}
+.shareSummaryUserImage {
+  float: left;
+}
+.shareSummaryText {
+  float: left;
+  padding: 0px 10px;
+  width: 194px;
+  overflow: hidden;
+}
+
+.shareSummaryText a,
+.shareSummaryText a:link,
+.shareSummaryText a:visited,
+.shareSummaryText a:hover,
+.shareSummaryText a:active {
+  color: #fff !important;
+  font-size: 10pt;
+  font-weight: bold;
+  text-decoration: none;
+  display: block;
+  padding: 0px 4px;
+  height: 21px;
+}
+.shareSummaryButtons {
+  float: right;
+}
+.shareSummaryButtons a {
+  padding: 0px;
+  margin: 0px;
+}
+.rejectWrapper {
+  padding-top: 4px;
+}
+#userPic,
+.shareSummaryUserImage img {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+}
+.shareConfirmRejectButton{
+  float: left;
+  height: 22px;
+  padding: 3px 4px 0 0;
+}
+.shareConfirmRejectButtonLeft{
+  background: url(../img/unshareall_left.png) no-repeat top right;
+  float:left;
+  height: 25px;
+  width: 6px;
+}
+.shareConfirmRejectButtonMid{
+  background: url(../img/unshareall_mid.png) repeat-x top;
+  float:left;
+  height: 25px !important;
+}
+.shareConfirmRejectButtonRight{
+  background: url(../img/unshareall_right.png) no-repeat top left;
+  float:left;
+  height: 25px;
+  width: 6px;
+}
+.shareConfirmRejectButton:hover .shareConfirmRejectButtonLeft{
+  background: url(../img/unshare_hover_left.png) no-repeat top right;
+}
+.shareConfirmRejectButton:hover .shareConfirmRejectButtonMid{
+  background: url(../img/unshare_hover_mid.png) repeat-x top;
+}
+.shareConfirmRejectButton:hover .shareConfirmRejectButtonRight{
+  background: url(../img/unshare_hover_right.png) no-repeat top left;
+}
+.shareCancelRejectButton {
+  float: left;
+  padding: 3px 4px 0 0;
+}
+.shareCancelRejectButtonLeft {
+  background: url(../img/small_cancel_left.png) no-repeat top right;
+  float:left;
+  height: 25px;
+  width: 5px;
+}
+.shareCancelRejectButtonMid {
+  background: url(../img/small_cancel_mid.png) repeat-x top;
+  float:left;
+  height: 25px !important;
+}
+.shareCancelRejectButtonRight {
+  background: url(../img/small_cancel_right.png) no-repeat top left;
+  float:left;
+  height: 25px;
+  width: 5px;
+}
+.shareCancelRejectButton:hover .shareCancelRejectButtonLeft {
+  background: url(../img/small_cancel_hover_left.png) no-repeat top right;
+}
+.shareCancelRejectButton:hover .shareCancelRejectButtonMid {
+  background: url(../img/small_cancel_hover_mid.png) repeat-x top;
+}
+.shareCancelRejectButton:hover .shareCancelRejectButtonRight {
+  background: url(../img/small_cancel_hover_right.png) no-repeat top left;
+}
+.shareConfirmRejectButton a,
+.shareConfirmRejectButton a:link,
+.shareConfirmRejectButton a:visited,
+.shareConfirmRejectButton a:hover,
+.shareConfirmRejectButton a:active {
+  color: #fff !important;
+  font-weight: bold;
+	display: block;
+	line-height: 22px;
+	height: 25px;
+}
+.shareCancelRejectButton a,
+.shareCancelRejectButton a:link,
+.shareCancelRejectButton a:visited,
+.shareCancelRejectButton a:hover,
+.shareCancelRejectButton a:active {
+  color: #000 !important;
+  font-weight: bold;
+	display: block;
+	line-height: 22px;
+	height: 25px;
+}
+.acceptShare {
+  background: url(../img/accept.png);
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+.acceptShare:hover {
+  background: url(../img/accept-on.png);
+}
+.rejectShare {
+  background: url(../img/cancel.png);
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+.rejectShare:hover {
+  background: url(../img/cancel-on.png);
+}
+#userActions {
+  float: left;
+  padding: 0px 10px;
+  width: 240px;
+}
+#userPic {
+  margin: 6px;
+}
+#userPicWrapper {
+  float: left;
+  border: 0px solid black;
+  width: 36px;
+}
+#userWelcome {
+  padding: 3px 0px;
+  font-size: 8pt;
+  width: 160px;
+  overflow: hidden;
+}
+#username {
+  font-size: 1.2em;
+  font-weight: bold;
+  line-height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#actionsWrapper {
+  z-index: 1000;
+  position: relative;
+  padding: 0px 15px 0px 0px;
+  float: right;
+}
+#actionsMenu {
+  list-style: none;
+  height: 41px;
+  min-height: 41px;
+  padding: 0px;
+  margin: 0px;
+}
+#actionsMenu ul {
+  list-style: none;
+  color: #D1D1D1;
+  font-size: 1.1em;
+  padding: 0px;
+  margin: 0px;
+  display: none;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+#diskUsageWrapper{
+	display: none;
+	padding-bottom:1px;
+}
+#diskUsage{
+	border:1px solid #2B5F7F;
+	padding:8px;
+	height:49px;
+	color:#fff;
+	font-weight:bold;
+	font-size:12px;	
+	background-color:#0072AA;
+	width:182px;
+}
+.diskProgressBar {
+	height:8px;
+	border-radius:0px;
+	border-color:#406f8c;
+	background: url("images/ui-bg_flat_75_ffffff_40x100.png") repeat-x scroll 50% 50% #FFFFFF !important;
+	padding:0px !important;
+	margin-top:2px;
+
+}
+.diskProgressBar div{
+	border-radius:0px;
+	border-color:#406f8c;
+	border-right:0px;	
+	background: url("../img/progress_lightblue.png") repeat-x !important;
+	margin:0 !important;
+
+}
+#userActions ul {
+  border-left: 1px solid #192229;
+  border-right: 1px solid #192229;
+  border-bottom: 1px solid #192229;
+  background: #083457;
+}
+#actionsMenu .menuTop {
+  height: 41px;
+  padding: 0px 7px;
+}
+#userActions .menuTop {
+  background: url(../img/user-action-arrow-down.png) no-repeat 95% 17px;
+}
+#userActions.active .menuTop {
+  background: url(../img/user-action-arrow-active.png) no-repeat 95% 17px;
+}
+#actionsMenu > li {
+  padding: 0px;
+  color: #fff;
+  font-size: 0.7em;
+}
+#actionsMenu li.active {
+  background: url(../img/header-active-bg.png) repeat-x;
+  color: #073455;
+}
+#actionsMenu ul li:hover {
+  background: #bfd7e9;
+  font-weight: bold;
+}
+#actionsMenu ul li a:hover,
+#actionsMenu ul li a:active {
+  text-decoration: none;
+}
+#userActions ul a {
+  height: 29px;
+  line-height: 29px;
+  display: block;
+  padding: 0px 16px;
+}
+#actionsMenu ul a,
+#actionsMenu ul a:link,
+#actionsMenu ul a:visited {
+  color: #fff;
+}
+#actionsMenu ul a:hover,
+#actionsMenu ul a:active{
+  color: #073455;
+}
+#userActions .last > a {
+  border-top: 1px solid #2B5F7F;
+  height: 40px !important;
+  line-height: 40px !important;
+}
+#userActions .last {
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+#userActions .hovered {
+  color: #073455;
+  background: #bfd7e9;
+  font-weight:bold;
+}
+#userActions .hovered a,
+#userActions .hovered a:link {
+  color: #073455 !important;  
+}
+.backLinks:hover {
+	color:#666;
+	text-decoration:none;	
+}

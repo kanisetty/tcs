@@ -1,0 +1,119 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<META NAME="bookrevnum" CONTENT="SYNCPCWB100510-H-UGD-ES-1">
+<META name="pvScheme" content="010203">
+<META name="verttl" content="10.5.10">
+<title>Gestión de archivos y carpetas </title>
+<META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.44">
+<META NAME="SECTLVL" CONTENT="1">
+<LINK REL="HOME" TITLE="OpenText Tempo Box" HREF="syncpcwb-h-ugd.htm">
+<LINK REL="PREVIOUS" TITLE="Desconexión del cliente web" HREF="syncpcwb-logout-p.htm">
+<LINK REL="NEXT" TITLE="Creación de carpetas" HREF="syncpcwb-createfolder-p.htm">
+<META NAME="ut" CONTENT=""><LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21.css">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21ohp.css">
+<SCRIPT language="JavaScript" type="text/javascript">
+  <!--
+   window.focus()
+   if (self.name.match(/pirefwin_/i)) {
+     var s = new String(self.location);
+     var pos1 = s.indexOf("#");
+     if (pos1 > 0) { self.location=s.substring(pos1); }
+   } else if (self.name.substring(0,8) != "noframe_") {
+     if ((self.name != "frame2") && (self.name.substring(0,3) != "Add")) {
+       var laStr=new String(self.location.hash);
+       var quStr=new String(self.location.search.replace(/\?/, "&"));
+       self.location="jsframe.htm?syncpcwb-fileman-so" + quStr + laStr
+       function PutInfoToClipboard(FullId) { return }
+       
+     } else if ((parent.TocUpdCnt < 3) || (parent.TocUpdateBy!="syncpcwb-fileman-so.htm")) {
+       piInfoCounter=0;
+       document.onkeyup = parent.handleKeyCode;  
+       parent.MarkCurrentTocLink("syncpcwb-fileman-so.htm", 0, "", "syncpcwb-h-ugd");
+       function PutInfoToClipboard(FullId,evt) { parent.PutInfoToClipboard(FullId,this.location,evt) }
+     }  
+
+     if (self.name == "frame2") {
+       parent.SetLinks("syncpcwb-logout-p.htm", "syncpcwb-createfolder-p.htm", "sync-icons-bg.htm", "syncpcwb-settings-so.htm", "CurTocLevel")
+       var s = new String(self.location);
+       var pos1 = s.indexOf("#");
+       if (pos1 > 0) { s=s.substring(pos1); self.location=s.toUpperCase(); }
+     };
+   }  
+     
+  //-->
+  </SCRIPT>
+  <SCRIPT  for="document" event="onkeydown()" language="JScript" type="text/jscript">
+  <!--
+  if (window.event.keyCode==27) { self.scrollTo(0,0); parent.focus() }
+  //-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#000099" VLINK="#9090ba" ALINK="#006666" ONLOAD="if (top.highLight) top.highLight(self,top.ftsSrchExpr,top.ftsSrchMode)"><A NAME="TOPofPAGE"></A>
+<DIV CLASS="navheader">
+<TABLE CLASS="navheader" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD WIDTH="1500px" ALIGN="left" VALIGN="bottom">
+<p CLASS="h5">OpenText Tempo Box: <NOBR>Ayuda de usuario para el cliente web</NOBR></p></TD>
+<TD WIDTH="10%" ROWSPAN="2" ALIGN="right" VALIGN="top" CLASS="td4pnavbtn">
+<A ID="NAV1PREV" HREF="syncpcwb-logout-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_prevhpg.gif" ONMOUSEOVER="this.src='hpi_prevhpg.gif'" ONMOUSEOUT="this.src='pi_prevhpg.gif'" ALT="Anterior:Desconexión del cliente web"></IMG></A>&nbsp;&nbsp;<A ID="NAV1NEXT" HREF="syncpcwb-createfolder-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_nexthpg.gif" ONMOUSEOVER="this.src='hpi_nexthpg.gif'" ONMOUSEOUT="this.src='pi_nexthpg.gif'" ALT="Siguiente:Creación de carpetas"></IMG></A></TD></TR>
+<TR>
+<TD WIDTH="90%" ALIGN="left" VALIGN="bottom">
+</TD></TR></TABLE></DIV>
+<DIV ID="HL4SRCH">
+<DIV CLASS="pagecontent" ID="PAGECONTENT">
+<H1 class="pagehd"><A NAME="SYNCPCWB-FILEMAN-SO">Capítulo 2 – Gestión de archivos y carpetas </A></H1>
+<P class="nr1"><A NAME="TMPID219"></A>Puede utilizar el cliente web para añadir, copiar o mover elementos y carpetas a otras ubicaciones de la carpeta de <B CLASS="guilabel">Tempo Box</B>. También puede consultar la versión y el historial de auditorías, cambiar el nombre o suprimir elementos y carpetas dentro de dicha carpeta. Todos los cambios que realice se sincronizarán automáticamente con la carpeta de <B CLASS="guilabel">Tempo Box</B> de todos los clientes que estén en línea.</P>
+<table CLASS="note">
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR>
+<TR FRAME="VOID">
+<TD ALIGN="LEFT" VALIGN="TOP" CLASS="iconcell">
+<P CLASS="note"><A NAME="TMP4REF2"></A><IMG ALT="Nota" SRC="pi_note.gif"></IMG></P></TD>
+<TD ALIGN="LEFT" CLASS="percontscell">
+<P CLASS="note" ALIGN="LEFT"><B>Notas: </B></P><A NAME="AEN220"></A>
+<UL class="note">
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN221"></A><A NAME="TMPID227"></A>No puede usar el cliente web para editar elementos en su carpeta <B CLASS="guilabel">Tempo Box</B>. Para actualizar un archivo mediante el cliente web, deberá <A HREF="syncpcwb-downloadfile-p.htm">bajarlo al escritorio</A>, editarlo allí y, a continuación, <A HREF="syncpcwb-addversion-p.htm">volver a añadirlo como una versión nueva</A>. </P></LI>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN227"></A><A NAME="TMPID233"></A>Los resultados de mover, cambiar de nombre o suprimir una carpeta compartida varían en función de si es el propietario de la carpeta compartida. Para obtener más información, consulte <span><A HREF="syncpc-renamedelmoveshare-bg.htm">Mover, cambiar de nombre y suprimir carpetas compartidas </A></span> . </P></LI></UL></TD></TR>
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR></table>
+<table CLASS="important">
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR>
+<TR FRAME="VOID">
+<TD ALIGN="LEFT" VALIGN="TOP" CLASS="iconcell">
+<P CLASS="important"><IMG ALT="Importante" SRC="pi_important.gif"></IMG></P></TD>
+<TD ALIGN="LEFT" CLASS="percontscell">
+<P><A NAME="TMPID236"></A><B CLASS="important">Importante: </B><BR>Cuando visualice archivos en una carpeta compartida para la que tenga acceso de lectura/escritura, dichos archivos no se reservarán de forma automática. Puede bajar y editar un archivo mientras un colaborador realiza cambios en él. Para evitarlo, puede <A HREF="syncpcwb-reserve-p.htm"> reservar el archivo</A>. Las carpetas de lectura/escritura se identifican mediante <IMG alt="Shared Folder icon" SRC="help_Shared_RW.png">  o <IMG SRC="help_Enterprise_RW.png">. </P></TD></TR>
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR></table>
+<P><A NAME="TMPID240"></A>El administrador puede establecer un límite de tamaño para su carpeta de <B CLASS="guilabel">Tempo Box</B>. Si el tamaño del conjunto de los elementos de su carpeta supera el límite, sin incluir los elementos de carpetas que comparte con otros usuarios, necesitará suprimir o sacar elementos de su carpeta <B CLASS="guilabel">Tempo Box</B> hasta que el tamaño sea inferior al máximo. Para obtener más información, consulte <span><A HREF="syncpcwb-checkfoldersize-p.htm">Comprobación del tamaño de su carpeta de Tempo Box</A></span>.</P>
+<P><A NAME="TMPID246"></A>Las fotografías e imágenes de la carpeta de Tempo Box muestran una vista en miniatura de la imagen. Para verla a un tamaño mayor, puede <A HREF="syncpcwb-switchthumbnail-p.htm">pasar a vista en miniatura</A> o seleccionar la imagen. </P>
+<P><A NAME="TMPID249"></A>También puede <A HREF="syncpcwb-publish-p.htm">publicar elementos y carpetas en Content Server</A>. Esta opción no está disponible para <A HREF="syncpcwb-sharing-so.htm#SYNCPCWB-EXTUSER-BG">usuarios externos</A>. Asimismo, si está suscrito a una carpeta de empresa y posee acceso de lectura/escritura a dicha carpeta, puede interactuar directamente con los elementos de la carpeta. Para obtener más información acerca de la adición de una carpeta de empresa a la carpeta de <B CLASS="guilabel">Tempo Box</B>, consulte <span><XPROC NAME="ExtXrefStart" HREF="synclles-h-ugd.-" FMT="" NO1ST><i>OpenText Tempo Box, Content Server Edition - User Online Help (SYNCLLES-H-UGD)</i><XPROC NAME="ExtXrefEnd" HREF="synclles-h-ugd.-" FMT=""></span>.</P>
+<DIV CLASS="localtoc">
+<h2 CLASS="localtoc"><A NAME="LOCALTOC"></A>Tabla de contenidos&nbsp;&nbsp;</h2>
+<A class="toc3" HREF="syncpcwb-createfolder-p.htm" revision="">Creación de carpetas</A></p>
+<A class="toc3" HREF="syncpcwb-uploadfile-p.htm" revision="">Adición de elementos</A></p>
+<A class="toc3" HREF="syncpcwb-addversion-p.htm" revision="">Adición de una versión de elemento</A></p>
+<A class="toc3" HREF="syncpcwb-downloadfile-p.htm" revision="">Descarga de elementos</A></p>
+<A class="toc3" HREF="syncpcwb-copymove-p.htm" revision="">Desplazamiento o copia de un archivo o carpeta</A></p>
+<A class="toc3" HREF="syncpcwb-rename-p.htm" revision="">Cambio de nombre de un archivo o carpeta</A></p>
+<A class="toc3" HREF="syncpcwb-reserve-p.htm" revision="">Reserva y cancelación de la reserva de un archivo</A></p>
+<A class="toc3" HREF="syncpcwb-delete-p.htm" revision="">Supresión de un archivo o carpeta</A></p>
+<A class="toc3" HREF="syncpcwb-delete-shared-folder-p.htm" revision="">Eliminación de una carpeta compartida</A></p>
+<A class="toc3" HREF="syncpcwb-viewhistory-p.htm" revision="">Visualización del historial del elemento o la carpeta</A></p>
+<A class="toc3" HREF="syncpcwb-publish-p.htm" revision="">Publicación de un elemento o una carpeta</A></p>
+<A class="toc3" HREF="syncpcwb-search-p.htm" revision="">Búsqueda de un elemento o una carpeta </A></p>
+<A class="toc3" HREF="syncpcwb-checkfoldersize-p.htm" revision="">Comprobación del tamaño de su carpeta de Tempo Box</A></p></DIV>
+<P ALIGN="RIGHT"><A HREF="#TOPofPAGE">Parte superior de la página</A></P></DIV></DIV>
+<DIV CLASS="navfooter">
+<TABLE CLASS="navfooter" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD WIDTH="30pt" ALIGN="left" VALIGN="middle"><A ID="NAV1PREV" HREF="syncpcwb-logout-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_prevhpg_ft.gif" ONMOUSEOVER="this.src='hpi_prevhpg_ft.gif'" ONMOUSEOUT="this.src='pi_prevhpg_ft.gif'" ALT="Anterior:Desconexión del cliente web"></IMG></A></TD>
+<TD WIDTH="750px" ALIGN="left" VALIGN="middle"><A CLASS="navttl" HREF="syncpcwb-logout-p.htm">Desconexión del cliente web</A></TD>
+<TD WIDTH="25pt" ALIGN="center" VALIGN="middle">&nbsp;</TD>
+<TD WIDTH="750px" ALIGN="right" VALIGN="middle"><A CLASS="navttl" HREF="syncpcwb-createfolder-p.htm">Creación de carpetas</A></TD>
+<TD WIDTH="30pt" ALIGN="right" VALIGN="middle"><A ID="NAV1NEXT" HREF="syncpcwb-createfolder-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_nexthpg_ft.gif" ONMOUSEOVER="this.src='hpi_nexthpg_ft.gif'" ONMOUSEOUT="this.src='pi_nexthpg_ft.gif'" ALT="Siguiente:Creación de carpetas"></IMG></A></TD></TR></TABLE></DIV>
+</BODY></HTML>

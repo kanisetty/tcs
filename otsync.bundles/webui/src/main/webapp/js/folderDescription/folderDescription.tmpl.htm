@@ -1,0 +1,21 @@
+<script id="readonlyDescriptionTemplate" type="text/x-jquery-tmpl">
+    <div class="accordionItemRow">
+		  {{if DESCRIPTION != ""}}
+			    {{html String(DESCRIPTION).replace(/(?:\r\n|\r|\n)/g, '<br />')}}
+		  {{else}}
+		   	     ${T('LABEL.NoDescription')}
+		  {{/if}}
+	</div>
+</script>
+
+<script id="editableDescriptionTemplate" type="text/x-jquery-tmpl">
+		<div class="accordionItemRow">
+			<textarea name="description" id="folderDescriptionInput" class="folderDescriptionInput" placeholder="${T('LABEL.EnterFolderDescription')}">${DESCRIPTION}</textarea>
+			<input type="button" name="updateDescriptionButton" id="updateDescriptionButton" class="updateDescriptionButton" value="${T('LABEL.Update')}" />
+		</div>
+</script>
+
+<script id="folderDescriptionAccordionItem" type="text/x-jquery-tmpl">
+		<h3>${T('LABEL.Description')}</h3>
+		<div id="folderDescriptionInfo"></div>
+</script>

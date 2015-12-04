@@ -1,0 +1,92 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<META NAME="bookrevnum" CONTENT="SYNCPCWB100510-H-UGD-ES-1">
+<META name="pvScheme" content="010203">
+<META name="verttl" content="10.5.10">
+<title>Reserva y cancelación de la reserva de un archivo</title>
+<META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.44">
+<META NAME="SECTLVL" CONTENT="1">
+<LINK REL="HOME" TITLE="OpenText Tempo Box" HREF="syncpcwb-h-ugd.htm">
+<LINK REL="UP" TITLE="Gestión de archivos y carpetas " HREF="syncpcwb-fileman-so.htm">
+<LINK REL="PREVIOUS" TITLE="Cambio de nombre de un archivo o carpeta" HREF="syncpcwb-rename-p.htm">
+<LINK REL="NEXT" TITLE="Supresión de un archivo o carpeta" HREF="syncpcwb-delete-p.htm">
+<META NAME="ut" CONTENT=""><LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21.css">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21ohp.css">
+<SCRIPT language="JavaScript" type="text/javascript">
+  <!--
+   window.focus()
+   if (self.name.match(/pirefwin_/i)) {
+     var s = new String(self.location);
+     var pos1 = s.indexOf("#");
+     if (pos1 > 0) { self.location=s.substring(pos1); }
+   } else if (self.name.substring(0,8) != "noframe_") {
+     if ((self.name != "frame2") && (self.name.substring(0,3) != "Add")) {
+       var laStr=new String(self.location.hash);
+       var quStr=new String(self.location.search.replace(/\?/, "&"));
+       self.location="jsframe.htm?syncpcwb-reserve-p" + quStr + laStr
+       function PutInfoToClipboard(FullId) { return }
+       
+     } else if ((parent.TocUpdCnt < 3) || (parent.TocUpdateBy!="syncpcwb-reserve-p.htm")) {
+       piInfoCounter=0;
+       document.onkeyup = parent.handleKeyCode;  
+       parent.MarkCurrentTocLink("syncpcwb-reserve-p.htm", 0, "", "syncpcwb-h-ugd");
+       function PutInfoToClipboard(FullId,evt) { parent.PutInfoToClipboard(FullId,this.location,evt) }
+     }  
+
+     if (self.name == "frame2") {
+       parent.SetLinks("syncpcwb-rename-p.htm", "syncpcwb-delete-p.htm", "sync-icons-bg.htm", "syncpcwb-settings-so.htm", "CurTocLevel")
+       var s = new String(self.location);
+       var pos1 = s.indexOf("#");
+       if (pos1 > 0) { s=s.substring(pos1); self.location=s.toUpperCase(); }
+     };
+   }  
+     
+  //-->
+  </SCRIPT>
+  <SCRIPT  for="document" event="onkeydown()" language="JScript" type="text/jscript">
+  <!--
+  if (window.event.keyCode==27) { self.scrollTo(0,0); parent.focus() }
+  //-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#000099" VLINK="#9090ba" ALINK="#006666" ONLOAD="if (top.highLight) top.highLight(self,top.ftsSrchExpr,top.ftsSrchMode)"><A NAME="TOPofPAGE"></A>
+<DIV CLASS="navheader">
+<TABLE CLASS="navheader" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD WIDTH="1500px" ALIGN="left" VALIGN="bottom">
+<p CLASS="h5">OpenText Tempo Box: <NOBR>Ayuda de usuario para el cliente web</NOBR></p></TD>
+<TD WIDTH="10%" ROWSPAN="2" ALIGN="right" VALIGN="top" CLASS="td4pnavbtn">
+<A ID="NAV1PREV" HREF="syncpcwb-rename-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_prevhpg.gif" ONMOUSEOVER="this.src='hpi_prevhpg.gif'" ONMOUSEOUT="this.src='pi_prevhpg.gif'" ALT="Anterior:Cambio de nombre de un archivo o carpeta"></IMG></A>&nbsp;&nbsp;<A ID="NAV1NEXT" HREF="syncpcwb-delete-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_nexthpg.gif" ONMOUSEOVER="this.src='hpi_nexthpg.gif'" ONMOUSEOUT="this.src='pi_nexthpg.gif'" ALT="Siguiente:Supresión de un archivo o carpeta"></IMG></A></TD></TR>
+<TR>
+<TD WIDTH="90%" ALIGN="left" VALIGN="bottom">
+</TD></TR></TABLE></DIV>
+<DIV ID="HL4SRCH">
+<DIV CLASS="pagecontent" ID="PAGECONTENT">
+<H1 CLASS="sect1 pagehd">Reserva y cancelación de la reserva de un archivo</A></H1>
+<DIV title="Para reservar un archivo:" CLASS="procedure">
+<P><B><A NAME="AEN514ttl"></A>Para reservar un archivo:</B></P>
+<OL TYPE="1">
+<LI>
+<P class="nr1"><A NAME="TMPID522"></A>Coloque el puntero sobre el menú de función del elemento <IMG alt="Function menu icon" SRC="file_dropdown_sel.png">  y, a continuación, haga clic en <B CLASS="guilabel">Reservar</B>. </P>
+<P><A NAME="TMPID525"></A>No puede reservar un archivo en una carpeta para la que tenga acceso de solo lectura. Las carpetas de solo lectura están identificadas por la superposición de bloqueo. Por ejemplo, <IMG alt="Read-Only Shared Folder icon" SRC="help_Shared_RO.png">  o <IMG SRC="help_Enterprise_RO.png">.</P>
+<P><A NAME="TMPID528"></A>Si intenta reservar un archivo en una carpeta de empresa para la que tiene acceso de lectura/escritura y la opción <B CLASS="guilabel">Reservar</B> no está disponible, es que no tiene el permiso <I CLASS="emphasis">Reservar</I> para la carpeta en Content Server. Póngase en contacto con el administrador para solicitar este permiso.</P></LI>
+<LI>
+<P class="nr1"><A NAME="TMPID533"></A>Haga clic en <B CLASS="guilabel">Reservar</B>.  El archivo se marca con la superposición <IMG alt="Reserved File overlay" SRC="reserved16.png">. Por ejemplo, <IMG alt="Reserved file " SRC="reserved_file.png">. </P></LI></OL></DIV>
+<DIV title="Para cancelar la reserva de un archivo:" CLASS="procedure">
+<P><B><A NAME="AEN532ttl"></A>Para cancelar la reserva de un archivo:</B></P>
+<OL TYPE="1">
+<LI>
+<P class="nr1"><A NAME="TMPID540"></A>Coloque el puntero sobre el menú de función del archivo <IMG alt="Function menu icon" SRC="file_dropdown_sel.png">  y, a continuación, haga clic en <B CLASS="guilabel">Cancelar la reserva</B>. Si no está disponible <B CLASS="guilabel">Cancelar la reserva</B>, significa que otro usuario ha reservado el archivo. Para averiguar quién ha reservado el archivo, puede comprobar su historial de auditorías. Para obtener más información, consulte <span><A HREF="syncpcwb-viewhistory-p.htm">Visualización del historial del elemento o la carpeta</A></span>.</P></LI>
+<LI>
+<P class="nr1"><A NAME="TMPID546"></A>Haga clic en <B CLASS="guilabel">Cancelar la reserva</B>. </P></LI></OL></DIV>
+<P ALIGN="RIGHT"><A HREF="#TOPofPAGE">Parte superior de la página</A></P></DIV></DIV>
+<DIV CLASS="navfooter">
+<TABLE CLASS="navfooter" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD WIDTH="30pt" ALIGN="left" VALIGN="middle"><A ID="NAV1PREV" HREF="syncpcwb-rename-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_prevhpg_ft.gif" ONMOUSEOVER="this.src='hpi_prevhpg_ft.gif'" ONMOUSEOUT="this.src='pi_prevhpg_ft.gif'" ALT="Anterior:Cambio de nombre de un archivo o carpeta"></IMG></A></TD>
+<TD WIDTH="750px" ALIGN="left" VALIGN="middle"><A CLASS="navttl" HREF="syncpcwb-rename-p.htm">Cambio de nombre de un archivo o carpeta</A></TD>
+<TD WIDTH="25pt" ALIGN="center" VALIGN="middle">&nbsp;</TD>
+<TD WIDTH="750px" ALIGN="right" VALIGN="middle"><A CLASS="navttl" HREF="syncpcwb-delete-p.htm">Supresión de un archivo o carpeta</A></TD>
+<TD WIDTH="30pt" ALIGN="right" VALIGN="middle"><A ID="NAV1NEXT" HREF="syncpcwb-delete-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_nexthpg_ft.gif" ONMOUSEOVER="this.src='hpi_nexthpg_ft.gif'" ONMOUSEOUT="this.src='pi_nexthpg_ft.gif'" ALT="Siguiente:Supresión de un archivo o carpeta"></IMG></A></TD></TR></TABLE></DIV>
+</BODY></HTML>

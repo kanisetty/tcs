@@ -1,0 +1,43 @@
+<script id="userNotificationConfigDialogTemplate" type="text/x-jquery-tmpl">
+        <div id="userNotificationConfigDialogView">           
+			<div class="historyContent">
+				<div id="userNotificationConfigTabs">
+					<ul>
+						{{tmpl(userNotificationConfigTabList) 'userNotificationConfigTabHeaders'}}
+					</ul>				
+					{{tmpl(userNotificationConfigTabList) 'userNotificationConfigTabContent'}}
+				</div>					
+			</div>
+		</div>
+</script>
+
+<script id="userNotificationConfigTabHeaders" type="text/x-jquery-tmpl">
+		<li><a href="#tab${tabName}" class="tab${tabName}Header" >${tabText}</a></li>
+		 <li class="tabSeparator"></li>
+</script>
+
+<script id="userNotificationConfigTabContent" type="text/x-jquery-tmpl">
+		<div id="tab${tabName}">
+		{{if tabName == "Notifications"}}
+			<div class="settingsHeading">${T('LABEL.EmailMe')}</div>
+			<div class="settingsInput">
+				<div class="itemCheckBoxWrapper">
+					<div class="notificationConfigCheckBox" id="notificationConfigShareRequest"></div>
+				</div>
+				<div class="settingsInputLabel">${T('LABEL.NotifyShareRequest')}<strong>${T('LABEL.SharingRequest')}</strong></div>
+			</div>
+			<div class="settingsInput">
+				<div class="itemCheckBoxWrapper">
+					<div class="notificationConfigCheckBox" id="notificationConfigTaskAssigned"></div>
+				</div>
+				<div class="settingsInputLabel">${T('LABEL.NotifyShareRequest')}<strong>${T('LABEL.TaskAssigned')}</strong></div>
+			</div>
+			<div class="settingsInput">
+				<div class="itemCheckBoxWrapper">
+					<div class="notificationConfigCheckBox" id="notificationConfigFolderChange"></div>
+				</div>
+				<div class="settingsInputLabel">${T('LABEL.NotifyFolderChange1')}<strong>${T('LABEL.Change')}</strong>${T('LABEL.NotifyFolderChange2')}</div>
+			</div>
+		{{/if}}
+		</div>
+</script>

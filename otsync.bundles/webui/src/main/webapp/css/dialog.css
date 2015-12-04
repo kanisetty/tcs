@@ -1,0 +1,553 @@
+/***** Generic Dialog CSS *****/
+.popUpDialog{
+  border: 1px solid #073455;
+  font-family: arial, sans-serif;
+  background-image: none;
+  padding: 18px 0 0 0;
+}
+.popUpDialog .ui-widget-header{
+  background: #fff;
+}
+.popUpDialog .ui-dialog-title{
+  color: #073455;
+  font-size: 14pt;
+  font-weight: normal;
+  padding: 0 0 18px 0;
+  width: 100%;
+}
+.popUpDialog .ui-dialog-titlebar{
+  border: none;
+  padding: 14px 41px 0 41px;
+}
+.popUpDialog .ui-dialog-titlebar-close{
+  margin: -46px 0 0 0 !important;
+  display: none;
+}
+.popUpDialog .textTopOfInput{
+  color: #666;
+  font-size: 0.8em;
+  margin-bottom: 5px;
+}
+.popUpDialog .textLeftInput{
+  color: #666;
+  font-size: 0.8em;
+}
+.popUpDialog .shareNewFolderContainer{
+  height: 100px;
+}
+.popUpDialog input[type=text], input[type=password]{
+  height: 25px;
+  font-size: 0.8em;
+}
+.popUpDialog .ui-button{
+  color: #ededed;
+  background: #9c9c9c;
+  border: 1px solid #9c9c9c;
+  font-size: 11pt;
+}
+.popUpDialog .ui-button .ui-button-text{
+   padding: 5px 0.8em 0.4em;
+  
+}
+.popUpDialog .ui-dialog-buttonpane {
+  background: url(../img/dialog-shadow.png) no-repeat center top !important;
+  margin: 39px 0 0 0;
+  padding: 0px !important;
+  min-height: 81px;
+  width: 100%;
+}
+.popUpDialog .ui-dialog-buttonset-wrapper {
+  float: left;
+  position: relative;
+  left: 50%;
+}
+.popUpDialog .ui-dialog-buttonset {
+  height: 31px;
+  padding: 20px 0 27px 0;
+  text-align: center;
+  vertical-align: middle;
+  margin: 0 auto;
+  white-space: nowrap;
+  display: block;
+  float: left !important;
+  position: relative;
+  right: 50%;
+}
+.popUpDialog .dialogButton {
+  float: left;
+  padding-right: 10px;
+}
+.popUpDialog .dialogButton:last-child {
+  padding-right: 0px;
+}
+.popUpDialog .ui-dialog-buttonset .ui-button{
+  background: url(../img/blue-button-mid.png) repeat-x;
+  height: 34px;
+  line-height: 34px;
+  color: #fff;
+  font-weight: bold;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-top-left-radius: 0px;
+  margin: 0;
+}
+.popUpDialog .ui-dialog-buttonset .dialogButton:first-child .ui-button{
+  background: url(../img/white-button-mid.png) repeat-x;
+  color: #424242;
+}
+.popUpDialog .dialogButtonMid {
+  float: left;
+}
+.popUpDialog .dialogButtonLeft {
+  background: url(../img/blue-button-left.png) no-repeat top right;
+  width: 5px;
+  height: 34px;
+  float: left;
+}
+.popUpDialog .dialogButton:first-child .dialogButtonLeft {
+  background: url(../img/white-button-left.png) no-repeat top right;
+}
+.popUpDialog .dialogButtonRight {
+  background: url(../img/blue-button-right.png) no-repeat top left;
+  width: 6px;
+  height: 34px;
+  float: left;
+  margin-left:-1px;
+}
+.popUpDialog .dialogButton:first-child .dialogButtonRight {
+  background: url(../img/white-button-right.png) no-repeat top left;
+}
+.dialogButtonRight.whiteDialogButton{
+	background: url(../img/white-button-right.png) no-repeat !important;
+}
+.dialogButtonLeft.whiteDialogButton{
+	background: url(../img/white-button-left.png) no-repeat !important;
+}
+.whiteDialogButton .ui-button{
+	background: url(../img/white-button-mid.png) repeat-x !important;
+	color: #424242 !important;
+}
+.popUpDialog .ui-button {
+  border: none;
+}
+.popUpDialog .ui-widget-content{ 
+  border: none;
+  padding: 0px 41px;
+  color: #073455;
+}
+.ui-widget-content{ 
+
+  background: #fff url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x !important;
+ }
+
+
+
+.popUpDialog .errorText{
+  margin-left: 5px;
+}
+.itemRequestDialog {
+  font-size:0.9em;
+}
+.popUpDialog {
+  -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);  
+  -moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5); 
+}
+.ui-widget-overlay{
+  background: #000;
+  opacity: 0.6;
+}
+.ui-widget-shadow {
+  background: transparent;
+  padding: 0px;
+  margin: 0px;
+}
+
+.popUpDialog .ui-tabs-nav li{
+  background: none !important;
+  padding: 0 15px;
+  margin: 0;
+  border: none !important;
+  border-radius: 0 !important;
+  font-size: 12pt;
+  border-bottom: 3px solid #ccc !important;
+  height: 49px;
+}
+.popUpDialog .ui-tabs-nav {
+  background: url(../img/tab-bottom.png) 0 100% repeat-x;
+  height: 53px;
+  margin-bottom: 10px;
+}
+.popUpDialog .ui-tabs-nav li.ui-tabs-selected {
+  padding-bottom: 0px;
+}
+.popUpDialog li.tabSeparator {
+  background: url(../img/tab-separator.png) 0 18px no-repeat !important;
+  padding: 0px !important;
+  border-bottom: 3px solid #fff !important;
+  height: 49px;
+  width: 1px;
+}
+.popUpDialog .ui-tabs-nav li:first-child {
+  padding: 0 15px 0 0;
+}
+.popUpDialog .ui-tabs-nav .ui-state-active {
+  border-bottom: 3px solid #176A9F !important;
+}
+.popUpDialog .ui-tabs-nav a,
+.popUpDialog .ui-tabs-nav a:link,
+.popUpDialog .ui-tabs-nav a:visited,
+.popUpDialog .ui-tabs-nav a:hover,
+.popUpDialog .ui-tabs-nav a:active,
+.popUpDialog .ui-tabs-nav a:focus {
+  color: #ccc;
+  text-decoration: none;
+  top: 0px;
+  padding: 20px 0 6px 0;
+  border: none;
+}
+.popUpDialog .ui-tabs-nav .ui-tabs-selected a,
+.popUpDialog .ui-tabs-nav .ui-tabs-selected a:link,
+.popUpDialog .ui-tabs-nav .ui-tabs-selected a:visited,
+.popUpDialog .ui-tabs-nav .ui-tabs-selected a:hover,
+.popUpDialog .ui-tabs-nav .ui-tabs-selected a:active,
+.popUpDialog .ui-tabs-nav .ui-tabs-selected a:focus {
+  color: #073455;
+}
+
+.popUpDialog a:focus,
+.popUpDialog button:focus {
+  outline: 1px dotted #666;
+}
+
+/***** see all share requests dialog *****/
+.shareRequestItemFull {
+  clear: both;
+  width: 100%;
+  min-height: 47px;
+  font-size: 10pt;
+  float: left;
+}
+.shareRequestItemFull:hover {
+  background: #bfd7e9;
+}
+.seeAllSharingRequestsWrapper {
+  padding: 0px 37px;
+}
+.seeAllSharingRequestsInner {
+  width: 100%;
+  float: left;
+}
+#seeAllSharingRequests {
+  padding: 0px 2px;
+}
+#seeAllSharingRequests .acceptWrapper {
+  float: left;
+}
+#seeAllSharingRequests .rejectWrapper {
+  float: left;
+  padding: 0px 4px 0px 0px;
+}
+#seeAllSharingRequests .shareSummaryUserImage {
+  padding: 10px 0 0 0;
+}
+#seeAllSharingRequests .shareSummaryText {
+  padding: 8px 12px;
+}
+#seeAllSharingRequests .shareSummaryButtons {
+  padding: 10px 0 0 0;
+  white-space: no-wrap;
+}
+#seeAllSharingRequests .confirmRejectShareButtons {
+  position: absolute;
+  right: 39px;
+}
+.seeAllSharingRequestsDialog .ui-dialog-buttonpane {
+  margin: 0px;
+}
+.seeAllSharingRequestsDialog .shareSummaryText {
+  width: 240px;
+}
+
+/***** copy, move dialog *****/
+.copyItemDialog .ui-dialog-buttonpane,
+.moveItemDialog .ui-dialog-buttonpane,
+.multiCopyDialog .ui-dialog-buttonpane,
+.multiMoveDialog .ui-dialog-buttonpane{
+  margin-top: 30px;
+}
+.copyItemDialog .ui-dialog-content,
+.moveItemDialog .ui-dialog-content,
+.multiCopyDialog .ui-dialog-content,
+.multiMoveDialog .ui-dialog-content{
+  border: 1px solid #aaa;
+  margin: 0px 41px;
+  padding-left: 10px;
+}
+.copyItemDialog .dialogWordWrap,
+.moveItemDialog .dialogWordWrap,
+.multiCopyDialog .dialogWordWrap,
+.multiMoveDialog .dialogWordWrap{
+  width: 405px;
+}
+.copyItemDialog .nameForFolder,
+.moveItemDialog .nameForFolder,
+.multiCopyDialog .nameForFolder,
+.multiMoveDialog .nameForFolder{
+  width: 357px;
+}
+
+
+/***** Version/Audit History Dialog *****/
+.historyDialog .ui-dialog-titlebar,
+.historyDialogFolder .ui-dialog-titlebar {
+  display: none;
+}
+#historyTabs,
+#historyFolderTabs {
+   padding: 0 !important;	
+}
+#historyTabs .ui-widget-header,
+#historyFolderTabs .ui-widget-header {
+	border: none;
+	border-radius: 0;	
+}
+#historyTabs .ui-tabs-nav,
+#historyFolderTabs .ui-tabs-nav {
+   padding: 0;	
+}
+#tabAudit,
+#tabVersion {
+  padding: 0 !important;
+}
+.historyTable {
+}
+.historyTableHeader {
+  color: #fff;
+  width: 100%;
+}
+.historyTableHeader tr {
+  border-top: 10px solid #fff;
+  border-bottom: 10px solid #fff;
+}
+.historyTableHeader th {
+  background: #77A6D0;
+}
+.historyTableBody {
+  width: 100%;
+}
+.historyContent {
+  height: 100px;
+  z-index: 1000;
+}
+.historyRow {
+  width: 100%;
+  background: transparent !important;
+  height: 23px;
+}
+.historyCell {
+  font-size: 8pt;
+  padding: 3px 5px;
+  word-wrap: break-word;
+  border: none;
+}
+.historyHeaderCell {
+  font-size: 8pt;
+  font-weight: bold;
+  padding: 3px 5px;
+  word-wrap: break-word;
+  text-align: left;
+  border: none;
+}
+.auditHistoryUser {
+  width: 40%;
+  font-weight: bold;
+}
+.auditHistoryEvent {
+  width: 30%;
+}
+.auditHistoryDate {
+  width: 30%;
+}
+
+.versionHistoryNumber{
+  width: 5%;
+}
+.versionHistoryFileName{
+  width: 40%;
+}
+.versionHistoryDate{
+  width: 15%;
+}
+.versionHistoryUser{
+  width: 15%;
+}
+.versionHistorySize{
+  width: 15%;
+}
+
+a.versionDownload,a.versionDownload:visited,a.versionDownload:hover{
+  color:#1370B5;
+  text-decoration:none;
+}
+a.versionDownload:focus{
+  border: 1px solid #fff;
+}
+
+/****** User Notification Config Dialog ***/
+#userNotificationConfigTabs .ui-widget-header {
+    border: medium none;
+    border-radius: 0 0 0 0;
+}
+.userNotificationConfigDialog .ui-dialog-titlebar, .historyDialogFolder .ui-dialog-titlebar {
+    display: none;
+}
+#userNotificationConfigTabs {
+    padding: 0 !important;
+}
+#tabNotifications{
+	padding: 0 !important;
+}
+#tabNotifications .settingsInput{
+	border-bottom: 1px solid #f4f4f4;
+    font-size: 11px;
+    padding-bottom: 7px;
+    padding-top: 7px;	
+}
+#tabNotifications .settingsInput input[type="checkbox"]{
+    margin-right: 8px;
+}
+
+#tabNotifications .settingsHeading{
+	font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-left: 4px;
+    margin-top: 20px;
+}
+#tabNotifications .itemCheckBox{
+	margin: 3px auto;
+}
+
+#tabNotifications .settingsInputLabel{
+	margin-left:25px;
+}
+.notificationConfigCheckBox{
+	margin-top:2px;
+}
+
+/***** About dialog specific css *****/
+.aboutDialog .ui-dialog-titlebar-close {
+  display: block;
+}
+
+
+/***** Edit Collaborators Dialog *****/
+.dialogObjectOwner	{
+	width: 220px !important;
+}
+.dialogObjectLastModified {
+	width: 220px !important;
+	margin-left:0px !important;
+}
+.dialogObjectOwnerName {
+	width: 275px !important;
+	margin-bottom: 40px;
+}
+.dialogObjectInfoDetails {
+	margin-bottom:20px;
+}
+.unshareAllBtn {
+  float: right;
+  position: absolute;
+  top: 11px;
+  right: 50px;
+  height: 25px;
+
+}
+.unshareAllBtnLeft {
+  background: url(../img/unshareall_left.png) no-repeat top left;
+  float:left;
+  height: 25px;
+  width: 5px;
+}
+.unshareAllBtnMid {
+  background: url(../img/unshareall_mid.png) repeat-x top;
+  float:left;
+  height: 25px;
+}
+.unshareAllBtnRight {
+  background: url(../img/unshareall_right.png) no-repeat top right;
+  float:left;
+  height: 25px;
+  width: 5px;
+}
+.unshareAllBtn:hover .unshareAllBtnLeft{
+  background: url(../img/unshare_hover_left.png) no-repeat top left;
+}
+.unshareAllBtn:hover .unshareAllBtnMid {
+  background: url(../img/unshare_hover_mid.png) repeat-x top;
+}
+.unshareAllBtn:hover .unshareAllBtnRight{
+  background: url(../img/unshare_hover_right.png) no-repeat top right;
+}
+.unshareAllBtn a,
+.unshareAllBtn a:link,
+.unshareAllBtn a:visited,
+.unshareAllBtn a:hover,
+.unshareAllBtn a:active {
+  color: #fff;
+  font-size: 10pt;
+  font-weight: bold;
+  height: 25px;
+  line-height: 25px;
+  padding: 0 3px;
+}
+
+.restoreCollaboratorBtn {
+  float: right;
+  position: relative;
+  right: 10px;
+  height: 25px;
+  padding: 5px 4px 3px 0;
+}
+.restoreCollaboratorBtnLeft {
+  background: url(../img/unshareall_left.png) no-repeat top left;
+  float:left;
+  height: 25px;
+  width: 5px;
+}
+.restoreCollaboratorBtnMid {
+  background: url(../img/unshareall_mid.png) repeat-x top;
+  float:left;
+  height: 25px;
+}
+.restoreCollaboratorBtnRight {
+  background: url(../img/unshareall_right.png) no-repeat top right;
+  float:left;
+  height: 25px;
+  width: 5px;
+}
+.restoreCollaboratorBtn:hover .restoreCollaboratorBtnLeft{
+  background: url(../img/unshare_hover_left.png) no-repeat top left;
+}
+.restoreCollaboratorBtn:hover .restoreCollaboratorBtnMid {
+  background: url(../img/unshare_hover_mid.png) repeat-x top;
+}
+.restoreCollaboratorBtn:hover .restoreCollaboratorBtnRight{
+  background: url(../img/unshare_hover_right.png) no-repeat top right;
+}
+.restoreCollaboratorBtn a,
+.restoreCollaboratorBtn a:link,
+.restoreCollaboratorBtn a:visited,
+.restoreCollaboratorBtn a:hover,
+.restoreCollaboratorBtn a:active {
+  color: #fff;
+  font-size: 10pt;
+  font-weight: bold;
+  height: 25px;
+  line-height: 25px;
+  padding: 0 3px;
+}
+
+

@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<META NAME="bookrevnum" CONTENT="SYNCPCWB100510-H-UGD-PT-1">
+<META name="pvScheme" content="010203">
+<META name="verttl" content="10.5.10">
+<title>Movendo ou copiando um arquivo ou pasta</title>
+<META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.44">
+<META NAME="SECTLVL" CONTENT="1">
+<LINK REL="HOME" TITLE="OpenText Tempo Box" HREF="syncpcwb-h-ugd.htm">
+<LINK REL="UP" TITLE="Gerenciando arquivos e pastas " HREF="syncpcwb-fileman-so.htm">
+<LINK REL="PREVIOUS" TITLE="Fazendo download de um item" HREF="syncpcwb-downloadfile-p.htm">
+<LINK REL="NEXT" TITLE="Renomeando um arquivo ou pasta" HREF="syncpcwb-rename-p.htm">
+<META NAME="ut" CONTENT=""><LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21.css">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21ohp.css">
+<SCRIPT language="JavaScript" type="text/javascript">
+  <!--
+   window.focus()
+   if (self.name.match(/pirefwin_/i)) {
+     var s = new String(self.location);
+     var pos1 = s.indexOf("#");
+     if (pos1 > 0) { self.location=s.substring(pos1); }
+   } else if (self.name.substring(0,8) != "noframe_") {
+     if ((self.name != "frame2") && (self.name.substring(0,3) != "Add")) {
+       var laStr=new String(self.location.hash);
+       var quStr=new String(self.location.search.replace(/\?/, "&"));
+       self.location="jsframe.htm?syncpcwb-copymove-p" + quStr + laStr
+       function PutInfoToClipboard(FullId) { return }
+       
+     } else if ((parent.TocUpdCnt < 3) || (parent.TocUpdateBy!="syncpcwb-copymove-p.htm")) {
+       piInfoCounter=0;
+       document.onkeyup = parent.handleKeyCode;  
+       parent.MarkCurrentTocLink("syncpcwb-copymove-p.htm", 0, "", "syncpcwb-h-ugd");
+       function PutInfoToClipboard(FullId,evt) { parent.PutInfoToClipboard(FullId,this.location,evt) }
+     }  
+
+     if (self.name == "frame2") {
+       parent.SetLinks("syncpcwb-downloadfile-p.htm", "syncpcwb-rename-p.htm", "sync-icons-bg.htm", "syncpcwb-settings-so.htm", "CurTocLevel")
+       var s = new String(self.location);
+       var pos1 = s.indexOf("#");
+       if (pos1 > 0) { s=s.substring(pos1); self.location=s.toUpperCase(); }
+     };
+   }  
+     
+  //-->
+  </SCRIPT>
+  <SCRIPT  for="document" event="onkeydown()" language="JScript" type="text/jscript">
+  <!--
+  if (window.event.keyCode==27) { self.scrollTo(0,0); parent.focus() }
+  //-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#000099" VLINK="#9090ba" ALINK="#006666" ONLOAD="if (top.highLight) top.highLight(self,top.ftsSrchExpr,top.ftsSrchMode)"><A NAME="TOPofPAGE"></A>
+<DIV CLASS="navheader">
+<TABLE CLASS="navheader" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD WIDTH="1500px" ALIGN="left" VALIGN="bottom">
+<p CLASS="h5">OpenText Tempo Box: <NOBR>Ajuda do usuário do cliente da Web</NOBR></p></TD>
+<TD WIDTH="10%" ROWSPAN="2" ALIGN="right" VALIGN="top" CLASS="td4pnavbtn">
+<A ID="NAV1PREV" HREF="syncpcwb-downloadfile-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_prevhpg.gif" ONMOUSEOVER="this.src='hpi_prevhpg.gif'" ONMOUSEOUT="this.src='pi_prevhpg.gif'" ALT="Anterior:Fazendo download de um item"></IMG></A>&nbsp;&nbsp;<A ID="NAV1NEXT" HREF="syncpcwb-rename-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_nexthpg.gif" ONMOUSEOVER="this.src='hpi_nexthpg.gif'" ONMOUSEOUT="this.src='pi_nexthpg.gif'" ALT="Seguinte:Renomeando um arquivo ou pasta"></IMG></A></TD></TR>
+<TR>
+<TD WIDTH="90%" ALIGN="left" VALIGN="bottom">
+</TD></TR></TABLE></DIV>
+<DIV ID="HL4SRCH">
+<DIV CLASS="pagecontent" ID="PAGECONTENT">
+<H1 CLASS="sect1 pagehd">Movendo ou copiando um arquivo ou pasta</A></H1>
+<DIV title="Para mover ou copiar um arquivo:" CLASS="procedure">
+<P><B><A NAME="AEN415ttl"></A>Para mover ou copiar um arquivo:</B></P>
+<OL TYPE="1">
+<LI>
+<P class="nr1"><A NAME="TMPID423"></A>Indique o menu de função do item <IMG alt="Function menu icon" SRC="file_dropdown_sel.png">  e depois clique em <B CLASS="guilabel">Mover</B> ou <B CLASS="guilabel">Copiar</B> .</P>
+<P><A NAME="TMPID427"></A>Só é possível copiar um arquivo de uma pasta para a qual você tem acesso somente leitura. Pastas somente leitura são identificadas pela camada de sobreposição de bloqueio. Por exemplo, <IMG alt="Read-Only Shared Folder icon" SRC="help_Shared_RO.png">  ou <IMG SRC="help_Enterprise_RO.png">.</P>
+<P><A NAME="TMPID430"></A>Além disso, só é possível copiar um arquivo quando ele estiver reservado por outro colaborador em uma pasta à qual você tem acesso de leitura/gravação. As pastas de leitura/gravação são identificadas por <IMG alt="Shared Folder icon" SRC="help_Shared_RW.png">  ou <IMG SRC="help_Enterprise_RW.png">. Os arquivos reservados foram marcados com a camada <IMG alt="Reserved File overlay" SRC="reserved16.png">.  Por exemplo, <IMG alt="Reserved file " SRC="reserved_file.png">. Para descobrir quem reservou o arquivo, você pode verificar o histórico de auditorias do arquivo. Para obter detalhes, consulte <span><A HREF="syncpcwb-viewhistory-p.htm">Exibindo histórico de itens ou pastas</A></span> .</P></LI>
+<LI>
+<P class="nr1"><A NAME="TMPID437"></A>Navegue até a pasta de destino, e depois clique em <B CLASS="guilabel">Copiar</B> ou <B CLASS="guilabel">Mover</B>. Se a pasta de destino estiver com a cor cinza, você não tem acesso de leitura/gravação à pasta.</P></LI></OL></DIV>
+<DIV title="Para mover ou copiar uma pasta:" CLASS="procedure">
+<P><B><A NAME="AEN435ttl"></A>Para mover ou copiar uma pasta:</B></P>
+<OL TYPE="1">
+<LI>
+<P class="nr1"><A NAME="TMPID443"></A>Indique o menu de função do item <IMG alt="Function menu icon" SRC="file_dropdown_sel.png">  e depois clique em <B CLASS="guilabel">Mover</B> ou <B CLASS="guilabel">Copiar</B> .</P>
+<P><A NAME="TMPID447"></A>Você pode mover suas pastas compartilhadas para qualquer lugar de sua pasta do Tempo Box, exceto para outra pasta compartilhada. As pastas compartilhadas que você possui exibem somente o nome da pasta e são identificadas como <IMG alt="Read/Write Shared Folder icon" SRC="help_Shared_RW.png">. </P>
+<P><A NAME="TMPID450"></A>Só é possível copiar a raiz de uma pasta compartilhada com você. Ao fazer isso, uma cópia particular será criada no novo local, mas a pasta compartilhada original permanecerá no nível da raiz da pasta do Tempo Box. As pastas compartilhadas com você recebem o nome de usuário do proprietário da pasta no nome da pasta e são identificadas como <IMG alt="Read/Write Shared Folder icon" SRC="help_Shared_RW.png">   (leitura/gravação) ou <IMG alt="Read-only Shared Folder icon" SRC="help_Shared_RO.png">   (somente leitura).</P>
+<P><A NAME="TMPID454"></A>Só é possível copiar a raiz de uma pasta corporativa, independentemente do seu nível de acesso. Além disso, só é possível copiar subpastas em uma pasta corporativa à qual você tem acesso somente leitura. Ao fazer isso, uma cópia particular será criada no novo local, mas a pasta corporativa original permanecerá no nível da raiz da pasta do Tempo Box. As pastas corporativas são identificadas como <IMG SRC="help_Enterprise_RW.png">  (leitura/gravação) ou <IMG SRC="help_Enterprise_RO.png">  (somente leitura).</P>
+<P><A NAME="TMPID458"></A>Só é possível copiar a raiz de uma biblioteca de arquivos em uma comunidade de Tempo Social, que é identificada como <IMG SRC="help_Community_RW.png">  (leitura/gravação) ou <IMG SRC="help_Community_RO.png">  (somente leitura). Ao fazer isso, uma cópia particular da biblioteca de arquivos será criada no novo local, mas a biblioteca de arquivos original permanecerá no nível da raiz da pasta do Tempo Box.</P>
+<P><A NAME="TMPID463"></A>Para obter mais informações sobre como mover pastas compartilhadas, consulte <span><A HREF="syncpc-renamedelmoveshare-bg.htm">Movendo, renomeando e excluindo pastas compartilhadas </A></span>. </P></LI>
+<LI>
+<P class="nr1"><A NAME="TMPID466"></A>Clique na pasta de destino e depois clique em <B CLASS="guilabel">Copiar</B> ou <B CLASS="guilabel">Mover</B>. Se a pasta de destino estiver com a cor cinza, você não tem acesso de leitura/gravação à pasta.</P></LI></OL></DIV>
+<table CLASS="tip">
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR>
+<TR FRAME="VOID">
+<TD ALIGN="LEFT" VALIGN="TOP" CLASS="iconcell">
+<P CLASS="tip"><IMG ALT="Dica" SRC="pi_tip.gif"></IMG></P></TD>
+<TD ALIGN="LEFT" CLASS="percontscell">
+<P CLASS="tip" ALIGN="LEFT"><B>Dicas: </B></P><A NAME="AEN465"></A>
+<UL class="tip">
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN466"></A><A NAME="TMPID472"></A>Você pode copiar ou mover vários itens ou pastas selecionando as caixas de seleção à esquerda de cada item ou pasta, indicando <B CLASS="guilabel">Mais</B>, no painel central, e clicando em <B CLASS="guilabel">Copiar</B> ou <B CLASS="guilabel">Mover</B>. </P></LI>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN471"></A><A NAME="TMPID477"></A>Você pode marcar a caixa de seleção no cabeçalho da coluna para selecionar todos os itens da página.</P></LI></UL></TD></TR>
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR></table>
+<P ALIGN="RIGHT"><A HREF="#TOPofPAGE">Topo da página</A></P></DIV></DIV>
+<DIV CLASS="navfooter">
+<TABLE CLASS="navfooter" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD WIDTH="30pt" ALIGN="left" VALIGN="middle"><A ID="NAV1PREV" HREF="syncpcwb-downloadfile-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_prevhpg_ft.gif" ONMOUSEOVER="this.src='hpi_prevhpg_ft.gif'" ONMOUSEOUT="this.src='pi_prevhpg_ft.gif'" ALT="Anterior:Fazendo download de um item"></IMG></A></TD>
+<TD WIDTH="750px" ALIGN="left" VALIGN="middle"><A CLASS="navttl" HREF="syncpcwb-downloadfile-p.htm">Fazendo download de um item</A></TD>
+<TD WIDTH="25pt" ALIGN="center" VALIGN="middle">&nbsp;</TD>
+<TD WIDTH="750px" ALIGN="right" VALIGN="middle"><A CLASS="navttl" HREF="syncpcwb-rename-p.htm">Renomeando um arquivo ou pasta</A></TD>
+<TD WIDTH="30pt" ALIGN="right" VALIGN="middle"><A ID="NAV1NEXT" HREF="syncpcwb-rename-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_nexthpg_ft.gif" ONMOUSEOVER="this.src='hpi_nexthpg_ft.gif'" ONMOUSEOUT="this.src='pi_nexthpg_ft.gif'" ALT="Seguinte:Renomeando um arquivo ou pasta"></IMG></A></TD></TR></TABLE></DIV>
+</BODY></HTML>

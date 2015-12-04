@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd"><html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<META name="bookrevnum" content="SYNCPCWB100510-H-UGD-FR-1">
+<META name="pvScheme" content="010203">
+<META name="verttl" content="10.5.10">
+<title>OpenText Tempo Box: Aide utilisateur du client Web (SYNCPCWB100510-H-UGD-FR-1)</title>
+<META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.44">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21.css">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21ohp.css">
+<SCRIPT   language="JavaScript" type="text/javascript" src="static/fts_ot.js"></script>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+   window.focus();
+   document.maxtoc=2
+   document.toclimit=5;
+   document.currentToc=2;
+   document.LinkToRememberNum='';
+   document.piInfoCounterCtrl=0;
+   document.piInfoCounter=0;
+   window.switchingToc=0;
+   window.TocUpdatedBy=new String('none');
+   window.TocUpdCnt=0;
+   window.seenHits=new String();
+   window.ctxtFlags='</>';
+   var myRefWin;
+
+   // ----------------------------------
+   function SetLinks(bwlink,fwlink,hmlink,endlink,CurTocLevel) {
+   // ----------------------------------
+   // This function is called by frame2 pages to set the local links
+   // that are used in the "for" script below then.
+   // (c) 2004 Ekbert Mertens, IXOS SOFTWARE AG
+     document.backwardlink=bwlink;
+     document.forwardlink=fwlink;
+     document.homelink=hmlink;
+     document.endlink=endlink;
+     document.CurTocLevel=CurTocLevel;
+     document.piInfoCounterCtrl=0;
+     document.piInfoCounter=0;
+   }
+   
+   // ----------------------------------
+   function MarkCurrentTocLink(toMatch, SectLvl) {
+   // ----------------------------------
+   // This function is called to highlight the TOC entry that matches the currently
+   // displayed HTML file. It also changes the displayed TOC page to the deepest one, if
+   // no matching TOC entry is found on the current TOC page. Unfortunately, in IE, 
+   // the highlighting does not work immediately after this TOC change; obviously, 
+   // the location change is not correctly stored internally.
+   // (c) 2004 Ekbert Mertens, IXOS SOFTWARE AG
+     var TocDoc=frame1.document;
+     var found=0;
+     var loopCnt=0;
+     var j=0;
+     var i=0;
+     var k=0;
+     var TocDocLoc=String("");
+     var re=RegExp("xx", "i");
+     
+     if (SectLvl+2 > document.maxtoc) {
+       return;
+     }
+     if (toMatch=="--reset--") { 
+       document.LinkToRememberNum=''; 
+       // top.LinkToRememberClassName='';
+       top.ftsSrchExpr='';
+       top.ftsSrchMode='';
+       return;
+     }  
+     
+     TocDocLoc=String(frame1.location);
+     if ((TocDoc.links[1] != null) && (TocDoc.links) && (!(TocDocLoc.match(/fts\.htm/i))))  {
+       do {
+         TocDocLoc=String(frame1.location);
+         if (TocDocLoc.indexOf("idx2.htm")>0) { return }
+         loopCnt++;
+         if (document.LinkToRememberNum != '') {
+           var myArr=document.LinkToRememberNum.split(";");
+           for (var i=0; i < myArr.length; i++) {
+             if ((myArr[i]>0) && (TocDoc.links[myArr[i]])) {
+               TocDoc.links[myArr[i]].className=TocDoc.links[myArr[i]].className.replace(/active /gi, '');
+               var parNode=TocDoc.links[myArr[i]].parentNode.parentNode;
+               parNode.className=parNode.className.replace(/active /gi, '');
+               parNode=parNode.parentNode;
+               parNode.className=parNode.className.replace(/active /gi, '');
+             }  
+           }  
+         }  
+         document.LinkToRememberNum='';
+    
+         for (var k=0; k < TocDoc.links.length; k++) {
+           if ((TocDoc.links[k].href.indexOf("/"+toMatch)>0) && (TocDoc.links[k].href.indexOf("#")<0))  { 
+             document.LinkToRememberNum=document.LinkToRememberNum + ";" + k;
+             TocDoc.links[k].className = "active " + TocDoc.links[k].className.replace(/active( |$)/, "");
+             var parNode=TocDoc.links[k].parentNode.parentNode;
+             var parNode2=parNode.parentNode;
+             parNode.className = "active " + parNode.className.replace(/active( |$)/, "");
+             parNode=parNode.parentNode;
+             if (!(parNode.className.match(/active( |$)/))) { // most links have 2 TDs with a link each, so the parent TR is touched twice, and the second would override the original LinkToRememberClassNamePar2
+               parNode.className = "active " + parNode.className;
+             }
+             found++;
+             if (TocDocLoc.match(/toc4js\.htm/i)) { 
+               parent.frame1.ToggleTE(this, "jumpto:" + parNode.id);
+             }
+             if (found==1) { // Scroll the TOC if necessary
+               var id2go=new String(TocDoc.links[k].href);
+               id2go=id2go.replace(/.*\//, "");
+               if (TocDoc.getElementById(id2go)) { TocDoc.getElementById(id2go).focus(); }
+             } 
+             window.focus(); // Re-activate general key codes in the script below
+           }
+         } 
+         if ((found==0) && (window.switchingToc!=1)) { 
+           TocDocLoc=TocDocLoc.replace(/([\/\\])[^\/\\]*?$/, "$1" + "toc" + document.maxtoc + ".htm");
+           frame1.location=TocDocLoc;
+           TocDoc=frame1.document;
+         }  
+       } while ((found==0) && (loopCnt<2));
+     }  
+     window.switchingToc=0;
+     if (window.TocUpdatedBy==toMatch) { 
+       window.TocUpdCnt++;
+     } else { 
+       window.TocUpdCnt=1;
+       window.TocUpdatedBy=toMatch;
+     }  
+   }  
+
+   // ----------------------------------
+   function PutInfoToClipboard(FullId,LocString, evt) {
+   // ----------------------------------
+      evt= (evt) ? evt : ((window.event) ? event : null);
+      ManId='';
+      SectId='';
+      if ((evt) && (evt.ctrlKey)) {
+        document.piInfoCounterCtrl++;
+        if (document.piInfoCounterCtrl == 3) { document.piInfoCounterCtrl=1 }
+        switch(document.piInfoCounterCtrl) {
+          case 1:
+            SectId=FullId.replace(/(Pre-|Prel-|FCS-|RMP-)?([a-zA-Z]+)(\d+)?(-h|-H|-X)?(-[a-zA-Z]+)(-[a-zA-Z][a-zA-Z](-\d+)?)?(.([a-zA-Z\-\_\d]+))?$/i, "$1>>$2$4$5.$9");
+            break;
+          default:
+            SectId=FullId.replace(/.*?\./, "");
+            break;
+        }
+        ClipString="<xref linkend=\"" + SectId.replace(/.*?>>/, "") + "\"/>";
+            
+      } else {
+        document.piInfoCounter++;
+        if (document.piInfoCounter == 5) { document.piInfoCounter=1 }
+        switch(document.piInfoCounter) {
+          case 1:
+            ClipString=String(LocString);
+            ClipString=ClipString.replace(/file:/g, "")
+            ClipString=ClipString.replace(/^\/+(\w:)/g, "$1")
+            ClipString=ClipString.replace(/\//g, "\\")
+            break;
+          case 2:
+            ClipString=String(LocString);
+            break;
+          case 3:
+            SectId=FullId.replace(/(Pre-|Prel-|FCS-|RMP-)?([a-zA-Z]+)(\d+)?(-h|-H|-X)?(-[a-zA-Z]+)(-[a-zA-Z][a-zA-Z](-\d+)?)?(.([a-zA-Z\-\_\d]+))?$/i, "$1>>$2$4$5.$9");
+            ClipString=SectId.replace(/.*?>>/, "");
+            break;
+          default:
+            ClipString=FullId;
+            break;
+        }
+      }
+      window.clipboardData.setData('Text', ClipString); 
+      window.status='Copied to Clipboard: ' + ClipString;
+      return document.piInfoCounter;
+    }
+
+   // ----------------------------------
+   function RefWin(page, targetspec, winspec) {
+   // ----------------------------------
+     if (winspec=="small") {
+       var tgtX=screen.availWidth-310;
+       winspec="top=0, left=0, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=300, height=300";
+     } else if (winspec=="listing") {
+       var tgtX=screen.availWidth-610;
+       var tgtH=screen.availHeight-30;
+       winspec="top=0, left=0, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=" + tgtH;
+     } else if (winspec=="") {
+       var tgtX=screen.availWidth-410;
+       winspec="toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400";
+     };
+     if (!myRefWin || myRefWin.closed){
+         myRefWin = window.open(page, "pirefwin_" + targetspec, winspec);
+         myRefWin.moveTo(tgtX,0);
+     }   
+     myRefWin.location=page;
+     myRefWin.focus();
+     return false; // to skip actual href processing
+   }
+   
+ //-->
+</SCRIPT>
+<SCRIPT  language="JavaScript" type="text/javascript">
+<!--
+ // Enable navigation via keyboard (note the difference between frameset level and page evel!):
+ // * PgDn/PgUp or CsLeft/CsRight on frameset level: scroll page by page
+ // * CsDn/CsUp: Switch to page level and scroll within the page
+ // * PgDn/PgUp on page level: Scroll in steps of screen height *within the page*
+ // * ESC: Switch back to frameset level
+ // * Numbers: Open TOC of <number> level, if available
+ // * "i" or "x": Open index in TOC frame
+ // Tested in Netscape 7 (Firefox, mozilla) and IE 6; will not work in lower versions.
+ // The *link variables are set by the frame2 pages via the SetLinks function above.
+ // (c) 2004 Ekbert Mertens, IXOS SOFTWARE AG
+  function handleKeyCode(evt) {
+    evt= (evt) ? evt : ((window.event) ? event : null);
+    if (evt) {
+      if      ((document.backwardlink != "") && ((evt.keyCode==33) || (evt.keyCode==37)))
+                  { frame2.location=document.backwardlink; return true; }
+      else if ((document.forwardlink != "") && ((evt.keyCode==34) || (evt.keyCode==39)))
+                  { frame2.location=document.forwardlink; return true; }
+      else if ((document.forwardlink != "") && (evt.keyCode==36))
+                  { frame2.location=document.homelink; return true; }
+      else if ((document.forwardlink != "") && (evt.keyCode==35))
+                  { frame2.location=document.endlink; return true; }
+                
+      else if ((evt.keyCode>96) && (evt.keyCode<(97+document.maxtoc)))
+                  { frame1.location="toc"+(evt.keyCode-96)+".htm"; return true; }
+      else if ((evt.keyCode>48) && (evt.keyCode<(49+document.maxtoc)))
+                  { frame1.location="toc"+(evt.keyCode-48)+".htm"; return true; }
+                
+      else if ((document.currentToc<document.maxtoc) && ((evt.charCode==43) ||  (evt.keyCode==187) || (evt.keyCode==107))) // plus
+                  { document.currentToc++; frame1.location="toc"+document.currentToc+".htm"; return true; }
+      else if ((document.currentToc>1) && ((evt.charCode==45) || (evt.keyCode==189) || (evt.keyCode==109))) // minus
+                  { document.currentToc--; frame1.location="toc"+document.currentToc+".htm"; return true; }
+      else if ((evt.keyCode==40) || (evt.keyCode==38))
+                  { frame2.focus(); return true; }
+  
+//      else if (evt.keyCode==27)
+//                  { frame1.focus(); return true; }
+      else if ((evt.keyCode==73) || (evt.keyCode==88)) // I or X to Index
+                  { frame1.location="idx2.htm"; return true; }
+      else if ((evt.keyCode==83) || (evt.keyCode==105)) // S or F 12343to search
+                  { frame1.location="fts.html?searchField="; return true; }
+      else { return true; }
+    }              
+  }  
+  document.onkeyup = handleKeyCode;  
+//-->
+</SCRIPT>
+</head><frameset COLS = "25%,75%" FRAMEBORDER="1" FRAMESPACING="0" BORDER="1px"><frame SRC="toc.htm" NAME="frame1" scrolling="yes" FRAMEBORDER="0" BORDER="0" FRAMESPACING="0"><frame SRC="copyrght.htm" NAME="frame2" scrolling="yes" FRAMEBORDER="0" BORDER="0" FRAMESPACING="0"></frameset>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF" ONLOAD="if (top.highLight) top.highLight(self,top.ftsSrchExpr,top.ftsSrchMode)"><noframes>
+<p>This manual requires a browser which can display frames (e.g. Netscape navigator or Microsoft Internet Explorer)</noframes>
+</body></html>

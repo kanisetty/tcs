@@ -1,0 +1,174 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<META NAME="bookrevnum" CONTENT="SYNCPCWB160000-H-UGD-EN-1">
+<META name="pvScheme" content="010203">
+<META name="verttl" content="16.0">
+<title>Sharing Folders and Responding to a Sharing Invitation</title>
+<META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.44">
+<META NAME="SECTLVL" CONTENT="1">
+<LINK REL="HOME" TITLE="OpenText Tempo Box" HREF="syncpcwb-h-ugd.htm">
+<LINK REL="PREVIOUS" TITLE="Checking Your Tempo Box Folder Size " HREF="syncpcwb-checkfoldersize-p.htm">
+<LINK REL="NEXT" TITLE="Sharing a Folder" HREF="syncpcwb-sharenewfolder-p.htm">
+<META NAME="ut" CONTENT=""><LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21.css">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21ohp.css">
+<SCRIPT language="JavaScript" type="text/javascript">
+  <!--
+   window.focus()
+   if (self.name.match(/pirefwin_/i)) {
+     var s = new String(self.location);
+     var pos1 = s.indexOf("#");
+     if (pos1 > 0) { self.location=s.substring(pos1); }
+   } else if (self.name.substring(0,8) != "noframe_") {
+     if ((self.name != "frame2") && (self.name.substring(0,3) != "Add")) {
+       var laStr=new String(self.location.hash);
+       var quStr=new String(self.location.search.replace(/\?/, "&"));
+       self.location="jsframe.htm?syncpcwb-sharing-so" + quStr + laStr
+       function PutInfoToClipboard(FullId) { return }
+       
+     } else if ((parent.TocUpdCnt < 3) || (parent.TocUpdateBy!="syncpcwb-sharing-so.htm")) {
+       piInfoCounter=0;
+       document.onkeyup = parent.handleKeyCode;  
+       parent.MarkCurrentTocLink("syncpcwb-sharing-so.htm", 0, "", "syncpcwb-h-ugd");
+       function PutInfoToClipboard(FullId,evt) { parent.PutInfoToClipboard(FullId,this.location,evt) }
+     }  
+
+     if (self.name == "frame2") {
+       parent.SetLinks("syncpcwb-checkfoldersize-p.htm", "syncpcwb-sharenewfolder-p.htm", "sync-icons-bg.htm", "syncpcwb-settings-so.htm", "CurTocLevel")
+       var s = new String(self.location);
+       var pos1 = s.indexOf("#");
+       if (pos1 > 0) { s=s.substring(pos1); self.location=s.toUpperCase(); }
+     };
+   }  
+     
+  //-->
+  </SCRIPT>
+  <SCRIPT  for="document" event="onkeydown()" language="JScript" type="text/jscript">
+  <!--
+  if (window.event.keyCode==27) { self.scrollTo(0,0); parent.focus() }
+  //-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#000099" VLINK="#9090ba" ALINK="#006666" ONLOAD="if (top.highLight) top.highLight(self,top.ftsSrchExpr,top.ftsSrchMode)"><A NAME="TOPofPAGE"></A>
+<DIV CLASS="navheader">
+<TABLE CLASS="navheader" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD WIDTH="1500px" ALIGN="left" VALIGN="bottom">
+<p CLASS="h5">OpenText Tempo Box: <NOBR>Web Client User Help</NOBR></p></TD>
+<TD WIDTH="10%" ROWSPAN="2" ALIGN="right" VALIGN="top" CLASS="td4pnavbtn">
+<A ID="NAV1PREV" HREF="syncpcwb-checkfoldersize-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_prevhpg.gif" ONMOUSEOVER="this.src='hpi_prevhpg.gif'" ONMOUSEOUT="this.src='pi_prevhpg.gif'" ALT="Prev:Checking Your Tempo Box Folder Size "></IMG></A>&nbsp;&nbsp;<A ID="NAV1NEXT" HREF="syncpcwb-sharenewfolder-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_nexthpg.gif" ONMOUSEOVER="this.src='hpi_nexthpg.gif'" ONMOUSEOUT="this.src='pi_nexthpg.gif'" ALT="Next:Sharing a Folder"></IMG></A></TD></TR>
+<TR>
+<TD WIDTH="90%" ALIGN="left" VALIGN="bottom">
+</TD></TR></TABLE></DIV>
+<DIV ID="HL4SRCH">
+<DIV CLASS="pagecontent" ID="PAGECONTENT">
+<H1 class="pagehd">Sharing Folders and Responding to a Sharing Invitation</A></H1>
+<P class="nr1"><A NAME="TMPID1040"></A>Your Tempo Box folder may contain the following types of collaborative folders: Shared folders, Enterprise folders, and Community file libraries. </P>
+<P>
+<DIV CLASS="informaltable">
+<TABLE BORDER="1" CELLSPACING="0" CELLPADDING="4" CLASS="informaltable">
+<TR SCOPE="ROW" STYLE="CONTSROW"><A NAME="AEN991"></A>
+<TD SCOPE="COL" WIDTH="45" ALIGN="LEFT" VALIGN="TOP"><IMG SRC="help_Shared_RW.png"></TD>
+<TD SCOPE="COL" ALIGN="LEFT" VALIGN="TOP">A shared folder is a Tempo Box folder that you have shared or that is shared with you. If the folder name is appended with a user name, the folder is shared with you. For example, <TT CLASS="filename">Marketing Materials (jsmith)</TT>. </TD></TR>
+<TR SCOPE="ROW" STYLE="CONTSROW">
+<TD SCOPE="COL" WIDTH="45" ALIGN="LEFT" VALIGN="TOP"><IMG SRC="help_Enterprise_RW.png"></TD>
+<TD SCOPE="COL" ALIGN="LEFT" VALIGN="TOP">An Enterprise folder is a folder within the Enterprise Workspace that is synced to your Tempo Box folder. A user who has the <I CLASS="emphasis">Edit Permissions</I> permission for the folder can share the folder with you or you can navigate to the folder in the Enterprise Workspace and add the folder to your Tempo Box folder. The folder must allow Tempo Box subscriptions and you need to have at least the <I CLASS="emphasis">See</I> permission to add the folder. For more information on adding Enterprise folders to your Tempo Box folder in Content Server, see <span><XPROC NAME="ExtXrefStart" HREF="synclles-h-ugd.-" FMT="" NO1ST><i>OpenText Content Server User Help - Using OpenText Tempo Box (SYNCLLES-H-UGD)</i><XPROC NAME="ExtXrefEnd" HREF="synclles-h-ugd.-" FMT=""></span>.</TD></TR>
+<TR SCOPE="ROW" STYLE="CONTSROW">
+<TD SCOPE="COL" WIDTH="45" ALIGN="LEFT" VALIGN="TOP"><IMG SRC="help_Community_RW.png"></TD>
+<TD SCOPE="COL" ALIGN="LEFT" VALIGN="TOP">A file library from a Tempo Social Community. Community file libraries will only appear if you have OpenText Tempo Social installed. Contact your administrator for more information.</TD></TR></TABLE>
+</DIV></P>
+<P><A NAME="TMPID1070"></A>You can collaborate with others by sharing folders inside your <B CLASS="guilabel">Tempo Box</B> folder. When you share a folder, you add other users as potential collaborators who can also access the folder where you grant read/write or read-only permission to the folder. </P>
+<P><A NAME="TMPID1073"></A>Read/write access gives collaborators full control over the contents of the shared folder, which includes the ability to add, edit, copy, move, rename, and delete items and folders in the shared folder. </P>
+<P><A NAME="TMPID1074"></A>Read-only access allows collaborators to view and copy the items in a shared folder. Read-only collaborators cannot edit, move, or delete items. If a read-only collaborator adds an item, the item is not synced to other collaborators. When a collaborator has read-only access to a folder, the lock overlay appears. For example, <IMG SRC="help_Shared_RO.png">.</P>
+<P CLASS="bridgehead-subheading2 BH2SEP"><A NAME="SYNC-SHARING-FOLDER-EXCEPTIONS">Sharing Exceptions</A></P>
+<P class="before-ul"><A NAME="TMPID1081"></A>You can share any folder in your Tempo Box folder, with the following exceptions:</P><A NAME="AEN1031"></A>
+<UL>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN1032"></A><A NAME="TMPID1085"></A>The root <B CLASS="guilabel">Tempo Box</B> folder.</P></LI>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN1036"></A><A NAME="TMPID1089"></A>A folder that is a child or parent of a shared folder.</P></LI>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN1038"></A><A NAME="TMPID1091"></A>A folder that is shared with you.</P></LI>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN1040"></A><A NAME="TMPID1093"></A>Enterprise folders if you have read-only access, which are identified by <IMG SRC="help_Enterprise_RO.png">. If you have read/write access to an Enterprise folder, which is identified by <IMG SRC="help_Enterprise_RW.png"> , you can share the folder only if you have the <I CLASS="emphasis">Edit Permissions</I> permission for that folder in  Content Server. </P></LI>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN1046"></A><A NAME="TMPID1099"></A>Community file libraries regardless if you have read/write or read-only access. Community file libraries are identified by <IMG SRC="help_Community_RW.png">  or <IMG SRC="help_Community_RO.png">.</P></LI>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN1050"></A><A NAME="TMPID1103"></A>External users cannot share any folders.</P></LI></UL>
+<P><A NAME="TMPID1104"></A>For information on managing your shared folders, refer to the other topics in <A HREF="toc-4.htm">Sharing a Folder and Managing Shared Folders</A>.</P>
+<P CLASS="bridgehead-subheading2 BH2SEP"><A NAME="SYNCPCWB-ACCESS-CONTENT-BG">Accessing Shared Folder Content</A></P>
+<P><A NAME="TMPID1111"></A>As a collaborator, you need to receive a sharing invitation from the folder owner that you must accept before you can view the folder and its contents.  A red notification <IMG alt="Sharing Request icon" SRC="share_request.png">  appears in the top pane when you have pending sharing invitations. Once accepted, the shared folder is placed in the root of your Tempo Box folder where the folder name is appended with the user name of the folder owner. For example, <TT CLASS="filename">Marketing Materials (jsmith)</TT>. The folder will appear as <IMG SRC="help_Shared_RW.png">  if you have read/write access or <IMG SRC="help_Shared_RO.png">  if you have read-only access. </P>
+<P><A NAME="TMPID1117"></A>A notification will also appear if you have pending invitations to an Enterprise folder. In this case, the folder is also placed in the root of your Tempo Box folder and will appear as <IMG SRC="help_Enterprise_RW.png">  if you have read/write access or <IMG SRC="help_Enterprise_RO.png">  if you have read-only access to the folder. The Enterprise folder may append the parent folder name depending on your permissions to the parent folder. For example, <TT CLASS="filename">Payroll (Human Resources)</TT>.</P>
+<P><A NAME="TMPID1122"></A>The results of moving, renaming, or deleting a shared folder vary depending on the <A HREF="sync-icons-bg.htm#SHARED-FOLDERS">type of the shared folder</A>, as well as whether you are the shared folder’s owner. For more information, see <span><A HREF="syncpc-renamedelmoveshare-bg.htm">Moving, Renaming, and Deleting Shared Folders</A></span>. </P>
+<table CLASS="important">
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR>
+<TR FRAME="VOID">
+<TD ALIGN="LEFT" VALIGN="TOP" CLASS="iconcell">
+<P CLASS="important"><IMG ALT="Important" SRC="pi_important.gif"></IMG></P></TD>
+<TD ALIGN="LEFT" CLASS="percontscell">
+<P><A NAME="TMPID1126"></A><B CLASS="important">Important: </B><BR>When editing a file in a shared folder for which you have read/write access, you must <A HREF="syncpcwb-reserve-p.htm">reserve the file</A> to prevent other collaborators from making changes to it at the same time. Files are not automatically reserved. Read/write folders are identified by <IMG alt="Shared Folder icon" SRC="help_Shared_RW.png">  or <IMG SRC="help_Enterprise_RW.png">. </P></TD></TR>
+<TR>
+<TD FRAME="VOID" CLASS="tabverspace" COLSPAN="2">&nbsp;</TD></TR></table>
+<P CLASS="bridgehead-subheading2 BH2SEP"><A NAME="UGD-SHARINGEXTERNALUSERS">Sharing with External Users</A></P>
+<P class="before-ul"><A NAME="TMPID1138"></A> Your administrator can give you the ability to share folders with users who are not employees at your company. If you have this ability, you must provide the External user’s email address when sharing a folder. The External user then receives an email, inviting them to register for an OpenText Tempo Box account. After registering, the External user can install clients and access OpenText Tempo Box just like Content Server users, with the following exceptions:</P><A NAME="AEN1087"></A>
+<UL>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN1088"></A><A NAME="TMPID1147"></A>External users can accept sharing invitations from other users, but they cannot share folders themselves.</P></LI>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN1090"></A><A NAME="TMPID1149"></A>External users cannot publish items to or otherwise access Content Server.</P></LI></UL>
+<P><A NAME="TMPID1151"></A>For more information on External users, see <span><A HREF="sync-icons-bg.htm#SYNC-USER-TYPES-BG">OpenText Tempo Box, Content Server Edition User Types</A></span>.</P>
+<P CLASS="bridgehead-subheading2 BH2SEP"><A NAME="SYNC-SHARING-ENTERPRISE">Sharing Enterprise Folders</A></P>
+<P class="before-ul"><A NAME="TMPID1161"></A> You can share Enterprise folders with other Content Server users if the following conditions are met:</P><A NAME="AEN1104"></A>
+<UL>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN1105"></A><A NAME="TMPID1165"></A>In the <B CLASS="guilabel">Content Server Administration</B> page, Content Server integration is enabled and the Enterprise folders that you want to share are specified.</P></LI>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN1110"></A><A NAME="TMPID1170"></A>In Content Server, the Enterprise folder that you want to share allows subscriptions.</P></LI>
+<LI class="vlli">
+<P class="nr1"><A NAME="AEN1113"></A><A NAME="TMPID1173"></A>You have <I CLASS="emphasis">Edit Permissions</I> permission for the Enterprise folder.  This includes administrators, as well as the folder owner.</P></LI></UL>
+<P><A NAME="TMPID1175"></A>For more information on these conditions, contact your administrator.</P>
+<P><A NAME="TMPID1176"></A>When sharing a folder, you can grant read/write or read-only access to the folder, which then grants the following folder permission levels in Content Server. </P>
+<DIV title=" Folder Permission and Access in 'Tempo Box'" CLASS="table">
+<P CLASS="table" ALIGN="LEFT"><A NAME="FOLDER-PERMISSIONS"></A><B>Table 3-1:  Folder Permission and Access in Tempo Box</B></P>
+<TABLE BORDER="1" CELLSPACING="0" CELLPADDING="4" CLASS="table">
+<TR SCOPE="ROW" STYLE="CONTSROW">
+<TH SCOPE="COL" WIDTH="234" ALIGN="LEFT" VALIGN="TOP">Access in Tempo Box</TH>
+<TH SCOPE="COL" WIDTH="330" ALIGN="LEFT" VALIGN="TOP">Folder Permission in  Content Server</TH></TR>
+<TR SCOPE="ROW" STYLE="CONTSROW">
+<TD SCOPE="COL" WIDTH="234" ALIGN="LEFT" VALIGN="TOP">Read/write access</TD>
+<TD SCOPE="COL" WIDTH="330" ALIGN="LEFT" VALIGN="TOP">Permission to modify the folder content, which includes all permissions except for the <I CLASS="emphasis">Edit Permissions</I> permission.</TD></TR>
+<TR SCOPE="ROW" STYLE="CONTSROW">
+<TD SCOPE="COL" WIDTH="234" ALIGN="LEFT" VALIGN="TOP">Read-only access</TD>
+<TD SCOPE="COL" WIDTH="330" ALIGN="LEFT" VALIGN="TOP"><I CLASS="emphasis">See</I> and <I CLASS="emphasis">See Contents</I> permission.</TD></TR></TABLE></DIV>
+<P><A NAME="TMPID1200"></A>The access level you grant is applied only to the items in the Enterprise folder for which you have the <I CLASS="emphasis">Edit Permissions</I> permission. </P>
+<P><A NAME="TMPID1202"></A>If you grant a Content Server user read/write access to the Enterprise folder when they currently have read-only access, the additional permissions are applied. However, if you try to grant read-only access to a Content Server user who has permissions higher than <I CLASS="emphasis">See</I> and <I CLASS="emphasis">See Contents</I>, no permissions will be altered and the user will continue to retain their higher access level. To change the access level for a Content Server user who has read/write access to a folder, you need to edit the user’s permissions at the folder location in the Enterprise Workspace. </P>
+<P><A NAME="TMPID1208"></A>If you remove a Content Server user from an Enterprise folder, or if the Content Server user deletes the folder from their Tempo Box folder, the level of access that was granted remains in Content Server.</P>
+<P><A NAME="TMPID1213"></A>By sharing an Enterprise folder, the Content Server user will receive a sharing invitation that they must accept before the Enterprise folder will sync to their Tempo Box folder.</P>
+<P CLASS="bridgehead-subheading2 BH2SEP"><A NAME="SYNC-SHARING-ENT-STANDARD">Sharing Enterprise Folders with Standard Users</A></P>
+<P><A NAME="TMPID1221"></A>You can only share Enterprise objects with Standard users if you have the OpenText Tempo Box, Premium Edition module installed on Content Server. After this, sharing Enterprise objects with Standard users requires the same conditions as sharing Enterprise folders with Content Server users. For details, see <span><A HREF="syncpcwb-sharing-so.htm#SYNC-SHARING-ENTERPRISE">Sharing Enterprise Folders</A></span>. To determine if you have OpenText Tempo Box, Premium Edition, contact your administrator.</P>
+<P><A NAME="TMPID1233"></A>When all of the conditions are met, you can grant read/write or read-only access to the Enterprise object using the same process as sharing a Tempo Box folder. The Standard user will then receive a sharing invitation that they must accept before the Enterprise object will sync to their Tempo Box folder. This is the only way in which Standard users can access the content in an Enterprise folder. </P>
+<P><A NAME="TMPID1236"></A>For more information on Standard users, see <span><A HREF="sync-icons-bg.htm#SYNC-USER-TYPES-BG">OpenText Tempo Box, Content Server Edition User Types</A></span>.</P>
+<P CLASS="bridgehead-subheading2 BH2SEP"><A NAME="SYNC-SHARING-ENT-EXTERNAL">Sharing Enterprise Folders with External Users</A></P>
+<P><A NAME="TMPID1246"></A> In order to share Enterprise objects with External users, your administrator must enable external sharing and choose the Content Server users whom they would like to grant external sharing privileges. Contact your administrator to complete this condition. Once enabled,  sharing Enterprise objects with External users requires the same conditions as sharing Enterprise objects with Content Server users. </P>
+<P><A NAME="TMPID1249"></A>When these conditions are met, you can share an Enterprise object with an External user using the same steps as sharing a Tempo Box folder. The External user will then receive an email inviting them to register for an OpenText Tempo Box account or, if they already have an account, a sharing invitation that they must accept before the Enterprise object will sync to their Tempo Box folder. This is the only way in which External users can access the content in an Enterprise object.</P>
+<P><A NAME="TMPID1255"></A>For more information on External users, see <span><A HREF="sync-icons-bg.htm#SYNC-USER-TYPES-BG">OpenText Tempo Box, Content Server Edition User Types</A></span>.</P>
+<DIV CLASS="localtoc">
+<h2 CLASS="localtoc"><A NAME="LOCALTOC"></A>Table of Contents&nbsp;&nbsp;</h2>
+<A class="toc3" HREF="syncpcwb-sharenewfolder-p.htm" revision="">Sharing a Folder</A></p>
+<A class="toc3" HREF="syncpcwb-acceptsharereq-p.htm" revision="">Responding to a Sharing Invitation</A></p>
+<A class="toc3" HREF="syncpcwb-readonlyshare-p.htm" revision="">Changing a Collaborator’s Permissions</A></p>
+<A class="toc3" HREF="syncpcwb-updatecollab-p.htm" revision="">Updating the Collaborators for a Shared Folder</A></p>
+<A class="toc3" HREF="syncpcwb-unsharefolder-p.htm" revision="">Removing Collaborators from a Shared Folder</A></p>
+<A class="toc3" HREF="syncpcwb-emailnotsharedfolder-p.htm" revision="">Enabling Email Notifications for a Shared Folder</A></p>
+<A class="toc3" HREF="syncpc-renamedelmoveshare-bg.htm" revision="">Moving, Renaming, and Deleting Shared Folders</A></p></DIV>
+<P ALIGN="RIGHT"><A HREF="#TOPofPAGE">Top of page</A></P></DIV></DIV>
+<DIV CLASS="navfooter">
+<TABLE CLASS="navfooter" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD WIDTH="30pt" ALIGN="left" VALIGN="middle"><A ID="NAV1PREV" HREF="syncpcwb-checkfoldersize-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_prevhpg_ft.gif" ONMOUSEOVER="this.src='hpi_prevhpg_ft.gif'" ONMOUSEOUT="this.src='pi_prevhpg_ft.gif'" ALT="Prev:Checking Your Tempo Box Folder Size "></IMG></A></TD>
+<TD WIDTH="750px" ALIGN="left" VALIGN="middle"><A CLASS="navttl" HREF="syncpcwb-checkfoldersize-p.htm">Checking Your Tempo Box Folder Size </A></TD>
+<TD WIDTH="25pt" ALIGN="center" VALIGN="middle">&nbsp;</TD>
+<TD WIDTH="750px" ALIGN="right" VALIGN="middle"><A CLASS="navttl" HREF="syncpcwb-sharenewfolder-p.htm">Sharing a Folder</A></TD>
+<TD WIDTH="30pt" ALIGN="right" VALIGN="middle"><A ID="NAV1NEXT" HREF="syncpcwb-sharenewfolder-p.htm"><IMG CLASS="navicon" BORDER="0" SRC="pi_nexthpg_ft.gif" ONMOUSEOVER="this.src='hpi_nexthpg_ft.gif'" ONMOUSEOUT="this.src='pi_nexthpg_ft.gif'" ALT="Next:Sharing a Folder"></IMG></A></TD></TR></TABLE></DIV>
+</BODY></HTML>

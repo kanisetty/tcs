@@ -1,0 +1,14 @@
+<script id="createNewFolder" type="text/x-jquery-tmpl">
+	<div id="newFolder">
+        <div class="newFolderIconWrapper">
+            <div class="itemIcon ${utils.FolderIcon(null)}"></div>
+        </div>
+        <div class="newFolderFormWrapper">
+            <form id='createNewFolderForm'>
+                {{tmpl(newFolderInput) 'input'}}{{tmpl(newFolderCreateButton) 'button'}}{{tmpl(newFolderCancelButton) 'button'}}
+                <div id="newFolderError" class="errorText"> <b>${T('LABEL.Error')}</b>: ${T('LABEL.NewFolderError')}</div>
+            </form>
+        </div>
+        <div class="newLine"></div>
+	</div>
+</script>

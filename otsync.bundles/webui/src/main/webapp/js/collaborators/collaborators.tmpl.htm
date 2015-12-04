@@ -1,0 +1,156 @@
+<script id="shareInfoTemplate" type="text/x-jquery-tmpl">
+			<div id="shareInfoWrapper">
+				<div id="shareInfoInnerWrapper">				
+					{{if info.folderIsShareable && !info.isAdminModeRequested}}
+						<div id="shareInvitation">
+						<textarea name="inviteMessage" id="inviteMessageInputSidebar" class="inviteMessageInput" placeholder="${T('LABEL.EnterMessageToIncludeToNewCollaborators')}"/>
+						{{tmpl "shareTypeSelect-Box"}}
+						<input name="invitee" id="inviteeinput" class="shareInput" placeholder="${T('LABEL.EnterUserToShareWith')}"/><br />
+						</div>
+					{{/if}}
+					<div id="collaborators"></div>				
+				</div>
+				<div id="editAllCollaborators"></div>
+			</div>
+</script>
+<script id="shareInvitationMessageTemplate" type="text/x-jquery-tmpl">
+			<div id="shareInvitation" class="shareInvitationAll">
+				<textarea name="inviteMessage" id="inviteMessageInput" class="inviteMessageInput" placeholder="${T('LABEL.EnterMessageToIncludeToNewCollaborators')}"/>
+			</div>
+</script>
+<script id="shareInvitationTemplate" type="text/x-jquery-tmpl">
+			{{if info.folderIsShareable}}
+				<div id="shareInvitation" class="shareInvitationAll">
+					{{tmpl "shareTypeSelect-Box"}}
+					<input name="invitee" id="inviteeinputEditCollaborators" class="shareInput" placeholder="${T('LABEL.EnterUserToShareWith')}"/>
+				</div>
+			{{/if}}	
+</script>
+<script id="collaborator" type="text/x-jquery-tmpl">
+		{{if !dropDown.textRight && !MarkForAdd && CollaboratorIndex < 7}}
+			<div class="collaborator" username="${Name}">
+				<div class="shareUserImage"><img src="${ui.GetProfilePicUrl(UserID)}" class="{{if dropDown.classes}}${dropDown.classes}{{/if}}" title="${Name}"  alt="{{if IsExternalUser}} ${T('LABEL.ExternalUser')} {{/if}}"  /></div>
+				<div class="shareUserNameWrapper">
+					<div class="shareUserName {{if dropDown.classes}}${dropDown.classes}{{/if}}" title="${Name}">${DisplayName}</div>
+					<div class="shareUserStatusText {{if dropDown.classes}}${dropDown.classes}{{/if}}">
+						{{if dropDown.textLeft}}${dropDown.textLeft}{{/if}}
+						{{if dropDown.textLeft && ShareType==SHARETYPE.READONLY}} | {{/if}}
+						{{if ShareType==SHARETYPE.READONLY}}${T('LABEL.ReadOnly')}{{/if}}
+					</div>
+				</div>
+				{{if info.folderIsShareable}}<div class="cancelShareIcon"><a href="#" onclick="return false;"></a></div>{{/if}}
+			</div>
+		{{/if}}
+</script>
+
+<script id="editAllCollaboratorsTemplate" type="text/x-jquery-tmpl">
+		<div id="editCollaborators">
+			<div id="editCollaboratorsObjectInfo"></div>
+			{{if !info.isAdminModeRequested}}
+				<div id="inviteMessage"></div>
+				<div id="searchInfo2"></div>
+			{{/if}}
+			<div id="allCollaborators"></div>
+		</div>
+</script>
+<script id="editAllCollaboratorsFolderTemplate" type="text/x-jquery-tmpl">
+		<div id="editCollaboratorsFolderInfo">
+			<div id="objectInfo">Owner</div>
+			<div id="searchInfo">Search</div>
+		</div>
+</script>
+
+<script id="objectInfoDetailsTemplate" type="text/x-jquery-tmpl">
+		<div id="objectInfoDetails">
+			<div class="userImage"><img src="${ui.GetProfilePicUrl(ownerID)}" title="${ownerName}" ></img></div>
+			<div class="objectInfoDetailsText">
+				<div class="objectOwnerName"><div class="objectOwnerNameText">${T('LABEL.Owner')}:</div><div class="objectOwner">${ownerName}</div></div>					
+				<div id="objectLastModified" class="objectLastModified">${lastModified}</div>
+			</div>
+		</div>
+		{{if isNotifyEnabled}}	
+		<div class="newLine"></div>
+		<div id="objectInfoOptions">
+			<div id="objectInfoOptionsIcon" class="envelope-icon" title="envelope"></div>
+			Receive Folder Notifications
+			<div id="folderNotifyCheckBox"></div>
+		</div>
+		{{/if}}
+</script>
+<script id="objectInfoDetailsDlgTemplate" type="text/x-jquery-tmpl">
+		<div id="objectInfoDetails" class="dialogObjectInfoDetails">
+			<div class="userImage"><img src="${ui.GetProfilePicUrl(ownerID)}" title="${ownerName}" ></img></div>
+			<div class="objectOwnerName dialogObjectOwnerName">
+				<div class="objectOwnerNameText">${T('LABEL.Owner')}:</div>
+				<div class="objectOwner dialogObjectOwner">${ownerName}</div>
+				<div id="objectLastModified" class="objectLastModified dialogObjectLastModified">${lastModified}</div>
+			</div>		
+			{{if info.folderIsShareable}}
+				<div class="unshareAllBtn">
+					<div class="unshareAllBtnLeft" />
+					<div class="unshareAllBtnMid"><a id="unshareAllButton" href="#" alt="${T('LABEL.Decline')}" onclick="return false;">${T('LABEL.UnshareAll')}</a></div>
+					<div class="unshareAllBtnRight" />
+				</div>
+			{{/if}}
+		</div>
+</script>
+<script id="collaboratorAll" type="text/x-jquery-tmpl">
+		{{if !dropDown.textRight}}
+			<div class="collaborator all{{if LastPending}} lastPending{{/if}}" username="${Name}">
+				<div class="shareUserImage"><img src="${ui.GetProfilePicUrl(UserID)}" class="{{if dropDown.classes}}${dropDown.classes}{{/if}}" title="${Name}"  alt="{{if IsExternalUser}} ${T('LABEL.ExternalUser')} {{/if}}"  /></div>
+				<div class="shareUserNameWrapper">
+					<div class="shareUserName {{if dropDown.classes}}${dropDown.classes}{{/if}} all{{if MarkForAdd}} markForAdd{{/if}}{{if MarkForDelete}} markForDelete{{/if}}{{if MarkForEdit}} markForEdit{{/if}}" title="${Name}">${DisplayName}</div>
+					<div class="shareUserStatusText {{if dropDown.classes}}${dropDown.classes}{{/if}}">
+						{{if dropDown.textLeft}}${dropDown.textLeft}{{/if}}
+						{{if dropDown.textLeft && IsReadOnly}} | {{/if}}
+						{{if IsReadOnly}}${T('LABEL.ReadOnly')}{{/if}}
+					</div>
+								
+				</div>	
+				{{if info.folderIsShareable}}
+					<div id="ownerActions">
+						{{if MarkForDelete}}
+							<div class="restoreCollaboratorBtn">
+								<div class="restoreCollaboratorBtnLeft" />
+								<div class="restoreCollaboratorBtnMid"><a id="restoreCollaborator" href="#" alt="${T('LABEL.Restore')}" onclick="return false;">${T('LABEL.Restore')}</a></div>
+								<div class="restoreCollaboratorBtnRight" />
+							</div>
+						{{else}}
+							{{tmpl "shareTypeSelect-Box"}}
+							<div class="cancelCollaboratorIcon"><a href="#" onclick="return false;"></a></div>
+						{{/if}}
+					</div>
+				{{/if}}
+			</div>
+		{{/if}}
+		
+</script>
+
+<script id="shareTypeSelect-Box" type="text/x-jquery-tmpl">
+	<div id=${SelectID} class="select-box" shareType="${ShareType}">
+			<div class="select-left">
+				<a href="#" onclick="return false;"><img id="select-boxSelectedImage" src={{if ShareType==SHARETYPE.READONLY}}"${info.repo}/img/read_drop.png"{{else}}"${info.repo}/img/read_write_drop.png"{{/if}}></img></a>
+			</div>
+			
+			<div class="select-mid">
+				<div class="select-value" value="${ShareType}" userId="${UserID}" shareType="${ShareType}">
+				</div>
+				<ul>
+					{{if ShareType==SHARETYPE.READONLY}}
+						<li><a href="#" class="select-option selected" value="${SHARETYPE.READWRITE}" selectboxid=${SelectID} onclick="return false;"><img class="selectOptionImg" src="${info.repo}/img/read_write_drop.png"></img>${T('LABEL.ReadWrite')}</a></li>
+						<li><a href="#" class="select-option" value="${SHARETYPE.READONLY}" selectboxid=${SelectID} onclick="return false;"><img class="selectOptionImg" src="${info.repo}/img/read_drop.png"></img>${T('LABEL.ReadOnly')}</a></li>
+					{{else}}
+						<li><a href="#" class="select-option" value="${SHARETYPE.READWRITE}" selectboxid=${SelectID} onclick="return false;"><img class="selectOptionImg" src="${info.repo}/img/read_write_drop.png"></img>${T('LABEL.ReadWrite')}</a></li>
+						<li><a href="#" class="select-option selected" value="${SHARETYPE.READONLY}" selectboxid=${SelectID} onclick="return false;"><img class="selectOptionImg" src="${info.repo}/img/read_drop.png"></img>${T('LABEL.ReadOnly')}</a></li>
+					{{/if}}
+				</ul>
+			</div>
+			<div class="select-right"></div>
+			<div class="hideBorder"></div>
+		</div>
+</script>
+
+<script id="collaboratorsAccordionItem" type="text/x-jquery-tmpl">
+		<h3>${T('LABEL.Collaborators')}</h3>
+		<div id="shareInfo"></div>
+</script>

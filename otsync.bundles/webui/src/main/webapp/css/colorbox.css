@@ -1,0 +1,70 @@
+/*
+    ColorBox Core Style:
+    The following CSS is consistent between example themes and should not be altered.
+*/
+#colorbox, #cboxOverlay, #cboxWrapper{position:relative; top:0; left:0; z-index:9999;}
+#cboxOverlay{position:fixed; width:100%; height:100%;}
+#cboxMiddleLeft, #cboxBottomLeft{clear:left;}
+#cboxContent{position:relative;}
+#cboxLoadedContent{overflow: visible !important;}
+#cboxTitle{margin:0;}
+#cboxLoadingOverlay, #cboxLoadingGraphic{width:100%; height:100%;position:absolute;top:0;left:0;min-width:500px;min-height: 300px;}
+#cboxPrevious, #cboxNext, #cboxClose, #cboxSlideshow{cursor:pointer;}
+.cboxPhoto{margin:auto; border:0; display:block; max-width:none;border-radius:10px;background:#fff;}
+.cboxIframe{width:100%; height:100%; display:block; border:0;}
+#colorbox, #cboxContent, #cboxLoadedContent{box-sizing:content-box;}
+
+#cboxWrapper a,
+#cboxWrapper a:link,
+#cboxWrapper a:visited,
+#cboxWrapper a:hover,
+#cboxWrapper a:active,
+#cboxWrapper a:focus {
+  position: relative;
+	color: #ccc;
+}
+#cboxWrapper a:hover,
+#cboxWrapper a:active,
+#cboxWrapper a:focus,
+.cbox-action:hover {
+  text-decoration: underline;
+}
+
+
+
+/* 
+    User Style:   285491_4644652797801_284585445_n.jpg
+    Change the following styles to modify the appearance of ColorBox.  They are
+    ordered & tabbed in a way that represents the nesting of the generated HTML.
+*/
+#cboxOverlay{background:url(../img/colorbox/overlay.png) repeat 0 0;}
+    #cboxContent{background:#000;color:#ccc;border-radius: 10px;box-shadow: 0px 0px 10px #000;white-space:nowrap;min-width:500px;min-height: 300px;}
+        .cboxIframe{background:#fff;}
+        #cboxError{padding: 135px 0 0 0;text-align: center;min-height: 165px;vertical-align: middle;}
+        #cboxLoadedContent{vertical-align: middle; margin: 0 auto;height: auto !important; width: auto !important;}
+        #cboxTitle{white-space:nowrap;}
+				#cboxDownload{float:left;}
+        #cboxCurrent{float:right !important;}
+        #cboxSlideshow{}
+        #cboxPrevious{float:right !important;}
+        #cboxNext{float:right !important;}
+				#cboxLoadingOverlay{background:#000;border-radius:10px;}
+        #cboxLoadingGraphic{background:url(../img/colorbox/loading.gif) no-repeat center center;}
+        #cboxClose{float:right !important;}
+
+/*
+  The following fixes a problem where IE7 and IE8 replace a PNG's alpha transparency with a black fill
+  when an alpha filter (opacity change) is set on the element or ancestor element.  This style is not applied to or needed in IE9.
+  See: http://jacklmoore.com/notes/ie-transparency-problems/
+*/
+.cboxIE #cboxTopLeft,
+.cboxIE #cboxTopCenter,
+.cboxIE #cboxTopRight,
+.cboxIE #cboxBottomLeft,
+.cboxIE #cboxBottomCenter,
+.cboxIE #cboxBottomRight,
+.cboxIE #cboxMiddleLeft,
+.cboxIE #cboxMiddleRight {
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF);
+}
+
