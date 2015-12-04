@@ -1,0 +1,131 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.opentext.otsync</groupId>
+        <artifactId>otsync.apps.parent</artifactId>
+        <version>16.0.0</version>
+    </parent>
+
+    <artifactId>tempo.app</artifactId>
+	<name>Tempo App</name>
+    <description></description>
+
+	<properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
+        <appworks.platform.version>16.01-ALPHA-4</appworks.platform.version>
+
+        <!-- General app.properties -->
+        <app.properties.displayName>Tempo App</app.properties.displayName>
+        <app.properties.description>Tempo App</app.properties.description>
+        <app.properties.version>16.0.0</app.properties.version>
+        <app.properties.type>app</app.properties.type>
+    </properties>
+
+	<build>
+		<plugins>
+            <!-- Clear down the local front end dependencies and  node/npm install -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/dependencies</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/dist</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/node</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/node_modules</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <!-- This plugin allows us to add JavaScript tools to our build arsenal,
+                node, npm, bower, karma, gulp. see https://github.com/eirslett/frontend-maven-plugin -->
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>0.0.26</version>
+
+                <configuration>
+                    <!-- location of package.json, gulpfile.js etc -->
+                    <workingDirectory>${project.basedir}</workingDirectory>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <nodeVersion>v5.1.0</nodeVersion>
+                            <npmVersion>3.5.1</npmVersion>
+                        </configuration>
+                    </execution>
+
+                    <!-- Get npm to pull the dependencies into a /node_modules dir within /webapp -->
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+
+                    <execution>
+                        <id>grunt build</id>
+                        <goals>
+                            <goal>grunt</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>create-favorites-distribution</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>assembly/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+		</plugins>
+	</build>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-clean-plugin</artifactId>
+            <version>3.0.0</version>
+            <type>maven-plugin</type>
+        </dependency>
+    </dependencies>
+</project>

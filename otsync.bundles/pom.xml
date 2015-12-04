@@ -21,7 +21,7 @@
         <module>favorites</module>
         <module>feeds</module>
         <module>objectdetails.component</module>
-        <module>otsync.app</module>
+        <module>otsync.apps</module>
         <module>shares</module>
         <module>tasks.component</module>
         <module>tasks</module>
@@ -30,7 +30,7 @@
         <module>url.component</module>
         <module>workflow</module>
         <module>workflow.component</module>
-        <module>otsync.bundles.assembly</module>
+        <module>tempo.bundle</module>
     </modules>
 
     <properties>
