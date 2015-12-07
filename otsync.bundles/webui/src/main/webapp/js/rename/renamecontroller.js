@@ -80,7 +80,7 @@ var RenameController = new function(){
             row.find('.itemLastModifiedWrapper').hide();
             row.find('.itemSizeWrapper').hide();
             
-			var renameInterface = $.tmpl('renameItem', renameItemOptions).appendTo(container);
+			var renameInterface = $("#renameItem").template( renameItemOptions).appendTo(container);
 			renameInterface.find('input').focus();
 		}else{
 			// it's showing so get rid of it

@@ -142,7 +142,7 @@ var FileUpload = function(options)
                uploadButton: {id: 'fileUploadSubmit', textLeft: 'Upload'},
                cancelButton: {id: 'fileUploadCancel', textLeft: 'Cancel'}
                };
-           $.tmpl('uploadFile', templateVar).insertAfter('#columnHeaderWrapper');
+           $("#uploadFile").template(templateVar).insertAfter('#columnHeaderWrapper');
            self.RegisterPlugIn();
        }
        else
@@ -164,7 +164,7 @@ var FileUpload = function(options)
            var templateVar = {
                fileInput: {type: 'file', id: fileInputID, name: 'Photo', value: ''}
                };
-           $.tmpl('uploadPicture', templateVar).appendTo('.uploadPicWidgetWrapper');
+           $("#uploadPicture").template(templateVar).appendTo('.uploadPicWidgetWrapper');
            self.RegisterPlugIn();
        }
        else
@@ -200,7 +200,8 @@ var FileUpload = function(options)
                uploadButton: {id: 'addVersionSubmit', textLeft: T('LABEL.AddVersion')},
                cancelButton: {id: 'addVersionCancel', textLeft: T('LABEL.Cancel')}
                };
-           $.tmpl('addVersion', templateVar).appendTo(container);
+
+           $("#addVersion").template(templateVar).appendTo(container);
            self.RegisterPlugIn();
            self.GetFileInputDom().data('dataID', data.DATAID);
        }

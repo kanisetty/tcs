@@ -31,8 +31,7 @@ var AddFolderController = new function(){
 					textLeft:T('LABEL.Cancel')
 				}
 			};
-
-			$.tmpl('createNewFolder', createNewFolderOptions).insertAfter('#columnHeaderWrapper');
+			$("#createNewFolder").template(createNewFolderOptions).insertAfter('#columnHeaderWrapper');
 			document.getElementById('newFolderName').focus();
 		}else{
 			// it's showing so get rid of it

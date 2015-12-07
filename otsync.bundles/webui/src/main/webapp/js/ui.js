@@ -25,7 +25,7 @@ var ui = new function(){
 	*/
 	this.LoadTemplate = function( templateName, data, selectorToAppendTo ){
 
-		$( selectorToAppendTo ).append( $.tmpl( templateName, data ) );
+		$( selectorToAppendTo ).append( $("#"+ templateName).template( data ) );
 	};
 
 	/**
@@ -38,7 +38,7 @@ var ui = new function(){
 	*/
 	this.LoadTemplateInEmptyElement = function( templateName, data, selectorToAppendTo ){
 
-		$( selectorToAppendTo ).empty().append( $.tmpl( templateName, data ) );
+		$( selectorToAppendTo ).empty().append(  $("#"+ templateName).template( data ) );
 	};
 
 	/**
@@ -51,7 +51,7 @@ var ui = new function(){
 	*/
 	this.LoadTemplatePreprend = function( templateName, data, selectorToPrependTo ){
 
-		$( selectorToPrependTo ).prepend( $.tmpl( templateName, data ) );
+		$( selectorToPrependTo ).prepend(  $("#"+ templateName).template( data ) );
 	};
 
 
@@ -645,7 +645,7 @@ var ui = new function(){
 				$('#contentmain').prepend('<div id="processInfo"></div>');
 			}
 
-			var dom = $.tmpl('processInfo', {messageID: msgID, text: text, percent: percent} );
+			var dom =  $("#processInfo_tmpl").template({messageID: msgID, text: text, percent: percent} );
 			$('#processInfo').append(dom);
 			_messageCount++;
 			return dom;
@@ -978,7 +978,8 @@ var TreeView = function(config){
 						folderContents[i].ISPARENT = false;
 					}
 				}
-				items = $.tmpl(config.treeTemplate, folderContents);
+
+				items = $("#"+config.treeTemplate).template( folderContents);
 				break;
 			case CONST_TREETMPL.MULTICOPY:
 				for(var i in folderContents)
@@ -998,7 +999,8 @@ var TreeView = function(config){
 						folderContents[i].ISPARENT = false;
 					}
 				}
-				items = $.tmpl(CONST_TREETMPL.MULTICOPY, folderContents);
+				items = $("#"+CONST_TREETMPL.MULTICOPY).template( folderContents);
+
 				break;
 			case CONST_TREETMPL.MULTIMOVE:
 				for(var i in folderContents)
@@ -1019,7 +1021,8 @@ var TreeView = function(config){
 					}
 				}
 				//multimove and multicopy use the same template
-				items = $.tmpl(CONST_TREETMPL.MULTICOPY, folderContents);
+				CONST_TREETMPL.MULTICOPY
+				items = $("#"+CONST_TREETMPL.MULTICOPY).template( folderContents);
 				break;
 		}
 

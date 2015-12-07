@@ -138,7 +138,7 @@ var SelectionController = new function(){
 
         };
         $('#multiActionDropDown').remove();
-        $.tmpl('dropDownWrapped', dropDownTmplVar).appendTo('#pageActions');
+        $("#dropDownWrapped").template(dropDownTmplVar).appendTo('#pageActions');
 
         //when initialized, hide the more button as no item is selected
         $('#multiActionDropDown').hide();
