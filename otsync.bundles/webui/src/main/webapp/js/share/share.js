@@ -269,7 +269,7 @@ var Share = new function() {
 		var shareRequest = _GetShareRequest(nodeID);
 		
 		if (shareRequest != null) {
-			ui.LoadTemplateInEmptyElement('shareRequestSuccess', [shareRequest], elementID + nodeID + ' .shareSummaryText');
+			ui.LoadTemplateInEmptyElement("#shareRequestSuccess_tmpl", [shareRequest], elementID + nodeID + ' .shareSummaryText');
 			$(elementID + nodeID).addClass('shareRequestHighlight');
 			$(elementID + nodeID + ' .shareSummaryButtons').css('display', 'none');
 		}
@@ -280,7 +280,7 @@ var Share = new function() {
 		var shareRequest = _GetShareRequest(nodeID);
 		
 		if (shareRequest != null) {
-			ui.LoadTemplateInEmptyElement('shareRequestRejectSuccess', [shareRequest], elementID + nodeID + ' .shareSummaryText');
+			ui.LoadTemplateInEmptyElement("#shareRequestRejectSuccess_tmpl", [shareRequest], elementID + nodeID + ' .shareSummaryText');
 			$(elementID + nodeID).addClass('shareRequestHighlight');
 		}
 	}
@@ -291,10 +291,10 @@ var Share = new function() {
 		
 		if (shareRequest != null) {
 			if (elementID == '#shareRequest') {
-				ui.LoadTemplateInEmptyElement('confirmRejectShare', [shareRequest], elementID + nodeID + ' .shareSummaryText');
+				ui.LoadTemplateInEmptyElement("#confirmRejectShare_tmpl", [shareRequest], elementID + nodeID + ' .shareSummaryText');
 			}
 			else {
-				ui.LoadTemplateInEmptyElement('confirmRejectShareFull', [shareRequest], elementID + nodeID + ' .shareSummaryText');
+				ui.LoadTemplateInEmptyElement("#confirmRejectShareFull_tmpl", [shareRequest], elementID + nodeID + ' .shareSummaryText');
 				$(elementID + nodeID + ' .rejectConfirm').focus();
 			}
 			$(elementID + nodeID).addClass('shareRequestHighlight');
@@ -307,7 +307,7 @@ var Share = new function() {
 		var shareRequest = _GetShareRequest(nodeID);
 		
 		if (shareRequest != null) {
-			ui.LoadTemplateInEmptyElement('shareRequestItem', [shareRequest], elementID + nodeID + ' .shareSummaryText');
+			ui.LoadTemplateInEmptyElement("#shareRequestItem_tmpl", [shareRequest], elementID + nodeID + ' .shareSummaryText');
 			$(elementID + nodeID).removeClass('shareRequestHighlight');
 			$(elementID + nodeID + ' .shareSummaryButtons').css('display', 'block');
 		}
@@ -329,16 +329,16 @@ var Share = new function() {
 	};
 	
 	this.AddLeftShareButton = function(){
-		ui.LoadTemplateInEmptyElement("shareInfoTemplate", {shareInvitation: info.canShare, SelectID: 'dropdownShareTypeInvite', ShareType: SHARETYPE.READWRITE}, "#shareInfo");
+		ui.LoadTemplateInEmptyElement("#shareInfoTemplate_tmpl", {shareInvitation: info.canShare, SelectID: 'dropdownShareTypeInvite', ShareType: SHARETYPE.READWRITE}, "#shareInfo");
 		SelectBox('dropdownShareTypeInvite', true);
 		Collaborators.AddSearchUserAutocomplete("#inviteeinput");
-		ui.LoadTemplateInEmptyElement('message', {message: T('LABEL.NoShareMessage'), classes: 'noSharesMessage'},'#collaborators');
+		ui.LoadTemplateInEmptyElement("#message_tmpl", {message: T('LABEL.NoShareMessage'), classes: 'noSharesMessage'},'#collaborators');
 
 	};
 
 	this.ModifyShare = function(ID){
 
-		ui.LoadTemplateInEmptyElement("loadingImage", '', "#shareInfo");
+		ui.LoadTemplateInEmptyElement("#loadingImage_tmpl", '', "#shareInfo");
 
 		return Collaborators.GetSharedObjectInfo(ID);
 

@@ -1,9 +1,9 @@
-<script id="taskInfoTemplate" type="text/x-jquery-tmpl">
+<script id="taskInfoTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="taskCreation"></div>
 		<div id="tasks"></div>
 </script>
 
-<script id="task" type="text/x-jquery-tmpl">
+<script id="task_tmpl" type="text/x-jquery-tmpl">
 		<div class="task">
 			<div class="taskNameWrapper">
 				<div class="taskName">${Name}</div>
@@ -31,11 +31,11 @@
 </script>
 
 
-<script id="emptyTaskList" type="text/x-jquery-tmpl">
+<script id="emptyTaskList_tmpl" type="text/x-jquery-tmpl">
 			<div class="nothingToDisplay">${T('LABEL.TherAreNoTasksToDisplay')}</div>
 </script>
 
-<script id="createTask" type="text/x-jquery-tmpl">
+<script id="createTask_tmpl" type="text/x-jquery-tmpl">
 		<div class="createTask">
 			<textarea name="name" id="taskNameInput" class="taskDescriptionInput" placeholder="${T('LABEL.TaskDescription')}" maxlength="248" />
 			<input name="assignedTo" id="taskAssignedToInput" class="taskAssigneeInput" placeholder="${T('LABEL.EnterAssigneeName')}"/>
@@ -47,7 +47,7 @@
 		</div>
 </script>
 
-<script id="tasksAccordionItem" type="text/x-jquery-tmpl">
+<script id="tasksAccordionItem_tmpl" type="text/x-jquery-tmpl">
 		<h3>${T('LABEL.Tasks')}</h3>
 		<div id="taskInfo"></div>
 </script>

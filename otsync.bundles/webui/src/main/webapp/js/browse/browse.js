@@ -52,7 +52,7 @@ var Browse = new function(){
 			accordionContainer.accordion('destroy');
 			accordionContainer.empty();
 		}
-        ui.LoadTemplate('folderDescriptionAccordionItem', undefined, '#accordionContainer');
+        ui.LoadTemplate("#folderDescriptionAccordionItem_tmpl", undefined, '#accordionContainer');
         FolderDescription.init(folderInfo);
 
 		var isShareable = folderInfo.ISSHAREABLE || (!folderInfo.ISSHAREABLE && folderInfo.ISSHARED);
@@ -60,7 +60,7 @@ var Browse = new function(){
 		if( isShareable ){ //get collaborators
 
 			//1. load collaborators accordion item template
-			ui.LoadTemplate('collaboratorsAccordionItem', undefined, '#accordionContainer');
+			ui.LoadTemplate("#collaboratorsAccordionItem_tmpl", undefined, '#accordionContainer');
 
 			//get the collaborator list only if the folder is shared
 			if(folderInfo.ISROOTSHARE){
@@ -82,7 +82,7 @@ var Browse = new function(){
 		}
 
 		//2. load tasks accordion item template
-		ui.LoadTemplate('tasksAccordionItem', undefined, '#accordionContainer');
+		ui.LoadTemplate("#tasksAccordionItem_tmpl", undefined, '#accordionContainer');
 		Tasks.GetTaskInfo(nodeID);
 
 		//3. at this point accordion items are loaded, initialize accordion
@@ -304,14 +304,14 @@ var Browse = new function(){
             {
 
 				if(browseView === CONST_BROWSE_VIEW.THUMBNAIL){
-					ui.LoadTemplateInEmptyElement("browseItemThumbnail", utils.MarkLast(data), "#itemsForFileTab");
+					ui.LoadTemplateInEmptyElement("#browseItemThumbnail_tmpl", utils.MarkLast(data), "#itemsForFileTab");
 					Browse.SwitchBrowseViewSelector($('#thumbnailViewSelector'));
 					$('#columnHeaderWrapper').hide();
 					$('#sortMenu').show();
 				}
 				else
 				{
-					ui.LoadTemplateInEmptyElement("browseItem", utils.MarkLast(data), "#itemsForFileTab");
+					ui.LoadTemplateInEmptyElement("#browseItem_tmpl", utils.MarkLast(data), "#itemsForFileTab");
 					Browse.SwitchBrowseViewSelector($('#listViewSelector'));
 					$('#columnHeaderWrapper').show();
 					$('#sortMenu').hide();
@@ -322,7 +322,7 @@ var Browse = new function(){
             }
             else{
                 $('.browseItem').removeClass('itemLast');
-                ui.LoadTemplate("browseItem", utils.MarkLast(data), "#itemsForFileTab");
+                ui.LoadTemplate("#browseItem_tmpl", utils.MarkLast(data), "#itemsForFileTab");
                 //check the new rows if checkAll is selected
                 SelectionController.SetTotalOnPage();
             }
@@ -350,7 +350,7 @@ var Browse = new function(){
 
 			if(pageNumber === 1 && totalCount >= 0)
             {
-                ui.LoadTemplateInEmptyElement('message', {message: T('LABEL.EmptyFolderMessage'), id: 'emptyFolderMessage'}, '#itemsForFileTab');
+                ui.LoadTemplateInEmptyElement("#message_tmpl", {message: T('LABEL.EmptyFolderMessage'), id: 'emptyFolderMessage'}, '#itemsForFileTab');
             }
         }
 		ui.ManagePageHeight();
@@ -393,7 +393,7 @@ var Browse = new function(){
 		if (data instanceof Array && data.length > 1)
 		{
 			// parent of current node for 'Backup one level' nav
-			ui.LoadTemplateInEmptyElement("backupLevel", data[data.length-2], "#backupLevel");
+			ui.LoadTemplateInEmptyElement("#backupLevel_tmpl", data[data.length-2], "#backupLevel");
 		}
 		else if ($('#backUpLevelNav').length)
 		{
@@ -491,7 +491,7 @@ var Browse = new function(){
 			tmplVar.reservedByUserName = data.RESERVEDBYUSERNAME;
 		}
 
-		ui.LoadTemplateInEmptyElement('objectInfo', tmplVar, '#objectInfo');
+		ui.LoadTemplateInEmptyElement("#objectInfo_tmpl", tmplVar, '#objectInfo');
 		$("#folderNotifyCheckBox").checkbox(tmplVar.isNotifySet, Browse.SetFolderNotify);
 	};
 

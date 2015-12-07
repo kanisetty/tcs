@@ -1,33 +1,33 @@
 $.extend(Copy, new function(){
-    
+
     /**
      * Add any template variables if needed here
      * @param {Object}      vars        The object that will be added with new template varabiles
      *
-     * @returns {Object}                The object with the new template variables added 
+     * @returns {Object}                The object with the new template variables added
      * @public
-     */ 
+     */
     this.RegisterDialogVars = function(vars){
         return vars;
     }
-    
+
     /**
      * Initialize the copy and multicopy dialog
      *
      * @public
-     */ 
+     */
     this.InitializeCopyDialogs = function(){
         initializeCopyDialog();
         initializeMultiCopyDialog();
     };
-    
+
     /**
      * Initilize the copy dialog
      *
      * @private
-     */ 
+     */
     var initializeCopyDialog = function(){
-        var copyItemTreeView = new TreeView({wrapperID: 'copyItemDialog', wrapperTitle:T('LABEL.Copy'), treeID: 'copyTree', treeTemplate: 'copyFolderItem', parent: 'body'} );
+        var copyItemTreeView = new TreeView({wrapperID: 'copyItemDialog', wrapperTitle:T('LABEL.Copy'), treeID: 'copyTree', treeTemplate: '#copyFolderItem_tmpl', parent: 'body'} );
         var copyItemDialog = $('#copyItemDialog');
         copyItemDialog.dialog({
             autoOpen: false,
@@ -79,14 +79,14 @@ $.extend(Copy, new function(){
         });
 
     };// end initializeCopyDialog
-    
+
     /**
      * initialize the multi-copy dialog
      *
      * @private
-     */ 
+     */
     var initializeMultiCopyDialog = function(){
-        var multiCopyTreeView = new TreeView({wrapperID: 'multiCopyDialog', wrapperTitle:T('LABEL.Copy'), treeID: 'multiCopyTree', treeTemplate: 'multiCopyItem', parent: 'body'} );
+        var multiCopyTreeView = new TreeView({wrapperID: 'multiCopyDialog', wrapperTitle:T('LABEL.Copy'), treeID: 'multiCopyTree', treeTemplate: '#multiCopyItem_tmpl', parent: 'body'} );
         var multiCopyDialog = $('#multiCopyDialog');
         multiCopyDialog.dialog({
             autoOpen: false,
@@ -134,5 +134,5 @@ $.extend(Copy, new function(){
             }
 
         });
-    }; // end initializeMultiCopyDialog 
+    }; // end initializeMultiCopyDialog
 });

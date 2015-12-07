@@ -10,16 +10,16 @@ var SelectionController = new function(){
     var self= this;
     var totalInFolder = 0; //total number of items in folder
     var totalOnPage = 0; //total number of items on the page
-    
+
     //constants to determine which message to show when the user presses the checkall box
-    this.CONFIRMCHECKALL = 0; 
+    this.CONFIRMCHECKALL = 0;
     this.CHECKALLCONFIRMED = 1;
-    
+
     /**
      * Check all the rows on the page
-     * 
+     *
      * @public
-     */ 
+     */
     this.CheckAllOnPage = function()
     {
         $('.itemCheckBox a').each(function(){
@@ -31,18 +31,18 @@ var SelectionController = new function(){
         allCheckedOnPage = true;
         $('#checkAll').children('img').attr("src", imageSettings.checked);
     };
-    
+
     /**
      * Get whether the user wants to check all items in the folder or not
      *
      * @returns {Boolean}
      *
      * @public
-     */ 
+     */
     this.GetAllCheckedInFolder = function(){
         return allCheckedInFolder;
     }
-    
+
     /**
      * get the number of selected items
      *
@@ -54,9 +54,9 @@ var SelectionController = new function(){
         {
             return childNodes;
         }
-        
+
         var items = [];
-        $('.browseItem,.thumbnailViewBrowseItem').each(function(){    
+        $('.browseItem,.thumbnailViewBrowseItem').each(function(){
             var tmplData = $(this).tmplItem().data;
             if(tmplData.checked)
             {
@@ -65,13 +65,13 @@ var SelectionController = new function(){
         });
         return items;
     };
-    
+
     /**
      * get the cildNode array
      *
      * @returns {Array}
      * @public
-     */ 
+     */
     this.GetChildNodes = function(){
         return childNodes;
     }
@@ -81,11 +81,11 @@ var SelectionController = new function(){
      *
      * @returns {Integer}
      * @public
-     */ 
+     */
     this.GetCheckNum = function(){
         return checkedNum;
     };
-    
+
     /**
      * get the parentID of the selected items
      *
@@ -94,27 +94,27 @@ var SelectionController = new function(){
     this.GetParentID = function() {
         return $('.browseItemSelected').tmplItem().data.PARENTID;
     };
-    
+
     /**
      * get the number of items in folder
      *
      * @returns {Integer}
      * @public
-     */ 
+     */
     this.GetTotalInFolder = function(){
         return totalInFolder;
     };
-    
+
     /**
      * get the number of total rows(already displayed) on the page
      *
      * @returns {Integer}
      * @public
-     */ 
+     */
     this.GetTotalOnPage = function(){
         return totalOnPage;
     };
-    
+
     /**
      * load the more button to the dom
      *
@@ -138,40 +138,40 @@ var SelectionController = new function(){
 
         };
         $('#multiActionDropDown').remove();
-        $("#dropDownWrapped").template(dropDownTmplVar).appendTo('#pageActions');
+        $("#dropDownWrapped_tmpl").template(dropDownTmplVar).appendTo('#pageActions');
 
         //when initialized, hide the more button as no item is selected
         $('#multiActionDropDown').hide();
     };
-    
+
     /**
      * Reset the status of the selectionController
      *
      * @public
-     */ 
+     */
     this.Reset = function(){
         $('#checkAll').children('img').attr("src", imageSettings.unchecked);
         checkedNum = 0;
         totalOnPage = 0;
         allCheckedOnPage = false;
     };
-    
+
     /**
      * Set that the user wants to select all items in the folder
      *
      * @public
-     */ 
+     */
     this.SetAllCheckedInFolder = function()
     {
         allCheckedInFolder = true;
     }
-    
+
     /**
      * set the childNode list
      *
      * @argument {Arary}    l       The list to be set
      * @public
-     */ 
+     */
     this.SetChildNodes = function(l){
         if(typeof l !== 'undefined')
         {
@@ -180,32 +180,32 @@ var SelectionController = new function(){
         {
             childNodes = [];
         }
-        
+
     }
-    
+
     /**
      * Set the total number of rows on the page
      *
      * @public
-     */ 
+     */
     this.SetTotalOnPage = function(){
         totalOnPage = $('.browseItem').length;
     };
-    
+
     /**
      * Set the total number of items in folder
      *
      * @public
-     */ 
+     */
     this.SetTotalInFolder = function(t){
         totalInFolder = t;
     }
-    
+
     /**
      * Displays messages when user clickes the checkall checkbox
      *
      * @public
-     */ 
+     */
     this.ShowCheckAllMessage = function(message){
         SelectionController.RemoveCheckAllMessage();
         var tmplVar;
@@ -226,26 +226,26 @@ var SelectionController = new function(){
                 };
             break;
         }
-        ui.LoadTemplatePreprend('selectAllMessage', tmplVar, '#itemsForFileTab');
+        ui.LoadTemplatePreprend("#selectAllMessage_tmpl", tmplVar, '#itemsForFileTab');
     }
-    
+
     /**
      * Remove the message
      *
      * @public
-     */ 
+     */
     this.RemoveCheckAllMessage = function(){
         $('.selectAllMessage').remove();
     }
-    
+
     /**
      * Toggle CheckAll
      * if all rows are checked, uncheck all of them
      * if all rows are unchecked, check all of them
      * if not all rows are checked, check all of them
-     * 
+     *
      * @public
-     */ 
+     */
     this.ToggleCheckAll = function(){
 		//don't check/uncheck all if there are rows that is being processed
         if($('.disabled').length > 0)
@@ -271,14 +271,14 @@ var SelectionController = new function(){
             SelectionController.CheckAllOnPage();
             SelectionController.UpdateMultiActionMenu();
         }
-        
+
     };
-    
+
 	this.SelectCheckBox = function(dom)
 	{
 		$(dom).children('img').attr("src", imageSettings.checked);
 	};
-	
+
 	this.isChecked = function(dom)
 	{
 		if($(dom).children('img').attr("src") === imageSettings.checked)
@@ -294,14 +294,14 @@ var SelectionController = new function(){
      * if all rows are checked, then checkAll is set
      *
      * @public
-     */ 
+     */
     this.ToggleCheckBox = function(dom)
     {
         if($(dom).tmplItem().data.checked === true) {
             $(dom).parents('.browseItem').removeClass('browseItemSelected');
             $(dom).children('img').attr("src", imageSettings.unchecked);
             $(dom).tmplItem().data.checked = false;
-            
+
             //if one row is unchecked, then set checkAll to unchecked
             checkedNum = checkedNum - 1;
             allCheckedOnPage = false;
@@ -317,7 +317,7 @@ var SelectionController = new function(){
             }
             $(dom).children('img').attr("src", imageSettings.checked);
             $(dom).tmplItem().data.checked = true;
-            
+
             checkedNum = checkedNum + 1;
             if(checkedNum === totalOnPage)
             {
@@ -330,7 +330,7 @@ var SelectionController = new function(){
             }
         }
     };
-    
+
     /**
      * Uncheck all the rows
      *
@@ -369,7 +369,7 @@ var SelectionController = new function(){
             });
             $('#multiActionDropDown').tmplItem().update();
             $('#multiActionDropDown').show();
-			
+
 			var objInfoTemplateVar = $('#objectInfoDetails').tmplItem().data;
 
 			if(objInfoTemplateVar.isReadOnly)
@@ -405,7 +405,7 @@ var SelectionController = new function(){
             $('#checkAll').children('img').attr("src", imageSettings.checked);
             }
     };
-    
+
     /**
      * Add related Events
      *
@@ -445,7 +445,7 @@ var SelectionController = new function(){
 			}
 
         });
-        
+
         bodyTag.delegate('#checkAll', 'click', function(){
             SelectionController.ToggleCheckAll();
         });
@@ -456,7 +456,7 @@ var SelectionController = new function(){
             SelectionController.SetAllCheckedInFolder();
             SelectionController.UpdateMultiActionMenu();
         });
-        
+
         bodyTag.delegate('#clearSelection', 'click', function(){
             SelectionController.RemoveCheckAllMessage();
             SelectionController.UncheckAll();

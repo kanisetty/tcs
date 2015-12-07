@@ -166,8 +166,8 @@ var Collaborators = new function(){
 	*/
 	
 	this.LoadCollaboratorUpdatingImage = function(){
-		ui.LoadTemplateInEmptyElement("shareInfoTemplate", {SelectID: 'dropdownShareTypeInvite', ShareType: SHARETYPE.READWRITE}, "#shareInfo");
-        ui.LoadTemplate('loadingImage',null,'#collaborators');
+		ui.LoadTemplateInEmptyElement("#shareInfoTemplate_tmpl", {SelectID: 'dropdownShareTypeInvite', ShareType: SHARETYPE.READWRITE}, "#shareInfo");
+        ui.LoadTemplate("#loadingImage_tmpl",null,'#collaborators');
 	};
 	
 	/**
@@ -368,7 +368,7 @@ var Collaborators = new function(){
 		
 		//Add select-box id to template
 		shareInfoTmplVar.SelectID = 'dropdownShareTypeInvite';
-		ui.LoadTemplateInEmptyElement("shareInfoTemplate", shareInfoTmplVar, "#shareInfo");
+		ui.LoadTemplateInEmptyElement("#shareInfoTemplate_tmpl", shareInfoTmplVar, "#shareInfo");
 		SelectBox('dropdownShareTypeInvite', true);
 		Collaborators.collaboratorsList.sort(Collaborators.sortData);
 		
@@ -388,22 +388,22 @@ var Collaborators = new function(){
 		};
 		// update edit all dialog if it is open
 		if(Collaborators.editAllCollaboratorsDialog.dialog('isOpen')){
-			ui.LoadTemplateInEmptyElement("collaboratorAll", Collaborators.collaboratorsList, "#allCollaborators");
-			ui.LoadTemplateInEmptyElement('objectInfoDetailsDlgTemplate', $('#objectInfoDetails').tmplItem().data, '#editCollaboratorsObjectInfo');
+			ui.LoadTemplateInEmptyElement("#collaboratorAll_tmpl", Collaborators.collaboratorsList, "#allCollaborators");
+			ui.LoadTemplateInEmptyElement("#objectInfoDetailsDlgTemplate_tmpl", $('#objectInfoDetails').tmplItem().data, '#editCollaboratorsObjectInfo');
 		}
 		
 		for (var i = 0; i < Collaborators.collaboratorsList.length; i++){
 			SelectBox("dropdownShareType" + Collaborators.collaboratorsList[i].UserID, true);
 		};
 
-		ui.LoadTemplate("collaborator",Collaborators.collaboratorsList,"#collaborators");
+		ui.LoadTemplate("#collaborator_tmpl",Collaborators.collaboratorsList,"#collaborators");
 		
 		// Add button for Edit All
 		if(currentUserIsOwner){
-			ui.LoadTemplate("button",{textRight:T('LABEL.EditAllCollaborators',{ number: numOfCollaborators  } ), id:'editAllCollaboratorsButton'},"#editAllCollaborators");
+			ui.LoadTemplate("#button_tmpl",{textRight:T('LABEL.EditAllCollaborators',{ number: numOfCollaborators  } ), id:'editAllCollaboratorsButton'},"#editAllCollaborators");
 		}
 		else{
-			ui.LoadTemplate("button",{textRight:T('LABEL.ViewAllCollaborators',{ number: numOfCollaborators  } ), id:'editAllCollaboratorsButton'},"#editAllCollaborators");
+			ui.LoadTemplate("#button_tmpl",{textRight:T('LABEL.ViewAllCollaborators',{ number: numOfCollaborators  } ), id:'editAllCollaboratorsButton'},"#editAllCollaborators");
 		}
 		
 		Collaborators.AddSearchUserAutocomplete("#inviteeinput");		

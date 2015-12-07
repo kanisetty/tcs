@@ -47,7 +47,7 @@ $.extend(Collaborators, new function(){
 		
 	var	_InitializeEditAllCollaboratorsDialog = function(){
 	
-		ui.LoadTemplate('editAllCollaboratorsTemplate', null, '#dialogs');
+		ui.LoadTemplate("#editAllCollaboratorsTemplate_tmpl", null, '#dialogs');
 		Collaborators.editAllCollaboratorsDialog = $('#editCollaborators');
 		Collaborators.editAllCollaboratorsDialog.dialog({
 			title: T('LABEL.Collaborators'),
@@ -105,10 +105,10 @@ $.extend(Collaborators, new function(){
 				shareInfoTmplVar.ShareType = 2;
 				
 				if( info.folderIsShareable ){
-					ui.LoadTemplateInEmptyElement('shareInvitationMessageTemplate', shareInfoTmplVar, '#inviteMessage');
+					ui.LoadTemplateInEmptyElement("#shareInvitationMessageTemplate_tmpl", shareInfoTmplVar, '#inviteMessage');
 					//fix for ie's implementation of placeholders for textareas
 					clear_placeholder('inviteMessageInput', T('LABEL.EnterMessageToIncludeToNewCollaborators'));		
-					ui.LoadTemplateInEmptyElement('shareInvitationTemplate', shareInfoTmplVar, '#searchInfo2');
+					ui.LoadTemplateInEmptyElement("#shareInvitationTemplate_tmpl", shareInfoTmplVar, '#searchInfo2');
 					Collaborators.AddSearchUserAutocomplete("#inviteeinputEditCollaborators");
 					SelectBox('dropdownShareTypeEditAll', true);
 					$('#inviteeinputEditCollaborators').focus();

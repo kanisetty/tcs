@@ -56,7 +56,7 @@ $.extend(Share, new function(){
 	}
 	
 	var	_InitializeSeeAllShareRequestsDialog = function(){
-		ui.LoadTemplate('seeAllSharingRequestsTemplate', null, '#dialogs');
+		ui.LoadTemplate("#seeAllSharingRequestsTemplate_tmpl", null, '#dialogs');
 		Share.seeAllShareRequestsDialog = $('#seeAllSharingRequests');
 
 		Share.seeAllShareRequestsDialog.dialog({
@@ -95,7 +95,7 @@ $.extend(Share, new function(){
 			
 				if( Share.sharingRequests != null ){
 				
-					ui.LoadTemplateInEmptyElement("shareRequestItemFull", Share.sharingRequests, "#seeAllSharingRequests");
+					ui.LoadTemplateInEmptyElement("#shareRequestItemFull_tmpl", Share.sharingRequests, "#seeAllSharingRequests");
 				}
         Dialogs.CorrectTabOrder(".seeAllSharingRequestsDialog", false);
         

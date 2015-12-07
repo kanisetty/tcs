@@ -1,4 +1,4 @@
-<script id="userNotificationConfigDialogTemplate" type="text/x-jquery-tmpl">
+<script id="userNotificationConfigDialogTemplate_tmpl" type="text/x-jquery-tmpl">
         <div id="userNotificationConfigDialogView">           
 			<div class="historyContent">
 				<div id="userNotificationConfigTabs">
@@ -11,12 +11,12 @@
 		</div>
 </script>
 
-<script id="userNotificationConfigTabHeaders" type="text/x-jquery-tmpl">
+<script id="userNotificationConfigTabHeaders_tmpl" type="text/x-jquery-tmpl">
 		<li><a href="#tab${tabName}" class="tab${tabName}Header" >${tabText}</a></li>
 		 <li class="tabSeparator"></li>
 </script>
 
-<script id="userNotificationConfigTabContent" type="text/x-jquery-tmpl">
+<script id="userNotificationConfigTabContent_tmpl" type="text/x-jquery-tmpl">
 		<div id="tab${tabName}">
 		{{if tabName == "Notifications"}}
 			<div class="settingsHeading">${T('LABEL.EmailMe')}</div>

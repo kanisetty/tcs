@@ -1,14 +1,14 @@
-<script id="searchInfo" type="text/x-jquery-tmpl">
+<script id="searchInfo_tmpl" type="text/x-jquery-tmpl">
 		<div class="searchResultInfo">
 			${countString} <b>${termString}</b>
 		</div>
 </script>
 
-<script id="searchCount" type="text/x-jquery-tmpl">
+<script id="searchCount_tmpl" type="text/x-jquery-tmpl">
 		<div class="searchCount">${countString}</div>
 </script>
 
-<script id="searchItem" type="text/x-jquery-tmpl">
+<script id="searchItem_tmpl" type="text/x-jquery-tmpl">
 		<div class="searchItem {{if last}}itemLast{{/if}}" id="searchFile-${dataID}">
 			{{if subtype===CONST_SUBTYPE.FOLDER || subtype===CONST_SUBTYPE.DOCUMENT}}
 				<div class="itemInfo">

@@ -149,7 +149,7 @@ var SortController = new function(){
         if($('.columnHeaderForBrowse .columnHeader').length === 0)
         {
 			$('#columnHeaderWrapper').css('margin-top', '0').removeClass('columnHeaderForSearch').addClass('columnHeaderForBrowse');
-            ui.LoadTemplateInEmptyElement('columnHead', tmplVar, '#columnHeaderWrapper');
+            ui.LoadTemplateInEmptyElement("#columnHead_tmpl", tmplVar, '#columnHeaderWrapper');
         }
     };
 
@@ -166,7 +166,7 @@ var SortController = new function(){
         if($('.columnHeaderForSearch .columnHeader').length === 0)
         {
 			$('#columnHeaderWrapper').css('margin-top', '10px').removeClass('columnHeaderForBrowse').addClass('columnHeaderForSearch');
-            ui.LoadTemplateInEmptyElement('columnHead', tmplVar, '#columnHeaderWrapper');
+            ui.LoadTemplateInEmptyElement("#columnHead_tmpl", tmplVar, '#columnHeaderWrapper');
         }
 	};
 	/**

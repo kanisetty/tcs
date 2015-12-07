@@ -23,9 +23,9 @@ var ui = new function(){
 	@param {String}			selectorToAppendTo	jQuery selector used to select where to append to
 
 	*/
-	this.LoadTemplate = function( templateName, data, selectorToAppendTo ){
+	this.LoadTemplate = function( templateID, data, selectorToAppendTo ){
 
-		$( selectorToAppendTo ).append( $("#"+ templateName).template( data ) );
+		$( selectorToAppendTo ).append( $(templateID).template( data ) );
 	};
 
 	/**
@@ -36,9 +36,9 @@ var ui = new function(){
 	@param {String}			selectorToAppendTo	jQuery selector used to select where to append to
 
 	*/
-	this.LoadTemplateInEmptyElement = function( templateName, data, selectorToAppendTo ){
+	this.LoadTemplateInEmptyElement = function( templateID, data, selectorToAppendTo ){
 
-		$( selectorToAppendTo ).empty().append(  $("#"+ templateName).template( data ) );
+		$( selectorToAppendTo ).empty().append(  $(templateID).template( data ) );
 	};
 
 	/**
@@ -49,9 +49,9 @@ var ui = new function(){
 	@param {String}			selectorToPrependTo	jQuery selector used to select where to append to
 
 	*/
-	this.LoadTemplatePreprend = function( templateName, data, selectorToPrependTo ){
+	this.LoadTemplatePreprend = function( templateID, data, selectorToPrependTo ){
 
-		$( selectorToPrependTo ).prepend(  $("#"+ templateName).template( data ) );
+		$( selectorToPrependTo ).prepend(  $(templateID).template( data ) );
 	};
 
 
@@ -64,7 +64,7 @@ var ui = new function(){
 		);
 
 	};
-	
+
 
 	/**
 	Replaces not found or timed out user images with our default
@@ -103,21 +103,21 @@ var ui = new function(){
 		}
 		return url;
 	};
-	
-	
-	
-	
+
+
+
+
 	/**
 	Gets the thumbnail of the node based on the nodeID
 	@param {Integer} NodeID
 	@param {String} MimeType
 	@param {String} Size
-	
+
 	@return {String}
 	*/
 	this.GetThumbnailImage = function(nodeID, mimeType, size) {
 		var url;
-		 
+
 		switch (mimeType) {
 			case 'image/jpeg':
 			case 'image/pjpeg':
@@ -127,20 +127,20 @@ var ui = new function(){
 			case 'image/bmp':
 				url = utils.GetBaseUrl() + utils.GetBaseAPIVersion() + "/nodes/" + nodeID + "/thumbnail" + "?type=" + size;
 				break;
-				
+
 			default:
 				url = utils.FileIcon(mimeType, size);
 				break;
 		}
-		
+
 		return url;
 	}
-	
+
 	this.ThumbnailSize = new function() {
 		this.small = "small";
 		this.large = "large";
 	}
-	
+
 	/**
 	Formats a download URL for a file
 	@param {Integer} NodeID
@@ -151,8 +151,8 @@ var ui = new function(){
 	this.FormatDownloadFileURL = function(nodeID,versionID){
 		versionID = utils.DefaultValue(versionID,0);
 		return window.location.pathname + 'ContentChannel?nodeID=' + nodeID + '&vernum=' + versionID;
-		
-	}	
+
+	}
 
 
 
@@ -176,14 +176,14 @@ var ui = new function(){
 							img: 'folder_icon.png',
 							classes:'topButton'
 						}];
-		ui.LoadTemplateInEmptyElement("wrappedButton",fileButtons,$("#pageActions"));
+		ui.LoadTemplateInEmptyElement("#wrappedButton_tmpl",fileButtons,$("#pageActions"));
 		SelectionController.LoadMultiActionButton();
 	}
 
 	this.LoadSearchTopButtons = function(){
 		$('#pageActions').empty();
 	}
-	
+
 	this.LoadPageTabs = function(page){
 		var pageTabs;
 		switch(page)
@@ -247,7 +247,7 @@ var ui = new function(){
 				];
 				break;
 		}
-		ui.LoadTemplateInEmptyElement("leftColumnTabItem",pageTabs,$("#leftColumn"));
+		ui.LoadTemplateInEmptyElement("#leftColumnTabItem_tmpl",pageTabs,$("#leftColumn"));
 	}
 
 	/**
@@ -271,8 +271,8 @@ var ui = new function(){
 
 		return currentSortLabel;
 	};
-	
-	
+
+
 	/**
 	Prepare the areas before switching tab, generally used function by both tabs
 	@param {String}	tab		the tab whose area is prepared
@@ -352,13 +352,13 @@ var ui = new function(){
 
 		//clear the breadcrumb area first
 		$('#breadcrumb').remove();
-		
+
 		//in admin mode, force the first item to the specified root, not the one the server provided
 		if(info.isAdminModeRequested){
 			var first = $(copyOfData).first();
 			first.prop('nodeID', info.userRootFolderID);
 		}
-		
+
 		//create a shortname that cuts the foldername down to 15
 		$(copyOfData).each(function(){
 				if (typeof this.name != 'undefined'){
@@ -367,11 +367,11 @@ var ui = new function(){
 		});
 
 		utils.MarkLast(copyOfData);
-		ui.LoadTemplatePreprend('breadcrumb', {breadcrumbItem: copyOfData}, '#breadcrumbWrapper');
+		ui.LoadTemplatePreprend("#breadcrumb_tmpl", {breadcrumbItem: copyOfData}, '#breadcrumbWrapper');
 
 		//maxWidth is the dynamically set to the size of the area for breadcrumbs
 		var maxWidth = utils.DefaultValue($('#breadcrumb').width(), 530);
-		
+
 		$('#breadcrumb li').each(function(){
 			totalWidth += $(this).width();
 		});
@@ -406,9 +406,9 @@ var ui = new function(){
 			$('#breadcrumb').tmplItem().data.breadcrumbItem[1].name = removedText;
 			$('#breadcrumb').tmplItem().update();
 		}
-		
+
 	}
-	
+
 	/**
 	 * prepare the sort menu for thumbnail view
 	 *
@@ -416,8 +416,8 @@ var ui = new function(){
 	 */
 	this.sortMenu = function(){
 		var returnValue =  {button:{classes: 'sortMenuButton'},textLeft: T('LABEL.SortBy'), options:[]};
-		
-		
+
+
 			returnValue.options= [{
 					linktext:  T('LABEL.Name'),
 					classes:'sortDropdownItem',
@@ -429,9 +429,9 @@ var ui = new function(){
 					{
 					linktext: T('LABEL.Size'),
 					classes:'sortDropdownItem',
-					id:'sortSize'}					
+					id:'sortSize'}
 					];
-			
+
 			return returnValue
 	}
 
@@ -443,16 +443,16 @@ var ui = new function(){
 	this.moreMenuFile = function(isBrava, isReadOnly, isDeletable, isReservable, reservedBy, userName){
 		var returnValue =  {button:{classes: 'moreMenuButton'},options:[]};
 		returnValue.options = new Array();
-		
+
 		var isReserved = (reservedBy != null);
 		var reservedByMe = (reservedBy == userName);
-		
+
 		returnValue.options.push({ linktext:  T('LABEL.Download'), classes:'objectDownload'});
-		
+
 		if(isBrava){
-			returnValue.options.push({ linktext: T('LABEL.Brava'),classes:'objectBrava'});	
+			returnValue.options.push({ linktext: T('LABEL.Brava'),classes:'objectBrava'});
 		}
-		
+
 		if(!isReadOnly && (reservedByMe || !isReserved)){
 			returnValue.options.push({ linktext: T('LABEL.AddVersion'), classes:'objectAddVersion'});
 		}
@@ -465,10 +465,10 @@ var ui = new function(){
 		if(!isReadOnly && (reservedByMe || !isReserved)){
 			returnValue.options.push({ linktext: T('LABEL.Rename'), classes:'objectRename'});
 		}
-		
+
 		returnValue.options.push({ linktext: T('LABEL.Copy'), classes:'objectCopy'});
-					
-		if(!isReadOnly && (reservedByMe || !isReserved)){			
+
+		if(!isReadOnly && (reservedByMe || !isReserved)){
 			returnValue.options.push({ linktext: T('LABEL.Move'), classes:'objectMove'});
 		}
 		if (info.canPublish && (reservedByMe || !isReserved)){
@@ -476,11 +476,11 @@ var ui = new function(){
 		}
 
 		returnValue.options.push({ linktext: T('LABEL.History'),classes:'objectHistory'});
-		
+
 		if (isDeletable && (reservedByMe || !isReserved)){
 			returnValue.options.push({ linktext:  T('LABEL.Delete'), classes:'objectDelete'});
 		}
-		
+
 			return returnValue
 	}
 
@@ -505,7 +505,7 @@ var ui = new function(){
 				linktext: T('LABEL.History'),
 				classes:'objectHistoryFolder'}
 			];
-			
+
 			// add this option only for root folder
 			if(isRootShared){
 				$.merge(menu.options,[{
@@ -513,7 +513,7 @@ var ui = new function(){
 					classes:'objectDelete'
 				}]);
 			}
-			
+
 			// remove publish from the menu if they are not allowed to publish
 			if (!info.canPublish || isSystemShare){
 				var indexOfPublishInOptions = 1;
@@ -610,7 +610,7 @@ var ui = new function(){
 		this.ShowError = function(errorText)
 		{
 			var errorID = 'error' + _errorCount;
-			ui.LoadTemplatePreprend('notification', {messageType: 'error', messageID: errorID, text: errorText}, '#contentmain');
+			ui.LoadTemplatePreprend("#notification_tmpl", {messageType: 'error', messageID: errorID, text: errorText}, '#contentmain');
 			var timer = setTimeout(function(){self.ClearMessage('#' + errorID);}, _timeOut);
 			_messageTimer[errorID] = timer;
 			_errorCount++;
@@ -624,7 +624,7 @@ var ui = new function(){
 		this.ShowMessage = function(messageText)
 		{
 			var msgID = 'message' + _messageCount;
-			ui.LoadTemplatePreprend('notification', {messageType: 'message', messageID: msgID, text: messageText}, '#contentmain');
+			ui.LoadTemplatePreprend("#notification_tmpl", {messageType: 'message', messageID: msgID, text: messageText}, '#contentmain');
 			var timer = setTimeout(function(){self.ClearMessage('#' + msgID);}, _timeOut);
 			_messageTimer[msgID] = timer;
 			_messageCount++;
@@ -801,11 +801,11 @@ var ui = new function(){
 
 		$.address.value(TAB.FILE + "?action=BROWSE&id=" + ui.GetCurrentNodeID() );
 	}
-	
-	
-	
+
+
+
 	var showUserActions = false;
-	
+
 	this.showUserActionsMenu = function() {
 		this.showUserActions = true;
 		$('#userActions ul').css('display', 'block');
@@ -823,18 +823,18 @@ var ui = new function(){
 			$('#userActions').removeClass('active');
 		}
 	}
-	
-	
+
+
 	// This method is used to reset the page height when browsing from a page with a large height
 	// to a page with a smaller height
 	this.ResetPageHeight = function() {
 		$("#leftColumn").height(0);
 		ui.ManagePageHeight();
 	}
-	
+
 	this.ManagePageHeight = function() {
 		var headerHeight = $("#header").height() + $("#toolBar").height();
-		
+
 		if ($(window).height() > $(document).height()) {
 			$("#leftColumn").height($(window).height() - headerHeight);
 		}
@@ -843,29 +843,29 @@ var ui = new function(){
 			$("#leftColumn").height($(document).height() - headerHeight - 4);
 		}
 	};
-	
+
 	this.drawDiskUsageArea =  function(usage,diskLimit) {
-	
+
 		if(typeof(diskLimit) != "undefined" && typeof(usage) != "undefined" && diskLimit != 0)
 		{
 			var percentage = (usage / diskLimit) * 100 ;
-			
+
 			if(diskLimit > 1024)
 			{
-				diskLimit = (diskLimit /1024).toFixed(2) + T('LABEL.Disk_limit_GB');		
+				diskLimit = (diskLimit /1024).toFixed(2) + T('LABEL.Disk_limit_GB');
 			}
 			else
 			{
-				diskLimit = diskLimit + T('LABEL.Disk_limit_MB');	
+				diskLimit = diskLimit + T('LABEL.Disk_limit_MB');
 			}
 			$('#DiskUsageDisplayHeaderWrapper').css('display', 'block');
-			ui.LoadTemplateInEmptyElement("diskUsageTemplate",{ usage: percentage.toFixed(2), limit: diskLimit },"#disk");		
-			percentage = percentage>100? 100 : percentage;		
+			ui.LoadTemplateInEmptyElement("#diskUsageTemplate_tmpl",{ usage: percentage.toFixed(2), limit: diskLimit },"#disk");
+			percentage = percentage>100? 100 : percentage;
 			$( "#diskProgressBar" ).progressbar({ value: parseInt(percentage) });
 			$('#diskUsageWrapper').css('display', 'block');
 		}
 	};
-	
+
 	/**
 	Formats a Brava URL for a file
 	@param {Integer} NodeID
@@ -873,9 +873,9 @@ var ui = new function(){
 	@return {String}
 	*/
 	this.FormatBravaURL = function(nodeID){
-		
+
 		var csUrl = document.createElement('a');
-		csUrl.href = info.contentServerURL;	
+		csUrl.href = info.contentServerURL;
 
     var csPathName = csUrl.pathname.charAt(0)=='/'?csUrl.pathname:'/'+csUrl.pathname;
 
@@ -892,7 +892,7 @@ var ui = new function(){
 var TreeView = function(config){
 	var self = this;
 
-	var CONST_TREETMPL = {COPYFOLDERITEM: 'copyFolderItem', MOVEFOLDERITEM: 'moveFolderItem', MULTICOPY: 'multiCopyItem', MULTIMOVE: 'multiMoveItem' };
+	var CONST_TREETMPL = {COPYFOLDERITEM: 'copyFolderItem', MOVEFOLDERITEM: 'moveFolderItem', MULTICOPY: '#multiCopyItem_tmpl', MULTIMOVE: 'multiMoveItem' };
 
 	//default config parameters
 	var defaultConfig = {
@@ -914,7 +914,7 @@ var TreeView = function(config){
 		//add this field to the tmplVar of the root node, in order to be consistent with the tmplVar for other nodes
 		DATAID: info.userRootFolderID
 		};
-	ui.LoadTemplate('itemTreeTemplate', tmplVar, config.parent);
+	ui.LoadTemplate("#itemTreeTemplate_tmpl", tmplVar, config.parent);
 
 
 	//the dom of the wrapper, usually the dialog div
@@ -979,7 +979,7 @@ var TreeView = function(config){
 					}
 				}
 
-				items = $("#"+config.treeTemplate).template( folderContents);
+				items = $(config.treeTemplate).template( folderContents);
 				break;
 			case CONST_TREETMPL.MULTICOPY:
 				for(var i in folderContents)
@@ -999,7 +999,7 @@ var TreeView = function(config){
 						folderContents[i].ISPARENT = false;
 					}
 				}
-				items = $("#"+CONST_TREETMPL.MULTICOPY).template( folderContents);
+				items = $(CONST_TREETMPL.MULTICOPY).template( folderContents);
 
 				break;
 			case CONST_TREETMPL.MULTIMOVE:
@@ -1022,7 +1022,7 @@ var TreeView = function(config){
 				}
 				//multimove and multicopy use the same template
 				CONST_TREETMPL.MULTICOPY
-				items = $("#"+CONST_TREETMPL.MULTICOPY).template( folderContents);
+				items = $(CONST_TREETMPL.MULTICOPY).template( folderContents);
 				break;
 		}
 

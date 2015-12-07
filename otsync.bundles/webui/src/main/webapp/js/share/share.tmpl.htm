@@ -1,4 +1,4 @@
-<script id="shareRequestMenu" type="text/x-jquery-tmpl">
+<script id="shareRequestMenu_tmpl" type="text/x-jquery-tmpl">
 		<li id="shareRequest${DataID}" class="shareRequestMenuItem">
 			<div class="shareSummaryUserImage">
 				<img src="${ui.GetProfilePicUrl(OwnerID)}"/>
@@ -14,7 +14,7 @@
 			</div>
 		</li>
 </script>
-<script id="shareRequestItemFull" type="text/x-jquery-tmpl">
+<script id="shareRequestItemFull_tmpl" type="text/x-jquery-tmpl">
 		<div id="shareRequestFull${DataID}" class="shareRequestItemFull">
 			<div class="seeAllSharingRequestsWrapper">
 				<div class="seeAllSharingRequestsInner">
@@ -34,21 +34,21 @@
 			</div>
 		</div>
 </script>
-<script id="shareRequestItem" type="text/x-jquery-tmpl">
+<script id="shareRequestItem_tmpl" type="text/x-jquery-tmpl">
 		<span class="bold">${DisplayName}</span> ${T('LABEL.WouldLikeToShare')} <span class="bold">${FolderName}</span>
 </script>
-<script id="shareRequestMenuBottom" type="text/x-jquery-tmpl">
+<script id="shareRequestMenuBottom_tmpl" type="text/x-jquery-tmpl">
 		 <li id="shareRequestMenuBottom"><a id="shareRequestMenuBottomLink" href="#" onclick="return false;">${totalRequests}</a></li>
 </script>
-<script id="shareRequestSuccess" type="text/x-jquery-tmpl">
+<script id="shareRequestSuccess_tmpl" type="text/x-jquery-tmpl">
 		<div class="shareRequestTitle">${T('LABEL.Success')}</div>
 		<div><span class="bold">${FolderName} (${DisplayName})</span> ${T('LABEL.IsAvailable')} </div>
 </script>
-<script id="shareRequestRejectSuccess" type="text/x-jquery-tmpl">
+<script id="shareRequestRejectSuccess_tmpl" type="text/x-jquery-tmpl">
 		<div class="shareRequestTitle">${T('LABEL.Success')}</div>
 		<div>${T('LABEL.Share')} <span class="bold">${FolderName}</span> ${T('LABEL.From')} <span class="bold">${DisplayName}</span> ${T('LABEL.HasBeenRejected')}</div>
 </script>
-<script id="confirmRejectShare" type="text/x-jquery-tmpl">
+<script id="confirmRejectShare_tmpl" type="text/x-jquery-tmpl">
 		<div class="shareRequestTitle">${T('LABEL.AreYouSure')}</div>
 		<div>${T('LABEL.DeclineSharing')} <span class="bold">${FolderName}</span> ${T('LABEL.With')} <span class="bold">${DisplayName}</span></div>
 		<div class="confirmRejectShareButtons">
@@ -65,7 +65,7 @@
 		</div>
 </script>
 
-<script id="confirmRejectShareFull" type="text/x-jquery-tmpl">
+<script id="confirmRejectShareFull_tmpl" type="text/x-jquery-tmpl">
 		<div class="confirmRejectShareButtons">
 			<div class="shareConfirmRejectButton">
 				<div class="shareConfirmRejectButtonLeft" />
@@ -82,7 +82,7 @@
 		<div>${T('LABEL.DeclineSharing')} <span class="bold">${FolderName}</span> ${T('LABEL.With')} <span class="bold">${DisplayName}</span></div>
 </script>
 
-<script id="userListShareItem" type="text/x-jquery-tmpl">
+<script id="userListShareItem_tmpl" type="text/x-jquery-tmpl">
 	   <div class="collaborator" >					
 			<div class="shareUserImage"><img src="${ui.GetProfilePicUrl(OwnerID)}"/></div>
 			<div class="shareUserName">${DisplayName}</div>
@@ -90,7 +90,7 @@
 			<br style="clear: both" />
 		</div>
 </script>
-<script id="seeAllSharingRequestsTemplate" type="text/x-jquery-tmpl">
+<script id="seeAllSharingRequestsTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="seeAllSharingRequests">
 		</div>
 </script>

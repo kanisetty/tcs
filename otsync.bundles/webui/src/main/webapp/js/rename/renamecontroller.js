@@ -1,5 +1,5 @@
 var RenameController = new function(){
-    
+
     /**
     * handle the rename functionality
     *
@@ -8,14 +8,14 @@ var RenameController = new function(){
     */
     var renameItemHandler = function(obj)
     {
-       
+
 	   if($(obj).isChildOf(".thumbnailViewBrowseItem")){
 			var targetObject = $(obj).parents('.thumbnailViewBrowseItem');
 		}
 		else{
 			var targetObject = $(obj).parents('.browseItem');
 		}
-		
+
 	   var newName = targetObject.find('.newItemName');
        if(validateItemName(newName))
        {
@@ -29,7 +29,7 @@ var RenameController = new function(){
            targetObject.find('.errorText').addClass('showError');
        }
     };
-    
+
     /**
 	 * toggle the rename item interface
 	 *
@@ -39,19 +39,19 @@ var RenameController = new function(){
 	this.ToggleRenameItem = function(itemID)
 	{
 		if($('#browseFile-'+itemID).hasClass('thumbnailViewBrowseItem')){
-		
+
 			var container = $('#browseFile-'+itemID+' .thumbnailViewBrowseItemInfo');
 		}
 		else{
-			var container = $('#browseFile-'+itemID+' .itemIconNameActionWrapper');			
+			var container = $('#browseFile-'+itemID+' .itemIconNameActionWrapper');
 		}
 		var row = $('#browseFile-'+itemID);
 		var panel = $('#browseFile-'+itemID).find('.renameItem');
-		
+
 		if (panel.length === 0){
 			//remove the addversion panel
 			$('#addVersion').remove();
-			
+
 			// rename interface not showing... so show it.
 			var renameItemOptions = {
 				renameItemInput: {
@@ -79,8 +79,8 @@ var RenameController = new function(){
 			container.find('.BrowseMoreMenu').hide();
             row.find('.itemLastModifiedWrapper').hide();
             row.find('.itemSizeWrapper').hide();
-            
-			var renameInterface = $("#renameItem").template( renameItemOptions).appendTo(container);
+
+			var renameInterface = $("#renameItem_tmpl").template( renameItemOptions).appendTo(container);
 			renameInterface.find('input').focus();
 		}else{
 			// it's showing so get rid of it
@@ -92,17 +92,17 @@ var RenameController = new function(){
 		}
 
     };
-    
+
     this.AddEvents = function(){
         var bodyTag = $('body');
-        
+
         bodyTag.delegate('.objectRename', 'click', function(e){
 			e.stopPropagation();
-			
+
 			if($(".objectRename").isChildOf(".thumbnailViewBrowseItem")){
 				var targetObject = $(this).parents('.thumbnailViewBrowseItem');
 				$(this).parents('.dropDownMenu').hide();
-				$(this).parents('.thumbnailViewBrowseItem').find('.moreMenuButton').removeClass('moreMenuButtonActive');				
+				$(this).parents('.thumbnailViewBrowseItem').find('.moreMenuButton').removeClass('moreMenuButtonActive');
 			}
 			else{
 				var targetObject = $(this).parents('.browseItem');
@@ -111,12 +111,12 @@ var RenameController = new function(){
 			RenameController.ToggleRenameItem(data.DATAID);
 			$('#newItemName' + data.DATAID).select();
 		});
-        
+
         //prvent the row being selected while clicking the rename input
 		bodyTag.delegate('.renameItem input', 'click', function(e){
 			e.stopPropagation();
 		});
-        
+
 		//register the Enter keydown event on the rename input
 		bodyTag.delegate('.renameItem input', 'keydown', function(e){
 			e.stopPropagation();
@@ -125,17 +125,17 @@ var RenameController = new function(){
 				renameItemHandler(this);
 			}
 		});
-        
+
 		//register click event for the rename submit button
 		bodyTag.delegate('.renameItem .submitButton', 'click', function(e){
 			e.stopPropagation();
 			renameItemHandler(this);
 		});
-        
+
 		//register click event for the rename cancel button
 		bodyTag.delegate('.renameItem .cancelButton', 'click', function(e){
 			e.stopPropagation();
-			
+
 			if($(".renameItem .cancelButton").isChildOf(".thumbnailViewBrowseItem")){
 				var targetObject = $(this).parents('.thumbnailViewBrowseItem');
 			}
@@ -150,20 +150,20 @@ var RenameController = new function(){
 
 //requset and response
 $.extend(RenameController, new function(){
-    
+
     var response = new function(){
-        
+
         /**
         This function will process the response from a successful RenameObject request.
-    
+
         @param {Integer} nodeID					object ID
         @param {String} name					object name
         @param {Object} data					result data
-    
+
         @public
         */
         this.RenameObject = function(nodeID, name, data){
-    
+
             //remove the rename interface
             RenameController.ToggleRenameItem(nodeID);
 			var tmplData = $('#browseFile-'+nodeID).tmplItem().data;
@@ -178,67 +178,67 @@ $.extend(RenameController, new function(){
 			ui.MessageController.ShowMessage(T('LABEL.ObjectRenameConfirmation', {subType: subType, name: name}));
             ui.ToggleProcessingIndicatorForItemRow(nodeID);
         };
-		
+
 		/**
         This function will process the response from a failed RenameObject request.
-    
-        @param {Integer} nodeID					object ID    
+
+        @param {Integer} nodeID					object ID
         */
-		
+
 		this.RenameObjectFail = function(nodeID){
-		
+
             //remove the rename interface
             RenameController.ToggleRenameItem(nodeID);
             ui.ToggleProcessingIndicatorForItemRow(nodeID);
         };
-		
+
     };
-    
+
     /**
     This function will rename the given object with the specified name.
 
     @param {Integer} nodeID					object ID
     @param {String} name					new name
-    
+
     @private
     */
     var _RenameObject = function(nodeID, name){
-        
+
         var type = 'request';
         var subtype = 'rename';
         var requestID = type + subtype + "(" + nodeID + ")";
-        
+
         var requestData = new request.ObjectRequestSet(type, subtype);
-        
+
         requestData.info = {
             nodeID: nodeID,
             newName: name
         };
-        
+
         var ajaxData = new request.ObjectFrontChannel(requestData);
-        
+
         return queue.AddSet(requestID, ajaxData);
     };
-    
+
     /**
     This function will rename the given object with the specified name.
 
     @param {Integer} nodeID					object ID
     @param {String} name					new name
-    
+
     @public
     */
     this.RenameObject = function(nodeID, name){
-        
+
         return $.when(_RenameObject(nodeID, name)).pipe(request.ValidateResponse)
         .done(function(resultData){
-            
+
             // Clear all breadcrumbs from the cache, since we don't know what impact the rename had.
             queue.ClearCache("requestgetlocationpath");
-            
+
             // Clear all browse breadcrumbs from the cache, this will keep the cache size small.
             queue.ClearCache("requestgetfoldercontents");
-            
+
             response.RenameObject(nodeID, name, resultData);
         })
         .fail(function(){

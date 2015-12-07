@@ -32,11 +32,11 @@ $.extend(Search, new function(){
                         countString: T('LABEL.SearchResultsFor', {count: count}),
                         termString: Search.SearchTerm
                     };
-                    ui.LoadTemplateInEmptyElement('searchInfo', templateVar , '#pageActions');
-                    ui.LoadTemplateInEmptyElement('searchItem', data, '#itemsForSearchTab');
+                    ui.LoadTemplateInEmptyElement("#searchInfo_tmpl", templateVar , '#pageActions');
+                    ui.LoadTemplateInEmptyElement("#searchItem_tmpl", data, '#itemsForSearchTab');
                 }
                 else{
-                    ui.LoadTemplate('searchItem', data, '#itemsForSearchTab');
+                    ui.LoadTemplate("#searchItem_tmpl", data, '#itemsForSearchTab');
                 }
     
                 /*
@@ -60,7 +60,7 @@ $.extend(Search, new function(){
                         countString: T('LABEL.SearchResultsFor', {count: count}),
                         termString: Search.SearchTerm
                     };
-                    ui.LoadTemplateInEmptyElement('searchInfo', templateVar , '#pageActions');
+                    ui.LoadTemplateInEmptyElement("#searchInfo_tmpl", templateVar , '#pageActions');
                 }
             }
         };

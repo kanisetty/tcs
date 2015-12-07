@@ -1,4 +1,4 @@
-<script id="copyFolderItem" type="text/x-jquery-tmpl">
+<script id="copyFolderItem_tmpl" type="text/x-jquery-tmpl">
 		{{if SUBTYPE == CONST_SUBTYPE.FOLDER}}
 			{{if !ISSELF && !ISPARENT && !ISREADONLY}}
 				<li id="selectFolderID${DATAID}" class="browseable selectable dialogWordWrap">
@@ -44,7 +44,7 @@
 		{{/if}}	
 </script>
 
-<script id="multiCopyItem" type="text/x-jquery-tmpl">
+<script id="multiCopyItem_tmpl" type="text/x-jquery-tmpl">
 		{{if SUBTYPE == CONST_SUBTYPE.FOLDER}}
 			{{if !ISSELF && !ISPARENT && !ISREADONLY}}
 				<li id="selectFolderID${DATAID}" class="browseable selectable dialogWordWrap">

@@ -1,4 +1,4 @@
-<script id="shareInfoTemplate" type="text/x-jquery-tmpl">
+<script id="shareInfoTemplate_tmpl" type="text/x-jquery-tmpl">
 			<div id="shareInfoWrapper">
 				<div id="shareInfoInnerWrapper">				
 					{{if info.folderIsShareable && !info.isAdminModeRequested}}
@@ -13,12 +13,12 @@
 				<div id="editAllCollaborators"></div>
 			</div>
 </script>
-<script id="shareInvitationMessageTemplate" type="text/x-jquery-tmpl">
+<script id="shareInvitationMessageTemplate_tmpl" type="text/x-jquery-tmpl">
 			<div id="shareInvitation" class="shareInvitationAll">
 				<textarea name="inviteMessage" id="inviteMessageInput" class="inviteMessageInput" placeholder="${T('LABEL.EnterMessageToIncludeToNewCollaborators')}"/>
 			</div>
 </script>
-<script id="shareInvitationTemplate" type="text/x-jquery-tmpl">
+<script id="shareInvitationTemplate_tmpl" type="text/x-jquery-tmpl">
 			{{if info.folderIsShareable}}
 				<div id="shareInvitation" class="shareInvitationAll">
 					{{tmpl "shareTypeSelect-Box"}}
@@ -26,7 +26,7 @@
 				</div>
 			{{/if}}	
 </script>
-<script id="collaborator" type="text/x-jquery-tmpl">
+<script id="collaborator_tmpl" type="text/x-jquery-tmpl">
 		{{if !dropDown.textRight && !MarkForAdd && CollaboratorIndex < 7}}
 			<div class="collaborator" username="${Name}">
 				<div class="shareUserImage"><img src="${ui.GetProfilePicUrl(UserID)}" class="{{if dropDown.classes}}${dropDown.classes}{{/if}}" title="${Name}"  alt="{{if IsExternalUser}} ${T('LABEL.ExternalUser')} {{/if}}"  /></div>
@@ -43,7 +43,7 @@
 		{{/if}}
 </script>
 
-<script id="editAllCollaboratorsTemplate" type="text/x-jquery-tmpl">
+<script id="editAllCollaboratorsTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="editCollaborators">
 			<div id="editCollaboratorsObjectInfo"></div>
 			{{if !info.isAdminModeRequested}}
@@ -53,14 +53,14 @@
 			<div id="allCollaborators"></div>
 		</div>
 </script>
-<script id="editAllCollaboratorsFolderTemplate" type="text/x-jquery-tmpl">
+<script id="editAllCollaboratorsFolderTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="editCollaboratorsFolderInfo">
 			<div id="objectInfo">Owner</div>
 			<div id="searchInfo">Search</div>
 		</div>
 </script>
 
-<script id="objectInfoDetailsTemplate" type="text/x-jquery-tmpl">
+<script id="objectInfoDetailsTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="objectInfoDetails">
 			<div class="userImage"><img src="${ui.GetProfilePicUrl(ownerID)}" title="${ownerName}" ></img></div>
 			<div class="objectInfoDetailsText">
@@ -77,7 +77,7 @@
 		</div>
 		{{/if}}
 </script>
-<script id="objectInfoDetailsDlgTemplate" type="text/x-jquery-tmpl">
+<script id="objectInfoDetailsDlgTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="objectInfoDetails" class="dialogObjectInfoDetails">
 			<div class="userImage"><img src="${ui.GetProfilePicUrl(ownerID)}" title="${ownerName}" ></img></div>
 			<div class="objectOwnerName dialogObjectOwnerName">
@@ -94,7 +94,7 @@
 			{{/if}}
 		</div>
 </script>
-<script id="collaboratorAll" type="text/x-jquery-tmpl">
+<script id="collaboratorAll_tmpl" type="text/x-jquery-tmpl">
 		{{if !dropDown.textRight}}
 			<div class="collaborator all{{if LastPending}} lastPending{{/if}}" username="${Name}">
 				<div class="shareUserImage"><img src="${ui.GetProfilePicUrl(UserID)}" class="{{if dropDown.classes}}${dropDown.classes}{{/if}}" title="${Name}"  alt="{{if IsExternalUser}} ${T('LABEL.ExternalUser')} {{/if}}"  /></div>
@@ -126,7 +126,7 @@
 		
 </script>
 
-<script id="shareTypeSelect-Box" type="text/x-jquery-tmpl">
+<script id="shareTypeSelect-Box_tmpl" type="text/x-jquery-tmpl">
 	<div id=${SelectID} class="select-box" shareType="${ShareType}">
 			<div class="select-left">
 				<a href="#" onclick="return false;"><img id="select-boxSelectedImage" src={{if ShareType==SHARETYPE.READONLY}}"${info.repo}/img/read_drop.png"{{else}}"${info.repo}/img/read_write_drop.png"{{/if}}></img></a>
@@ -150,7 +150,7 @@
 		</div>
 </script>
 
-<script id="collaboratorsAccordionItem" type="text/x-jquery-tmpl">
+<script id="collaboratorsAccordionItem_tmpl" type="text/x-jquery-tmpl">
 		<h3>${T('LABEL.Collaborators')}</h3>
 		<div id="shareInfo"></div>
 </script>

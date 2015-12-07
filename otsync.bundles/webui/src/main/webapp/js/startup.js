@@ -285,7 +285,7 @@ var startup = new function (){
        	var pageVars = _GetPageVars();
 		var dialogsVars = Dialogs.vars;
 
-		ui.LoadTemplate( "page", pageVars, '#tempo-main' );
+		ui.LoadTemplate("#page_tmpl", pageVars, '#tempo-main' );
 		if(info.isAdminModeRequested){
 			$("#pageLogo a").click(function(e){
 				e.preventDefault();
@@ -293,7 +293,7 @@ var startup = new function (){
 				$.address.value(TAB.FILE+'?action=browse&id='+info.userRootFolderID+'&sortby='+SortController.GetBrowseSortBy()+'&sortorder='+SortController.GetBrowseSortOrder()+'&browseView='+Browse.GetBrowseViewMode()+'&browseObject='+Browse.GetBrowseObjectMode());
 			});
 		}
-		ui.LoadTemplate( "dialogs", dialogsVars, '#tempo-main' );
+		ui.LoadTemplate("#dialogs_tmpl", dialogsVars, '#tempo-main' );
 		ui.drawDiskUsageArea(info.diskUsage,info.storageLimit);
 	};
 

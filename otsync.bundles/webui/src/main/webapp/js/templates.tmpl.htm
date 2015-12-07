@@ -1,4 +1,4 @@
-<script id="page" type="text/x-jquery-tmpl">
+<script id="page_tmpl" type="text/x-jquery-tmpl">
 		<div id="page">
 			<div id="content">
 				<div id="leftColumnWrapper">					
@@ -16,11 +16,11 @@
 		</div>
 </script>
 
-<script id="leftColumn"  type="text/x-jquery-tmpl">
+<script id="leftColumn_tmpl" type="text/x-jquery-tmpl">
 		<div id="leftColumn">
 			</div>
 </script>
-<script id="columnHead" type="text/x-jquery-tmpl">
+<script id="columnHead_tmpl" type="text/x-jquery-tmpl">
 		{{if isCheckAllColumn}}
 			<div class="columnHeader ${classes}" id="checkAllHeader">
 				<div class="columnSpacer"></div>
@@ -40,7 +40,7 @@
 		
 </script>
 
-<script id="centerColumn"  type="text/x-jquery-tmpl">
+<script id="centerColumn_tmpl" type="text/x-jquery-tmpl">
 		<div id="centerColumn">
 			<div id="toolBar">
 				<div id="pageActions"></div>
@@ -83,7 +83,7 @@
 		</div>
 </script>
 
-<script id="rightColumn" type="text/x-jquery-tmpl">
+<script id="rightColumn_tmpl" type="text/x-jquery-tmpl">
 		<div id="rightColumn">
 			<div id="objectInfo"></div>
 			<div id="searchInfo"></div>			
@@ -91,7 +91,7 @@
 		</div>
 </script>
 
-<script id="leftColumnTabItem"  type="text/x-jquery-tmpl">
+<script id="leftColumnTabItem_tmpl" type="text/x-jquery-tmpl">
 		<div id="${tabId}" class="leftColumnTabItem" {{if tabId != "allFiles"}} style="display:none;" {{/if}}>
 			<div class="leftColumnItemHeader {{if tabSelected}} selected {{/if}}">
 				<div class="leftColumnIcon"><img class="leftTabIcon" src="${info.repo}/img/${tabIcon}" /></div>
@@ -101,11 +101,11 @@
 		</div>			
 </script>
 
-<script id="userActionLink" type="text/x-jquery-tmpl">
+<script id="userActionLink_tmpl" type="text/x-jquery-tmpl">
 		 <li class="{{if last}}last{{/if}}"><a href="${url}" class="backLinks ${classes}" id="${id}">${text}</a></li>
 </script>
 
-<script id="dialogs" type="text/x-jquery-tmpl">
+<script id="dialogs_tmpl" type="text/x-jquery-tmpl">
 			<div id="dialogs">
 					{{tmpl(confirmationDialog) "confirmationDialogTemplate"}}
 					{{tmpl(historyDialog) "historyDialogTemplate"}}
@@ -117,13 +117,13 @@
 					{{tmpl(userNotificationConfigDialog) "userNotificationConfigDialogTemplate"}}
 			</div>
 </script>
-<script id="button" type="text/x-jquery-tmpl">
+<script id="button_tmpl" type="text/x-jquery-tmpl">
 			<button {{if id}}id="${id}"{{/if}} class="${classes}" name="${name}" type="{{if type}}${type}{{else}}button{{/if}}" {{if tabIndex}}tabIndex="${tabIndex}"{{/if}} ><span> ${textLeft} </span>{{if img}}
 			<img src="${info.repo}/img/${img}" />
 			{{/if}}
 			<span>${textRight}</span></button> 
 </script>
-<script id="wrappedButton" type="text/x-jquery-tmpl">
+<script id="wrappedButton_tmpl" type="text/x-jquery-tmpl">
 		<div class="btn">
 			<div class="btnLeft"></div>
 			<div class="btnMid">
@@ -136,7 +136,7 @@
 		</div>
 </script>
 
-<script id="input" type="text/x-jquery-tmpl">
+<script id="input_tmpl" type="text/x-jquery-tmpl">
 		
 		<div class="${wrapperClasses}">
 			<label  for="${id}" >${label}</label>				
@@ -149,7 +149,7 @@
 									
 </script>
 
-<script id="dropDownSort" type="text/x-jquery-tmpl">
+<script id="dropDownSort_tmpl" type="text/x-jquery-tmpl">
 		{{if textLeft}}<span class="dropDownTextLeft">${textLeft}</span>{{/if}}
 			{{if button}}
 				{{tmpl(button) "button"}}
@@ -164,7 +164,7 @@
 			</div>
 </script>
 
-<script id="dropDown" type="text/x-jquery-tmpl">
+<script id="dropDown_tmpl" type="text/x-jquery-tmpl">
 		<ul {{if id}}id="${id}"{{/if}} class="dropdown ">
 			<li>
 			{{if button}}
@@ -194,7 +194,7 @@
 		</ul>
 </script>
 
-<script id="dropDownThumbnail" type="text/x-jquery-tmpl">
+<script id="dropDownThumbnail_tmpl" type="text/x-jquery-tmpl">
 		<ul {{if id}}id="${id}"{{/if}} class="dropdown ">
 			<li>			
 			{{if href}}<a href="${href}">{{/if}}
@@ -220,7 +220,7 @@
 		</ul>
 </script>
 
-<script id="dropDownWrapped" type="text/x-jquery-tmpl">
+<script id="dropDownWrapped_tmpl" type="text/x-jquery-tmpl">
 		<div class="btn" {{if id}}id="${id}"{{/if}}>
 			<div class="btnLeft"></div>
 			<div class="btnMid">
@@ -256,7 +256,7 @@
 		</div>
 </script>
 
-<script id="dropDownOptions" type="text/x-jquery-tmpl">
+<script id="dropDownOptions_tmpl" type="text/x-jquery-tmpl">
 	<!-- 
 		This template is used by the dropdown template to render each individual 
 		item in the dropdown menu.
@@ -264,14 +264,14 @@
 		<li><a {{if href}}href="${href}{{else}}href="#" onclick="return false;"{{/if}} class="${classes}">${linktext}</a></li>
 </script>
 
-<script id="dropDownOptionsSort" type="text/x-jquery-tmpl">
+<script id="dropDownOptionsSort_tmpl" type="text/x-jquery-tmpl">
 		<li>
 			<a {{if id}}id="${id}"{{/if}}   {{if href}}href="${href}{{else}}href="#" onclick="return false;"{{/if}} class="${classes}{{if last}} itemLast{{/if}}">${linktext}</a>
 			<div class="sortDropdownArrow"></div>
 		</li>
 </script>
 	
-<script id="itemTreeTemplate" type="text/x-jquery-tmpl">
+<script id="itemTreeTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="${wrapperID}" class="treeWrapper" title= "${wrapperTitle}"> 
 			<ul id="${treeID}" class="treeList">
 				<li class="root"><img src="${info.repo}/img/tempo_CS.png"/> <a class="treeRootFolder" href="#" onclick="return false;">${info.userRootFolderName}</a></li>
@@ -287,7 +287,7 @@
 		</div>
 </script>
 
-<script id="usersListTemplate" type="text/x-jquery-tmpl">
+<script id="usersListTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="usersList">
 			{{if usersListData}}
 			{{tmpl(usersListData) "userListShareItem"}}
@@ -295,16 +295,16 @@
 	   </div>
 </script>
  
-<script id="confirmationDialogTemplate" type="text/x-jquery-tmpl">
+<script id="confirmationDialogTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="actionConfirmation" title="${title}">				
 			<span id="confirmationMessage">${message}</span>			
 		</div>
 </script>
 
-<script id='loadingImage' type="text/x-jquery-tmpl">
+<script id="loadingImage_tmpl" type="text/x-jquery-tmpl">
 		<img src='${info.repo}/img/loading.gif' />
 </script>
-<script id='notification' type="text/x-jquery-tmpl">
+<script id="notification_tmpl" type="text/x-jquery-tmpl">
 		<div class="notification ${messageType}" id="${messageID}" >
 			<div class="notificationIcon"></div>
 			<div class="notificationText">${text}</div>
@@ -312,7 +312,7 @@
 			<br style="clear: both" />
 		</div>
 </script>
-<script id='processInfo' type="text/x-jquery-tmpl">
+<script id="processInfo_tmpl" type="text/x-jquery-tmpl">
 		<div class="notification processInfo" id="${messageID}" >
 			<div class="notificationIcon"></div>
 			<div class="notificationText">${text}</div>
@@ -322,14 +322,14 @@
 		</div>
 </script>
 
-<script id="historyItemHeaderAudit" type="text/x-jquery-tmpl">
+<script id="historyItemHeaderAudit_tmpl" type="text/x-jquery-tmpl">
 		<tr class="historyRow">
 			<th class="historyHeaderCell auditHistoryUser">${T('LABEL.User')}</th>
 			<th class="historyHeaderCell auditHistoryEvent">${T('LABEL.Event')}</th>
 			<th class="historyHeaderCell auditHistoryDate last">${T('LABEL.Date') + ' ' +T('LABEL.Modified')}</th>
 		</tr>
 </script>
-<script id="historyItemHeaderVersion" type="text/x-jquery-tmpl">
+<script id="historyItemHeaderVersion_tmpl" type="text/x-jquery-tmpl">
 		<tr class="historyRow">
 			<th class="historyHeaderCell versionHistoryNumber">#</th>
 			<th class="historyHeaderCell versionHistoryFileName">${T('LABEL.Document') + '' + T('LABEL.Name') }</th>
@@ -338,14 +338,14 @@
 			<th class="historyHeaderCell versionHistorySize last">${T('LABEL.Size')}</th>
 		</tr>
 </script>
-<script id="historyItemAudit" type="text/x-jquery-tmpl">
+<script id="historyItemAudit_tmpl" type="text/x-jquery-tmpl">
 		<tr class="historyRow">
 			<td class="historyCell auditHistoryUser">${DisplayName}</td>
 			<td class="historyCell auditHistoryEvent">${EVENTDISPLAYNAME}</td>
 			<td class="historyCell auditHistoryDate">${utils.DateStringToShortDate(AUDITDATE, true)}</td>
 		</tr>
 </script>
-<script id="historyItemVersion" type="text/x-jquery-tmpl">
+<script id="historyItemVersion_tmpl" type="text/x-jquery-tmpl">
 		<tr class="historyRow">
 			<td class="historyCell versionHistoryNumber">${Number}</td>
 			<td class="historyCell versionHistoryFileName"><a class="versionDownload" onclick="return false;" href="#">${FileName}</a></td>
@@ -354,11 +354,11 @@
 			<td class="historyCell versionHistorySize">${utils.FormatFileSize(FileDataSize)}</td>
 		</tr>
 </script>
-<script id="historyTabHeaders" type="text/x-jquery-tmpl">
+<script id="historyTabHeaders_tmpl" type="text/x-jquery-tmpl">
 		<li><a href="#tab${tabName}" class="tab${tabName}Header" >${tabText}</a></li>
 		<li class="tabSeparator"></li>
 </script>
-<script id="historyTabContent" type="text/x-jquery-tmpl">
+<script id="historyTabContent_tmpl" type="text/x-jquery-tmpl">
 		<div id="tab${tabName}">
 			<table class="historyTable">
 				<thead class="historyTableHeader">
@@ -373,7 +373,7 @@
 			</table>
 		</div>
 </script>
-<script id="historyDialogTemplate" type="text/x-jquery-tmpl">
+<script id="historyDialogTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="historyView" title="${title}">
 			<div class="historyContent">
 				<div id="historyTabs">
@@ -385,7 +385,7 @@
 			</div>
 		</div>
 </script>
-<script id="historyDialogFolderTemplate" type="text/x-jquery-tmpl">
+<script id="historyDialogFolderTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="historyViewFolder" title="${T('LABEL.TabAudit')}">
 			<div class="historyContent">
 				<div id="historyFolderTabs">
@@ -397,7 +397,7 @@
 			</div>
 		</div>
 </script>
-<script id="publishDestinationOptionDialogTemplate" type="text/x-jquery-tmpl">
+<script id="publishDestinationOptionDialogTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="publishDestinationOptionDialogView" title="${T('LABEL.Publish')}">
 			<table class="publishFileOptionTable">
 				<tr>
@@ -411,7 +411,7 @@
 			</table>
 		</div>
 </script>
-<script id="publishDialogTemplate" type="text/x-jquery-tmpl">
+<script id="publishDialogTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="publishDialogView" title="${T('LABEL.Publish')}">
 			<div class="publishContent">
 				<div class="textLeftInput publishDialogInputs">
@@ -427,7 +427,7 @@
 		</div>
 </script>
 				
-<script id="aboutDialogTemplate" type="text/x-jquery-tmpl">
+<script id="aboutDialogTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="aboutDialogView" title="${title}">				
 				<div id="aboutDialogContent">
 						<div class="aboutInfo productNameLogo"><img src="${info.repo}/img/tempo_wordmark.png" /></div>
@@ -440,7 +440,7 @@
 		</div>
 </script>
 
-<script id="objectInfo" type="text/x-jquery-tmpl">
+<script id="objectInfo_tmpl" type="text/x-jquery-tmpl">
 			<div id="objectInfoWrapper">
 				{{if isReadOnly}}
 					<div id="objectInfoHeadingReadOnly" >
@@ -459,13 +459,13 @@
 			</div>
 </script>
 
-<script id="message" type="text/x-jquery-tmpl">
+<script id="message_tmpl" type="text/x-jquery-tmpl">
 		<div {{if id}} id="${id}" {{/if}}class="${classes}">			
 			${message}
 		</div>		
 </script>
 
-<script id="diskUsageTemplate"  type="text/x-jquery-tmpl">
+<script id="diskUsageTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="diskUsageWrapper">
 			<div id="diskUsage">
 				${T('LABEL.DiskUsed')}

@@ -1,4 +1,4 @@
-<script id="backupLevel" type="text/x-jquery-tmpl">
+<script id="backupLevel_tmpl" type="text/x-jquery-tmpl">
 	<div id="backUpLevelNavWrapper">
 		<div id="backUpLevelNav">
 			<div id="backUpLevelNavIcon"></div>
@@ -10,13 +10,13 @@
 	</div>
 </script>
 
-<script id="breadcrumb" type="text/x-jquery-tmpl">
+<script id="breadcrumb_tmpl" type="text/x-jquery-tmpl">
 		<div id="breadcrumb">
 			{{tmpl(breadcrumbItem) "breadcrumbItem"}}
 		</div>
 </script>
 
-<script id="breadcrumbItem" type="text/x-jquery-tmpl">
+<script id="breadcrumbItem_tmpl" type="text/x-jquery-tmpl">
 		{{if last}}
 			{{if nodeID===info.userRootFolderID}}
 				<li class="breadcrumbLast" title="${name}" alt="${name}">
@@ -61,7 +61,7 @@
 		{{/if}}
 </script>
 
-<script id="browseItem" type="text/x-jquery-tmpl">
+<script id="browseItem_tmpl" type="text/x-jquery-tmpl">
 		{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT && utils.IsSupportedImageMimetype(MIMETYPE)}}
 			<div style="display: none;"><a id="node${DATAID}" href="${ui.FormatDownloadFileURL(DATAID)}" class="gallery" rel="gallery" nodeid="${DATAID}" title="${NAME}">${NAME}</a></div>
 		{{/if}}
@@ -124,7 +124,7 @@
 		{{/if}}
 </script>
 
-<script id="browseItemThumbnail" type="text/x-jquery-tmpl">
+<script id="browseItemThumbnail_tmpl" type="text/x-jquery-tmpl">
 		{{if SUBTYPE===CONST_SUBTYPE.FOLDER || SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
 			<div class="thumbnailViewBrowseItem {{if last}}itemLast{{/if}}" id="browseFile-${DATAID}">
 				<div class="itemInfo">
@@ -176,7 +176,7 @@
 		{{/if}}
 </script>
 
-<script id="selectAllMessage" type="text/x-jquery-tmpl">
+<script id="selectAllMessage_tmpl" type="text/x-jquery-tmpl">
 		<div class="selectAllMessage">
             ${text}
             <a href="#" onclick="return false;" id="${linkId}">${linkText}</a>

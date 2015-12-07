@@ -433,17 +433,17 @@ $.extend(Share, new function(){
 
 			if(pageNumber === 1){
 
-				ui.LoadTemplateInEmptyElement("item", utils.MarkLast(data), "#items");
+				ui.LoadTemplateInEmptyElement("#item_tmpl", utils.MarkLast(data), "#items");
 			}
 			else{
 
 				$('.item').removeClass('itemLast');
-				ui.LoadTemplate("item", utils.MarkLast(data), "#items");
+				ui.LoadTemplate("#item_tmpl", utils.MarkLast(data), "#items");
 			}
         }
 		else{
 			if(pageNumber === 1){
-				ui.LoadTemplateInEmptyElement('message', {message: T('LABEL.NoSharedFoldersMessage'), id: 'noSharedFoldersMessage'}, '#items');
+				ui.LoadTemplateInEmptyElement("#message_tmpl", {message: T('LABEL.NoSharedFoldersMessage'), id: 'noSharedFoldersMessage'}, '#items');
 			}
 		}
     };
@@ -573,7 +573,7 @@ $.extend(Share, new function(){
 					data[i].acceptButton = {classes:'shareRequestButton shareRequestAcceptButton',name:'shareRequestAcceptButton',textLeft:T('LABEL.Accept') };
 					data[i].rejectButton = {classes:'shareRequestButton shareRequestDeclineButton',name:'shareRequestDeclineButton',textLeft:T('LABEL.Decline') };
 				}
-			ui.LoadTemplateInEmptyElement("itemRequest", utils.MarkLast(data), "#itemRequests");
+			ui.LoadTemplateInEmptyElement("#itemRequest_tmpl", utils.MarkLast(data), "#itemRequests");
 			Share.InitializePendingShareRequest(data.length);
 		}
     };
@@ -623,7 +623,7 @@ $.extend(Share, new function(){
 				data[i].rejectButton = {classes:'shareRequestButton shareRequestDeclineButton',name:'shareRequestDeclineButton',textLeft:T('LABEL.Decline') };
 			}
 			
-			ui.LoadTemplateInEmptyElement("shareRequestMenu", data, "#shareRequestSummary");
+			ui.LoadTemplateInEmptyElement("#shareRequestMenu_tmpl", data, "#shareRequestSummary");
 			
 			if (totalRequests > Share.maxRequests) {
 				
@@ -645,7 +645,7 @@ $.extend(Share, new function(){
 				
 				
 				var totalRequestsStr = T('LABEL.SeeAllXNotifications', {total: totalRequests});
-				ui.LoadTemplate("shareRequestMenuBottom", [{ totalRequests: totalRequestsStr }], "#shareRequestSummary");
+				ui.LoadTemplate("#shareRequestMenuBottom_tmpl", [{ totalRequests: totalRequestsStr }], "#shareRequestSummary");
 			}
 
 			Share.sharingRequests = data;

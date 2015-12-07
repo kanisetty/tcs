@@ -3,26 +3,26 @@ $.extend(Move, new function(){
      * Add any template variables if needed here
      * @param {Object}      vars        The object that will be added with new template varabiles
      *
-     * @returns {Object}                The object with the new template variables added 
+     * @returns {Object}                The object with the new template variables added
      * @public
-     */ 
+     */
     this.RegisterDialogVars = function(vars){
         return vars;
     };
-    
+
     /**
      * Initialize the copy and multicopy dialog
      *
      * @public
-     */ 
+     */
     this.InitializeMoveDialogs = function(){
         initializeMoveDialog();
         initializeMultiMoveDialog();
     };
-    
+
     //TODO: when move a file, we might want make the current folder unselectable
     var initializeMoveDialog = function(){
-        var moveItemTreeView = new TreeView({wrapperID: 'moveItemDialog', wrapperTitle:T('LABEL.Move'), treeID: 'moveTree', treeTemplate: 'moveFolderItem', parent: 'body'} );
+        var moveItemTreeView = new TreeView({wrapperID: 'moveItemDialog', wrapperTitle:T('LABEL.Move'), treeID: 'moveTree', treeTemplate: '#moveFolderItem_tmpl', parent: 'body'} );
         var moveItemDialog = $('#moveItemDialog');
         moveItemDialog.dialog({
             autoOpen: false,
@@ -78,11 +78,11 @@ $.extend(Move, new function(){
 
         });
 
-    }; // end initializeMoveDialog 
+    }; // end initializeMoveDialog
 
     var initializeMultiMoveDialog = function(){
 
-        var multiMoveTreeView = new TreeView({wrapperID: 'multiMoveDialog', wrapperTitle:T('LABEL.Move'), treeID: 'multiMoveTree', treeTemplate: 'multiMoveItem', parent: 'body'} );
+        var multiMoveTreeView = new TreeView({wrapperID: 'multiMoveDialog', wrapperTitle:T('LABEL.Move'), treeID: 'multiMoveTree', treeTemplate: '#multiMoveItem_tmpl', parent: 'body'} );
         var multiMoveDialog = $('#multiMoveDialog');
         multiMoveDialog.dialog({
             autoOpen: false,
@@ -128,5 +128,5 @@ $.extend(Move, new function(){
             }
 
         });
-    }; // end initializeMultiMoveDialog 
+    }; // end initializeMultiMoveDialog
 });

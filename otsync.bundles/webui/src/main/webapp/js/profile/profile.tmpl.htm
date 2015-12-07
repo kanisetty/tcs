@@ -1,4 +1,4 @@
-<script id="profilePictureAndPasswordDialogTemplate" type="text/x-jquery-tmpl">
+<script id="profilePictureAndPasswordDialogTemplate_tmpl" type="text/x-jquery-tmpl">
         <div id="profilePictureDialogView" title="${title}">
             <div id="profilePictureContent">       
                 {{tmpl(changeProfilePictureSection) "changeProfilePictureTemplate"}}
@@ -11,7 +11,7 @@
 		</div>
 </script>
 
-<script id="changeProfilePictureTemplate" type="text/x-jquery-tmpl">
+<script id="changeProfilePictureTemplate_tmpl" type="text/x-jquery-tmpl">
         <div class="changeProfileSectionTitle">Photo</div>
         <img id="profilePhoto" src="${userProfileImageUrl}" />
         <div id="changeProfileRightWrapper">
@@ -23,7 +23,7 @@
         <div id="profilePictureError"></div>
 </script>
 
-<script id="changePasswordTemplate" type="text/x-jquery-tmpl">
+<script id="changePasswordTemplate_tmpl" type="text/x-jquery-tmpl">
         <div class="changeProfileSectionTitle">Password</div>
         <div id="passwordDialogContent">
             {{tmpl(currentPasswordInput) "input"}}

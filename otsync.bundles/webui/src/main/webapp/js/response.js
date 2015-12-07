@@ -124,10 +124,10 @@ var response = new function () {
 
 			if( data[0].SUBTYPE === CONST_SUBTYPE.DOCUMENT)
 			{
-				ui.LoadTemplateInEmptyElement("historyItemAudit", data, ".historyDialog .historyDataAudit");
+				ui.LoadTemplateInEmptyElement("#historyItemAudit_tmpl", data, ".historyDialog .historyDataAudit");
 			}
 			else {
-				ui.LoadTemplateInEmptyElement("historyItemAudit", data, ".historyDialogFolder .historyDataAudit");
+				ui.LoadTemplateInEmptyElement("#historyItemAudit_tmpl", data, ".historyDialogFolder .historyDataAudit");
 			}
 		}
 	};
@@ -197,7 +197,7 @@ var response = new function () {
 			utils.AddDisplayName(data);
 		
 			data.reverse();
-			ui.LoadTemplateInEmptyElement("historyItemVersion", data, ".historyDataVersion");
+			ui.LoadTemplateInEmptyElement("#historyItemVersion_tmpl", data, ".historyDataVersion");
 		}
 	};
 

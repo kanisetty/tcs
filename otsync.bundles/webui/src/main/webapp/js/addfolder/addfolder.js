@@ -1,5 +1,5 @@
 var AddFolderController = new function(){
-    
+
     /**
 	 * toggle the create new folder interface
 	 *
@@ -31,18 +31,18 @@ var AddFolderController = new function(){
 					textLeft:T('LABEL.Cancel')
 				}
 			};
-			$("#createNewFolder").template(createNewFolderOptions).insertAfter('#columnHeaderWrapper');
+			$("#createNewFolder_tmpl").template(createNewFolderOptions).insertAfter('#columnHeaderWrapper');
 			document.getElementById('newFolderName').focus();
 		}else{
 			// it's showing so get rid of it
 			panel.remove();
 		}
 	};
-    
+
     this.AddEvents = function(){
-        
+
         var bodyTag = $('body');
-        
+
         bodyTag.delegate('#newFolderButton, #cancelCreateFolder', 'click', function(){
 			AddFolderController.ToggleCreateNewFolder();
             $('#newFolderName').focus();

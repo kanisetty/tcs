@@ -76,15 +76,15 @@ var Tasks = new function(){
 		Tasks.GetUsers();
 		
 		taskInfoTmplVar = {};
-		ui.LoadTemplateInEmptyElement("taskInfoTemplate", taskInfoTmplVar, "#taskInfo");		
+		ui.LoadTemplateInEmptyElement("#taskInfoTemplate_tmpl", taskInfoTmplVar, "#taskInfo");		
 		if((Tasks.tasksList).length > 0 ){
-			ui.LoadTemplateInEmptyElement("task",Tasks.tasksList,"#tasks");
+			ui.LoadTemplateInEmptyElement("#task_tmpl",Tasks.tasksList,"#tasks");
 		}else{
-			ui.LoadTemplateInEmptyElement("emptyTaskList",taskInfoTmplVar,"#tasks");
+			ui.LoadTemplateInEmptyElement("#emptyTaskList_tmpl",taskInfoTmplVar,"#tasks");
 		}	
 		
 		if ( Tasks.usersWithPerms.indexOf( info.userName ) > -1 ) {
-			ui.LoadTemplateInEmptyElement("createTask", taskInfoTmplVar, "#taskCreation");		
+			ui.LoadTemplateInEmptyElement("#createTask_tmpl", taskInfoTmplVar, "#taskCreation");		
 			Tasks.AddAssigneeAutoComplete("#taskAssignedToInput");		
 			Tasks.AddDatePicker("#taskDueDateInput","#taskDateSelected");
 			
