@@ -27,7 +27,7 @@ describe('Node tests', function(){
         var node = $dummyNodeService.getNodeWithIsContainerUpdated(true);
         var expectedIconURL = "img/default_folder.png";
 
-        spyOn($sessionService, 'getGatewayURL').andReturn(null);
+        spyOn($sessionService, 'getGatewayURL').and.returnValue(null);
 
         expect(node.getIconURL()).toEqual(expectedIconURL);
     });
@@ -37,7 +37,7 @@ describe('Node tests', function(){
         var node = $dummyNodeService.getNodeWithIsContainerUpdated(false);
         var expectedIconURL = "img/default_file.png";
 
-        spyOn($sessionService, 'getGatewayURL').andReturn(null);
+        spyOn($sessionService, 'getGatewayURL').and.returnValue(null);
 
         expect(node.getIconURL()).toEqual(expectedIconURL);
     });

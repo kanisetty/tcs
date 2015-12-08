@@ -103,7 +103,7 @@ describe('feedsService getFeed tests', function(){
         var _feed;
         var expectedFeedItems = [];
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve([]);
             return deferred.promise;
@@ -126,7 +126,7 @@ describe('feedsService getFeed tests', function(){
         var expectedSeqNumber4 = 81;
         var expectedSeqNumber5 = 41;
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve($dummyFeedService.getDummyFeedData());
             return deferred.promise;
@@ -188,7 +188,7 @@ describe('feedsService getFeedLikes tests', function(){
 		var _feed;
 		var expectedFeedItems = [];
 
-		spyOn($sessionService, 'runRequest').andCallFake(function(){
+		spyOn($sessionService, 'runRequest').and.callFake(function(){
 			var deferred = $q.defer();
 			deferred.resolve([]);
 			return deferred.promise;
@@ -213,7 +213,7 @@ describe('feedsService getFeedLikes tests', function(){
 		var expectedLocation2 = dummyLikeFeedData.users[1].userLocation;
 		var expectedPosition2 = dummyLikeFeedData.users[1].userTitle;
 
-		spyOn($sessionService, 'runRequest').andCallFake(function(){
+		spyOn($sessionService, 'runRequest').and.callFake(function(){
 			var deferred = $q.defer();
 			deferred.resolve(dummyLikeFeedData);
 			return deferred.promise;
@@ -277,7 +277,7 @@ describe('feedsService getFeedProviders tests', function(){
         var expectedType = '';
 		var expectedName = 'ALL';
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve([]);
             return deferred.promise;
@@ -301,7 +301,7 @@ describe('feedsService getFeedProviders tests', function(){
         var expectedType4 = "PulseMentions";
         var expectedType5 = "PulseFollows";
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve($dummyFeedService.getDummyFeedProviderData());
             return deferred.promise;

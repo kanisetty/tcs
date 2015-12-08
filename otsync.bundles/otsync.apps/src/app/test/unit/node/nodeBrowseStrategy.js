@@ -58,9 +58,9 @@ describe('nodeBrowseStrategy getRoot tests', function(){
         var mockRoot = $dummyNodeService.getDummyNode();
         var nodeBrowseStrategy = new NodeBrowseStrategy('enterpriseWorkspaceRoot');
 
-        spyOn($nodeService, 'getNodeFromQueryString').andReturn(ewsID);
+        spyOn($nodeService, 'getNodeFromQueryString').and.returnValue(ewsID);
 
-        spyOn($nodeService, 'getNode').andCallFake(function(){
+        spyOn($nodeService, 'getNode').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve(mockRoot);
             return deferred.promise;
@@ -85,9 +85,9 @@ describe('nodeBrowseStrategy getRoot tests', function(){
         var mockRoot = $dummyNodeService.getDummyNode();
         var nodeBrowseStrategy = new NodeBrowseStrategy('enterpriseWorkspaceRoot');
 
-        spyOn($nodeService, 'getNodeFromQueryString').andReturn(ewsID);
+        spyOn($nodeService, 'getNodeFromQueryString').and.returnValue(ewsID);
 
-        spyOn($nodeService, 'getNode').andCallFake(function(){
+        spyOn($nodeService, 'getNode').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve(mockRoot);
             return deferred.promise;
@@ -111,7 +111,7 @@ describe('nodeBrowseStrategy getRoot tests', function(){
         var mockRoot = $dummyNodeService.getDummyNode();
         var nodeBrowseStrategy = new NodeBrowseStrategy('enterpriseWorkspaceRoot');
 
-        spyOn($nodeService, 'getNode').andCallFake(function(){
+        spyOn($nodeService, 'getNode').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve(mockRoot);
             return deferred.promise;
@@ -187,7 +187,7 @@ describe('nodeBrowseStrategy  getRootID tests', function(){
 
         var nodeBrowseStrategy = new NodeBrowseStrategy('enterpriseWorkspaceRoot');
 
-        spyOn($nodeService, 'getNodeFromQueryString').andReturn(_mockID);
+        spyOn($nodeService, 'getNodeFromQueryString').and.returnValue(_mockID);
 
         $q.when(nodeBrowseStrategy.getRootID($stateParams)).then(function(rootNodeID){
             _rootNodeID = rootNodeID;
@@ -206,7 +206,7 @@ describe('nodeBrowseStrategy  getRootID tests', function(){
 
         var nodeBrowseStrategy = new NodeBrowseStrategy('enterpriseWorkspaceRoot');
 
-        spyOn($nodeService, 'getNodeFromQueryString').andReturn(_mockID);
+        spyOn($nodeService, 'getNodeFromQueryString').and.returnValue(_mockID);
 
         $q.when(nodeBrowseStrategy.getRootID($stateParams)).then(function(rootNodeID){
             _rootNodeID = rootNodeID;
@@ -225,7 +225,7 @@ describe('nodeBrowseStrategy  getRootID tests', function(){
 
         var nodeBrowseStrategy = new NodeBrowseStrategy('enterpriseWorkspaceRoot');
 
-        spyOn($nodeService, 'getNodeFromQueryString').andReturn(_mockID);
+        spyOn($nodeService, 'getNodeFromQueryString').and.returnValue(_mockID);
 
         $q.when(nodeBrowseStrategy.getRootID($stateParams)).then(function(rootNodeID){
             _rootNodeID = rootNodeID;
@@ -374,7 +374,7 @@ describe('nodeBrowseStrategy longPressBrowseDecorator tests', function(){
 
 	it('should not pop the menu if offline', function() {
 
-		spyOn($sessionService, 'isOnline').andCallFake(function(){
+		spyOn($sessionService, 'isOnline').and.callFake(function(){
 			var deferred = $q.defer();
 			deferred.resolve(false);
 			return deferred.promise;
@@ -403,7 +403,7 @@ describe('nodeBrowseStrategy longPressBrowseDecorator tests', function(){
 			root: 'test'
 		};
 
-		spyOn($sessionService, 'isOnline').andCallFake(function(){
+		spyOn($sessionService, 'isOnline').and.callFake(function(){
 			var deferred = $q.defer();
 			deferred.resolve(false);
 			return deferred.promise;

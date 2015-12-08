@@ -124,7 +124,7 @@ describe('Collaborator tests', function(){
 
     it('should return the photoURL of the collaborator', function() {
         var dummyUserID = 123456;
-        var expectedPhotoURL = $sessionService.getGatewayURL() + '/content/v4/users/' + dummyUserID + '/photo';
+        var expectedPhotoURL = $sessionService.getGatewayURL() + '/content/v5/users/' + dummyUserID + '/photo';
 
 		var collaborator = $dummyCollaboratorService.getDummyCollaboratorWithUserIDUpdated(dummyUserID);
 

@@ -64,7 +64,7 @@ describe('collaboratorsController tests', function(){
         var collaborators = $dummyCollaboratorService.getDummyCollaborators();
         var collaborator = collaborators[1];
 
-        spyOn($displayMessageService, 'createConfirmationPopup').andCallFake(function(){
+        spyOn($displayMessageService, 'createConfirmationPopup').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve(confirmed);
             return deferred.promise;
@@ -91,7 +91,7 @@ describe('collaboratorsController tests', function(){
         var collaborators = $dummyCollaboratorService.getDummyCollaborators();
         var collaborator = collaborators[1];
 
-        spyOn($displayMessageService, 'createConfirmationPopup').andCallFake(function(){
+        spyOn($displayMessageService, 'createConfirmationPopup').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve(confirmed);
             return deferred.promise;
@@ -99,7 +99,7 @@ describe('collaboratorsController tests', function(){
         spyOn($displayMessageService, 'hideMessage');
         spyOn($displayMessageService, 'showToastMessage');
 
-        spyOn($collaboratorsService, 'removeCollaborator').andCallFake(function(){
+        spyOn($collaboratorsService, 'removeCollaborator').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve();
             return deferred.promise;
@@ -115,7 +115,7 @@ describe('collaboratorsController tests', function(){
 
         expect($scope.collaborators[0].getCollaboratorName()).toEqual("Admin");
         expect($scope.collaborators[1].getCollaboratorName()).toEqual("test1");
-        expect($scope.collaborators[2]).toEqual(null);
+        expect($scope.collaborators[2]).toEqual(undefined);
         expect($displayMessageService.hideMessage).toHaveBeenCalled();
         expect($displayMessageService.showToastMessage).toHaveBeenCalled();
     });

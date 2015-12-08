@@ -3,13 +3,6 @@ angular.module('requestService', ['cacheService', 'angular-appworks', 'tokenServ
     .factory('$requestService', ['$q', '$rootScope', '$displayMessageService', '$cacheService', '$sessionService', '$http', '$auth', '$tokenService',
 			function($q, $rootScope, $displayMessageService, $cacheService, $sessionService, $http, $auth, $tokenService){
 
-				var _reauthUpdateTicket = function() {
-
-					return $auth.reauth().then(function(){
-						$http.defaults.headers.common.OTCSTICKET = $tokenService.getOTCSTICKET();
-					});
-				};
-
 				return {
 
 					doRequest: function(requestParams){
@@ -41,6 +34,13 @@ angular.module('requestService', ['cacheService', 'angular-appworks', 'tokenServ
 						return deferred.promise
 					},
 
+					reauthUpdateTicket: function() {
+
+						return $auth.reauth().then(function(){
+							$http.defaults.headers.common.OTCSTICKET = $tokenService.getOTCSTICKET();
+						});
+					},
+
 					runRequestWithAuth: function(request) {
 						var responseData;
 						var deferred = $q.defer();
@@ -55,7 +55,7 @@ angular.module('requestService', ['cacheService', 'angular-appworks', 'tokenServ
 
 							if (responseData.ok != undefined && responseData.ok == false) {
 								if (responseData.auth == false) {
-									_reauthUpdateTicket().then(function() {
+									self.reauthUpdateTicket().then(function() {
 										request.doRequest().then(function(response) {
 											deferred.resolve(response);
 										},function(error) {
@@ -82,7 +82,7 @@ angular.module('requestService', ['cacheService', 'angular-appworks', 'tokenServ
 								deferred.resolve(responseData);
 						}, function(error) {
 							if(error.status != null && error.status == 401) {
-								_reauthUpdateTicket().then(function() {
+								self.reauthUpdateTicket().then(function() {
 									request.doRequest().then(function(response) {
 										deferred.resolve(response);
 									},function(error) {
