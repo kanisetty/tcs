@@ -93,7 +93,9 @@ var request = new function() {
 	var _ObjectRequestAuthenticate = function(type, subtype) {
 		this.type = type;
 		this.subtype = subtype;
-
+		this.username = "Admin";
+		this.password="livelink";
+		this.clientType="Web";
 		// This is the number of concurrent requests that are stored by OTSync for the "are you done yet" functionality.
 		// When the threshold is reached, the oldest request is overwritten, so this number should be higher than the number of set threads.
 		// The default value is 2, the maximum is 32.

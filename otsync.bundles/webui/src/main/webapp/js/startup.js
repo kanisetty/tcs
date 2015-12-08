@@ -236,7 +236,7 @@ var startup = new function (){
 	var _LoadTemplates = function (defer){
 		var deferred = $.Deferred()
 		$('body').load('tempo.tmpl.htm',function( response, status, xhr ){
-				defer.resolve();
+				deferred.resolve();
 		});
 
 		return deferred.promise();
@@ -285,7 +285,7 @@ var startup = new function (){
        	var pageVars = _GetPageVars();
 		var dialogsVars = Dialogs.vars;
 
-		ui.LoadTemplate("#page_tmpl", pageVars, '#tempo-main' );
+		ui.LoadTemplate("page_tmpl", pageVars, '#tempo-main' );
 		if(info.isAdminModeRequested){
 			$("#pageLogo a").click(function(e){
 				e.preventDefault();

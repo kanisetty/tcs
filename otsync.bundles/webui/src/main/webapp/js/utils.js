@@ -462,7 +462,7 @@ var utils = new function() {
 		$.each(cookies, function(index, value){
 
 			// Note: the cookie could contain "=", so get the first instance rather than splitting the string.
-			pos = value.indexOf("=");
+			var pos = value.indexOf("=");
 			if (pos!==-1){
 
 				key = value.substring(0,pos).replace(/^\s+|\s+$/g,"");
@@ -861,7 +861,7 @@ var utils = new function() {
 	*/
 	this.recursiveReplace = function(find, replace, json) {
 		var escapedFind = find.replace(/\$/g, '\\$');
-		for (property in json) {
+		for (var property in json) {
 			if (typeof(json[property]) == 'object') {
 				json[property] = utils.recursiveReplace(find, replace, json[property]);
 			}

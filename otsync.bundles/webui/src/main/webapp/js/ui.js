@@ -25,7 +25,7 @@ var ui = new function(){
 	*/
 	this.LoadTemplate = function( templateID, data, selectorToAppendTo ){
 
-		$( selectorToAppendTo ).append( $(templateID).template( data ) );
+		$( selectorToAppendTo ).append( $("#"+templateID).tmpl( data ) );
 	};
 
 	/**
@@ -38,7 +38,7 @@ var ui = new function(){
 	*/
 	this.LoadTemplateInEmptyElement = function( templateID, data, selectorToAppendTo ){
 
-		$( selectorToAppendTo ).empty().append(  $(templateID).template( data ) );
+		$( selectorToAppendTo ).empty().append(  $("#"+templateID).tmpl( data ) );
 	};
 
 	/**
@@ -51,7 +51,7 @@ var ui = new function(){
 	*/
 	this.LoadTemplatePreprend = function( templateID, data, selectorToPrependTo ){
 
-		$( selectorToPrependTo ).prepend(  $(templateID).template( data ) );
+		$( selectorToPrependTo ).prepend(  $("#"+templateID).tmpl( data ) );
 	};
 
 
