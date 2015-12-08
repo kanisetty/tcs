@@ -12,7 +12,7 @@
 
 <script id="breadcrumb_tmpl" type="text/x-jquery-tmpl">
 		<div id="breadcrumb">
-			{{tmpl(breadcrumbItem) "breadcrumbItem"}}
+			{{tmpl(breadcrumbItem) "#breadcrumbItem_tmpl"}}
 		</div>
 </script>
 
@@ -67,13 +67,13 @@
 		{{/if}}
 		{{if ( SUBTYPE===CONST_SUBTYPE.DOCUMENT ) || ( SUBTYPE in info.supportedCSShareTypes )}}
 			<div class="browseItem {{if last}}itemLast{{/if}}" id="browseFile-${DATAID}">
-				<div class="itemInfo">				
+				<div class="itemInfo">
 					<div class="itemCheckBoxWrapper">
 					<div class="itemCheckBox">
 						<a id="a${DATAID}" href="#" onclick="return false;"><img src="${uncheckedImage}" /></a>
 					</div>
 					</div>
-				
+
 					<div class="itemIconNameActionWrapper">
 					{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
 						<div class="itemIcon" style="background: url(${ui.GetThumbnailImage(DATAID, MIMETYPE, ui.ThumbnailSize.small)}) no-repeat;" title="${T('LABEL.Download')} ${NAME}">
@@ -87,34 +87,34 @@
 					{{else}}
 						<div class="itemIcon ${utils.FolderIcon(SHAREDFOLDER, ISREADONLY, ISSUBSCRIBED, SHARECLASS)}" title="Open ${NAME}"></div>
 					{{/if}}
-				
+
 					{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
 						<div class="itemNameContainer"><a href="#" onclick="return false;" class="itemName" title="${T('LABEL.Download')} ${NAME}">${NAME}</a>
 							{{if HASBRAVAMARKUP}}
 								<img class="bravaIcon" src="${info.repo}/img/markup.gif" />
 							{{/if}}
 						</div>
-						<div class="BrowseMoreMenu"> {{tmpl(ui.moreMenuFile(ISBRAVA, ISREADONLY,ISDELETABLE,ISRESERVABLE,RESERVEDBYUSERNAME,info.userName)) "dropDown"}} </div>
+						<div class="BrowseMoreMenu"> {{tmpl(ui.moreMenuFile(ISBRAVA, ISREADONLY,ISDELETABLE,ISRESERVABLE,RESERVEDBYUSERNAME,info.userName)) "#dropDown_tmpl"}} </div>
 					{{else}}
 						<div class="itemNameContainer">
 							<a href="#" onclick="return false;" class="itemName folderItem" title="${T('LABEL.Open')} ${NAME}" >${NAME}</a>
 							{{if HASTASKS}}
 								<img class="taskIcon" src="${info.repo}/img/taskIcon.png" />
-							{{/if}}							
+							{{/if}}
 						</div>
-						<div class="BrowseMoreMenu">{{tmpl(ui.moreMenuFolder(SHAREDFOLDER, ISSHARED, ISREADONLY, ISROOTSHARE, ISSHAREABLE, ISCOPYABLE, ISSUBSCRIBED)) "dropDown"}}</div>
+						<div class="BrowseMoreMenu">{{tmpl(ui.moreMenuFolder(SHAREDFOLDER, ISSHARED, ISREADONLY, ISROOTSHARE, ISSHAREABLE, ISCOPYABLE, ISSUBSCRIBED)) "#dropDown_tmpl"}}</div>
 					{{/if}}
 					</div>
-					
+
 					<div class="itemLastModifiedWrapper">
 						<div class="itemLastModified">${utils.DateStringToShortDate(DISPLAYMODIFYDATE)} <span class="itemLastModifiedBy">${MODIFYUSERNAME}</span></div>
 					</div>
 
 					<div class="itemSizeWrapper">
 						{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
-							<div class="itemSize">${utils.FormatFileSize(DATASIZE)}</div>							
+							<div class="itemSize">${utils.FormatFileSize(DATASIZE)}</div>
 						{{else}}
-							<div class="itemSize">${utils.FormatFolderSize(CHILDCOUNT)}</div>							
+							<div class="itemSize">${utils.FormatFolderSize(CHILDCOUNT)}</div>
 					{{/if}}
 					</div>
 
@@ -154,20 +154,20 @@
 						{{/if}}
 					</div>
 					{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
-						<div class="BrowseMoreMenu"> {{tmpl(ui.moreMenuFile(ISBRAVA, ISREADONLY,ISDELETABLE,ISRESERVABLE,RESERVEDBYUSERNAME,info.userName)) "dropDown"}} </div>
+						<div class="BrowseMoreMenu"> {{tmpl(ui.moreMenuFile(ISBRAVA, ISREADONLY,ISDELETABLE,ISRESERVABLE,RESERVEDBYUSERNAME,info.userName)) "#dropDown_tmpl"}} </div>
 					{{else}}
-						<div class="BrowseMoreMenu">{{tmpl(ui.moreMenuFolder(SHAREDFOLDER, ISSHARED, ISREADONLY, ISROOTSHARE, ISSHAREABLE, ISCOPYABLE, ISSUBSCRIBED)) "dropDown"}}</div>
+						<div class="BrowseMoreMenu">{{tmpl(ui.moreMenuFolder(SHAREDFOLDER, ISSHARED, ISREADONLY, ISROOTSHARE, ISSHAREABLE, ISCOPYABLE, ISSUBSCRIBED)) "#dropDown_tmpl"}}</div>
 					{{/if}}
 					<div class="thumbnailViewBrowseItemInfo" >
 						{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
-							<div class="itemNameContainer"><a href="#" onclick="return false;" class="itemName" title="${T('LABEL.Download')} ${NAME}">${utils.TrimLongString(NAME,15)}</a> 	</div>							
+							<div class="itemNameContainer"><a href="#" onclick="return false;" class="itemName" title="${T('LABEL.Download')} ${NAME}">${utils.TrimLongString(NAME,15)}</a> 	</div>
 						{{else}}
-							<div class="itemNameContainer"><a href="#" onclick="return false;" class="itemName folderItem" title="${T('LABEL.Open')} ${NAME}" >${utils.TrimLongString(NAME,15)}</a> </div>							
+							<div class="itemNameContainer"><a href="#" onclick="return false;" class="itemName folderItem" title="${T('LABEL.Open')} ${NAME}" >${utils.TrimLongString(NAME,15)}</a> </div>
 						{{/if}}
 						{{if SUBTYPE===CONST_SUBTYPE.DOCUMENT}}
-							<div class="itemSize">${utils.FormatFileSize(DATASIZE)} -</div>							
+							<div class="itemSize">${utils.FormatFileSize(DATASIZE)} -</div>
 						{{else}}
-							<div class="itemSize">${utils.FormatFolderSize(CHILDCOUNT)} -</div>							
+							<div class="itemSize">${utils.FormatFolderSize(CHILDCOUNT)} -</div>
 						{{/if}}
 							<div class="itemLastModified">${utils.DateStringToShortDate(DISPLAYMODIFYDATE,true)}</div>
 					</div>

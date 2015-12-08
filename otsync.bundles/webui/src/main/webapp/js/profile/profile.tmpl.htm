@@ -1,12 +1,12 @@
 <script id="profilePictureAndPasswordDialogTemplate_tmpl" type="text/x-jquery-tmpl">
         <div id="profilePictureDialogView" title="${title}">
-            <div id="profilePictureContent">       
-                {{tmpl(changeProfilePictureSection) "changeProfilePictureTemplate"}}
+            <div id="profilePictureContent">
+                {{tmpl(changeProfilePictureSection) "#changeProfilePictureTemplate_tmpl"}}
             </div>
             {{if info.canChangePassword}}
                 <div id="changePassword">
-                    {{tmpl(changePasswordSection) "changePasswordTemplate"}}
-				</div>				
+                    {{tmpl(changePasswordSection) "#changePasswordTemplate_tmpl"}}
+				</div>
             {{/if}}
 		</div>
 </script>
@@ -26,9 +26,9 @@
 <script id="changePasswordTemplate_tmpl" type="text/x-jquery-tmpl">
         <div class="changeProfileSectionTitle">Password</div>
         <div id="passwordDialogContent">
-            {{tmpl(currentPasswordInput) "input"}}
-            {{tmpl(newPasswordInput1) "input"}}
-            {{tmpl(newPasswordInput2) "input"}}
+            {{tmpl(currentPasswordInput) "#input_tmpl"}}
+            {{tmpl(newPasswordInput1) "#input_tmpl"}}
+            {{tmpl(newPasswordInput2) "#input_tmpl"}}
             <div id='passwordMismatchError'>${mismatchMessage}</div>
 	</div>
 </script>

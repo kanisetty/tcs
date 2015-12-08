@@ -4,7 +4,7 @@
 					{{if info.folderIsShareable && !info.isAdminModeRequested}}
 						<div id="shareInvitation">
 						<textarea name="inviteMessage" id="inviteMessageInputSidebar" class="inviteMessageInput" placeholder="${T('LABEL.EnterMessageToIncludeToNewCollaborators')}"/>
-						{{tmpl "shareTypeSelect-Box"}}
+						{{tmpl "#shareTypeSelect-Box_tmpl"}}
 						<input name="invitee" id="inviteeinput" class="shareInput" placeholder="${T('LABEL.EnterUserToShareWith')}"/><br />
 						</div>
 					{{/if}}
@@ -21,7 +21,7 @@
 <script id="shareInvitationTemplate_tmpl" type="text/x-jquery-tmpl">
 			{{if info.folderIsShareable}}
 				<div id="shareInvitation" class="shareInvitationAll">
-					{{tmpl "shareTypeSelect-Box"}}
+					{{tmpl "#shareTypeSelect-Box_tmpl"}}
 					<input name="invitee" id="inviteeinputEditCollaborators" class="shareInput" placeholder="${T('LABEL.EnterUserToShareWith')}"/>
 				</div>
 			{{/if}}	
@@ -116,7 +116,7 @@
 								<div class="restoreCollaboratorBtnRight" />
 							</div>
 						{{else}}
-							{{tmpl "shareTypeSelect-Box"}}
+							{{tmpl "#shareTypeSelect-Box_tmpl"}}
 							<div class="cancelCollaboratorIcon"><a href="#" onclick="return false;"></a></div>
 						{{/if}}
 					</div>

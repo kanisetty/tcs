@@ -5,7 +5,7 @@
         </div>
         <div class="newFolderFormWrapper">
             <form id='createNewFolderForm'>
-                {{tmpl(newFolderInput) 'input'}}{{tmpl(newFolderCreateButton) 'button'}}{{tmpl(newFolderCancelButton) 'button'}}
+                {{tmpl(newFolderInput) "#input_tmpl"}}{{tmpl(newFolderCreateButton) "#button_tmpl"}}{{tmpl(newFolderCancelButton) "#button_tmpl"}}
                 <div id="newFolderError" class="errorText"> <b>${T('LABEL.Error')}</b>: ${T('LABEL.NewFolderError')}</div>
             </form>
         </div>

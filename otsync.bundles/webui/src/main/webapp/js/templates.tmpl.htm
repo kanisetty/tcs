@@ -1,15 +1,15 @@
 <script id="page_tmpl" type="text/x-jquery-tmpl">
 		<div id="page">
 			<div id="content">
-				<div id="leftColumnWrapper">					
-					<div id="disk"></div>					
+				<div id="leftColumnWrapper">
+					<div id="disk"></div>
 					<div id="leftColumn"></div>
 				</div>
 				<div id="centerColumnWrapper">
-					{{tmpl "centerColumn"}}
+					{{tmpl "#centerColumn_tmpl"}}
 				</div>
 				<div id="rightColumnWrapper">
-					{{tmpl "rightColumn"}}
+					{{tmpl "#rightColumn_tmpl"}}
 				</div>
 				<div class="newLine"></div>
 			</div>
@@ -26,18 +26,18 @@
 				<div class="columnSpacer"></div>
 				<div class="itemCheckAllBox">
 					<a id="checkAll" href="#" onclick="return false;"><img src="${info.repo}/img/chkbox.png" /></a>
-				</div>				
+				</div>
 			</div>
 		{{else}}
 			<div class="columnHeader ${classes}" id="${id}">
-					<span><a href="#" onclick="return false;">${columnName}</a></span>				
+					<span><a href="#" onclick="return false;">${columnName}</a></span>
 				{{if id !="sizeHeader"}}
 					<div class="columnSpacer"></div>
 				{{/if}}
 				<div class="columnSortArrow"></div>
 			</div>
 		{{/if}}
-		
+
 </script>
 
 <script id="centerColumn_tmpl" type="text/x-jquery-tmpl">
@@ -51,34 +51,34 @@
 						<button id="searchMagIcon" type="button"></button>
 					</div>
 				</div>
-			</div>			
+			</div>
 			<div id="breadcrumBar" >
-				<div id="breadcrumbWrapper"></div>				
+				<div id="breadcrumbWrapper"></div>
 				<div id="browseViewSelectors">
-					<div id="sortMenu">					
-						<div id="sortMenuButtonWrapper">							
-							{{tmpl(ui.sortMenu()) "dropDownSort"}}
-						</div>				
+					<div id="sortMenu">
+						<div id="sortMenuButtonWrapper">
+							{{tmpl(ui.sortMenu()) "#dropDownSort_tmpl"}}
+						</div>
 					</div>
 					<div id="thumbnailViewSelectorWrapper" title="${T('LABEL.BrowseThumbnailView')}">
 						<button id="thumbnailViewSelector" class="" type="button" name="thumbnailViewSelector"></button>
 					</div>
 					<div id="listViewSelectorWrapper" title="${T('LABEL.BrowseListView')}">
 						<button id="listViewSelector"  class="on" type="button" name="listViewSelector"></button>
-					</div>					
-				</div>				
+					</div>
+				</div>
 			</div>
 			<div id="columnHeaderWrapper">
 			</div>
 			<div id="backupLevel"></div>
 			<div id="contentmain">
 				<div id="updatingImage" class="displayNone">
-					{{tmpl "loadingImage"}}
+					{{tmpl "#loadingImage_tmpl"}}
 				</div>
 				<div id="itemsForFileTab">
 				</div>
 				<div id="itemsForSearchTab">
-				</div>					
+				</div>
 			</div>
 		</div>
 </script>
@@ -86,7 +86,7 @@
 <script id="rightColumn_tmpl" type="text/x-jquery-tmpl">
 		<div id="rightColumn">
 			<div id="objectInfo"></div>
-			<div id="searchInfo"></div>			
+			<div id="searchInfo"></div>
 			<div id="accordionContainer"></div>
 		</div>
 </script>
@@ -98,7 +98,7 @@
 				<div class="leftColumnText"><a href="#" onclick="return false;">${tabName}</a></div>
 			</div>
 			<div class="leftColumnItemArrow {{if tabSelected}} selected {{/if}}"></div>
-		</div>			
+		</div>
 </script>
 
 <script id="userActionLink_tmpl" type="text/x-jquery-tmpl">
@@ -107,21 +107,21 @@
 
 <script id="dialogs_tmpl" type="text/x-jquery-tmpl">
 			<div id="dialogs">
-					{{tmpl(confirmationDialog) "confirmationDialogTemplate"}}
-					{{tmpl(historyDialog) "historyDialogTemplate"}}
-					{{tmpl(historyDialogFolder) "historyDialogFolderTemplate"}}
-					{{tmpl(publishDestinationOptionDialog) "publishDestinationOptionDialogTemplate"}}
-					{{tmpl(publishDialog) "publishDialogTemplate"}}
-					{{tmpl(aboutDialog) "aboutDialogTemplate"}}
-					{{tmpl(profilePictureAndPasswordDialog) "profilePictureAndPasswordDialogTemplate"}}
-					{{tmpl(userNotificationConfigDialog) "userNotificationConfigDialogTemplate"}}
+					{{tmpl(confirmationDialog) "#confirmationDialogTemplate_tmpl"}}
+					{{tmpl(historyDialog) "#historyDialogTemplate_tmpl"}}
+					{{tmpl(historyDialogFolder) "#historyDialogFolderTemplate_tmpl"}}
+					{{tmpl(publishDestinationOptionDialog) "#publishDestinationOptionDialogTemplate_tmpl"}}
+					{{tmpl(publishDialog) "#publishDialogTemplate_tmpl"}}
+					{{tmpl(aboutDialog) "#aboutDialogTemplate_tmpl"}}
+					{{tmpl(profilePictureAndPasswordDialog) "#profilePictureAndPasswordDialogTemplate_tmpl"}}
+					{{tmpl(userNotificationConfigDialog) "#userNotificationConfigDialogTemplate_tmpl"}}
 			</div>
 </script>
 <script id="button_tmpl" type="text/x-jquery-tmpl">
 			<button {{if id}}id="${id}"{{/if}} class="${classes}" name="${name}" type="{{if type}}${type}{{else}}button{{/if}}" {{if tabIndex}}tabIndex="${tabIndex}"{{/if}} ><span> ${textLeft} </span>{{if img}}
 			<img src="${info.repo}/img/${img}" />
 			{{/if}}
-			<span>${textRight}</span></button> 
+			<span>${textRight}</span></button>
 </script>
 <script id="wrappedButton_tmpl" type="text/x-jquery-tmpl">
 		<div class="btn">
@@ -130,36 +130,36 @@
 				<button {{if id}}id="${id}"{{/if}} class="${classes}" name="${name}" type="{{if type}}${type}{{else}}button{{/if}}" {{if tabIndex}}tabIndex="${tabIndex}"{{/if}} ><span> ${textLeft} </span>{{if img}}
 				<img src="${info.repo}/img/${img}" />
 				{{/if}}
-				<span>${textRight}</span></button> 
+				<span>${textRight}</span></button>
 			</div>
 			<div class="btnRight"></div>
 		</div>
 </script>
 
 <script id="input_tmpl" type="text/x-jquery-tmpl">
-		
+
 		<div class="${wrapperClasses}">
-			<label  for="${id}" >${label}</label>				
-			{{if textTop}}${textTop}<div class="newLine"></div>{{/if}}	
+			<label  for="${id}" >${label}</label>
+			{{if textTop}}${textTop}<div class="newLine"></div>{{/if}}
 			{{if textLeft}}${textLeft}{{/if}}
-			{{if instructionText}}<span class="inputInstruction">${instructionText}</span>{{/if}}				
+			{{if instructionText}}<span class="inputInstruction">${instructionText}</span>{{/if}}
 			<input 	type="${type}" 	id="${id}" {{if classes}} class="${classes}" {{/if}} name="${name}" {{if value}}value="${value}"{{/if}} {{if placeHolder}} placeholder="${placeHolder}" {{/if}} {{if defaultChecked}} checked {{/if}} />
 			<span class="${id}TextRight">${textRight}</span>
 		</div>
-									
+
 </script>
 
 <script id="dropDownSort_tmpl" type="text/x-jquery-tmpl">
 		{{if textLeft}}<span class="dropDownTextLeft">${textLeft}</span>{{/if}}
 			{{if button}}
-				{{tmpl(button) "button"}}
+				{{tmpl(button) "#button_tmpl"}}
 			{{/if}}
-		
+
 			<div id="sortDropDownWrapper">
 				<ul {{if id}}id="${id}"{{/if}} class="dropdown">
 					<ul style="clear: both">
-						{{tmpl(utils.MarkLast(options)) "dropDownOptionsSort"}}
-					</ul>						
+						{{tmpl(utils.MarkLast(options)) "#dropDownOptionsSort_tmpl"}}
+					</ul>
 				</ul>
 			</div>
 </script>
@@ -168,12 +168,12 @@
 		<ul {{if id}}id="${id}"{{/if}} class="dropdown ">
 			<li>
 			{{if button}}
-				{{tmpl(button) "button"}}
+				{{tmpl(button) "#button_tmpl"}}
 			{{/if}}
 			{{if href}}<a href="${href}">{{/if}}
 			{{if textLeft}}<span class="dropDownTextLeft">${textLeft}</span>{{/if}}
 			{{if img}}
-				<img 
+				<img
 				{{if imgClasses}}class="${imgClasses}"{{/if}}
 				src="${info.repo}/img/${img}"/>
 			{{/if}}
@@ -186,7 +186,7 @@
 					<img src="${info.repo}/img/arrow-up.png" class="arrowUp"/>
 					{{/if}}
 					<ul style="clear: both">
-						{{tmpl(options) "dropDownOptions"}}
+						{{tmpl(options) "#dropDownOptions_tmpl"}}
 					</ul>
 				</div>
 			{{/if}}
@@ -196,23 +196,23 @@
 
 <script id="dropDownThumbnail_tmpl" type="text/x-jquery-tmpl">
 		<ul {{if id}}id="${id}"{{/if}} class="dropdown ">
-			<li>			
+			<li>
 			{{if href}}<a href="${href}">{{/if}}
 			{{if textLeft}}<span class="dropDownTextLeft">${textLeft}</span>{{/if}}
 			{{if img}}
-				<img 
+				<img
 				{{if imgClasses}}class="${imgClasses}"{{/if}}
 				src="${info.repo}/img/${img}"/>
 			{{/if}}
 			{{if textRight}}<span class="dropDownTextRight">${textRight}</span>{{/if}}
 			{{if href}}</a>{{/if}}
 			{{if options}}
-				<div class="dropDownMenu">					
+				<div class="dropDownMenu">
 					{{if UpArrow}}
 					<img src="${info.repo}/img/arrow-up.png" class="arrowUp"/>
 					{{/if}}
 					<ul style="clear: both">
-						{{tmpl(options) "dropDownOptions"}}
+						{{tmpl(options) "#dropDownOptions_tmpl"}}
 					</ul>
 				</div>
 			{{/if}}
@@ -227,12 +227,12 @@
 				<ul class="dropdown ">
 					<li>
 					{{if button}}
-						{{tmpl(button) "button"}}
+						{{tmpl(button) "#button_tmpl"}}
 					{{/if}}
 					{{if href}}<a href="${href}">{{/if}}
 					{{if textLeft}}<span class="dropDownTextLeft">${textLeft}</span>{{/if}}
 					{{if img}}
-						<img 
+						<img
 						{{if imgClasses}}class="${imgClasses}"{{/if}}
 						src="${info.repo}/img/${img}"/>
 					{{/if}}
@@ -244,7 +244,7 @@
 							<img src="${info.repo}/img/arrow-up.png" class="arrowUp"/>
 							{{/if}}
 							<ul style="clear: both">
-								{{tmpl(options) "dropDownOptions"}}
+								{{tmpl(options) "#dropDownOptions_tmpl"}}
 							</ul>
 						</div>
 					{{/if}}
@@ -257,8 +257,8 @@
 </script>
 
 <script id="dropDownOptions_tmpl" type="text/x-jquery-tmpl">
-	<!-- 
-		This template is used by the dropdown template to render each individual 
+	<!--
+		This template is used by the dropdown template to render each individual
 		item in the dropdown menu.
 	-->
 		<li><a {{if href}}href="${href}{{else}}href="#" onclick="return false;"{{/if}} class="${classes}">${linktext}</a></li>
@@ -270,9 +270,9 @@
 			<div class="sortDropdownArrow"></div>
 		</li>
 </script>
-	
+
 <script id="itemTreeTemplate_tmpl" type="text/x-jquery-tmpl">
-		<div id="${wrapperID}" class="treeWrapper" title= "${wrapperTitle}"> 
+		<div id="${wrapperID}" class="treeWrapper" title= "${wrapperTitle}">
 			<ul id="${treeID}" class="treeList">
 				<li class="root"><img src="${info.repo}/img/tempo_CS.png"/> <a class="treeRootFolder" href="#" onclick="return false;">${info.userRootFolderName}</a></li>
 				<ul>
@@ -280,24 +280,24 @@
 			</ul>
 			<div class="hidden selectedBar">&nbsp;</div>
 			<div class="loadingTree">
-				{{tmpl "loadingImage"}}
+				{{tmpl "#loadingImage_tmpl"}}
 			</div>
 			<div class="errorText"> <b>${T('LABEL.Error')}</b>: ${T('LABEL.ErrorLoadingFolderTree')}</div>
-			
+
 		</div>
 </script>
 
 <script id="usersListTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="usersList">
 			{{if usersListData}}
-			{{tmpl(usersListData) "userListShareItem"}}
+			{{tmpl(usersListData) "#userListShareItem_tmpl"}}
 			{{/if}}
 	   </div>
 </script>
- 
+
 <script id="confirmationDialogTemplate_tmpl" type="text/x-jquery-tmpl">
-		<div id="actionConfirmation" title="${title}">				
-			<span id="confirmationMessage">${message}</span>			
+		<div id="actionConfirmation" title="${title}">
+			<span id="confirmationMessage">${message}</span>
 		</div>
 </script>
 
@@ -363,10 +363,10 @@
 			<table class="historyTable">
 				<thead class="historyTableHeader">
 					{{if tabName === CONST_HISTORYTABS.AUDIT}}
-						{{tmpl "historyItemHeaderAudit"}}
+						{{tmpl "#historyItemHeaderAudit_tmpl"}}
 					{{/if}}
 					{{if tabName === CONST_HISTORYTABS.VERSION}}
-						{{tmpl "historyItemHeaderVersion"}}
+						{{tmpl "#historyItemHeaderVersion_tmpl"}}
 					{{/if}}
 				</thead>
 				<tbody class="historyData${tabName}" class="historyTableBody"></tbody>
@@ -378,10 +378,10 @@
 			<div class="historyContent">
 				<div id="historyTabs">
 					<ul>
-						{{tmpl(historyTabList) 'historyTabHeaders'}}
-					</ul>				
-					{{tmpl(historyTabList) 'historyTabContent'}}
-				</div>					
+						{{tmpl(historyTabList) "#historyTabHeaders_tmpl"}}
+					</ul>
+					{{tmpl(historyTabList) "#historyTabContent_tmpl"}}
+				</div>
 			</div>
 		</div>
 </script>
@@ -390,10 +390,10 @@
 			<div class="historyContent">
 				<div id="historyFolderTabs">
 					<ul>
-						{{tmpl(historyFolderTabList) 'historyTabHeaders'}}
-					</ul>				
-					{{tmpl(historyFolderTabList) 'historyTabContent'}}
-				</div>					
+						{{tmpl(historyFolderTabList) "#historyTabHeaders_tmpl"}}
+					</ul>
+					{{tmpl(historyFolderTabList) "#historyTabContent_tmpl"}}
+				</div>
 			</div>
 		</div>
 </script>
@@ -415,20 +415,20 @@
 		<div id="publishDialogView" title="${T('LABEL.Publish')}">
 			<div class="publishContent">
 				<div class="textLeftInput publishDialogInputs">
-					{{tmpl(browseCSInput) "input"}} {{tmpl(browseCSInputHidden) "input"}} {{tmpl(browseCSButton) "button"}}
+					{{tmpl(browseCSInput) "#input_tmpl"}} {{tmpl(browseCSInputHidden) "#input_tmpl"}} {{tmpl(browseCSButton) "#button_tmpl"}}
 					<div class="newLine"></div>
 					<div class="publishOptions">
-						{{tmpl(copyOption) "input"}}
-						{{tmpl(moveOption) "input"}}
+						{{tmpl(copyOption) "#input_tmpl"}}
+						{{tmpl(moveOption) "#input_tmpl"}}
 					</div>
 				</div>
 				<div id="PublishError" class="errorText "> <b>${T('LABEL.Error')}</b>: ${T('LABEL.SelectADestination')}</div>
 			</div>
 		</div>
 </script>
-				
+
 <script id="aboutDialogTemplate_tmpl" type="text/x-jquery-tmpl">
-		<div id="aboutDialogView" title="${title}">				
+		<div id="aboutDialogView" title="${title}">
 				<div id="aboutDialogContent">
 						<div class="aboutInfo productNameLogo"><img src="${info.repo}/img/tempo_wordmark.png" /></div>
 						<div class="aboutInfo">${T('LABEL.WebUIVersion')}: ${webUIVersion}</div>
@@ -436,7 +436,7 @@
 						<div class="aboutInfo">${T('LABEL.WebUIBuildDate')}: ${webUIBuildDate}</div>
 						<div class="aboutInfo">${T('LABEL.APIVersion')}: <span id="apiVersion">${serverAPIVersion}</span></div>
 						<div class="aboutInfo copyright">${copyrightMessage}</div>
-				</div>				
+				</div>
 		</div>
 </script>
 
@@ -454,15 +454,15 @@
 						<div id="objectInfoName">${name}</div>
 					</div>
 				{{/if}}
-				{{tmpl "objectInfoDetailsTemplate"}}
+				{{tmpl "#objectInfoDetailsTemplate_tmpl"}}
 				<div class="newLine"></div>
 			</div>
 </script>
 
 <script id="message_tmpl" type="text/x-jquery-tmpl">
-		<div {{if id}} id="${id}" {{/if}}class="${classes}">			
+		<div {{if id}} id="${id}" {{/if}}class="${classes}">
 			${message}
-		</div>		
+		</div>
 </script>
 
 <script id="diskUsageTemplate_tmpl" type="text/x-jquery-tmpl">
