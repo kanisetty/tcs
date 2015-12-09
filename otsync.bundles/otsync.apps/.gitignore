@@ -1,0 +1,35 @@
+# Eclipse
+#.classpath
+#.project
+.settings/
+
+#Momentix/BB
+arm-p/
+arm/
+x86/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+dependency-reduced-pom.xml
+
+# Generated node modules, and our locally installed node and npm
+node_modules/
+npm/
+node/
+
+# Grunt distribution files
+dist/
+dependencies/
+
+
+
+otag/otag-gateway/src/main/resources/tomcat/lib/otag-tomcat-listener-2.0-SNAPSHOT.jar

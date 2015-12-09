@@ -190,7 +190,7 @@ describe('FeedItem getIconURL tests', function(){
 	it('should return a valid image URL once the FeedItem is created', function() {
 
 		var feedItem = $dummyFeedService.getDummyFeedItem();
-		var expectedIconURL = _url + '/content/v4/users/1000/photo';
+		var expectedIconURL = _url + '/content/v5/users/1000/photo';
 
 		expect(feedItem.getIconURL()).toEqual(expectedIconURL);
 	});

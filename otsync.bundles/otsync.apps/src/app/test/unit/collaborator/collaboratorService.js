@@ -80,7 +80,7 @@ describe('collaboratorService collaboratorSearch tests', function(){
                 }
             ]};
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve(response);
             return deferred.promise;
@@ -112,13 +112,13 @@ describe('collaboratorService collaboratorSearch tests', function(){
             "users": []
         };
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve(response);
             return deferred.promise;
         });
 
-        spyOn($sessionService, 'canInviteExternalUsers').andReturn(true);
+        spyOn($sessionService, 'canInviteExternalUsers').and.returnValue(true);
 
         $collaboratorsService.collaboratorSearch(dummyQueryFilter, false).then(function(collaborators){
             _collaborators = collaborators;
@@ -136,13 +136,13 @@ describe('collaboratorService collaboratorSearch tests', function(){
             "users": []
         };
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve(response);
             return deferred.promise;
         });
 
-        spyOn($sessionService, 'canInviteExternalUsers').andReturn(false);
+        spyOn($sessionService, 'canInviteExternalUsers').and.returnValue(false);
 
         $collaboratorsService.collaboratorSearch(dummyQueryFilter, false).then(function(collaborators){
             _collaborators = collaborators;
@@ -160,13 +160,13 @@ describe('collaboratorService collaboratorSearch tests', function(){
             "users": []
         };
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve(response);
             return deferred.promise;
         });
 
-        spyOn($sessionService, 'canInviteExternalUsers').andReturn(true);
+        spyOn($sessionService, 'canInviteExternalUsers').and.returnValue(true);
 
         $collaboratorsService.collaboratorSearch(dummyQueryFilter, false).then(function(collaborators){
             _collaborators = collaborators;
@@ -241,7 +241,7 @@ describe('collaboratorService getCollaborators tests', function(){
 		};
         var response = $dummyCollaboratorService.getDummyCollaboratorData();
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve(response);
             return deferred.promise;

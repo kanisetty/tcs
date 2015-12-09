@@ -58,7 +58,7 @@ describe('nodeService loadNodeChildren tests', function(){
         var _nodeChildren = [];
         var moreNodesCanBeLoaded = null;
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
                 var deferred = $q.defer();
                 deferred.resolve(null);
                 return deferred.promise;
@@ -80,7 +80,7 @@ describe('nodeService loadNodeChildren tests', function(){
         var moreNodesCanBeLoaded = null;
         var mockResponse = {};
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             mockResponse.contents = null;
             deferred.resolve(mockResponse);
@@ -103,7 +103,7 @@ describe('nodeService loadNodeChildren tests', function(){
         var moreNodesCanBeLoaded = null;
         var mockResponse = {};
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             mockResponse.resultList = [];
             deferred.resolve(mockResponse);
@@ -117,7 +117,7 @@ describe('nodeService loadNodeChildren tests', function(){
 
         $rootScope.$digest();
 
-        expect(_nodeChildren).toEqual({});
+        expect(_nodeChildren).toEqual([]);
         expect(moreNodesCanBeLoaded).toEqual(false);
     });
 
@@ -130,7 +130,7 @@ describe('nodeService loadNodeChildren tests', function(){
 
         mockContents[0] = contentsMock;
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             mockResponse.contents = mockContents;
             deferred.resolve(mockResponse);
@@ -158,7 +158,7 @@ describe('nodeService loadNodeChildren tests', function(){
 
         mockContents[0] = contentsMock;
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             mockResponse.resultList = mockContents;
             deferred.resolve(mockResponse);

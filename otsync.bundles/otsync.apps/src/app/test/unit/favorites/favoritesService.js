@@ -1,5 +1,6 @@
 describe('favoritesService doSync tests', function(){
-    var $nodeService, $q, $nodeBrowseDecoratingService, $sessionService, $rootScope, $displayMessageService, $cacheService, $favoritesService, $fileService, $actionService,$stateParams;
+    var $nodeService, $q, $nodeBrowseDecoratingService, $sessionService, $rootScope, $displayMessageService, $cacheService, $favoritesService, $fileService,
+        $actionService, $stateParams, $urlEncode;
     var favorites = [
         {
             "id": 7273,
@@ -103,6 +104,7 @@ describe('favoritesService doSync tests', function(){
         $cacheService = {};
         $fileService = {};
 		$actionService = {};
+        $urlEncode = {};
 
         $sessionService = {
             getGatewayURL: function () {
@@ -143,6 +145,7 @@ describe('favoritesService doSync tests', function(){
             $provide.value('$fileService', $fileService);
 			$provide.value('$actionService', $actionService);
 			$provide.value('$stateParams', $stateParams);
+            $provide.value('$urlEncode', $urlEncode);
         });
 
         // The injector unwraps the underscores (_) from around the parameter names when matching
@@ -156,13 +159,13 @@ describe('favoritesService doSync tests', function(){
     it('should return favorites if the sync was successful', function() {
         var _favorites;
 
-        spyOn($favoritesService, 'getFavorites').andCallFake(function(){
+        spyOn($favoritesService, 'getFavorites').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve(favorites);
             return deferred.promise;
         });
 
-        spyOn($favoritesService, 'downloadAndCacheFavorites').andCallFake(function(){
+        spyOn($favoritesService, 'downloadAndCacheFavorites').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve(favorites);
             return deferred.promise;

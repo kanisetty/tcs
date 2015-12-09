@@ -56,7 +56,7 @@ describe('feedsHeader getFilterMenuItems tests', function(){
         var expectedText = 'ALL';
         var feedHeader = new FeedHeader('dummy', false);
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve([]);
             return deferred.promise;
@@ -80,7 +80,7 @@ describe('feedsHeader getFilterMenuItems tests', function(){
         var expectedFilterMenuItemText5 = "Pulse Users I Follow";
         var feedHeader = new FeedHeader('dummy', false);
 
-        spyOn($sessionService, 'runRequest').andCallFake(function(){
+        spyOn($sessionService, 'runRequest').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve($dummyFeedService.getDummyFeedProviderData());
             return deferred.promise;

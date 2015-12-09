@@ -77,7 +77,7 @@ public class ContentServerService implements AppworksServiceContextHandler {
                 }
             } catch (Exception e) {
                 // record the specifics here
-                LOG.error("Connection failed for Content Server 10.5: " + e.getMessage(), e);
+                LOG.error("Connection failed for Content Server: " + e.getMessage(), e);
                 throw e;
             }
 

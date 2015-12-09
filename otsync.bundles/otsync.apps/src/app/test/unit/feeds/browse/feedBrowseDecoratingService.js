@@ -36,7 +36,7 @@ describe('feedBrowseDecoratingService decorateFeedItemForBrowse tests', function
 		var feedItem = $dummyFeedService.getDummyFeedItemWithCreateDateChanged(dummyFeedItemCreateDate);
         var expectedTimeAgo = '1 MONTH AGO';
 
-		spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+		spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
 		var doIndent = false;
         var browseDecorator = $feedBrowseDecoratingService.decorateFeedItemForBrowse(feedItem, doIndent);
@@ -55,7 +55,7 @@ describe('feedBrowseDecoratingService decorateFeedItemForBrowse tests', function
 		var feedItem = $dummyFeedService.getDummyFeedItemWithCreateDateChanged(dummyFeedItemCreateDate);
 		var expectedTimeAgo = '1 MONTH AGO';
 
-		spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+		spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
 		var doIndent = true;
 		var browseDecorator = $feedBrowseDecoratingService.decorateFeedItemForBrowse(feedItem, doIndent);
@@ -107,7 +107,7 @@ describe('feedBrowseDecoratingService decorateFeedForBrowse tests', function(){
 		var expectedTimeAgo1 = '2 MONTHS AGO';
 		var expectedTimeAgo2 = '3 MONTHS AGO';
 
-		spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+		spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
 		var isThread = false;
         var browseDecorators = $feedBrowseDecoratingService.decorateFeedForBrowse(feed, isThread);
@@ -151,7 +151,7 @@ describe('feedBrowseDecoratingService decorateFeedForBrowse tests', function(){
 		var expectedTimeAgo1 = '2 MONTHS AGO';
 		var expectedTimeAgo2 = '3 MONTHS AGO';
 
-		spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+		spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
 		var isThread = true;
 		var browseDecorators = $feedBrowseDecoratingService.decorateFeedForBrowse(feed, isThread);

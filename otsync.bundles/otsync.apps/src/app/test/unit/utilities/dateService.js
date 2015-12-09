@@ -25,7 +25,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-10-08T20:30:00Z";
         var dummyFeedItemDate = "2015-10-08T20:30:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -36,7 +36,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-10-08T20:30:44Z";
         var dummyFeedItemDate = "2015-10-08T20:30:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -47,7 +47,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-10-08T20:30:45Z";
         var dummyFeedItemDate = "2015-10-08T20:30:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -58,7 +58,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-10-08T20:31:29Z";
         var dummyFeedItemDate = "2015-10-08T20:30:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -69,7 +69,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-10-08T20:31:30Z";
         var dummyFeedItemDate = "2015-10-08T20:30:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -80,7 +80,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-10-08T20:44:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -91,7 +91,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-10-08T20:45:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -102,7 +102,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-10-08T21:29:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -113,7 +113,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-10-08T21:30:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -124,7 +124,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-10-09T19:00:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -135,7 +135,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-10-09T20:00:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -146,7 +146,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-10-10T13:00:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -157,7 +157,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-10-10T14:00:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -168,7 +168,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-11-06T20:00:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -179,7 +179,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-11-07T20:00:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -190,7 +190,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-11-21T20:00:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -201,7 +201,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2015-11-22T20:00:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -212,7 +212,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2016-10-06T20:00:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -223,7 +223,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2016-10-07T20:00:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -234,7 +234,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2017-04-07T20:00:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -245,7 +245,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2017-04-08T20:00:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 
@@ -256,7 +256,7 @@ describe('dateService getTimeAgo tests', function(){
         var dummyCurrentDate = "2215-04-08T20:00:00Z";
         var dummyFeedItemDate = "2015-10-08T20:00:00Z";
 
-        spyOn($dateService, 'getCurrentDate').andReturn(new Date(dummyCurrentDate));
+        spyOn($dateService, 'getCurrentDate').and.returnValue(new Date(dummyCurrentDate));
 
         var displayDate = $dateService.getTimeAgo(dummyFeedItemDate);
 

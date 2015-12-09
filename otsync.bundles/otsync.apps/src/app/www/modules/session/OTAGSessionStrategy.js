@@ -12,18 +12,6 @@ angular.module('OTAGSessionStrategy', ['requestService', 'tokenService',  'Reque
             var OTAGSessionStrategy = function(appName){
                 _appName = appName;
 
-                var _initDefaultLanguage = function(){
-                    var deferred = $q.defer();
-
-                   window.appworks.globalization.getPreferredLanguage(function(lang) {
-                       deferred.resolve(lang.value);
-                   }, function() {
-                       deferred.resolve(_defaultLanguage);
-                   });
-
-                    return deferred.promise;
-                };
-
                 var _initSystemProperties = function(currentStrategy){
                     var requestParams = {
                         method: 'GET',
@@ -41,7 +29,7 @@ angular.module('OTAGSessionStrategy', ['requestService', 'tokenService',  'Reque
 
                     $http.defaults.headers.common.OTCSTICKET = this.getOTCSTICKET();
 
-                    _initDefaultLanguage().then(function(defaultLanguage){
+                    this.initDefaultLanguage().then(function(defaultLanguage){
                         _defaultLanguage = defaultLanguage;
 
                         _initSystemProperties(currentStrategy).then(function(systemProperties){
@@ -52,6 +40,18 @@ angular.module('OTAGSessionStrategy', ['requestService', 'tokenService',  'Reque
                         });
                     }).catch(function(error){
                         deferred.reject(error);
+                    });
+
+                    return deferred.promise;
+                };
+
+                this.initDefaultLanguage = function(){
+                    var deferred = $q.defer();
+
+                    window.appworks.globalization.getPreferredLanguage(function(lang) {
+                        deferred.resolve(lang.value);
+                    }, function() {
+                        deferred.resolve(_defaultLanguage);
                     });
 
                     return deferred.promise;

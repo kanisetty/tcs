@@ -2,7 +2,7 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
     var OTAGSessionStrategy, $q, $requestService, $tokenService, defaultLanguage, $rootScope, AppWorksFacade;
     var properties = {};
     var gatewayURL = 'someGatewayURL';
-    var cstoken = 'somecsToken';
+    var otcsticket = 'someOTCSTicket';
 
     beforeEach(module('OTAGSessionStrategy'));
 
@@ -14,7 +14,7 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
         };
 
         $tokenService = {
-            getCSToken: function(){}
+            getOTCSTICKET: function(){}
         };
 
 		AppWorksFacade = {
@@ -42,21 +42,27 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
         var otagSessionStrategy = new OTAGSessionStrategy();
         defaultLanguageObject[0] = expectedLanguage;
 
-        spyOn(AppWorksFacade, 'execCordovaRequest').andCallFake(function() {
+        spyOn(AppWorksFacade, 'execCordovaRequest').and.callFake(function() {
             var deferred = $q.defer();
             deferred.resolve(defaultLanguageObject);
             return deferred.promise;
         });
 
-        spyOn($requestService, 'runRequestWithAuth').andCallFake(function() {
+        spyOn($requestService, 'runRequestWithAuth').and.callFake(function() {
             var deferred = $q.defer();
             deferred.resolve(properties);
             return deferred.promise;
         });
 
-        spyOn($tokenService, 'getCSToken').andReturn(cstoken);
+        spyOn($tokenService, 'getOTCSTICKET').and.returnValue(otcsticket);
 
-        spyOn(otagSessionStrategy, 'getGatewayURL').andReturn(gatewayURL);
+        spyOn(otagSessionStrategy, 'initDefaultLanguage').and.callFake(function() {
+            var deferred = $q.defer();
+            deferred.resolve(expectedLanguage);
+            return deferred.promise;
+        });
+
+        spyOn(otagSessionStrategy, 'getGatewayURL').and.returnValue(gatewayURL);
 
         otagSessionStrategy.init();
 
@@ -70,21 +76,27 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
         var defaultLanguageObject = null;
         var otagSessionStrategy = new OTAGSessionStrategy();
 
-        spyOn(AppWorksFacade, 'execCordovaRequest').andCallFake(function() {
+        spyOn(AppWorksFacade, 'execCordovaRequest').and.callFake(function() {
             var deferred = $q.defer();
             deferred.resolve(defaultLanguageObject);
             return deferred.promise;
         });
 
-        spyOn($requestService, 'runRequestWithAuth').andCallFake(function() {
+        spyOn($requestService, 'runRequestWithAuth').and.callFake(function() {
             var deferred = $q.defer();
             deferred.resolve(properties);
             return deferred.promise;
         });
 
-        spyOn($tokenService, 'getCSToken').andReturn(cstoken);
+        spyOn($tokenService, 'getOTCSTICKET').and.returnValue(otcsticket);
 
-        spyOn(otagSessionStrategy, 'getGatewayURL').andReturn(gatewayURL);
+        spyOn(otagSessionStrategy, 'getGatewayURL').and.returnValue(gatewayURL);
+
+        spyOn(otagSessionStrategy, 'initDefaultLanguage').and.callFake(function() {
+            var deferred = $q.defer();
+            deferred.resolve(expectedLanguage);
+            return deferred.promise;
+        });
 
         otagSessionStrategy.init();
 
@@ -100,21 +112,27 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
 
         defaultLanguageObject[0] = null;
 
-        spyOn(AppWorksFacade, 'execCordovaRequest').andCallFake(function() {
+        spyOn(AppWorksFacade, 'execCordovaRequest').and.callFake(function() {
             var deferred = $q.defer();
             deferred.resolve(defaultLanguageObject);
             return deferred.promise;
         });
 
-        spyOn($requestService, 'runRequestWithAuth').andCallFake(function() {
+        spyOn($requestService, 'runRequestWithAuth').and.callFake(function() {
             var deferred = $q.defer();
             deferred.resolve(properties);
             return deferred.promise;
         });
 
-        spyOn($tokenService, 'getCSToken').andReturn(cstoken);
+        spyOn($tokenService, 'getOTCSTICKET').and.returnValue(otcsticket);
 
-        spyOn(otagSessionStrategy, 'getGatewayURL').andReturn(gatewayURL);
+        spyOn(otagSessionStrategy, 'getGatewayURL').and.returnValue(gatewayURL);
+
+        spyOn(otagSessionStrategy, 'initDefaultLanguage').and.callFake(function() {
+            var deferred = $q.defer();
+            deferred.resolve(expectedLanguage);
+            return deferred.promise;
+        });
 
         otagSessionStrategy.init();
 
@@ -130,21 +148,27 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
 
         defaultLanguageObject[0] = '';
 
-        spyOn(AppWorksFacade, 'execCordovaRequest').andCallFake(function() {
+        spyOn(AppWorksFacade, 'execCordovaRequest').and.callFake(function() {
             var deferred = $q.defer();
             deferred.resolve(defaultLanguageObject);
             return deferred.promise;
         });
 
-        spyOn($requestService, 'runRequestWithAuth').andCallFake(function() {
+        spyOn($requestService, 'runRequestWithAuth').and.callFake(function() {
             var deferred = $q.defer();
             deferred.resolve(properties);
             return deferred.promise;
         });
 
-        spyOn($tokenService, 'getCSToken').andReturn(cstoken);
+        spyOn($tokenService, 'getOTCSTICKET').and.returnValue(otcsticket);
 
-        spyOn(otagSessionStrategy, 'getGatewayURL').andReturn(gatewayURL);
+        spyOn(otagSessionStrategy, 'getGatewayURL').and.returnValue(gatewayURL);
+
+        spyOn(otagSessionStrategy, 'initDefaultLanguage').and.callFake(function() {
+            var deferred = $q.defer();
+            deferred.resolve(expectedLanguage);
+            return deferred.promise;
+        });
 
         otagSessionStrategy.init();
 

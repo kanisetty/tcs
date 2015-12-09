@@ -223,7 +223,7 @@ describe('$nodeBrowseDecoratingService decorateNodeChildrenForBrowse tests', fun
 
         var node = $dummyNodeService.getNodeForDisplay(false, true, iconURL, childCount, displayModifyDate, null);
 
-        spyOn($sessionService, 'getGatewayURL').andReturn(null);
+        spyOn($sessionService, 'getGatewayURL').and.returnValue(null);
 
         nodeChildren[0] = node;
 
@@ -241,7 +241,7 @@ describe('$nodeBrowseDecoratingService decorateNodeChildrenForBrowse tests', fun
 
         var node = $dummyNodeService.getNodeForDisplay(false, false, iconURL, null, displayModifyDate, bytes);
 
-        spyOn($sessionService, 'getGatewayURL').andReturn(null);
+        spyOn($sessionService, 'getGatewayURL').and.returnValue(null);
 
         nodeChildren[0] = node;
 
@@ -262,7 +262,7 @@ describe('$nodeBrowseDecoratingService decorateNodeChildrenForBrowse tests', fun
         var node6 = $dummyNodeService.getNodeWithNameUpdated('WFMap2');
         var node7 = $dummyNodeService.getNodeWithNameUpdated('OTTW Area');
 
-        spyOn($sessionService, 'getGatewayURL').andReturn(null);
+        spyOn($sessionService, 'getGatewayURL').and.returnValue(null);
 
         nodeChildren[0] = node1;
         nodeChildren[1] = node2;
@@ -338,7 +338,7 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
         var node = $dummyNodeService.getReadOnlyFavorite();
         var browseDecorator = new NodeBrowseDecorator(node, '');
 
-        spyOn($cacheService, 'isNodeCachable').andReturn(false);
+        spyOn($cacheService, 'isNodeCachable').and.returnValue(false);
 
         $nodeBrowseDecoratingService.setOverlays(browseDecorator, node);
 
@@ -353,8 +353,8 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
         var node = $dummyNodeService.getReadOnlyFavorite();
         var browseDecorator = new NodeBrowseDecorator(node, '');
 
-        spyOn($cacheService, 'isNodeCachable').andReturn(true);
-        spyOn(node, 'isCached').andReturn(true);
+        spyOn($cacheService, 'isNodeCachable').and.returnValue(true);
+        spyOn(node, 'isCached').and.returnValue(true);
 
         $nodeBrowseDecoratingService.setOverlays(browseDecorator, node);
 
@@ -369,8 +369,8 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
         var node = $dummyNodeService.getReadOnlyFavorite();
         var browseDecorator = new NodeBrowseDecorator(node, '');
 
-        spyOn($cacheService, 'isNodeCachable').andReturn(true);
-        spyOn(node, 'isCached').andReturn(false);
+        spyOn($cacheService, 'isNodeCachable').and.returnValue(true);
+        spyOn(node, 'isCached').and.returnValue(false);
 
         $nodeBrowseDecoratingService.setOverlays(browseDecorator, node);
 
@@ -385,7 +385,7 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
         var node = $dummyNodeService.getFavorite();
         var browseDecorator = new NodeBrowseDecorator(node, '');
 
-        spyOn($cacheService, 'isNodeCachable').andReturn(false);
+        spyOn($cacheService, 'isNodeCachable').and.returnValue(false);
 
         $nodeBrowseDecoratingService.setOverlays(browseDecorator, node);
 
@@ -400,8 +400,8 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
         var node = $dummyNodeService.getFavorite();
         var browseDecorator = new NodeBrowseDecorator(node, '');
 
-        spyOn($cacheService, 'isNodeCachable').andReturn(true);
-        spyOn(node, 'isCached').andReturn(true);
+        spyOn($cacheService, 'isNodeCachable').and.returnValue(true);
+        spyOn(node, 'isCached').and.returnValue(true);
 
         $nodeBrowseDecoratingService.setOverlays(browseDecorator, node);
 
@@ -416,8 +416,8 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
         var node = $dummyNodeService.getFavorite();
         var browseDecorator = new NodeBrowseDecorator(node, '');
 
-        spyOn($cacheService, 'isNodeCachable').andReturn(true);
-        spyOn(node, 'isCached').andReturn(false);
+        spyOn($cacheService, 'isNodeCachable').and.returnValue(true);
+        spyOn(node, 'isCached').and.returnValue(false);
 
         $nodeBrowseDecoratingService.setOverlays(browseDecorator, node);
 
@@ -446,7 +446,7 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
         var node = $dummyNodeService.getDummyNode();
         var browseDecorator = new NodeBrowseDecorator(node, '');
 
-        spyOn(node, 'getReservedByUserName').andReturn("Admin");
+        spyOn(node, 'getReservedByUserName').and.returnValue("Admin");
 
         $nodeBrowseDecoratingService.setOverlays(browseDecorator, node);
 
