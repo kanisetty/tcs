@@ -179,33 +179,6 @@ describe('requestService runRequestWithAuth tests', function(){
         });
     });
 
-    it('should broadcast and return the ERROR UNABLE TO PERFORM ACTION message when the request function returns an error that is not a 401', function() {
-        var request = new Request(dummyRequestParams);
-        var mockError = {
-            status: 0
-        };
-
-        var _error = null;
-
-        spyOn($requestService, 'doRequest').and.callFake(function(){
-            var deferred = $q.defer();
-            deferred.reject(mockError);
-            return deferred.promise;
-        });
-
-        spyOn($displayMessageService, 'translate');
-
-        $requestService.runRequestWithAuth(request).then(function(){},
-            function(error){
-                _error = error;
-            });
-
-        $rootScope.$digest();
-
-        expect($displayMessageService.translate).toHaveBeenCalledWith('ERROR UNABLE TO PERFORM ACTION');
-        expect(_error).toEqual(mockError);
-    });
-
     it('should broadcast and return the ERROR UNABLE TO PERFORM ACTION message if we fail while trying to reauthenticate a failed request', function() {
         var request = new Request(dummyRequestParams);
         var mockRequestError = {
@@ -241,52 +214,6 @@ describe('requestService runRequestWithAuth tests', function(){
 
         expect($displayMessageService.translate).toHaveBeenCalledWith('ERROR UNABLE TO PERFORM ACTION');
         expect(_error).toEqual(mockAuthError);
-    });
-
-    it('should broadcast and return the ERROR UNABLE TO PERFORM ACTION message if the failing request fails again after we reauthenticate (not a 401 failure)', function() {
-        var request = new Request(dummyRequestParams);
-        var numRequests = 1;
-
-        var mockRequestError1 = {
-            status: 401
-        };
-
-        var mockRequestError2 = {
-            status: 0
-        };
-
-        var _error = null;
-
-        spyOn($requestService, 'doRequest').and.callFake(function(){
-            if ( numRequests == 1){
-                var deferred = $q.defer();
-                deferred.reject(mockRequestError1);
-                numRequests ++;
-                return deferred.promise;
-            } else {
-                var deferred = $q.defer();
-                deferred.reject(mockRequestError2);
-                return deferred.promise;
-            }
-        });
-
-        spyOn($displayMessageService, 'translate');
-
-        spyOn($requestService, 'reauthUpdateTicket').and.callFake(function(){
-            var deferred = $q.defer();
-            deferred.resolve();
-            return deferred.promise;
-        });
-
-        $requestService.runRequestWithAuth(request).then(function(){},
-            function(error){
-                _error = error;
-            });
-
-        $rootScope.$digest();
-
-        expect($displayMessageService.translate).toHaveBeenCalledWith('ERROR UNABLE TO PERFORM ACTION');
-        expect(_error).toEqual(mockRequestError2);
     });
 
     it('should broadcast and return the ERROR AUTHENTICATION FAILED message if the failing request fails again after we reauthenticate with another 401', function() {
@@ -430,5 +357,37 @@ describe('requestService runRequestWithAuth tests', function(){
 
         expect($displayMessageService.translate).toHaveBeenCalledWith('ERROR UNABLE TO PERFORM ACTION');
         expect(_error).toEqual(mockAuthError);
+    });
+
+    it('should broadcast and return the content server error if a hash error was returned as in from feeds', function() {
+        var request = new Request(dummyRequestParams);
+        var errMsg = "Duplicate status update for user Admin.";
+
+        var mockResponse = {
+            "hash": {
+                "request": "",
+                "error": errMsg
+            }
+        };
+
+        var _error = null;
+
+        spyOn($requestService, 'doRequest').and.callFake(function(){
+            var deferred = $q.defer();
+            deferred.resolve(mockResponse);
+            return deferred.promise;
+        });
+
+        spyOn($rootScope, '$broadcast');
+
+        $requestService.runRequestWithAuth(request).then(function(){},
+            function(error){
+                _error = error;
+            });
+
+        $rootScope.$digest();
+
+        expect($rootScope.$broadcast).toHaveBeenCalledWith('serverError', {errMsg: errMsg});
+        expect(_error).toEqual(mockResponse);
     });
 });

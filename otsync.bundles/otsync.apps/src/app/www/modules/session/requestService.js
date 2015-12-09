@@ -27,7 +27,12 @@ angular.module('requestService', ['cacheService', 'angular-appworks', 'tokenServ
 						}, function(error) {
 								if (error.status == 0) {
 									error.message = $displayMessageService.translate('ERROR UNABLE TO PERFORM ACTION');
+								}else if (error.status != 401 && error.status != 0 ){
+									error.message = error.status + ' ' + error.statusText;
 								}
+
+								$rootScope.$broadcast('serverError', {errMsg: error.message});
+
 								deferred.reject(error);
 						});
 
@@ -61,13 +66,7 @@ angular.module('requestService', ['cacheService', 'angular-appworks', 'tokenServ
 										},function(error) {
 											if(error.status != null && error.status == 401) {
 												$rootScope.$broadcast('serverError', {errMsg: $displayMessageService.translate('ERROR AUTHENTICATION FAILED')});
-											} else if (error.status != null && error.status != 0 ){
-												var errMsg = error.status + ' ' + error.statusText;
-												$rootScope.$broadcast('serverError', {errMsg: errMsg});
-											} else {
-												$rootScope.$broadcast('serverError', {errMsg: $displayMessageService.translate('ERROR UNABLE TO PERFORM ACTION')});
 											}
-
 											deferred.reject(error);
 										});
 									}, function(error) {
@@ -75,11 +74,15 @@ angular.module('requestService', ['cacheService', 'angular-appworks', 'tokenServ
 										deferred.reject(error);
 									});
 								} else {
-									deferred.reject(responseData);
 									$rootScope.$broadcast('serverError', {errMsg: responseData.errMsg});
+									deferred.reject(responseData);
 								}
-							} else
+							} else if (responseData.hash != undefined && responseData.hash.error != undefined){
+								$rootScope.$broadcast('serverError', {errMsg: responseData.hash.error});
+								deferred.reject(responseData);
+							} else {
 								deferred.resolve(responseData);
+							}
 						}, function(error) {
 							if(error.status != null && error.status == 401) {
 								self.reauthUpdateTicket().then(function() {
@@ -88,13 +91,7 @@ angular.module('requestService', ['cacheService', 'angular-appworks', 'tokenServ
 									},function(error) {
 										if(error.status != null && error.status == 401) {
 											$rootScope.$broadcast('serverError', {errMsg: $displayMessageService.translate('ERROR AUTHENTICATION FAILED')});
-										} else if (error.status != null && error.status != 0 ){
-											var errMsg = error.status + ' ' + error.statusText;
-											$rootScope.$broadcast('serverError', {errMsg: errMsg});
-										} else {
-											$rootScope.$broadcast('serverError', {errMsg: $displayMessageService.translate('ERROR UNABLE TO PERFORM ACTION')});
 										}
-
 										deferred.reject(error);
 									});
 								}, function(error) {
@@ -102,13 +99,6 @@ angular.module('requestService', ['cacheService', 'angular-appworks', 'tokenServ
 									deferred.reject(error);
 								});
 							} else{
-								if (error.status != null && error.status != 0 ){
-									var errMsg = error.status + ' ' + error.statusText;
-									$rootScope.$broadcast('serverError', {errMsg: errMsg});
-								} else {
-									$rootScope.$broadcast('serverError', {errMsg: $displayMessageService.translate('ERROR UNABLE TO PERFORM ACTION')});
-								}
-
 								deferred.reject(error);
 							}
 						});
