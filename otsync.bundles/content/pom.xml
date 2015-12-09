@@ -2,9 +2,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
-                             
+
     <modelVersion>4.0.0</modelVersion>
-	
+
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.bundles.parent</artifactId>
@@ -64,6 +64,13 @@
                             <filtering>true</filtering>
                         </resource>
                     </webResources>
+                    <overlays>
+                      <overlay>
+                        <artifactId>webui</artifactId>
+                        <groupId>com.opentext.otsync</groupId>
+                        <type>zip</type>
+                      </overlay>
+                  </overlays>
                 </configuration>
             </plugin>
 
@@ -92,6 +99,14 @@
     </build>
 
     <dependencies>
+
+      <!-- WEBUI dependencies -->
+      <dependency>
+          <groupId>com.opentext.otsync</groupId>
+          <artifactId>webui</artifactId>
+          <version>${appworks.service.version}</version>
+          <type>zip</type>
+      </dependency>
 
         <!-- OTAG dependencies -->
         <dependency>
