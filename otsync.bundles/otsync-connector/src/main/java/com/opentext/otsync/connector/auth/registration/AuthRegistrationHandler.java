@@ -22,7 +22,7 @@ import java.util.Set;
  * to CS or send them through as is (CS auth only).
  *
  * @see RegisterAuthProviderThread
- * @see com.opentext.otsync.connector.auth.TempoAuthHandler
+ * @see com.opentext.otsync.connector.auth.OTSyncAuthHandler
  */
 public class AuthRegistrationHandler extends AbstractMultiSettingChangeHandler implements AppworksServiceContextHandler {
 

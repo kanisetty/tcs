@@ -100,6 +100,7 @@ public class OTSyncAuthHandler extends AbstractAuthRequestHandler {
 
     @Override
     public String getOtdsResourceId() {
+
         return getCSResourceId(getCsUrl());
     }
 
