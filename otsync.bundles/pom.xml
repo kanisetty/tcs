@@ -13,6 +13,8 @@
     <name>OTSync bundles parent</name>
 
     <modules>
+        <module>otsync-service-tools</module>
+        <module>otsync-connector</module>
         <module>assignments</module>
         <module>assignments.app</module>
         <module>content</module>
