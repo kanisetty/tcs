@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Tempo authentication handler, makes use of the available cs functions
+ * OTSync authentication handler, makes use of the available cs functions
  * to retrieve tokens. Can accept OTDS tickets as well as username/password credentials.
  * We expect any username value passed to us to be resolved against the CS OTDS partition
  * if available.

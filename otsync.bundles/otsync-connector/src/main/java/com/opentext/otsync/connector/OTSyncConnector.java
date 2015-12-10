@@ -41,10 +41,10 @@ import java.util.function.Consumer;
 import static com.opentext.otag.api.shared.types.sdk.AppworksComponentContext.getComponent;
 
 /**
- * Tempo EIM Connector.
+ * OTSync EIM Connector.
  * <p>
  * This connector provides information on how to connect to a Content Server
- * instance, and also registers the Tempo authentication handler.
+ * instance, and also registers the OTSync authentication handler.
  * <p>
  * It also attempts to register a Trusted Provider key with the
  * Gateway. Retrieving/generating a key via the Gateway is simple but in order
@@ -87,7 +87,7 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
     @AppworksServiceStartupComplete
     @Override
     public void onStart(String appName) {
-        LOG.info("Starting TempoConnector EIM connector");
+        LOG.info("Starting OTSyncConnector EIM connector");
 
         settingsClient = new SettingsClient();
 
@@ -116,12 +116,12 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
                 // tell the Gateway we have finished deploying
                 serviceClient.completeDeployment(new DeploymentResult(true));
             } else {
-                String errMsg = "Failed to register the Tempo Connector with the Gateway";
+                String errMsg = "Failed to register the OTSync Connector with the Gateway";
                 LOG.error(errMsg);
                 serviceClient.completeDeployment(new DeploymentResult(errMsg));
             }
         } catch (Exception e) {
-            String errMsg = "Failed to start the Tempo " + "Connector with the Gateway, " + e.getMessage();
+            String errMsg = "Failed to start the OTSync " + "Connector with the Gateway, " + e.getMessage();
             LOG.error(errMsg, e);
             serviceClient.completeDeployment(new DeploymentResult(errMsg));
         }
@@ -130,12 +130,12 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
 
     @Override
     public void onStop(String appName) {
-        LOG.info("Stopped TempoConnector EIM connector");
+        LOG.info("Stopped OTSyncConnector EIM connector");
     }
 
     @Override
     public String getConnectorName() {
-        return "Tempo";
+        return "OTSync";
     }
 
     @Override
@@ -155,7 +155,7 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
 
     @Override
     public String getTrustedServerName() {
-        return "Tempo";
+        return "OTSync";
     }
 
     @Override

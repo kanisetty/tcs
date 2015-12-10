@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 /**
- * Appworks component that registers the {@code TempoAuthHandler} with the
+ * Appworks component that registers the {@code OTSyncAuthHandler} with the
  * Gateway service. It actually wraps a Thread that does this work as we don't expect
  * the connection URL we need to be setup immediately.
  * <p>
