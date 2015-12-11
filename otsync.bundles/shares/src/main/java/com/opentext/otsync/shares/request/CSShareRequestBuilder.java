@@ -1,11 +1,11 @@
 package com.opentext.otsync.shares.request;
 
-import com.opentext.otag.api.CSRequest;
+import com.opentext.otsync.api.CSRequest;
 import com.opentext.otsync.shares.rest.SharesService;
 import com.opentext.otsync.shares.rest.SharesService;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.StreamingOutput;

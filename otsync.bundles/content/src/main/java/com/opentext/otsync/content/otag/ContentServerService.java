@@ -68,7 +68,7 @@ public class ContentServerService implements AppworksServiceContextHandler {
             LOG.info("Starting Content Server ContentService ...");
 
             try {
-                csConnector = new EIMConnectorClientImpl("ContentServer", "16");
+                csConnector = new EIMConnectorClientImpl("OTSync", "16.0.0");
                 ConnectionResult connectionResult = csConnector.connect();
                 if (!connectionResult.isSuccess()) {
                     String errMsg = "Failed connection result =" + connectionResult.getMessage();

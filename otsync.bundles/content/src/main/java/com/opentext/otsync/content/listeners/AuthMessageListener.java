@@ -2,7 +2,7 @@ package com.opentext.otsync.content.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.http.HTTPRequestManager;
 import com.opentext.otsync.content.message.Message;

@@ -1,6 +1,6 @@
 package com.opentext.otsync.content.ws.server.rest;
 
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

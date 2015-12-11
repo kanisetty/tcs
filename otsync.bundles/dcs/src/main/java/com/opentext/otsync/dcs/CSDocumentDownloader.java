@@ -1,7 +1,7 @@
 package com.opentext.otsync.dcs;
 
-import com.opentext.otag.api.CSRequest;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.api.CSRequest;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -10,7 +10,6 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 

@@ -1,7 +1,7 @@
 package com.opentext.otsync.tasks.rest;
 
-import com.opentext.otag.api.CSRequest;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.api.CSRequest;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 

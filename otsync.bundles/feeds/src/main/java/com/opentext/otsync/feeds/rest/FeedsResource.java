@@ -2,9 +2,9 @@ package com.opentext.otsync.feeds.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.opentext.otag.api.CSMultiPartRequest;
-import com.opentext.otag.api.CSRequest;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.api.CSMultiPartRequest;
+import com.opentext.otsync.api.CSRequest;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.NameValuePair;

@@ -5,7 +5,7 @@ import com.opentext.otsync.content.http.ContentServerURL;
 import com.opentext.otsync.content.http.HTTPRequestManager;
 import com.opentext.otsync.content.ws.ServletUtil;
 import com.opentext.otsync.content.ws.server.AbstractDownloadChannel;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.otsync.content.ContentServiceConstants;
 
 import javax.servlet.AsyncContext;

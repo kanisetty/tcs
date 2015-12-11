@@ -7,7 +7,7 @@ import com.opentext.otsync.content.otag.ContentServerService;
 import com.opentext.otsync.content.ws.server.rest.ResourcePath;
 import com.opentext.otsync.content.ws.server.rest.resources.node.RESTDownloadAction;
 import com.opentext.otsync.content.ws.server.rest.resources.node.RESTUploadAction;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;

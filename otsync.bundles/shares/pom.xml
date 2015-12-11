@@ -19,7 +19,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
-        <appworks.platform.version>16.01-ALPHA-4</appworks.platform.version>
+        <appworks.platform.version>16.01-ALPHA-5</appworks.platform.version>
 
         <!-- General app.properties -->
         <app.properties.displayName>Shares Service</app.properties.displayName>
@@ -103,9 +103,9 @@
 
         <!-- OTAG dependencies -->
         <dependency>
-            <groupId>com.opentext.cs.otag</groupId>
-            <artifactId>cs-otag-service-tools</artifactId>
-            <version>${appworks.platform.version}</version>
+            <groupId>com.opentext.otsync</groupId>
+            <artifactId>otsync-service-tools</artifactId>
+            <version>${version}</version>
         </dependency>
 
         <dependency>
@@ -113,12 +113,6 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>3.0.1</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-servlet</artifactId>
-            <version>1.19</version>
         </dependency>
 
         <dependency>

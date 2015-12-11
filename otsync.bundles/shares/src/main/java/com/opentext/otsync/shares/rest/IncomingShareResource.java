@@ -1,8 +1,8 @@
 package com.opentext.otsync.shares.rest;
 
 
-import com.opentext.otag.annotations.Description;
-import com.opentext.otag.annotations.Required;
+import com.opentext.otsync.annotations.Description;
+import com.opentext.otsync.annotations.Required;
 import com.opentext.otsync.shares.request.CSShareRequestBuilder;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,10 +1,10 @@
 package com.opentext.otsync.shares.rest;
 
 
-import com.opentext.otag.annotations.Description;
+import com.opentext.otsync.annotations.Description;
 import com.opentext.otsync.shares.request.SnakeResponseAdapter;
-import com.opentext.otag.rest.util.CSForwardHeaders;
-import com.opentext.otag.api.CSRequest;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
+import com.opentext.otsync.api.CSRequest;
 import org.apache.http.NameValuePair;
 
 import javax.servlet.http.HttpServletRequest;

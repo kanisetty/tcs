@@ -1,6 +1,6 @@
 package com.opentext.otsync.dcs;
 
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 
 public class CSRequestBuilderFactory {
     private CSForwardHeaders forwardHeader;

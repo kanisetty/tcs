@@ -29,19 +29,19 @@ public class WorkflowAppworksService implements AppworksServiceContextHandler {
         serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl("ContentServer", "16");
+            EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.0");
             ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
 
                 String connectionUrl = csConnection.getConnectionUrl();
-                LOG.info("Got a connection to Content Server 16, URL=" + connectionUrl);
+                LOG.info("Got a connection to OTSync, URL=" + connectionUrl);
                 LOG.info("Connection details " + csConnection.toString());
                 if (connectionUrl == null || connectionUrl.isEmpty())
-                    failBuild("Managed to resolve Content Server connector but it did not have a " +
+                    failBuild("Managed to resolve OTSync connector but it did not have a " +
                             "valid URL connection String");
             } else {
-                failBuild("Failed to resolve the Content Server EIM " +
+                failBuild("Failed to resolve the OTSync EIM " +
                         "connector, message=" + connectionResult.getMessage());
             }
 

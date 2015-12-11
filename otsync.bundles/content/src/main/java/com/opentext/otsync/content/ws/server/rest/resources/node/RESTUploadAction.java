@@ -7,7 +7,7 @@ import com.opentext.otsync.content.message.Message;
 import com.opentext.otsync.content.otag.ContentServerService;
 import com.opentext.otsync.content.ws.server.rest.RESTServlet;
 import com.opentext.otsync.content.ws.server.rest.ResourcePath;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.otsync.content.ws.message.MessageConverter;
 
 import javax.servlet.AsyncContext;

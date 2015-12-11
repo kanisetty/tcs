@@ -8,7 +8,7 @@ import com.opentext.otsync.content.http.HTTPRequestManager.ResponseWithStatus;
 import com.opentext.otsync.content.otag.ContentServerService;
 import com.opentext.otsync.content.otag.SettingsService;
 import com.opentext.otsync.content.ws.ServletUtil;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;

@@ -3,7 +3,7 @@ package com.opentext.otsync.content.ws.server.rest.resources.node;
 import com.opentext.otsync.content.engine.core.SuspendedAction;
 import com.opentext.otsync.content.ws.server.rest.RESTServlet;
 import com.opentext.otsync.content.http.HTTPRequestManager;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletResponse;

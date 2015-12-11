@@ -3,7 +3,7 @@ package com.opentext.otsync.dcs;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.opentext.otag.api.CSRequest;
+import com.opentext.otsync.api.CSRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

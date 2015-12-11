@@ -1,9 +1,9 @@
 package com.opentext.otsync.dcs;
 
-import com.opentext.otag.api.CSRequest;
-import com.opentext.otag.api.FixedInputStreamBody;
-import com.opentext.otag.api.HttpClient;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.api.CSRequest;
+import com.opentext.otsync.api.FixedInputStreamBody;
+import com.opentext.otsync.api.HttpClient;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.otag.sdk.client.TrustedProviderClient;
 import com.opentext.otag.api.shared.types.TrustedProvider;
 import org.apache.http.HttpResponse;
@@ -11,12 +11,10 @@ import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 
 import javax.ws.rs.WebApplicationException;

@@ -29,12 +29,12 @@ public class SharesService implements AppworksServiceContextHandler{
         serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl("ContentServer", "16");
+            EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.0");
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
             } else {
-                failBuild("Failed to resolve the Content Server EIM " +
+                failBuild("Failed to resolve the OTSync EIM " +
                         "connector, message=" + connectionResult.getMessage());
             }
 
@@ -63,7 +63,7 @@ public class SharesService implements AppworksServiceContextHandler{
 
     /**
      * Provide centralised public access to the connection URL we obtain from the
-     * Content Server 16 connector.
+     * OTSync 16 connector.
      *
      * @return content server URL
      * @throws WebApplicationException 403, if we haven't managed to get a connection URL

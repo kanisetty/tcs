@@ -8,7 +8,7 @@
 	</welcome-file-list>
 	<servlet>
 		<servlet-name>RESTServlet</servlet-name>
-		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 		<init-param>
 			<param-name>javax.ws.rs.Application</param-name>
 			<param-value>com.opentext.otsync.tempocontent.rest.TempoContentAPI</param-value>
@@ -22,7 +22,7 @@
 	
 	<filter>
 		<filter-name>JsonP Filter</filter-name>
-		<filter-class>com.opentext.otag.rest.util.JsonpFilter</filter-class>
+		<filter-class>com.opentext.otsync.rest.util.JsonpFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>JsonP Filter</filter-name>

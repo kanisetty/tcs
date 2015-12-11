@@ -1,7 +1,7 @@
 package com.opentext.otsync.content.http;
 
 import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
-import com.opentext.otag.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.otag.sdk.handlers.AbstractSettingChangeHandler;
 import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.otag.SettingsService;
