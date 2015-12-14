@@ -8,7 +8,8 @@ module.exports = function(grunt) {
                     {cwd: 'src/resources', src: '**/*', dest: 'dist/build', expand: true},
                     {cwd: 'src/webcontent', src: '**/*', dest: 'dist/build', expand: true},
                     {cwd: 'src/app', src: '**/*', dest: 'dist/mobile', expand: true},
-                    {cwd: '../common.app/js', src: ['deviceStrategies.js'], dest: 'dist/mobile/js', expand: true},
+                    {cwd: '../common.app/js', src: ['deviceStrategyFactory.js', 'blackberryDeviceStrategy.js', 'nonBlackberryDeviceStrategy.js'],
+                        dest: 'dist/mobile/js', expand: true},
                     {cwd: 'dependencies/appworks-js/dist', src: 'appworks.min.js', dest: 'dist/mobile/lib/appworks-js', expand: true}
                 ]
             }

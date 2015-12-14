@@ -19,7 +19,7 @@
         <module>assignments-app</module>
         <module>content</module>
         <module>dcs</module>
-        <module>dcs.component</module>
+        <module>dcs-component</module>
         <module>favorites</module>
         <module>feeds</module>
         <module>objectdetails.component</module>
