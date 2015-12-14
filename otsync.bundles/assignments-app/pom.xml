@@ -9,7 +9,7 @@
         <version>16.0.0</version>
     </parent>
 
-    <artifactId>assignments.app</artifactId>
+    <artifactId>assignments-app</artifactId>
 	<name>Assignments App</name>
     <description></description>
 
@@ -85,6 +85,9 @@
                         <goals>
                             <goal>npm</goal>
                         </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
                         <phase>generate-resources</phase>
                     </execution>
 

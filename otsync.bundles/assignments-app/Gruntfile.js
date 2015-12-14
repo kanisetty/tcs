@@ -8,13 +8,12 @@ module.exports = function(grunt) {
                     {cwd: 'src/resources', src: '**/*', dest: 'dist/build', expand: true},
                     {cwd: 'src/webcontent', src: '**/*', dest: 'dist/build', expand: true},
                     {cwd: 'src/app', src: '**/*', dest: 'dist/mobile', expand: true},
-                    {cwd: '../common.app/css', src: ['app.css', 'bootstrap.min.css', 'bootstrap-datetimepicker.min.css'],
-                        dest: 'dist/mobile/css', expand: true},
-                    {cwd: '../common.app/img', src: ['ajax-loader.gif', 'glyphicons-halflings.png', 'glyphicons-halflings-white.png'],
-                        dest: 'dist/mobile/img', expand: true},
-                    {cwd: '../common.app/js', src: ['app.js', 'deviceStrategies.js'], dest: 'dist/mobile/js', expand: true},
-                    {cwd: '../common.app/js/vendor', src: ['bootstrap.min.js', 'bootstrap-datetimepicker.min.js', 'jquery.jsperanto.js',
-                        'json2.js', 'moment.min.js'], dest: 'dist/mobile/js/vendor', expand: true},
+                    {cwd: '../common.app/css', src: ['app.css', 'bootstrap.min.css'], dest: 'dist/mobile/css', expand: true},
+                    {cwd: '../common.app/img', src: '**/*', dest: 'dist/mobile/img', expand: true},
+                    {cwd: '../common.app/js', src: ['app.js', 'deviceStrategyFactory.js', 'blackberryDeviceStrategy.js', 'nonBlackberryDeviceStrategy.js'],
+                        dest: 'dist/mobile/js', expand: true},
+                    {cwd: '../common.app/js/vendor', src: ['jquery.jsperanto.js', 'jquery-2.0.0.min.js', 'moment.min.js'],
+                        dest: 'dist/mobile/js/vendor', expand: true},
                     {cwd: 'dependencies/appworks-js/dist', src: 'appworks.min.js', dest: 'dist/mobile/lib/appworks-js', expand: true}
                 ]
             }

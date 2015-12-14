@@ -4,7 +4,7 @@ $(document).ready(function() {
     $('.hide-initially').hide();
     
     var task = new App();
-    var taskData = task.getParameters().data;
+    var taskData = task.getParameters();
     var nodeID = taskData.id;
     var deviceStrategy = task.getDeviceStrategy();
 

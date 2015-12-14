@@ -25,25 +25,17 @@
      *
      * @return    App object.
      */
-    var deviceStrategy = null;
+    var deviceStrategyFactory = new DeviceStrategyFactory();
+    var deviceStrategy = deviceStrategyFactory.getDeviceStrategy();
 
     var App = function () {
         // Haven't initialized yet
         this.initialized = false;
 
         this.getDeviceStrategy = function(){
+
             return deviceStrategy;
         };
-
-        try{
-            if (cordova.isBB()){
-                deviceStrategy = new BlackBerryStrategy();
-            }else{
-                deviceStrategy = new NonBlackBerryStrategy();
-            }
-        }catch(error){
-            deviceStrategy = new NonBlackBerryStrategy();
-        }
 
         // Return the app reference
         return this;
@@ -62,18 +54,19 @@
     App.prototype.start = function () {
         var _this = this;
 
-        var onAuthFinished = function () {
+        var onDeviceReady = function () {
+
             deviceStrategy.getDefaultLanguage()
-                .done(function(lang){
-                    $.jsperanto.init(function(){
+                .done(function (lang) {
+                    $.jsperanto.init(function () {
                             var key;
                             // find all 'localize' classes and translate them: both text and title attr (if present)
-                            $('.localize').each(function() {
+                            $('.localize').each(function () {
                                 key = $(this).text().replace(/\./g, '');
-                                $(this).text( apputil.T('label.' + key) );
+                                $(this).text(apputil.T('label.' + key));
 
                                 var title = $(this).attr('title');
-                                if(title){
+                                if (title) {
                                     key = title.replace(/\./g, '');
                                     $(this).attr('title', apputil.T('label.' + key));
                                 }
@@ -87,18 +80,18 @@
                                 _this.init();
                             }
                         },
-                        {lang:lang});
-                    })
-                .fail(function(data){
-                    alert(data);
+                        {lang: lang});
+                })
+                .fail(function (error) {
+                    alert(error);
                 });
-            };
+        };
 
         // Display the loading overlay
         _this.showLoading();
 
-        // Trigger authentication when appworks is ready
-        document.addEventListener('appworksjs.auth', onAuthFinished, false);
+        // Trigger when Cordova is ready
+        document.addEventListener("deviceready", onDeviceReady, false);
     };
 
     /**
@@ -131,10 +124,6 @@
         var query = window.location.search.toString().substring(1);
         
         var params = deviceStrategy.processQueryParameters(query);
-
-        if (params.data == undefined) {
-            params.data = {id: params.nodeID};
-        }
 
         return params;
     };
