@@ -9,8 +9,8 @@
         <version>16.0.0</version>
     </parent>
 
-    <artifactId>dcs-component</artifactId>
-	<name>Document Conversion Component</name>
+    <artifactId>objectdetails-component</artifactId>
+	<name>Object Details Component</name>
     <description></description>
 
 	<properties>
@@ -19,8 +19,8 @@
         <appworks.platform.version>16.01-ALPHA-4</appworks.platform.version>
 
         <!-- General app.properties -->
-        <app.properties.displayName>Document Conversion Component</app.properties.displayName>
-        <app.properties.description>Document Conversion Component</app.properties.description>
+        <app.properties.displayName>Object Details Component</app.properties.displayName>
+        <app.properties.description>Object Details Component</app.properties.description>
         <app.properties.version>16.0.0</app.properties.version>
         <app.properties.type>component</app.properties.type>
     </properties>

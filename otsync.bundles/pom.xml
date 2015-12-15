@@ -22,17 +22,17 @@
         <module>dcs-component</module>
         <module>favorites</module>
         <module>feeds</module>
-        <module>objectdetails.component</module>
-        <module>otsync.apps</module>
+        <module>objectdetails-component</module>
+        <module>otsync-apps-parent</module>
         <module>shares</module>
         <module>tasks-component</module>
         <module>tasks</module>
-        <module>tempotasks.component</module>
+        <module>tempotasks-component</module>
         <module>tempocontent</module>
-        <module>url.component</module>
+        <module>url-component</module>
         <module>workflow</module>
-        <module>workflow.component</module>
-        <module>tempo.bundle</module>
+        <module>workflow-component</module>
+        <module>tempo-bundle</module>
         <module>webui</module>
     </modules>
 

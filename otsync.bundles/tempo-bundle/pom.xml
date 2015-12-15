@@ -1,0 +1,153 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.opentext.otsync</groupId>
+        <artifactId>otsync.bundles.parent</artifactId>
+        <version>16.0.0</version>
+    </parent>
+
+    <artifactId>tempo-bundle</artifactId>
+	<name>Tempo Bundle</name>
+    <description></description>
+
+	<properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
+        <appworks.platform.version>16.01-ALPHA-4</appworks.platform.version>
+
+        <app.properties.version>16.0.0</app.properties.version>
+    </properties>
+
+	<build>
+		<plugins>
+            <!-- Clear down the local front end dependencies and  node/npm install -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/dependencies</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <executions>
+                    <execution>
+                        <id>build tempo bundle</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>content</artifactId>
+                                    <version>${app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>favorites-app</artifactId>
+                                    <version>${app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>favorites</artifactId>
+                                    <version>${app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>objectdetails-component</artifactId>
+                                    <version>${app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>shares</artifactId>
+                                    <version>${app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>tempo-app</artifactId>
+                                    <version>${app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>tempocontent</artifactId>
+                                    <version>${app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>tempotasks-component</artifactId>
+                                    <version>${app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                            <!-- other configurations here -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>create-tempo-bundle</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>assembly/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+		</plugins>
+	</build>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-clean-plugin</artifactId>
+            <version>3.0.0</version>
+            <type>maven-plugin</type>
+        </dependency>
+    </dependencies>
+</project>

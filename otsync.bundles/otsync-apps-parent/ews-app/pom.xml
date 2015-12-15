@@ -5,12 +5,12 @@
 
     <parent>
         <groupId>com.opentext.otsync</groupId>
-        <artifactId>otsync.bundles.parent</artifactId>
+        <artifactId>otsync.apps.parent</artifactId>
         <version>16.0.0</version>
     </parent>
 
-    <artifactId>dcs-component</artifactId>
-	<name>Document Conversion Component</name>
+    <artifactId>ews-app</artifactId>
+	<name>Enterprise Workspace App</name>
     <description></description>
 
 	<properties>
@@ -19,33 +19,13 @@
         <appworks.platform.version>16.01-ALPHA-4</appworks.platform.version>
 
         <!-- General app.properties -->
-        <app.properties.displayName>Document Conversion Component</app.properties.displayName>
-        <app.properties.description>Document Conversion Component</app.properties.description>
+        <app.properties.displayName>Enterprise Workspace App</app.properties.displayName>
+        <app.properties.description>Enterprise Workspace App</app.properties.description>
         <app.properties.version>16.0.0</app.properties.version>
-        <app.properties.type>component</app.properties.type>
+        <app.properties.type>app</app.properties.type>
     </properties>
 
 	<build>
-        <resources>
-            <resource>
-                <directory>src/resources</directory>
-                <!-- Do not include the libs we provide for the Gateway's Tomcat
-                    deployment environment in the built artifact (i.e. gateway.war) -->
-                <excludes>
-                    <exclude>tomcat/**</exclude>
-                    <exclude>server.xml</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>src/resources</directory>
-                <!-- Filter file location into log4j.properties -->
-                <includes>
-                    <include>*.properties</include>
-                </includes>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        
 		<plugins>
             <!-- Clear down the local front end dependencies and  node/npm install -->
             <plugin>
@@ -124,12 +104,13 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>create-distribution</id>
+                        <id>create-ews-distribution</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
                         <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
                             <descriptors>
                                 <descriptor>assembly/assembly.xml</descriptor>
                             </descriptors>

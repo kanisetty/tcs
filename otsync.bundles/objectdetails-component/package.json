@@ -1,5 +1,5 @@
 {
-  "name": "dcs-component",
+  "name": "objectdetails-component",
   "version": "16.0.0",
   "devDependencies": {
     "bower": "^1.6.5",
