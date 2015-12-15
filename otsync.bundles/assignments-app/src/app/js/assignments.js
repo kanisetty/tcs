@@ -18,6 +18,7 @@
   // Create the application
   var Assignments = new App();
   var deviceStrategy = Assignments.getDeviceStrategy();
+  var _gatewayURL = null;
 
   /**
    * ## Initialization
@@ -39,8 +40,15 @@
     // Bind events for the application
     bindEvents();
 
-    // Get assignment list data
-    getAssignments();
+    deviceStrategy.getGatewayURL()
+        .done(function(gatewayURL){
+          _gatewayURL = gatewayURL;
+          // Get assignment list data
+          getAssignments();
+        })
+        .fail(function(error) {
+          alert(error);
+        });
   };
 
   /**
@@ -75,7 +83,7 @@
    */
   function getAssignments () {
     clearData();
-    $.when(Assignments.runRequestWithAuth({url: deviceStrategy.getGatewayURL() + "/assignments/v5/assignments"}))
+    $.when(Assignments.runRequestWithAuth({url: _gatewayURL + "/assignments/v5/assignments"}))
       .done(function (data) {
         showData(data.assignments);
       }).fail(function (error) {

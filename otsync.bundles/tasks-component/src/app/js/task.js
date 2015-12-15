@@ -7,6 +7,7 @@ $(document).ready(function() {
     var taskData = task.getParameters();
     var nodeID = taskData.id;
     var deviceStrategy = task.getDeviceStrategy();
+	var _gatewayURL = null;
 
 	task.init = function() {
 	      
@@ -15,9 +16,18 @@ $(document).ready(function() {
 		}
 
 		$('#close-button').click(task.close);
-		
-		this.initialized = true;
-		task.showTask();
+
+		deviceStrategy.getGatewayURL()
+			.done(function(gatewayURL){
+				_gatewayURL = gatewayURL;
+
+				this.initialized = true;
+				task.showTask();
+			})
+			.fail(function(error) {
+				alert(error);
+			});
+
 	};
 	
 	$("input,textarea,select, .calendarIcon").on("keypress, keydown, change, click", function(){ 
@@ -93,7 +103,7 @@ $(document).ready(function() {
 
             $.when(task.runRequestWithAuth({
 		    	type: "PUT",
-		    	url: deviceStrategy.getGatewayURL() + "/tasks/v5/tasks/" + nodeID + str
+		    	url: _gatewayURL + "/tasks/v5/tasks/" + nodeID + str
 		    	})).done(function() {
 		    
 		    		$('#taskData').fadeOut('fast');
@@ -114,7 +124,7 @@ $(document).ready(function() {
 		if (isValidId(nodeID)) {
 				
             $.when(task.runRequestWithAuth({
-				url: deviceStrategy.getGatewayURL() + "/tasks/v5/tasks/" + nodeID
+				url: _gatewayURL + "/tasks/v5/tasks/" + nodeID
 			})).done(function(data) {
 									
 					task.renderTaskInfo(data);
@@ -161,7 +171,7 @@ $(document).ready(function() {
 			source: function(query, process) {
 
 				return $.when(task.runRequestWithAuth({
-					url: deviceStrategy.getGatewayURL() + '/content/v5/users',
+					url: _gatewayURL + '/content/v5/users',
 					data: {filter: query}
 				})).done(function(data) {
 					var options = [];

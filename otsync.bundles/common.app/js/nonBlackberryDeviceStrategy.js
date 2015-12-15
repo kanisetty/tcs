@@ -4,12 +4,9 @@ var NonBlackBerryStrategy = function(){
     this.reauth = function(){
         var deferred = $.Deferred();
 
-        // TODO: get reauth working. There is currently no way to reauth using the new appworks.js file.
-        deferred.reject("UnAuthorized");
-        /*appworks.auth.authenticate().then(function(data){
-         resolve(data);
-         });*/
-
+        AppWorks.Auth().authenticate().then(function(data){
+            resolve(data);
+         });
 
         return deferred.promise();
     };
@@ -21,13 +18,12 @@ var NonBlackBerryStrategy = function(){
     };
 
     this.close = function(){
-        var successFn = function (session) {
-        };
-        var errorFn = function (data) {
+        var successFn = function() {};
+        var errorFn = function(error) {
             window.history.back();
         };
 
-        cordova.exec(successFn, errorFn, "Application", "closeme", []);
+        cordova.exec(successFn, errorFn, 'AWComponent', 'close');
     };
 
 
@@ -37,13 +33,11 @@ var NonBlackBerryStrategy = function(){
         var successFn = function () {
             // Convert the arguments into an array and resolve
             var args = Array.prototype.slice.call(arguments);
-            alert("success");
             dfd.resolveWith(_this, args);
         };
         var errorFn = function () {
             // Convert the arguments into an array and reject
             var args = Array.prototype.slice.call(arguments);
-            alert("failure");
             dfd.rejectWith(_this, args);
         };
 
@@ -57,23 +51,13 @@ var NonBlackBerryStrategy = function(){
     };
 
     this.getDefaultLanguage = function(){
-        var deferred = $.Deferred();
 
-        //TODO need to change this back when I get an answer from appworks on how to get the language
-        /*window.appworks.globalization.getPreferredLanguage(function(lang) {
-         deferred.resolve(lang.value);
-         }, function() {
-         deferred.resolve(_defaultLanguage);
-         });*/
-        deferred.resolve('en');
-        return deferred.promise();
+        return this.execRequest("AWGlobalization", "getPreferredLanguage");
     };
 
     this.getGatewayURL = function(){
 
-        //TODO need to change this back when I get a new client that you can log into
-        //return window.gatewayUrl;
-        return "http://10.2.28.232:8080";
+        return this.execRequest("AWAuth", "gateway");
     };
 
     this.openComponent = function(data, refreshOnReturn){
