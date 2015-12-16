@@ -1,16 +1,6 @@
 var NonBlackBerryStrategy = function(){
     var _defaultLanguage = 'en';
 
-    this.reauth = function(){
-        var deferred = $.Deferred();
-
-        AppWorks.Auth().authenticate().then(function(data){
-            resolve(data);
-         });
-
-        return deferred.promise();
-    };
-
     this.browseObject = function(nodeID, title){
         var openData = [nodeID, title];
 
@@ -70,6 +60,8 @@ var NonBlackBerryStrategy = function(){
             destComponentName = 'workflow-component';
         }
 
+        data.action = 'assignment';
+
         this.execRequest("AWComponent", "open", [destComponentName, $.param(data)])
             .done(function(){
                 if (refreshOnReturn)
@@ -116,6 +108,10 @@ var NonBlackBerryStrategy = function(){
         return params;
     };
 
+    this.reauth = function(){
+        return this.execRequest('AWAuth', 'authenticate');
+    };
+
     this.runRequestWithAuth = function(requestData){
         var _this = this;
         var deferred = $.Deferred();
@@ -127,8 +123,8 @@ var NonBlackBerryStrategy = function(){
             function(jqXHR){
                 // fail: if it's an auth problem, re-auth and try again
                 if(jqXHR.status == 401){
-                    _this.reauth().then(
-                        function(){
+                    _this.reauth()
+                        .done(function(){
                             $.ajax(requestData).then(
                                 function(data){
                                     deferred.resolve(data);
@@ -136,8 +132,8 @@ var NonBlackBerryStrategy = function(){
                                 function(error){
                                     deferred.reject(error);
                                 });
-                        },
-                        function(error){
+                        })
+                        .fail(function(error){
                             deferred.reject(error);
                         });
                 }else{

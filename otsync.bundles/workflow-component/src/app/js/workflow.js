@@ -10,14 +10,13 @@ $(document).ready(function () {
     var workflow = new App();
     var workflowData = workflow.getParameters();
     var nodeID = workflowData.id;
-    var gatewayURL = null;
+    var _gatewayURL = null;
     var clientOS = null;
     var deviceStrategy = workflow.getDeviceStrategy();
 
     workflow.init = function () {
         var action;
 
-        gatewayURL = deviceStrategy.getGatewayURL();
         clientOS = deviceStrategy.getClientOS();
 
         if (this.initialized) {
@@ -25,57 +24,63 @@ $(document).ready(function () {
             return;
         }
 
-        this.initialized = true;
+        deviceStrategy.getGatewayURL()
+            .done(function(gatewayURL){
+                _gatewayURL = gatewayURL;
 
-        $('#close-button').click(workflow.close);
+                this.initialized = true;
 
-        if (workflowData.action != null) {
-            action = workflowData.action;
-        } else if (workflowData.action != null) {
-            action = workflowData.action;
-        }
+                $('#close-button').click(workflow.close);
 
-        if (action == "assignment") {
+                if (workflowData.action != null) {
+                    action = workflowData.action;
+                }
 
-            if (workflowData.groupStep) {
+                if (action == "assignment") {
 
-                $('#step-accept-assignment-btn').click(function () {
+                    if (workflowData.groupStep) {
 
-                    workflow.acceptAssignment();
-                });
+                        $('#step-accept-assignment-btn').click(function () {
 
-                $('#step-not-accept-assignment-btn').click(function () {
+                            workflow.acceptAssignment();
+                        });
 
-                    workflow.close();
-                });
+                        $('#step-not-accept-assignment-btn').click(function () {
 
-                $('#step').show();
-                $('#accept-assignment-section').show();
-            } else {
+                            workflow.close();
+                        });
 
-                try {
-                    $('#step-send-btn').text('Send on').click(function () {
-                        workflow.sendOn();
+                        $('#step').show();
+                        $('#accept-assignment-section').show();
+                    } else {
+
+                        try {
+                            $('#step-send-btn').text('Send on').click(function () {
+                                workflow.sendOn();
+                            });
+                            workflow.showStep();
+                        }
+                        catch (e) {
+                            alert(e);
+                        }
+                    }
+                } else if (action == "view") {
+
+                    $('#step-send-btn').text('Initiate').click(function () {
+                        workflow.initiate();
                     });
-                    workflow.showStep();
-                }
-                catch (e) {
-                    alert(e);
-                }
-            }
-        } else if (action == "view") {
 
-            $('#step-send-btn').text('Initiate').click(function () {
-                workflow.initiate();
+                    $('#workflow-title').show();
+                    $('#wftitle-label').show();
+                    workflow.showWorkflow();
+                } else {
+                    // unknown action
+                    workflow.setNodeName(apputil.T("error.Unknown action provided by container"));
+                }
+            })
+            .fail(function(error) {
+                alert(error);
             });
-
-            $('#workflow-title').show();
-            $('#wftitle-label').show();
-            workflow.showWorkflow();
-        } else {
-            // unknown action
-            workflow.setNodeName(apputil.T("error.Unknown action provided by container"));
-        }
     };
 
     workflow.clear = function () {
@@ -93,10 +98,10 @@ $(document).ready(function () {
         if (isValidId(nodeID)) {
 
             $.when(workflow.runRequestWithAuth({
-                url: gatewayURL  + "/workflow/v5/workflows/" + nodeID + "/subwork/" + workflowData.subwork + "/tasks/" + workflowData.step
+                url: _gatewayURL  + "/workflow/v5/workflows/" + nodeID + "/subwork/" + workflowData.subwork + "/tasks/" + workflowData.step
 
-                + "?stepDoneUrl=" + encodeURIComponent(gatewayURL + "/workflowview/stepdone.jsp?os=" + clientOS)
-                + "&formDoneUrl=" + encodeURIComponent(gatewayURL + "/workflowview/formupdated.jsp?os=" + clientOS)
+                + "?stepDoneUrl=" + encodeURIComponent(_gatewayURL + "/workflow-component/stepdone.jsp?os=" + clientOS)
+                + "&formDoneUrl=" + encodeURIComponent(_gatewayURL + "/workflow-component/formupdated.jsp?os=" + clientOS)
             })).done(function (data) {
 
                 // If it's a signing step, stop and explain that we don't handle that.
@@ -107,7 +112,7 @@ $(document).ready(function () {
                     workflow.showSignatureRequired();
                 } else if (data.location != null) {
 
-                    workflow.openWindow(gatewayURL + data.location);
+                    workflow.openWindow(_gatewayURL + data.location);
                     workflow.close();
                 } else {
 
@@ -124,8 +129,8 @@ $(document).ready(function () {
         if (isValidId(nodeID)) {
 
             $.when(workflow.runRequestWithAuth({
-                url: gatewayURL + "/workflow/v5/workflows/" + nodeID
-                + "?nextUrl=" + encodeURIComponent(gatewayURL + "/workflowview/formsubmitted.jsp?os=" + clientOS)
+                url: _gatewayURL + "/workflow/v5/workflows/" + nodeID
+                + "?nextUrl=" + encodeURIComponent(_gatewayURL + "/workflow-component/formsubmitted.jsp?os=" + clientOS)
             })).done(function (data) {
 
                 // If a signature is required, stop and explain that we don't handle that.
@@ -136,7 +141,7 @@ $(document).ready(function () {
                     workflow.showSignatureRequired();
                 } else if (data.location != null) {
 
-                    workflow.openWindow(gatewayURL + data.location);
+                    workflow.openWindow(_gatewayURL + data.location);
                     workflow.close();
                 } else {
 
@@ -383,7 +388,7 @@ $(document).ready(function () {
                 return function (query, process) {
 
                     return $.when(workflow.runRequestWithAuth({
-                        url: gatewayURL + '/content/v5/users?filter=' + encodeURIComponent(query)
+                        url: _gatewayURL + '/content/v5/users?filter=' + encodeURIComponent(query)
                     })).done(function (data) {
 
                         var options = [];
@@ -452,7 +457,7 @@ $(document).ready(function () {
                 return function (query, process) {
 
                     return $.when(workflow.runRequestWithAuth({
-                        url: gatewayURL + '/content/v5/users?filter=' + encodeURIComponent(query)
+                        url: _gatewayURL + '/content/v5/users?filter=' + encodeURIComponent(query)
                     })).done(function (data) {
 
                         var options = [];
@@ -507,7 +512,7 @@ $(document).ready(function () {
                     .addClass(form.isRequired ? "btn-warning" : "")
                     .click(function (url) {
                         return function () {
-                            workflow.openWindow(gatewayURL + url);
+                            workflow.openWindow(_gatewayURL + url);
                         };
                     }(form.url))
             );
@@ -523,7 +528,7 @@ $(document).ready(function () {
     workflow.sendDelegate = function () {
 
         var userID = $('#Delegate-Assignee').val();
-        var url = gatewayURL
+        var url = _gatewayURL
             + "/workflow/v5/workflows/" + nodeID + "/subwork/" + workflowData.subwork + "/tasks/" + workflowData.step
             + '?userID=' + encodeURIComponent(userID)
             + '&xAction=Delegate';
@@ -589,7 +594,7 @@ $(document).ready(function () {
             }
         });
 
-        var url = gatewayURL
+        var url = _gatewayURL
             + "/workflow/v5/workflows/" + nodeID + "/subwork/" + workflowData.subwork + "/tasks/" + workflowData.step
             + '?atts=' + encodeURIComponent(JSON.stringify(attrs));
 
@@ -616,7 +621,7 @@ $(document).ready(function () {
 
     workflow.acceptAssignment = function () {
 
-        var url = gatewayURL
+        var url = _gatewayURL
             + "/workflow/v5/workflows/" + nodeID + "/subwork/" + workflowData.subwork + "/tasks/" + workflowData.step;
 
         $.when(workflow.runRequestWithAuth({
@@ -636,7 +641,7 @@ $(document).ready(function () {
 
     workflow.initiate = function () {
 
-        var url = gatewayURL
+        var url = _gatewayURL
             + "/workflow/v5/workflows/" + workflowData.mapID;
 
         var data = {
@@ -1099,7 +1104,7 @@ $(document).ready(function () {
                             return function (query, process) {
 
                                 return $.when(workflow.runRequestWithAuth({
-                                    url: gatewayURL + '/content/v5/users?filter=' + encodeURIComponent(query)
+                                    url: _gatewayURL + '/content/v5/users?filter=' + encodeURIComponent(query)
                                 })).done(function (data) {
                                     var options = [];
 
@@ -1211,7 +1216,7 @@ $(document).ready(function () {
                                 var baseFoldersStr = baseFolders.join(',');
 
                                 return $.when(workflow.runRequestWithAuth({
-                                    url: gatewayURL + '/content/v5/nodes',
+                                    url: _gatewayURL + '/content/v5/nodes',
                                     data: {
                                         filter: '*' + query + '*',
                                         ids: baseFoldersStr,
@@ -1388,7 +1393,7 @@ $(document).ready(function () {
             if (baseFolders == null) {
 
                 $.when(workflow.runRequestWithAuth({
-                    url: gatewayURL + '/content/v5/properties',
+                    url: _gatewayURL + '/content/v5/properties',
                     async: false,
                     cache: false,
                     type: 'GET'
