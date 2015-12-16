@@ -24,12 +24,11 @@ dependency-reduced-pom.xml
 # Generated node modules, and our locally installed node and npm
 node_modules/
 npm/
-node/
+node/node.exe
+node/npm
+node/npm.cmd
+node/node_modules/
 
 # Grunt distribution files
 dist/
 dependencies/
-
-
-
-otag/otag-gateway/src/main/resources/tomcat/lib/otag-tomcat-listener-2.0-SNAPSHOT.jar

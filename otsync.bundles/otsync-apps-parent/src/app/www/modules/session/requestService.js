@@ -1,7 +1,7 @@
-angular.module('requestService', ['cacheService', 'angular-appworks', 'tokenService'])
+angular.module('requestService', ['cacheService', 'appworksService'])
 
-    .factory('$requestService', ['$q', '$rootScope', '$displayMessageService', '$cacheService', '$sessionService', '$http', '$auth', '$tokenService',
-			function($q, $rootScope, $displayMessageService, $cacheService, $sessionService, $http, $auth, $tokenService){
+    .factory('$requestService', ['$q', '$rootScope', '$displayMessageService', '$cacheService', '$http', '$appworksService',
+			function($q, $rootScope, $displayMessageService, $cacheService, $http, $appworksService){
 
 				return {
 
@@ -41,9 +41,10 @@ angular.module('requestService', ['cacheService', 'angular-appworks', 'tokenServ
 
 					reauthUpdateTicket: function() {
 
-						return $auth.reauth().then(function(){
-							$http.defaults.headers.common.OTCSTICKET = $tokenService.getOTCSTICKET();
-						});
+						return $appworksService.authenticate()
+							.then(function(){
+								$http.defaults.headers.common.OTCSTICKET = $appworksService.getOTCSTICKET();
+							});
 					},
 
 					runRequestWithAuth: function(request) {

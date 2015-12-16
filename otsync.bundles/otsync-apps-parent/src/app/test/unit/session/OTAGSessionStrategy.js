@@ -1,5 +1,5 @@
 describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
-    var OTAGSessionStrategy, $q, $requestService, $tokenService, defaultLanguage, $rootScope, AppWorksFacade;
+    var OTAGSessionStrategy, $q, $requestService, defaultLanguage, $rootScope, $appworksService;
     var properties = {};
     var gatewayURL = 'someGatewayURL';
     var otcsticket = 'someOTCSTicket';
@@ -9,43 +9,49 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
     beforeEach(function(){
         properties.csScriptName = 'someScriptName';
         $requestService = {
-            execCordovaRequest:function(){},
             runRequestWithAuth:function(){}
         };
 
-        $tokenService = {
-            getOTCSTICKET: function(){}
-        };
-
-		AppWorksFacade = {
-			execCordovaRequest: function(){}
-		};
 
         module(function ($provide) {
             $provide.value('$requestService', $requestService);
-            $provide.value('$tokenService', $tokenService);
-			$provide.value('AppWorksFacade', AppWorksFacade);
         });
 
         // The injector unwraps the underscores (_) from around the parameter names when matching
-        inject(function(_$q_, _$rootScope_, _OTAGSessionStrategy_){
+        inject(function(_$q_, _$rootScope_, _OTAGSessionStrategy_, _$appworksService_){
             $q = _$q_;
             defaultLanguage = '';
             OTAGSessionStrategy = _OTAGSessionStrategy_;
             $rootScope = _$rootScope_;
+            $appworksService = _$appworksService_;
         });
     });
 
     it('should return a language if one was found', function() {
         var expectedLanguage = 'fr';
+        var expectedGatewayURL = 'someURL';
+        var langObject = {
+            value: expectedLanguage
+        };
         var defaultLanguageObject = [];
         var otagSessionStrategy = new OTAGSessionStrategy();
         defaultLanguageObject[0] = expectedLanguage;
 
-        spyOn(AppWorksFacade, 'execCordovaRequest').and.callFake(function() {
-            var deferred = $q.defer();
-            deferred.resolve(defaultLanguageObject);
-            return deferred.promise;
+        var alreadyCalled = false;
+
+        spyOn($appworksService, 'execCordovaRequest').and.callFake(function() {
+            if (alreadyCalled){
+                var deferred = $q.defer();
+                deferred.resolve(expectedGatewayURL);
+                return deferred.promise;
+            } else {
+
+                alreadyCalled = true;
+
+                var deferred = $q.defer();
+                deferred.resolve(langObject);
+                return deferred.promise;
+            }
         });
 
         spyOn($requestService, 'runRequestWithAuth').and.callFake(function() {
@@ -54,32 +60,37 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
             return deferred.promise;
         });
 
-        spyOn($tokenService, 'getOTCSTICKET').and.returnValue(otcsticket);
-
-        spyOn(otagSessionStrategy, 'initDefaultLanguage').and.callFake(function() {
-            var deferred = $q.defer();
-            deferred.resolve(expectedLanguage);
-            return deferred.promise;
-        });
-
-        spyOn(otagSessionStrategy, 'getGatewayURL').and.returnValue(gatewayURL);
+        spyOn($appworksService, 'getOTCSTICKET').and.returnValue(otcsticket);
 
         otagSessionStrategy.init();
 
         $rootScope.$digest();
 
         expect(otagSessionStrategy.getDefaultLanguage()).toEqual(expectedLanguage);
+        expect(otagSessionStrategy.getGatewayURL()).toEqual(expectedGatewayURL);
     });
 
-    it('should return en_US the defaultLanguageObject is null', function() {
-        var expectedLanguage = 'en_US';
-        var defaultLanguageObject = null;
+    it('should return en as defaultLanguage if the lang object is null', function() {
+        var expectedLanguage = 'en';
+        var langObject = null;
+        var expectedGatewayURL = 'someURL';
         var otagSessionStrategy = new OTAGSessionStrategy();
 
-        spyOn(AppWorksFacade, 'execCordovaRequest').and.callFake(function() {
-            var deferred = $q.defer();
-            deferred.resolve(defaultLanguageObject);
-            return deferred.promise;
+        var alreadyCalled = false;
+
+        spyOn($appworksService, 'execCordovaRequest').and.callFake(function() {
+            if (alreadyCalled){
+                var deferred = $q.defer();
+                deferred.resolve(expectedGatewayURL);
+                return deferred.promise;
+            } else {
+
+                alreadyCalled = true;
+
+                var deferred = $q.defer();
+                deferred.resolve(langObject);
+                return deferred.promise;
+            }
         });
 
         spyOn($requestService, 'runRequestWithAuth').and.callFake(function() {
@@ -88,34 +99,39 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
             return deferred.promise;
         });
 
-        spyOn($tokenService, 'getOTCSTICKET').and.returnValue(otcsticket);
-
-        spyOn(otagSessionStrategy, 'getGatewayURL').and.returnValue(gatewayURL);
-
-        spyOn(otagSessionStrategy, 'initDefaultLanguage').and.callFake(function() {
-            var deferred = $q.defer();
-            deferred.resolve(expectedLanguage);
-            return deferred.promise;
-        });
+        spyOn($appworksService, 'getOTCSTICKET').and.returnValue(otcsticket);
 
         otagSessionStrategy.init();
 
         $rootScope.$digest();
 
         expect(otagSessionStrategy.getDefaultLanguage()).toEqual(expectedLanguage);
+        expect(otagSessionStrategy.getGatewayURL()).toEqual(expectedGatewayURL);
     });
 
-    it('should return en_US the defaultLanguage is null', function() {
-        var expectedLanguage = 'en_US';
-        var defaultLanguageObject = {};
+    it('should return en as the default language if the value in the lang object is null', function() {
+        var expectedLanguage = 'en';
+        var langObject = {
+            value: null
+        };
+        var expectedGatewayURL = 'someURL';
         var otagSessionStrategy = new OTAGSessionStrategy();
 
-        defaultLanguageObject[0] = null;
+        var alreadyCalled = false;
 
-        spyOn(AppWorksFacade, 'execCordovaRequest').and.callFake(function() {
-            var deferred = $q.defer();
-            deferred.resolve(defaultLanguageObject);
-            return deferred.promise;
+        spyOn($appworksService, 'execCordovaRequest').and.callFake(function() {
+            if (alreadyCalled){
+                var deferred = $q.defer();
+                deferred.resolve(expectedGatewayURL);
+                return deferred.promise;
+            } else {
+
+                alreadyCalled = true;
+
+                var deferred = $q.defer();
+                deferred.resolve(langObject);
+                return deferred.promise;
+            }
         });
 
         spyOn($requestService, 'runRequestWithAuth').and.callFake(function() {
@@ -124,34 +140,39 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
             return deferred.promise;
         });
 
-        spyOn($tokenService, 'getOTCSTICKET').and.returnValue(otcsticket);
-
-        spyOn(otagSessionStrategy, 'getGatewayURL').and.returnValue(gatewayURL);
-
-        spyOn(otagSessionStrategy, 'initDefaultLanguage').and.callFake(function() {
-            var deferred = $q.defer();
-            deferred.resolve(expectedLanguage);
-            return deferred.promise;
-        });
+        spyOn($appworksService, 'getOTCSTICKET').and.returnValue(otcsticket);
 
         otagSessionStrategy.init();
 
         $rootScope.$digest();
 
         expect(otagSessionStrategy.getDefaultLanguage()).toEqual(expectedLanguage);
+        expect(otagSessionStrategy.getGatewayURL()).toEqual(expectedGatewayURL);
     });
 
-    it('should return en_US the defaultLanguage is an empty string', function() {
-        var expectedLanguage = 'en_US';
-        var defaultLanguageObject = {};
+    it('should return en as the defaultLanguage if the lang object value is an empty string', function() {
+        var expectedLanguage = 'en';
+        var langObject = {
+            value: ''
+        };
+        var expectedGatewayURL = 'someURL';
         var otagSessionStrategy = new OTAGSessionStrategy();
 
-        defaultLanguageObject[0] = '';
+        var alreadyCalled = false;
 
-        spyOn(AppWorksFacade, 'execCordovaRequest').and.callFake(function() {
-            var deferred = $q.defer();
-            deferred.resolve(defaultLanguageObject);
-            return deferred.promise;
+        spyOn($appworksService, 'execCordovaRequest').and.callFake(function() {
+            if (alreadyCalled){
+                var deferred = $q.defer();
+                deferred.resolve(expectedGatewayURL);
+                return deferred.promise;
+            } else {
+
+                alreadyCalled = true;
+
+                var deferred = $q.defer();
+                deferred.resolve(langObject);
+                return deferred.promise;
+            }
         });
 
         spyOn($requestService, 'runRequestWithAuth').and.callFake(function() {
@@ -160,21 +181,14 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
             return deferred.promise;
         });
 
-        spyOn($tokenService, 'getOTCSTICKET').and.returnValue(otcsticket);
-
-        spyOn(otagSessionStrategy, 'getGatewayURL').and.returnValue(gatewayURL);
-
-        spyOn(otagSessionStrategy, 'initDefaultLanguage').and.callFake(function() {
-            var deferred = $q.defer();
-            deferred.resolve(expectedLanguage);
-            return deferred.promise;
-        });
+        spyOn($appworksService, 'getOTCSTICKET').and.returnValue(otcsticket);
 
         otagSessionStrategy.init();
 
         $rootScope.$digest();
 
         expect(otagSessionStrategy.getDefaultLanguage()).toEqual(expectedLanguage);
+        expect(otagSessionStrategy.getGatewayURL()).toEqual(expectedGatewayURL);
     });
 });
 

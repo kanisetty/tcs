@@ -1,21 +1,19 @@
-angular.module('OTAGSessionStrategy', ['requestService', 'tokenService',  'Request'])
-    .factory('OTAGSessionStrategy', ['$q', '$requestService', '$tokenService', 'Request', '$http',
-        function($q, $requestService, $tokenService, Request, $http) {
-            var _defaultLanguage = 'en';
-            var _csURL = '';
-            var _canInviteExternalUsers = false;
-            var _clientType = 'all';
-            var _appName = '';
+angular.module('OTAGSessionStrategy', ['requestService', 'appworksService',  'Request'])
+    .factory('OTAGSessionStrategy', ['$q', '$requestService', '$appworksService', 'Request', '$http',
+        function($q, $requestService, $appworksService, Request, $http) {
             var _contentServerAPIPath = '/otcsapi';
 
-
             var OTAGSessionStrategy = function(appName){
-                _appName = appName;
+                var _appName = appName;
+                var _gatewayURL = '';
+                var _defaultLanguage = '';
+                var _systemProperties = null;
+                var _clientType = 'all';
 
-                var _initSystemProperties = function(currentStrategy){
+                var _initSystemProperties = function(){
                     var requestParams = {
                         method: 'GET',
-                        url: currentStrategy.getGatewayURL() + '/content/v5/properties'
+                        url: _gatewayURL + '/content/v5/properties'
                     };
 
                     var request = new Request(requestParams);
@@ -23,19 +21,28 @@ angular.module('OTAGSessionStrategy', ['requestService', 'tokenService',  'Reque
                     return $requestService.runRequestWithAuth(request);
                 };
 
-                this.init = function(){
+                this.init = function(rootName){
                     var deferred = $q.defer();
                     var currentStrategy = this;
 
                     $http.defaults.headers.common.OTCSTICKET = this.getOTCSTICKET();
 
-                    this.initDefaultLanguage().then(function(defaultLanguage){
-                        _defaultLanguage = defaultLanguage;
+                    $appworksService.getDefaultLanguage()
+                        .then(function(defaultLanguage){
+                            _defaultLanguage = defaultLanguage;
 
-                        _initSystemProperties(currentStrategy).then(function(systemProperties){
-                            _canInviteExternalUsers = systemProperties.canInvite;
-                            deferred.resolve();
-                        }).catch(function(error){
+                            $appworksService.getGatewayURL(currentStrategy).then(function(gatewayURL){
+                                _gatewayURL = gatewayURL;
+
+                                _initSystemProperties().then(function(systemProperties){
+                                    _systemProperties = systemProperties;
+
+                                    deferred.resolve();
+                                }).catch(function(error){
+                                    deferred.reject(error);
+                                });
+                            })
+                        .catch(function(error){
                             deferred.reject(error);
                         });
                     }).catch(function(error){
@@ -45,20 +52,8 @@ angular.module('OTAGSessionStrategy', ['requestService', 'tokenService',  'Reque
                     return deferred.promise;
                 };
 
-                this.initDefaultLanguage = function(){
-                    var deferred = $q.defer();
-
-                    window.appworks.globalization.getPreferredLanguage(function(lang) {
-                        deferred.resolve(lang.value);
-                    }, function() {
-                        deferred.resolve(_defaultLanguage);
-                    });
-
-                    return deferred.promise;
-                };
-
                 this.canInviteExternalUsers = function(){
-                    return _canInviteExternalUsers;
+                    return _systemProperties.canInvite;
                 };
 
                 this.getAppName = function(){
@@ -77,11 +72,7 @@ angular.module('OTAGSessionStrategy', ['requestService', 'tokenService',  'Reque
                 };
 
                 this.getContentServerURL = function () {
-                    return this.getGatewayURL() + _contentServerAPIPath;
-                };
-
-                this.getOTCSTICKET = function() {
-                    return $tokenService.getOTCSTICKET();
+                    return _gatewayURL + _contentServerAPIPath;
                 };
 
                 this.getDefaultLanguage = function() {
@@ -89,15 +80,23 @@ angular.module('OTAGSessionStrategy', ['requestService', 'tokenService',  'Reque
                 };
 
                 this.getGatewayURL = function() {
-                    return window.gatewayUrl;
+                    return _gatewayURL;
+                };
+
+                this.getOTCSTICKET = function() {
+                    return $appworksService.getOTCSTICKET();
+                };
+
+                this.getRootID = function(rootName){
+                    return _systemProperties[rootName];
                 };
 
                 this.getUsername = function() {
-                    return window.appworks.auth.getAuth().authResponse.addtl.contentServerConnector.csUsername;
+                    return _systemProperties.userName;
                 };
 
                 this.isOnline = function() {
-                    return window.appworks.network.online;
+                    return navigator.onLine;
                 };
 
                 this.runRequest = function(request){

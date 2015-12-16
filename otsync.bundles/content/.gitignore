@@ -19,6 +19,3 @@ x86/
 # Maven
 log/
 target/
-dependency-reduced-pom.xml
-
-otag/otag-gateway/src/main/resources/tomcat/lib/otag-tomcat-listener-2.0-SNAPSHOT.jar

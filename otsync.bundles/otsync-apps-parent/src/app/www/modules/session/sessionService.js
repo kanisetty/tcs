@@ -25,10 +25,6 @@ angular.module('sessionService', [])
 			return _sessionStrategy.getContentServerURL();
 		},
 
-        getOTCSTICKET: function(){
-            return _sessionStrategy.getOTCSTICKET();
-        },
-
 		getDefaultLanguage: function(){
 			return _sessionStrategy.getDefaultLanguage();
 		},
@@ -36,6 +32,14 @@ angular.module('sessionService', [])
 		getGatewayURL: function(){
 			return _sessionStrategy.getGatewayURL();
 		},
+
+        getOTCSTICKET: function(){
+            return _sessionStrategy.getOTCSTICKET();
+        },
+
+        getRootID: function(rootName){
+            return _sessionStrategy.getRootID(rootName);
+        },
 
         getUsername: function(){
             return _sessionStrategy.getUsername();

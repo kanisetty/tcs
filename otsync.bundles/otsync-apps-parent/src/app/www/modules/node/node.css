@@ -1,0 +1,24 @@
+.node-display-detail {
+	float: left;
+	padding-left: 0.5em;
+	margin-bottom: 0.2em;
+}
+
+.overlay-shortcut {
+    float:left;
+    height: 30%;
+    position: absolute;
+    content:url('img/shortcut_overlay.png');
+    margin-top: -4%;
+    margin-left: -4%;
+}
+
+.readonly-overlay {
+    content:url('img/readonly_overlay.png');
+}
+
+.reserve-icon {
+    float: left;
+    padding-left: 0.5em;
+    content:url('img/reserved.png');
+}

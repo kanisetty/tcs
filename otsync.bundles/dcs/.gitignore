@@ -19,8 +19,3 @@ x86/
 # Maven
 log/
 target/
-dependency-reduced-pom.xml
-
-# Generated node modules, and our locally installed node and npm
-node_modules/
-npm/

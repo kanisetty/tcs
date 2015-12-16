@@ -19,13 +19,3 @@ x86/
 # Maven
 log/
 target/
-dependency-reduced-pom.xml
-
-# Generated node modules, and our locally installed node and npm
-node_modules/
-npm/
-node
-
-
-
-src/main/java/com/opentext/otsync/otag-gateway/src/main/resources/tomcat/lib/otag-tomcat-listener-2.0-SNAPSHOT.jar

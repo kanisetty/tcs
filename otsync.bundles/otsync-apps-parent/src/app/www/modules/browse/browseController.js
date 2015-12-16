@@ -13,25 +13,11 @@ angular.module('browseController', ['browseService', 'ModalMenu', 'browseService
 
             $scope.onDeviceLoadInit = function(){
 
-                var onAuthFinished = function() {
+                $ionicPlatform.ready(function() {
 
-                    if (ionic.Platform.isReady && !initialized) {
-                        $scope.initialize();
-                    }
-                    document.removeEventListener('appworksjs.auth', onAuthFinished)
-                };
-
-                if(!initialized) {
-                    document.addEventListener('appworksjs.auth', onAuthFinished);
-
-                    $ionicPlatform.ready(function () {
-                        $displayMessageService.showDisplayMessage('LOADING');
-                        if (window.gatewayUrl != undefined && window.gatewayUrl != '' && !initialized) {
-                            $scope.initialize();
-                        }
-                    });
-
-                }
+                    $displayMessageService.showDisplayMessage('LOADING');
+                    $scope.initialize();
+                });
             };
 
             $scope.initialize = function () {
