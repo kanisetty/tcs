@@ -89,11 +89,11 @@ angular.module('nodeBrowseDecoratingService', ['NodeBrowseDecorator'])
             if(isFavorite) {
                 if(!isReadOnly) {
 					nodeBrowseDecorator.setBottomRightOverlayCSS("favorite-overlay");
-                    if($cacheService.isNodeCachable(node) && !node.isCached())
+                    if($cacheService.isNodeStorable(node) && !node.isStored())
 						nodeBrowseDecorator.setBottomMiddleOverlayCSS("favorite-unavailable-overlay");
                 } else{
 					nodeBrowseDecorator.setBottomMiddleOverlayCSS("favorite-overlay");
-                    if($cacheService.isNodeCachable(node) && !node.isCached())
+                    if($cacheService.isNodeStorable(node) && !node.isStored())
 						nodeBrowseDecorator.setBottomLeftOverlayCSS("favorite-unavailable-overlay");
                 }
             }

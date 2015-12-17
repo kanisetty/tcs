@@ -1,15 +1,15 @@
-angular.module('nodeOpenService', ['nodeService', 'fileActionService', 'cacheService'])
+angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'])
 
-    .factory('$nodeOpenService', ['$q', '$location', '$nodeService', '$displayMessageService',  '$fileActionService', '$cacheService', '$stateParams', '$navigationService',
-        function($q, $location, $nodeService, $displayMessageService, $fileActionService, $cacheService, $stateParams, $navigationService) {
+    .factory('$nodeOpenService', ['$q', '$location', '$nodeService', '$displayMessageService',  '$fileResource', '$cacheService', '$stateParams', '$navigationService',
+        function($q, $location, $nodeService, $displayMessageService, $fileResource, $cacheService, $stateParams, $navigationService) {
 
         var _getNodeToOpen = function(node){
             var deferred = $q.defer();
 
             if (node.getSubtype() == 1) {
-                $nodeService.getNode(node.getOriginalID()).then(function(nodeSansIsCached){
-                  $cacheService.setIsCached(nodeSansIsCached).then(function(nodeWithIsCached) {
-                      deferred.resolve(nodeWithIsCached);
+                $nodeService.getNode(node.getOriginalID()).then(function(nodeSansIsStored){
+                  $cacheService.setIsStored(nodeSansIsStored).then(function(nodeWithIsStored) {
+                      deferred.resolve(nodeWithIsStored);
                   });
                 });
             }else{
@@ -119,14 +119,14 @@ angular.module('nodeOpenService', ['nodeService', 'fileActionService', 'cacheSer
                             }
                         });
                     }else{
-                        if($cacheService.isNodeCachable(nodeToOpen) && nodeToOpen.isCached()) {
-                            return $cacheService.openNodeFromCache(nodeToOpen);
+                        if($cacheService.isNodeStorable(nodeToOpen) && nodeToOpen.isStored()) {
+                            return $cacheService.openNodeFromStorage(nodeToOpen);
                         }
                         else {
                             if(menuItem != null)
                                 menuItem.setRefresh(true);
 
-                            return $fileActionService.downloadAndCacheAction(nodeToOpen, true);
+                            return $fileResource.downloadAndStore(nodeToOpen, true);
                         }
                     }
                 });

@@ -5,7 +5,7 @@ angular.module('Node', [])
         var Node = function(nodeData, sharing) {
 			var _nodeData = nodeData;
             var _iconURL = _nodeData.iconURL;
-            var _isCached = false;
+            var _isStored = false;
             var _isContainer = _nodeData.isContainer;
             var _name = _nodeData.name;
             var _sharing = sharing;
@@ -66,8 +66,8 @@ angular.module('Node', [])
                 return _nodeData.versionNum;
             };
 
-            this.isCached = function(){
-                return _isCached;
+            this.isStored = function(){
+                return _isStored;
             };
 
             this.isContainer = function() {
@@ -90,8 +90,8 @@ angular.module('Node', [])
                 return _nodeData.isReservable;
             };
 
-            this.setIsCached = function(isCached){
-                _isCached = isCached;
+            this.setIsStored = function(isStored){
+                _isStored = isStored;
             };
 
 			this.sharing = function(){

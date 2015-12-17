@@ -1,7 +1,7 @@
-angular.module('NodeHeader', ['Header', 'ModalMenu', 'nodeActionService', 'menuItemFactory', 'fileMenuService', 'fileActionService'])
+angular.module('NodeHeader', ['Header', 'ModalMenu', 'nodeActionService', 'menuItemFactory', 'fileMenuService', 'fileResource'])
 
-    .factory('NodeHeader', ['Header', 'ModalMenu', '$displayMessageService', '$nodeActionService', 'menuItemFactory', '$fileMenuService', '$fileActionService',
-			function (Header, ModalMenu, $displayMessageService, $nodeActionService, menuItemFactory, $fileMenuService, $fileActionService) {
+    .factory('NodeHeader', ['Header', 'ModalMenu', '$displayMessageService', '$nodeActionService', 'menuItemFactory', '$fileMenuService', '$fileResource',
+			function (Header, ModalMenu, $displayMessageService, $nodeActionService, menuItemFactory, $fileMenuService, $fileResource) {
 				var _refresh = true;
 				var _hasModal = true;
 
@@ -28,7 +28,7 @@ angular.module('NodeHeader', ['Header', 'ModalMenu', 'nodeActionService', 'menuI
                     addMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('FOLDER'), !_refresh, !_hasModal,
                             function () {
 
-                                return $fileActionService.getAddNodeFormAction({'type':FOLDER_SUBTYPE});
+                                return $fileResource.getAddNodeForm({'type':FOLDER_SUBTYPE});
                             }
                     ));
 

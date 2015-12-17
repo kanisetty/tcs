@@ -1,6 +1,6 @@
 describe('favoritesService doSync tests', function(){
-    var $nodeService, $q, $nodeBrowseDecoratingService, $sessionService, $rootScope, $displayMessageService, $cacheService, $favoritesService, $fileService,
-        $actionService, $stateParams, $urlEncode;
+    var $nodeService, $q, $nodeBrowseDecoratingService, $sessionService, $rootScope, $displayMessageService, $cacheService, $favoritesService, $fileResource,
+        $actionService, $favoritesResource;
     var favorites = [
         {
             "id": 7273,
@@ -99,12 +99,10 @@ describe('favoritesService doSync tests', function(){
     beforeEach(module('favoritesService', 'nodeService'));
 
     beforeEach(function(){
-		$stateParams = {};
         $nodeService = {};
         $cacheService = {};
-        $fileService = {};
+        $fileResource = {};
 		$actionService = {};
-        $urlEncode = {};
 
         $sessionService = {
             getGatewayURL: function () {
@@ -136,16 +134,20 @@ describe('favoritesService doSync tests', function(){
             }
         };
 
+        $favoritesResource = {
+            getFavorites: function(){}
+        };
+
+
         module(function ($provide) {
             $provide.value('$sessionService', $sessionService);
             $provide.value('$nodeBrowseDecoratingService', $nodeBrowseDecoratingService);
             $provide.value('$displayMessageService', $displayMessageService);
             $provide.value('$nodeService', $nodeService);
             $provide.value('$cacheService', $cacheService);
-            $provide.value('$fileService', $fileService);
+            $provide.value('$fileResource', $fileResource);
 			$provide.value('$actionService', $actionService);
-			$provide.value('$stateParams', $stateParams);
-            $provide.value('$urlEncode', $urlEncode);
+			$provide.value('$favoritesResource', $favoritesResource);
         });
 
         // The injector unwraps the underscores (_) from around the parameter names when matching
@@ -159,7 +161,7 @@ describe('favoritesService doSync tests', function(){
     it('should return favorites if the sync was successful', function() {
         var _favorites;
 
-        spyOn($favoritesService, 'getFavorites').and.callFake(function(){
+        spyOn($favoritesResource, 'getFavorites').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve(favorites);
             return deferred.promise;

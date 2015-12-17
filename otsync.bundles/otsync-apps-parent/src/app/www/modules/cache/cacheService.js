@@ -1,45 +1,103 @@
-angular.module('cacheService', [])
+angular.module('cacheService', ['appworksService'])
+    .factory('$cacheService', ['$q', '$appworksService',  function ($q, $appworksService) {
 
-    .factory('$cacheService', function () {
-
-        var _cacheStrategy;
+        var _favoritesKey = "OTSync_Favorites";
 
         return {
 
-            addFavorites: function(favorties) {
-                return _cacheStrategy.addFavorites(favorties);
+            addFavoritesToCache: function (favorites) {
+                var deferred = $q.defer();
+
+                $appworksService.addToCache(_favoritesKey, favorites, true);
+
+                deferred.resolve();
+
+                return deferred.promise;
             },
 
-            addNode: function (node, fileData) {
-                return _cacheStrategy.addNode(node, fileData);
+            addNodeToStorage: function (node, downloadURL, options, doOpen) {
+                var deferred = $q.defer();
+                var self = this;
+                var fileName = node.getID() + "_" + node.getVersionNumber() + "_" + node.getName();
+
+                $appworksService.storeFile(downloadURL, fileName, options)
+                    .then(function() {
+                        if (doOpen) {
+                            self.openNodeFromStorage(node)
+                                .then(function (file) {
+                                    window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes');
+                                    deferred.resolve();
+                                })
+                                .catch(function (error) {
+                                    deferred.reject(error);
+                                });
+                        } else {
+                            deferred.resolve();
+                        }
+                    })
+                    .catch(function (error) {
+                        deferred.reject(error);
+                    });
+
+                return deferred.promise;
             },
 
-            evictNode: function(request) {
-                return _cacheStrategy.evictNode(request);
+            getFavoritesFromCache: function () {
+                var deferred = $q.defer();
+
+                $appworksService.getFromCache(_favoritesKey);
+
+                deferred.resolve();
+
+                return deferred.promise;
             },
 
-            getBaseRequest: function(node) {
-                return _cacheStrategy.getBaseRequest(node);
+            isNodeStorable: function (node) {
+
+                var canStore = false;
+
+                if(node != null && node.getSubtype() != 1 && !node.isContainer())
+                    canStore = true;
+
+                return canStore;
             },
 
-            getFavoritesFromCache: function() {
-                return _cacheStrategy.getFavoritesFromCache();
+            openNodeFromStorage: function (node) {
+                var deferred = $q.defer();
+
+                var fileName = node.getID() + "_" + node.getVersionNumber() + "_" + node.getName();
+
+                $appworksService.getFile(fileName)
+                    .then(function (file) {
+                        window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes');
+                        deferred.resolve();
+                    })
+                    .catch(function (error) {
+                        deferred.reject(error);
+                    });
+
+                return deferred.promise;
             },
 
-            isNodeCachable: function (node) {
-                return _cacheStrategy.isNodeCachable(node);
-            },
+            setIsStored: function (node) {
+                var deferred = $q.defer();
+                var self = this;
 
-            openNodeFromCache: function (node) {
-                return _cacheStrategy.openNodeFromCache(node);
-            },
+                try {
+                    if (!self.isNodeStorable(node)) {
+                        node.setIsStored(false);
+                        deferred.resolve(node);
+                    } else {
+                        node.setIsStored($appworksService.isNodeInStorage(node, _favoritesKey));
 
-            setIsCached: function (node) {
-                return _cacheStrategy.setIsCached(node);
-            },
+                        deferred.resolve(node);
+                    }
+                } catch(error) {
+                    node.setIsStored(false);
+                    deferred.resolve(node);
+                }
 
-            setStrategy: function (strategy) {
-                _cacheStrategy = strategy;
+                return deferred.promise;
             }
         }
-    });
+    }]);

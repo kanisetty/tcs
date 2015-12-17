@@ -18,7 +18,7 @@ angular.module('FavoritesBrowseStrategy', ['nodeBrowseDecoratingService', 'heade
                 var filesToSyncSize = 0;
 
                 favorites.forEach(function (favorite) {
-                    if ($cacheService.isNodeCachable(favorite) && !favorite.isCached()) {
+                    if ($cacheService.isNodeStorable(favorite) && !favorite.isStored()) {
 
                         numberOfFilesToSync++;
                         filesToSyncSize += parseInt(favorite.getDataSize());

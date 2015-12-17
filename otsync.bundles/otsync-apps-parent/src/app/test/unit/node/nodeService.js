@@ -1,10 +1,11 @@
 describe('nodeService loadNodeChildren tests', function(){
-    var $nodeService, $q, $nodeDisplayFormattingService, $navigationService, $sessionService, $rootScope, $displayMessageService, $cacheService, $dummyNodeService;
+    var $nodeService, $q, $nodeDisplayFormattingService, $navigationService, $sessionService, $rootScope, $displayMessageService, $cacheService,
+        $dummyNodeService;
     var dummyNodeName = 'node name';
     var dummyNodeId = 1234;
     var _url = "SomeURL";
 
-    beforeEach(module('nodeService', 'cacheStrategies', 'cacheService', 'dummyNodeService','urlEncodingService'));
+    beforeEach(module('nodeService', 'cacheService', 'dummyNodeService','urlEncodingService'));
 
     beforeEach(function(){
         $sessionService = {
@@ -43,14 +44,13 @@ describe('nodeService loadNodeChildren tests', function(){
         });
 
         // The injector unwraps the underscores (_) from around the parameter names when matching
-        inject(function(_$nodeService_, _$q_, _$rootScope_, _$cacheService_, _$debugCacheStrategy_, _$dummyNodeService_){
+        inject(function(_$nodeService_, _$q_, _$rootScope_, _$cacheService_, _$dummyNodeService_){
             $nodeService = _$nodeService_;
             $q = _$q_;
             $rootScope = _$rootScope_;
             $displayMessageService = jasmine.createSpyObj('displayMessageService', ['translate']);
             $cacheService = _$cacheService_;
 			$dummyNodeService = _$dummyNodeService_;
-            $cacheService.setStrategy(_$debugCacheStrategy_);
         });
     });
 
@@ -181,7 +181,7 @@ describe('nodeService loadNodeChildren tests', function(){
 describe('nodeService getNodeFromQueryString tests', function(){
     var $nodeService, $q, $location, $sessionService, $displayMessageService, $httpParamSerializerJQLike;
 
-    beforeEach(module('nodeService', 'cacheStrategies', 'cacheService', 'dummyNodeService','urlEncodingService'));
+    beforeEach(module('nodeService', 'cacheService', 'dummyNodeService','urlEncodingService'));
 
     beforeEach(function(){
         $sessionService = {};

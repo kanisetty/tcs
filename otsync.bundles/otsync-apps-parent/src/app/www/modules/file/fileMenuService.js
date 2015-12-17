@@ -1,7 +1,7 @@
-angular.module('fileMenuService', ['menuItemFactory', 'fileActionService', 'fileService', 'File'])
+angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileService', 'File'])
 
-		.factory('$fileMenuService', ['menuItemFactory', '$fileActionService', '$fileService', '$displayMessageService', 'File',
-			function(menuItemFactory, $fileActionService, $fileService, $displayMessageService, File){
+		.factory('$fileMenuService', ['menuItemFactory', '$fileResource', '$fileService', '$displayMessageService', 'File',
+			function(menuItemFactory, $fileResource, $fileService, $displayMessageService, File){
 				var refresh = true;
 				var hasModal = true;
 				var disablePromptLoading = true;
@@ -11,7 +11,7 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileActionService', 'file
 					getDownloadFileMenuItem: function(node){
 						return menuItemFactory.createMenuItem($displayMessageService.translate('DOWNLOAD'), !refresh, !hasModal,
 								function () {
-									return $fileActionService.downloadToDestinationAction(node, this.data);
+									return $fileResource.downloadAndStore(node, false);
 								});
 					},
 
@@ -50,14 +50,14 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileActionService', 'file
                         fileMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('FROM CAMERA'), shouldRefresh, !hasModal,
                                 function () {
                                     addNodeOptions.fileSource = 'openCamera';
-                                    return $fileActionService.getAddNodeFormAction(addNodeOptions);
+                                    return $fileResource.getAddNodeForm(addNodeOptions);
                                 }
                         ));
 
                         fileMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('FROM GALLERY'), shouldRefresh, !hasModal,
                                 function () {
                                     addNodeOptions.fileSource = 'getFromGallery';
-                                    return $fileActionService.getAddNodeFormAction(addNodeOptions);
+                                    return $fileResource.getAddNodeForm(addNodeOptions);
                                 }
                         ));
 						return fileMenuItems;
@@ -68,7 +68,7 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileActionService', 'file
 
                         fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM CAMERA'), shouldRefresh, !hasModal,
                                 function () {
-                                    return $fileActionService.addVersionAction(node, new File(null, this.data));
+                                    return $fileResource.addVersion(node, new File(null, this.data));
                                 },
                                 function () {
                                     return $fileService.getFileFromCamera();
@@ -77,7 +77,7 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileActionService', 'file
 
                         fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM GALLERY'), shouldRefresh, !hasModal,
                                 function () {
-                                    return $fileActionService.addVersionAction(node, new File(null, this.data));
+                                    return $fileResource.addVersion(node, new File(null, this.data));
                                 },
                                 function () {
                                     return $fileService.getFileFromGallery();

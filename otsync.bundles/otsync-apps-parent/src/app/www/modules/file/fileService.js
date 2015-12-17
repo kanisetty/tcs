@@ -1,26 +1,33 @@
 angular.module('fileService', [])
 
     .factory('$fileService', function(){
-        var _fileStrategy;
 
         return {
 
-            setFileStrategy: function (fileStrategy) {
-                _fileStrategy = fileStrategy;
+            getFileFromCamera: function() {
+                var deferred = $q.defer();
+
+                appworks.camera.takePicture(function (dataUrl) {
+                    console.log(dataUrl);
+                    deferred.resolve(dataUrl);
+                }, function (err) {
+                    console.log(err);
+                    deferred.reject(err);
+                });
+
+                return deferred.promise;
             },
 
-            getFileFromCordova: function (namespace, func) {
-                return _fileStrategy.getFileFromCordova(namespace, func);
-            },
+           getFileFromGallery: function() {
+                var deferred = $q.defer();
 
-            getFilePath: function () {
-                return _fileStrategy.getFilePath();
-            },
-            getFileFromGallery: function () {
-                return _fileStrategy.getFileFromGallery();
-            },
-            getFileFromCamera: function () {
-                return _fileStrategy.getFileFromCamera();
+                appworks.camera.chooseFromLibrary(function (dataUrl) {
+                    deferred.resolve(dataUrl);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+
+                return deferred.promise;
             }
         }
     });

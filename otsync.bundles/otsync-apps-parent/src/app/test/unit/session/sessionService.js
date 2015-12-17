@@ -1,27 +1,26 @@
-describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
-    var OTAGSessionStrategy, $q, $requestService, defaultLanguage, $rootScope, $appworksService;
+describe('$sessionService getDefaultLanguage tests', function(){
+    var $sessionService, $q, $requestService, defaultLanguage, $rootScope, $appworksService;
     var properties = {};
-    var gatewayURL = 'someGatewayURL';
     var otcsticket = 'someOTCSTicket';
 
-    beforeEach(module('OTAGSessionStrategy'));
+    beforeEach(module('sessionService'));
 
     beforeEach(function(){
         properties.csScriptName = 'someScriptName';
+
         $requestService = {
             runRequestWithAuth:function(){}
         };
-
 
         module(function ($provide) {
             $provide.value('$requestService', $requestService);
         });
 
         // The injector unwraps the underscores (_) from around the parameter names when matching
-        inject(function(_$q_, _$rootScope_, _OTAGSessionStrategy_, _$appworksService_){
+        inject(function(_$q_, _$rootScope_, _$sessionService_, _$appworksService_){
             $q = _$q_;
             defaultLanguage = '';
-            OTAGSessionStrategy = _OTAGSessionStrategy_;
+            $sessionService = _$sessionService_;
             $rootScope = _$rootScope_;
             $appworksService = _$appworksService_;
         });
@@ -34,7 +33,7 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
             value: expectedLanguage
         };
         var defaultLanguageObject = [];
-        var otagSessionStrategy = new OTAGSessionStrategy();
+
         defaultLanguageObject[0] = expectedLanguage;
 
         var alreadyCalled = false;
@@ -62,19 +61,18 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
 
         spyOn($appworksService, 'getOTCSTICKET').and.returnValue(otcsticket);
 
-        otagSessionStrategy.init();
+        $sessionService.init();
 
         $rootScope.$digest();
 
-        expect(otagSessionStrategy.getDefaultLanguage()).toEqual(expectedLanguage);
-        expect(otagSessionStrategy.getGatewayURL()).toEqual(expectedGatewayURL);
+        expect($sessionService.getDefaultLanguage()).toEqual(expectedLanguage);
+        expect($sessionService.getGatewayURL()).toEqual(expectedGatewayURL);
     });
 
     it('should return en as defaultLanguage if the lang object is null', function() {
         var expectedLanguage = 'en';
         var langObject = null;
         var expectedGatewayURL = 'someURL';
-        var otagSessionStrategy = new OTAGSessionStrategy();
 
         var alreadyCalled = false;
 
@@ -101,12 +99,12 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
 
         spyOn($appworksService, 'getOTCSTICKET').and.returnValue(otcsticket);
 
-        otagSessionStrategy.init();
+        $sessionService.init();
 
         $rootScope.$digest();
 
-        expect(otagSessionStrategy.getDefaultLanguage()).toEqual(expectedLanguage);
-        expect(otagSessionStrategy.getGatewayURL()).toEqual(expectedGatewayURL);
+        expect($sessionService.getDefaultLanguage()).toEqual(expectedLanguage);
+        expect($sessionService.getGatewayURL()).toEqual(expectedGatewayURL);
     });
 
     it('should return en as the default language if the value in the lang object is null', function() {
@@ -115,7 +113,6 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
             value: null
         };
         var expectedGatewayURL = 'someURL';
-        var otagSessionStrategy = new OTAGSessionStrategy();
 
         var alreadyCalled = false;
 
@@ -142,12 +139,12 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
 
         spyOn($appworksService, 'getOTCSTICKET').and.returnValue(otcsticket);
 
-        otagSessionStrategy.init();
+        $sessionService.init();
 
         $rootScope.$digest();
 
-        expect(otagSessionStrategy.getDefaultLanguage()).toEqual(expectedLanguage);
-        expect(otagSessionStrategy.getGatewayURL()).toEqual(expectedGatewayURL);
+        expect($sessionService.getDefaultLanguage()).toEqual(expectedLanguage);
+        expect($sessionService.getGatewayURL()).toEqual(expectedGatewayURL);
     });
 
     it('should return en as the defaultLanguage if the lang object value is an empty string', function() {
@@ -156,7 +153,6 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
             value: ''
         };
         var expectedGatewayURL = 'someURL';
-        var otagSessionStrategy = new OTAGSessionStrategy();
 
         var alreadyCalled = false;
 
@@ -183,21 +179,21 @@ describe('OTAGSessionStrategy getDefaultLanguage tests', function(){
 
         spyOn($appworksService, 'getOTCSTICKET').and.returnValue(otcsticket);
 
-        otagSessionStrategy.init();
+        $sessionService.init();
 
         $rootScope.$digest();
 
-        expect(otagSessionStrategy.getDefaultLanguage()).toEqual(expectedLanguage);
-        expect(otagSessionStrategy.getGatewayURL()).toEqual(expectedGatewayURL);
+        expect($sessionService.getDefaultLanguage()).toEqual(expectedLanguage);
+        expect($sessionService.getGatewayURL()).toEqual(expectedGatewayURL);
     });
 });
 
-describe('OTAGSessionStrategy getClientType tests', function(){
-    var OTAGSessionStrategy, $requestService;
+describe('$sessionService getClientType tests', function(){
+    var $sessionService, $requestService;
     var tempoClientName = 'tempo';
     var oteClientName = 'all';
 
-    beforeEach(module('OTAGSessionStrategy'));
+    beforeEach(module('sessionService'));
 
     beforeEach(function(){
         $requestService = {};
@@ -207,37 +203,29 @@ describe('OTAGSessionStrategy getClientType tests', function(){
         });
 
         // The injector unwraps the underscores (_) from around the parameter names when matching
-        inject(function(_OTAGSessionStrategy_){
-            OTAGSessionStrategy = _OTAGSessionStrategy_;
+        inject(function(_$sessionService_){
+            $sessionService = _$sessionService_;
         });
     });
 
     it('should set the client type to tempo if tempo is the appname', function() {
-        var appName = 'tempo';
-        var otagSessionStrategy = new OTAGSessionStrategy(appName);
-
-        expect(otagSessionStrategy.getClientType()).toEqual(tempoClientName);
+        $sessionService.setAppName('tempo');
+        expect($sessionService.getClientType()).toEqual(tempoClientName);
     });
 
     it('should set the client type to all if null is the appname', function() {
-        var appName = null;
-        var otagSessionStrategy = new OTAGSessionStrategy(appName);
-
-        expect(otagSessionStrategy.getClientType()).toEqual(oteClientName);
+        $sessionService.setAppName(null);
+        expect($sessionService.getClientType()).toEqual(oteClientName);
     });
 
     it('should set the client type to all if an empty string is the appname', function() {
-        var appName = '';
-        var otagSessionStrategy = new OTAGSessionStrategy(appName);
-
-        expect(otagSessionStrategy.getClientType()).toEqual(oteClientName);
+        $sessionService.setAppName('');
+        expect($sessionService.getClientType()).toEqual(oteClientName);
     });
 
     it('should set the client type to all if ews is the appname', function() {
-        var appName = 'ews';
-        var otagSessionStrategy = new OTAGSessionStrategy(appName);
-
-        expect(otagSessionStrategy.getClientType()).toEqual(oteClientName);
+        $sessionService.setAppName('ews');
+        expect($sessionService.getClientType()).toEqual(oteClientName);
     });
 });
 

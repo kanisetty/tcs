@@ -6,26 +6,13 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('ews', ['ionic', 'browseController', 'collaboratorsController', 'headerController', 'addToFeedController', 'navigationService','sessionService', 'displayMessageService',
-	'sessionStrategyFactory', 'pascalprecht.translate', 'cacheService', 'cacheStrategies', 'fileService', 'fileStrategyFactory', 'feedItemDetailController', 'ngIOS9UIWebViewPatch'] )
+angular.module('ews', ['ionic', 'browseController', 'collaboratorsController', 'headerController', 'addToFeedController', 'navigationService',
+	'sessionService', 'displayMessageService', 'pascalprecht.translate', 'feedItemDetailController', 'ngIOS9UIWebViewPatch'] )
 
-		.run(['$sessionService', '$fileService', '$injector', '$cacheService', 'sessionStrategyFactory', 'fileStrategyFactory',
-			function($sessionService, $fileService, $injector, $cacheService, sessionStrategyFactory, fileStrategyFactory) {
-				var cacheStrategy;
+		.run(['$sessionService', '$injector',
+			function($sessionService) {
 
-				if(appSettings.isDebug() == true){
-					cacheStrategy = $injector.get('$debugCacheStrategy');
-				}else{
-					cacheStrategy = $injector.get('$appworksCacheStrategy');
-				}
-
-				$cacheService.setStrategy(cacheStrategy);
-
-				var fileStrategy = fileStrategyFactory.createFileStrategy(appSettings.isDebug());
-				$fileService.setFileStrategy(fileStrategy);
-
-				var sessionStrategy = sessionStrategyFactory.createSessionStrategy(appSettings.isDebug(), appSettings.getAppName());
-				$sessionService.setSessionStrategy(sessionStrategy);
+				$sessionService.setAppName(appSettings.getAppName());
 			}])
 
 		.config(['$provide', function($provide) {

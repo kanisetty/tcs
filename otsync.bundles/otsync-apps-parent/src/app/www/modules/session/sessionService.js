@@ -1,60 +1,109 @@
-angular.module('sessionService', [])
+angular.module('sessionService', ['appworksService', 'requestService', 'Request'])
+    .factory('$sessionService', ['$q', '$appworksService', '$requestService', 'Request',
+        function($q, $appworksService, $requestService, Request){
+            var _contentServerAPIPath = '/otcsapi';
+            var _appName = '';
+            var _gatewayURL = '';
+            var _defaultLanguage = '';
+            var _systemProperties = null;
+            var _clientType = 'all';
 
-.factory('$sessionService', function(){
-    var _sessionStrategy;
+            var _initSystemProperties = function(){
+                var requestParams = {
+                    method: 'GET',
+                    url: _gatewayURL + '/content/v5/properties'
+                };
 
-    return {
+                var request = new Request(requestParams);
 
-        init: function(){
-            return _sessionStrategy.init();
-        },
+                return $requestService.runRequestWithAuth(request);
+            };
 
-        canInviteExternalUsers: function(){
-            return _sessionStrategy.canInviteExternalUsers();
-        },
+            return {
 
-		getAppName:function(){
-			return _sessionStrategy.getAppName();
-		},
+                init: function () {
+                    var deferred = $q.defer();
+                    var currentStrategy = this;
 
-        getClientType: function(){
-            return _sessionStrategy.getClientType();
-        },
+                    $appworksService.getDefaultLanguage()
+                        .then(function (defaultLanguage) {
+                            _defaultLanguage = defaultLanguage;
 
-		getContentServerURL: function(){
-			return _sessionStrategy.getContentServerURL();
-		},
+                            $appworksService.getGatewayURL(currentStrategy).then(function (gatewayURL) {
+                                _gatewayURL = gatewayURL;
 
-		getDefaultLanguage: function(){
-			return _sessionStrategy.getDefaultLanguage();
-		},
+                                _initSystemProperties().then(function (systemProperties) {
+                                    _systemProperties = systemProperties;
 
-		getGatewayURL: function(){
-			return _sessionStrategy.getGatewayURL();
-		},
+                                    deferred.resolve();
+                                }).catch(function (error) {
+                                    deferred.reject(error);
+                                });
+                            })
+                                .catch(function (error) {
+                                    deferred.reject(error);
+                                });
+                        }).catch(function (error) {
+                            deferred.reject(error);
+                        });
 
-        getOTCSTICKET: function(){
-            return _sessionStrategy.getOTCSTICKET();
-        },
+                    return deferred.promise;
+                },
 
-        getRootID: function(rootName){
-            return _sessionStrategy.getRootID(rootName);
-        },
+                canInviteExternalUsers: function () {
+                    return _systemProperties.canInvite;
+                },
 
-        getUsername: function(){
-            return _sessionStrategy.getUsername();
-        },
+                getAppName: function () {
+                    return _appName;
+                },
 
-        isOnline: function(){
-            return _sessionStrategy.isOnline();
-        },
+                getClientType: function () {
 
-        runRequest: function(request){
-            return _sessionStrategy.runRequest(request);
-        },
+                    if (_appName === "tempo") {
+                        _clientType = "tempo";
+                    } else {
+                        _clientType = "all";
+                    }
 
-		setSessionStrategy: function(sessionStrategy) {
-			_sessionStrategy = sessionStrategy;
-		}
-    }
-});
+                    return _clientType
+                },
+
+                getContentServerURL: function () {
+                    return _gatewayURL + _contentServerAPIPath;
+                },
+
+                getDefaultLanguage: function () {
+                    return _defaultLanguage
+                },
+
+                getGatewayURL: function () {
+                    return _gatewayURL;
+                },
+
+                getOTCSTICKET: function () {
+                    return $appworksService.getOTCSTICKET();
+                },
+
+                getRootID: function (rootName) {
+                    return _systemProperties[rootName];
+                },
+
+                getUsername: function () {
+                    return _systemProperties.userName;
+                },
+
+                isOnline: function () {
+                    return navigator.onLine;
+                },
+
+                runRequest: function (request) {
+
+                    return $requestService.runRequestWithAuth(request);
+                },
+
+                setAppName: function(appName){
+                    _appName = appName;
+                }
+            }
+        }]);

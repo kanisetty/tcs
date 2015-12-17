@@ -2,7 +2,7 @@
   "name": "tempo-app",
   "version": "16.0.0",
   "dependencies": {
-    "angular-appworks": "*",
+    "appworks-js": "*",
     "angular-ios9-uiwebview-patch": "~1.1.1",
     "angular-translate": "~2.7.2",
     "angular-translate-loader-static-files": "~2.7.2",

@@ -69,7 +69,7 @@ angular.module('nodeService', ['Node', 'Request', 'Sharing'])
                 var promises = [];
 
                 nodeChildren.forEach(function (node) {
-                    promises.push($cacheService.setIsCached(node));
+                    promises.push($cacheService.setIsStored(node));
                 });
 
                 return $q.all(promises);

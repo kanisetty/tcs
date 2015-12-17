@@ -291,7 +291,7 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
 
     beforeEach(function(){
         $cacheService = {
-            isNodeCachable: function(){}
+            isNodeStorable: function(){}
         };
 
         module(function ($provide) {
@@ -338,7 +338,7 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
         var node = $dummyNodeService.getReadOnlyFavorite();
         var browseDecorator = new NodeBrowseDecorator(node, '');
 
-        spyOn($cacheService, 'isNodeCachable').and.returnValue(false);
+        spyOn($cacheService, 'isNodeStorable').and.returnValue(false);
 
         $nodeBrowseDecoratingService.setOverlays(browseDecorator, node);
 
@@ -353,8 +353,8 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
         var node = $dummyNodeService.getReadOnlyFavorite();
         var browseDecorator = new NodeBrowseDecorator(node, '');
 
-        spyOn($cacheService, 'isNodeCachable').and.returnValue(true);
-        spyOn(node, 'isCached').and.returnValue(true);
+        spyOn($cacheService, 'isNodeStorable').and.returnValue(true);
+        spyOn(node, 'isStored').and.returnValue(true);
 
         $nodeBrowseDecoratingService.setOverlays(browseDecorator, node);
 
@@ -369,8 +369,8 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
         var node = $dummyNodeService.getReadOnlyFavorite();
         var browseDecorator = new NodeBrowseDecorator(node, '');
 
-        spyOn($cacheService, 'isNodeCachable').and.returnValue(true);
-        spyOn(node, 'isCached').and.returnValue(false);
+        spyOn($cacheService, 'isNodeStorable').and.returnValue(true);
+        spyOn(node, 'isStored').and.returnValue(false);
 
         $nodeBrowseDecoratingService.setOverlays(browseDecorator, node);
 
@@ -385,7 +385,7 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
         var node = $dummyNodeService.getFavorite();
         var browseDecorator = new NodeBrowseDecorator(node, '');
 
-        spyOn($cacheService, 'isNodeCachable').and.returnValue(false);
+        spyOn($cacheService, 'isNodeStorable').and.returnValue(false);
 
         $nodeBrowseDecoratingService.setOverlays(browseDecorator, node);
 
@@ -400,8 +400,8 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
         var node = $dummyNodeService.getFavorite();
         var browseDecorator = new NodeBrowseDecorator(node, '');
 
-        spyOn($cacheService, 'isNodeCachable').and.returnValue(true);
-        spyOn(node, 'isCached').and.returnValue(true);
+        spyOn($cacheService, 'isNodeStorable').and.returnValue(true);
+        spyOn(node, 'isStored').and.returnValue(true);
 
         $nodeBrowseDecoratingService.setOverlays(browseDecorator, node);
 
@@ -416,8 +416,8 @@ describe('$nodeBrowseDecoratingService setOverlays tests', function() {
         var node = $dummyNodeService.getFavorite();
         var browseDecorator = new NodeBrowseDecorator(node, '');
 
-        spyOn($cacheService, 'isNodeCachable').and.returnValue(true);
-        spyOn(node, 'isCached').and.returnValue(false);
+        spyOn($cacheService, 'isNodeStorable').and.returnValue(true);
+        spyOn(node, 'isStored').and.returnValue(false);
 
         $nodeBrowseDecoratingService.setOverlays(browseDecorator, node);
 
