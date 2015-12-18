@@ -1,6 +1,6 @@
 angular.module('appworksService', [])
 
-    .factory('$appworksService', ['$q', function($q){
+    .factory('$appworksService', ['$q', '$httpParamSerializerJQLike', function($q, $httpParamSerializerJQLike){
         return {
 
             addToCache: function(key, value, usePersistentStorage){
@@ -103,7 +103,7 @@ angular.module('appworksService', [])
                 return otcsticket;
             },
 
-            isNodeInCache: function(node, key){
+            isNodeInStorage: function(node, key){
                 var isNodeInCache = false;
                 var favorites = this.getFromCache(key);
 
@@ -112,6 +112,11 @@ angular.module('appworksService', [])
                         isNodeInCache = true;
                     }
                 });
+            },
+
+            openComponent: function(componentName, data){
+
+                return this.execCordovaRequest("AWComponent", "open", [componentName, $httpParamSerializerJQLike(data), "component"]);
             },
 
             storeFile: function(downloadURL, fileName){

@@ -1,7 +1,7 @@
 describe('browseController tests', function(){
     var $scope, $controller, $q, nodesURL, displayMessageServiceMock, sessionServiceMock, $browseService, $translate, ModalMenu, browseStrategyFactory,
-        $nodeService, $nodeBrowseDecoratingService, $cacheService, $favoritesService, $dummyNodeService, $displayMessageService, NodeHeader, $nodeActionService, FeedHeader,$navigationService,
-        $ionicModal,$ionicHistory;
+        $nodeService, $nodeBrowseDecoratingService, $cacheService, $favoritesService, $dummyNodeService, $displayMessageService, NodeHeader,
+        $nodeResource, FeedHeader,$navigationService, $ionicModal,$ionicHistory;
     var $stateParams = {};
     var rootName = "RootName";
     var addPerms = 0x00004;
@@ -11,7 +11,7 @@ describe('browseController tests', function(){
 
 
     beforeEach(function() {
-        $nodeActionService = {};
+        $nodeResource = {};
         $nodeService = {};
 		$nodeBrowseDecoratingService = {};
         $cacheService = {};
@@ -72,7 +72,7 @@ describe('browseController tests', function(){
             $provide.value('$cacheService', $cacheService);
             $provide.value('$favoritesService', $favoritesService);
 			$provide.value('$displayMessageService', $displayMessageService);
-			$provide.value('$nodeActionService', $nodeActionService);
+			$provide.value('$nodeResource', $nodeResource);
 			$provide.value('NodeHeader', NodeHeader);
 			$provide.value('FeedHeader', FeedHeader);
 			$provide.value('$navigationService', $navigationService);

@@ -1,8 +1,9 @@
-angular.module('nodeMenuService', ['nodeActionService', 'fileMenuService', 'menuItemFactory', 'nodeOpenService', 'headerService', 'ModalMenu'])
-
-    .factory('$nodeMenuService', ['$displayMessageService', '$nodeActionService', '$fileMenuService', 'menuItemFactory', '$ionicModal', '$nodeOpenService', '$navigationService',
-            '$headerService', '$sessionService', 'ModalMenu',
-        function ($displayMessageService, $nodeActionService, $fileMenuService, menuItemFactory, $ionicModal, $nodeOpenService, $navigationService, $headerService, $sessionService, ModalMenu) {
+angular.module('nodeMenuService', ['nodeResource', 'fileMenuService', 'menuItemFactory', 'nodeOpenService', 'headerService', 'ModalMenu',
+        'favoritesResource', 'appworksService'])
+    .factory('$nodeMenuService', ['$q', '$displayMessageService', '$nodeResource', '$fileMenuService', 'menuItemFactory', '$nodeOpenService',
+            '$navigationService', '$headerService', '$sessionService', 'ModalMenu', '$favoritesResource', '$appworksService',
+        function ($q, $displayMessageService, $nodeResource, $fileMenuService, menuItemFactory, $nodeOpenService, $navigationService, $headerService,
+                  $sessionService, ModalMenu, $favoritesResource, $appworksService) {
             var refresh = true;
             var hasModal = true;
 
@@ -33,7 +34,14 @@ angular.module('nodeMenuService', ['nodeActionService', 'fileMenuService', 'menu
 
                     modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('OBJECT DETAILS'), !refresh, !hasModal,
                         function () {
-                            return $nodeActionService.getObjectDetailsAction(node);
+                            var deferred = $q.defer();
+                            var data = { 'id' : node.getID() };
+
+                            $appworksService.openComponent('objectdetails-component', data);
+
+                            //TODO Currently appworks doesn't fire a close-me with their x button. just return here so the loading closes properly
+                            deferred.resolve();
+                            return deferred.promise;
                         }));
 
                     modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('CATEGORIES'), !refresh, !hasModal,
@@ -44,24 +52,24 @@ angular.module('nodeMenuService', ['nodeActionService', 'fileMenuService', 'menu
                     if (node.isFavorite())
                         modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('REMOVE FROM FAVORITES'), refresh, !hasModal,
                             function () {
-                                return $nodeActionService.removeFavoriteAction(node);
+                                return $favoritesResource.removeFavorite(node);
                             }));
                     else
                         modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('ADD TO FAVORITES'), refresh, !hasModal,
                             function () {
-                                return $nodeActionService.addFavoriteAction(node)
+                                return $favoritesResource.addFavorite(node);
                             }));
 
                     if (node.isReservable()) {
                         if (node.getReservedByUserName() == null || node.getReservedByUserName() == '') {
                             modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('RESERVE'), refresh, !hasModal,
                                 function () {
-                                    return $nodeActionService.reserveNodeAction(node)
+                                    return $nodeResource.reserveNode(node)
                                 }));
                         } else if (node.getReservedByUserName().toUpperCase() == username.toUpperCase()) {
                             modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('UNRESERVE'), refresh, !hasModal,
                                 function () {
-                                    return $nodeActionService.unreserveNodeAction(node)
+                                    return $nodeResource.unreserveNode(node)
                                 }));
                         }
                     }
@@ -116,13 +124,13 @@ angular.module('nodeMenuService', ['nodeActionService', 'fileMenuService', 'menu
 						if (node.sharing().isSharedToMe() || node.sharing().isAnEnterpriseShare()){
 							modalMenuItems.push(menuItemFactory.createMenuItemWithConfirmation($displayMessageService.translate('REMOVE SHARE'), refresh, !hasModal,
 									function () {
-										return $nodeActionService.deleteNodeAction(node);
+										return $nodeResource.deleteNode(node);
 									},
 									$displayMessageService.translate("REMOVE SHARE CONFIRMATION", {filename: node.getName()})));
 						} else if (node.getReservedByUserName() == null) {
                             modalMenuItems.push(menuItemFactory.createMenuItemWithConfirmation($displayMessageService.translate('DELETE'), refresh, !hasModal,
                                 function () {
-                                    return $nodeActionService.deleteNodeAction(node);
+                                    return $nodeResource.deleteNode(node);
                                 },
                                 $displayMessageService.translate("DELETE FILE CONFIRMATION", {filename: node.getName()})));
                         }
@@ -134,7 +142,7 @@ angular.module('nodeMenuService', ['nodeActionService', 'fileMenuService', 'menu
                                         itemInClipboard: true,
                                         refresh: true,
                                         action: function () {
-                                            return $nodeActionService.moveNodeAction(node);
+                                            return $nodeResource.moveNode(node);
                                         }
                                     });
                                 }));
@@ -147,7 +155,7 @@ angular.module('nodeMenuService', ['nodeActionService', 'fileMenuService', 'menu
                                 itemInClipboard: true,
                                 refresh: true,
                                 action: function () {
-                                    return $nodeActionService.copyNodeAction(node);
+                                    return $nodeResource.copyNode(node);
                                 }
                             });
                         }));

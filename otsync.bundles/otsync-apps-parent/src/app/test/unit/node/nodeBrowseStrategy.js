@@ -1,6 +1,6 @@
 describe('nodeBrowseStrategy getRoot tests', function(){
-    var $q, $rootScope, NodeBrowseStrategy, $sessionService, $nodeService, $nodeBrowseDecoratingService, $dummyNodeService, $headerService, NodeHeader, $displayMessageService, $nodeActionService,
-        $stateParams, $ionicModal, $navigationService;
+    var $q, $rootScope, NodeBrowseStrategy, $sessionService, $nodeService, $nodeBrowseDecoratingService, $dummyNodeService, $headerService, NodeHeader,
+        $displayMessageService, $nodeResource, $stateParams, $ionicModal, $navigationService;
 
     beforeEach(module('NodeBrowseStrategy','nodeService', 'nodeBrowseDecoratingService', 'dummyNodeService'));
 
@@ -9,7 +9,7 @@ describe('nodeBrowseStrategy getRoot tests', function(){
         $ionicModal = {};
         $navigationService = {};
 		NodeHeader = {};
-        $nodeActionService = {};
+        $nodeResource = {};
         $sessionService = {};
         $headerService = {};
         $displayMessageService = {
@@ -33,7 +33,7 @@ describe('nodeBrowseStrategy getRoot tests', function(){
             $provide.value('$headerService', $headerService);
             $provide.value('$displayMessageService', $displayMessageService);
 			$provide.value('NodeHeader', NodeHeader);
-			$provide.value('$nodeActionService', $nodeActionService);
+			$provide.value('$nodeResource', $nodeResource);
             $provide.value('$stateParams', $stateParams);
             $provide.value('$navigationService', $navigationService);
             $provide.value('$ionicModal', $ionicModal);
@@ -129,8 +129,8 @@ describe('nodeBrowseStrategy getRoot tests', function(){
 });
 
 describe('nodeBrowseStrategy  getRootID tests', function(){
-    var $q, $rootScope, NodeBrowseStrategy, $sessionService, $nodeService, $nodeBrowseDecoratingService, $dummyNodeService, $headerService, NodeHeader, $displayMessageService, $nodeActionService,
-        $stateParams, $ionicModal, $navigationService;
+    var $q, $rootScope, NodeBrowseStrategy, $sessionService, $nodeService, $nodeBrowseDecoratingService, $dummyNodeService, $headerService, NodeHeader,
+        $displayMessageService, $nodeResource, $stateParams, $ionicModal, $navigationService;
 
     beforeEach(module('NodeBrowseStrategy','nodeService', 'nodeBrowseDecoratingService', 'dummyNodeService'));
 
@@ -139,7 +139,7 @@ describe('nodeBrowseStrategy  getRootID tests', function(){
         $ionicModal = {};
         $navigationService = {};
         NodeHeader = {};
-        $nodeActionService = {};
+        $nodeResource = {};
         $sessionService = {};
         $headerService = {};
         $displayMessageService = {
@@ -163,7 +163,7 @@ describe('nodeBrowseStrategy  getRootID tests', function(){
             $provide.value('$headerService', $headerService);
             $provide.value('$displayMessageService', $displayMessageService);
             $provide.value('NodeHeader', NodeHeader);
-            $provide.value('$nodeActionService', $nodeActionService);
+            $provide.value('$nodeResource', $nodeResource);
             $provide.value('$stateParams', $stateParams);
             $provide.value('$navigationService', $navigationService);
             $provide.value('$ionicModal', $ionicModal);
@@ -254,7 +254,7 @@ describe('nodeBrowseStrategy  getRootID tests', function(){
 
 describe('nodeBrowseStrategy initializeHeader tests', function(){
     var $q, $rootScope, NodeBrowseStrategy, $sessionService, $nodeService, $nodeBrowseDecoratingService, $dummyNodeService, $headerService, $displayMessageService, NodeHeader, NodeMenuStrategy,
-        $stateParams, $ionicModal, $navigationService, $nodeActionService;
+        $stateParams, $ionicModal, $navigationService, $nodeResource;
 
     beforeEach(module('NodeBrowseStrategy','nodeService', 'nodeBrowseDecoratingService', 'dummyNodeService', 'headerService'));
 
@@ -266,7 +266,7 @@ describe('nodeBrowseStrategy initializeHeader tests', function(){
         $sessionService = {};
         $nodeService = {};
         $nodeBrowseDecoratingService = {};
-        $nodeActionService = {};
+        $nodeResource = {};
 
         $displayMessageService = {
             translate: function(inputString){
@@ -280,7 +280,7 @@ describe('nodeBrowseStrategy initializeHeader tests', function(){
             $provide.value('$nodeBrowseDecoratingService', $nodeBrowseDecoratingService);
             $provide.value('$displayMessageService', $displayMessageService);
 			$provide.value('NodeMenuStrategy', NodeMenuStrategy);
-			$provide.value('$nodeActionService', $nodeActionService);
+			$provide.value('$nodeResource', $nodeResource);
             $provide.value('$stateParams', $stateParams);
             $provide.value('$navigationService', $navigationService);
             $provide.value('$ionicModal', $ionicModal);
@@ -325,7 +325,7 @@ describe('nodeBrowseStrategy initializeHeader tests', function(){
 });
 
 describe('nodeBrowseStrategy longPressBrowseDecorator tests', function(){
-	var NodeMenuStrategy, NodeBrowseStrategy, $sessionService, $nodeService, $nodeBrowseDecoratingService, $nodeActionService, $displayMessageService, $q, $rootScope, $menuService, $stateParams,
+	var NodeMenuStrategy, NodeBrowseStrategy, $sessionService, $nodeService, $nodeBrowseDecoratingService, $nodeResource, $displayMessageService, $q, $rootScope, $menuService, $stateParams,
         $navigationService, $ionicModal;
 	beforeEach(module('NodeBrowseStrategy','nodeService', 'nodeBrowseDecoratingService', 'dummyNodeService', 'headerService'));
 
@@ -339,7 +339,7 @@ describe('nodeBrowseStrategy longPressBrowseDecorator tests', function(){
 		};
 		$nodeService = {};
 		$nodeBrowseDecoratingService = {};
-        $nodeActionService = {};
+        $nodeResource = {};
 
 		$displayMessageService = {
 			translate: function(inputString){
@@ -358,7 +358,7 @@ describe('nodeBrowseStrategy longPressBrowseDecorator tests', function(){
 			$provide.value('$nodeBrowseDecoratingService', $nodeBrowseDecoratingService);
 			$provide.value('$displayMessageService', $displayMessageService);
 			$provide.value('NodeMenuStrategy', NodeMenuStrategy);
-			$provide.value('$nodeActionService', $nodeActionService);
+			$provide.value('$nodeResource', $nodeResource);
             $provide.value('$stateParams', $stateParams);
             $provide.value('$navigationService', $navigationService);
             $provide.value('$ionicModal', $ionicModal);

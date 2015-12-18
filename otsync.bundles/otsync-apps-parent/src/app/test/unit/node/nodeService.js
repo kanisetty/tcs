@@ -1,6 +1,6 @@
 describe('nodeService loadNodeChildren tests', function(){
     var $nodeService, $q, $nodeDisplayFormattingService, $navigationService, $sessionService, $rootScope, $displayMessageService, $cacheService,
-        $dummyNodeService;
+        $dummyNodeService, $nodeResource, $stateParams;
     var dummyNodeName = 'node name';
     var dummyNodeId = 1234;
     var _url = "SomeURL";
@@ -8,6 +8,7 @@ describe('nodeService loadNodeChildren tests', function(){
     beforeEach(module('nodeService', 'cacheService', 'dummyNodeService','urlEncodingService'));
 
     beforeEach(function(){
+        $stateParams = {};
         $sessionService = {
             getGatewayURL: function () {
                 return _url;
@@ -41,16 +42,18 @@ describe('nodeService loadNodeChildren tests', function(){
             $provide.value('$nodeDisplayFormattingService', $nodeDisplayFormattingService);
             $provide.value('$navigationService', $navigationService);
             $provide.value('$displayMessageService', $displayMessageService);
+            $provide.value('$stateParams', $stateParams);
         });
 
         // The injector unwraps the underscores (_) from around the parameter names when matching
-        inject(function(_$nodeService_, _$q_, _$rootScope_, _$cacheService_, _$dummyNodeService_){
+        inject(function(_$nodeService_, _$q_, _$rootScope_, _$cacheService_, _$dummyNodeService_, _$nodeResource_){
             $nodeService = _$nodeService_;
             $q = _$q_;
             $rootScope = _$rootScope_;
             $displayMessageService = jasmine.createSpyObj('displayMessageService', ['translate']);
             $cacheService = _$cacheService_;
 			$dummyNodeService = _$dummyNodeService_;
+            $nodeResource = _$nodeResource_;
         });
     });
 
@@ -179,12 +182,13 @@ describe('nodeService loadNodeChildren tests', function(){
 });
 
 describe('nodeService getNodeFromQueryString tests', function(){
-    var $nodeService, $q, $location, $sessionService, $displayMessageService, $httpParamSerializerJQLike;
+    var $nodeService, $q, $location, $sessionService, $displayMessageService, $httpParamSerializerJQLike, $stateParams;
 
     beforeEach(module('nodeService', 'cacheService', 'dummyNodeService','urlEncodingService'));
 
     beforeEach(function(){
         $sessionService = {};
+        $stateParams = {};
         $displayMessageService = {};
 
         $location = {
@@ -196,6 +200,7 @@ describe('nodeService getNodeFromQueryString tests', function(){
             $provide.value('$location', $location);
             $provide.value('$sessionService', $sessionService);
             $provide.value('$displayMessageService', $displayMessageService);
+            $provide.value('$stateParams', $stateParams);
         });
 
         // The injector unwraps the underscores (_) from around the parameter names when matching

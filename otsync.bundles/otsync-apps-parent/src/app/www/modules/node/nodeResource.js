@@ -1,26 +1,10 @@
-angular.module('nodeActionService', ['urlEncodingService', 'browseService', 'Request'])
-
-    .factory('$nodeActionService', ['$sessionService', '$urlEncode', '$browseService', '$stateParams', '$q', 'Request',
+angular.module('nodeResource', ['urlEncodingService', 'browseService', 'Request'])
+    .factory('$nodeResource', ['$sessionService', '$urlEncode', '$browseService', '$stateParams', '$q', 'Request',
         function ($sessionService, $urlEncode, $browseService, $stateParams, $q, Request) {
 
 			return {
 
-				addFavoriteAction: function (node) {
-
-					var requestParams = {
-						method: 'POST',
-						url: $sessionService.getGatewayURL() + '/favorites/v5/favorites',
-						headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-						data: $urlEncode({nodeID: node.getID()})
-					};
-
-					var request = new Request(requestParams);
-
-					return $sessionService.runRequest(request);
-
-				},
-
-				copyNodeAction: function (node) {
+				copyNode: function (node) {
 
 					return $q.when($browseService.getRootID($stateParams)).then(function(destNodeId) {
 
@@ -40,7 +24,7 @@ angular.module('nodeActionService', ['urlEncodingService', 'browseService', 'Req
 					});
 				},
 
-				deleteNodeAction: function (node) {
+				deleteNode: function (node) {
 
 					var requestParams = {
 						method: 'DELETE',
@@ -54,11 +38,11 @@ angular.module('nodeActionService', ['urlEncodingService', 'browseService', 'Req
 
 				},
 
-				getPropertiesAction: function(){
+				getNode: function (nodeId) {
 
 					var requestParams = {
 						method: 'GET',
-						url: $sessionService.getGatewayURL() + '/content/v5/properties/',
+						url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + nodeId,
 						headers: {'Content-Type': 'application/json; charset=utf-8'}
 					};
 
@@ -67,16 +51,27 @@ angular.module('nodeActionService', ['urlEncodingService', 'browseService', 'Req
 					return $sessionService.runRequest(request);
 				},
 
-				getObjectDetailsAction: function(node){
-					var destComponentName = 'objectdetailsview';
-					var destMethod = 'onCallFromApp';
-					var dataForDest = { 'id' : node.getID() };
+				getNodeChildren: function(nodeId, filter, pageSize, pageNumber){
 
-					var openCompReq = AppWorksComms.getOpenAppRequest(destComponentName, destMethod, dataForDest, false);
-					AppWorksComms.openApp(openCompReq);
+					var requestParams = {
+						method: 'GET',
+						url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + nodeId + '/children',
+						headers: {'Content-Type': 'application/json; charset=utf-8'},
+						params: {pageNumber:pageNumber, pageSize:pageSize, type: $sessionService.getClientType()}
+					};
+
+					if ( filter != null && filter.length > 0 ){
+						requestParams.params.filter = filter;
+					}
+
+					$urlEncode(requestParams.params);
+
+					var request = new Request(requestParams);
+
+					return $sessionService.runRequest(request);
 				},
 
-				moveNodeAction: function (node) {
+				moveNode: function (node) {
 					return $q.when($browseService.getRootID($stateParams)).then(function(destNodeId) {
 
 						var requestParams = {
@@ -92,20 +87,7 @@ angular.module('nodeActionService', ['urlEncodingService', 'browseService', 'Req
 					});
 				},
 
-				removeFavoriteAction: function (node) {
-
-					var requestParams = {
-						method: 'DELETE',
-						url: $sessionService.getGatewayURL() + '/favorites/v5/favorites/' + node.getID(),
-						headers: {'Content-Type': 'application/json; charset=utf-8'}
-					};
-
-					var request = new Request(requestParams);
-
-					return $sessionService.runRequest(request);
-				},
-
-				reserveNodeAction: function (node) {
+				reserveNode: function (node) {
 
 					var requestParams = {
 						method: 'PUT',
@@ -119,7 +101,7 @@ angular.module('nodeActionService', ['urlEncodingService', 'browseService', 'Req
 					return $sessionService.runRequest(request);
 				},
 
-				unreserveNodeAction: function (node) {
+				unreserveNode: function (node) {
 
 					var requestParams = {
 						method: 'PUT',

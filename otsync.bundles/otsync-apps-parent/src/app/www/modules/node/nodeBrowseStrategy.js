@@ -1,8 +1,7 @@
-angular.module('NodeBrowseStrategy', ['nodeService', 'nodeBrowseDecoratingService', 'NodeHeader', 'headerService', 'nodeActionService', 'nodeMenuService', 'Menu'])
-
-    .factory('NodeBrowseStrategy', ['$q', '$sessionService', '$nodeService', '$nodeBrowseDecoratingService', 'NodeHeader', '$headerService', '$nodeActionService', '$nodeMenuService',
-            'Menu',
-        function($q, $sessionService, $nodeService, $nodeBrowseDecoratingService, NodeHeader, $headerService, $nodeActionService, $nodeMenuService, Menu) {
+angular.module('NodeBrowseStrategy', ['nodeService', 'nodeBrowseDecoratingService', 'NodeHeader', 'headerService', 'nodeMenuService', 'Menu'])
+    .factory('NodeBrowseStrategy', ['$q', '$sessionService', '$nodeService', '$nodeBrowseDecoratingService', 'NodeHeader', '$headerService',
+        '$nodeMenuService', 'Menu',
+        function($q, $sessionService, $nodeService, $nodeBrowseDecoratingService, NodeHeader, $headerService, $nodeMenuService, Menu) {
             var _rootNodeID;
 
             var NodeBrowseStrategy = function(rootName) {

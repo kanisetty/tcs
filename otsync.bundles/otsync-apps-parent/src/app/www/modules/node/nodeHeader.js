@@ -1,7 +1,7 @@
-angular.module('NodeHeader', ['Header', 'ModalMenu', 'nodeActionService', 'menuItemFactory', 'fileMenuService', 'fileResource'])
+angular.module('NodeHeader', ['Header', 'ModalMenu', 'menuItemFactory', 'fileMenuService', 'fileResource'])
 
-    .factory('NodeHeader', ['Header', 'ModalMenu', '$displayMessageService', '$nodeActionService', 'menuItemFactory', '$fileMenuService', '$fileResource',
-			function (Header, ModalMenu, $displayMessageService, $nodeActionService, menuItemFactory, $fileMenuService, $fileResource) {
+    .factory('NodeHeader', ['Header', 'ModalMenu', '$displayMessageService', 'menuItemFactory', '$fileMenuService', '$fileResource',
+			function (Header, ModalMenu, $displayMessageService, menuItemFactory, $fileMenuService, $fileResource) {
 				var _refresh = true;
 				var _hasModal = true;
 

@@ -8,31 +8,20 @@ angular.module('sessionService', ['appworksService', 'requestService', 'Request'
             var _systemProperties = null;
             var _clientType = 'all';
 
-            var _initSystemProperties = function(){
-                var requestParams = {
-                    method: 'GET',
-                    url: _gatewayURL + '/content/v5/properties'
-                };
-
-                var request = new Request(requestParams);
-
-                return $requestService.runRequestWithAuth(request);
-            };
-
             return {
 
                 init: function () {
                     var deferred = $q.defer();
-                    var currentStrategy = this;
+                    var self = this;
 
                     $appworksService.getDefaultLanguage()
                         .then(function (defaultLanguage) {
                             _defaultLanguage = defaultLanguage;
 
-                            $appworksService.getGatewayURL(currentStrategy).then(function (gatewayURL) {
+                            $appworksService.getGatewayURL().then(function (gatewayURL) {
                                 _gatewayURL = gatewayURL;
 
-                                _initSystemProperties().then(function (systemProperties) {
+                                self.getProperties().then(function (systemProperties) {
                                     _systemProperties = systemProperties;
 
                                     deferred.resolve();
@@ -83,6 +72,19 @@ angular.module('sessionService', ['appworksService', 'requestService', 'Request'
 
                 getOTCSTICKET: function () {
                     return $appworksService.getOTCSTICKET();
+                },
+
+                getProperties: function(){
+
+                    var requestParams = {
+                        method: 'GET',
+                        url: this.getGatewayURL() + '/content/v5/properties/',
+                        headers: {'Content-Type': 'application/json; charset=utf-8'}
+                    };
+
+                    var request = new Request(requestParams);
+
+                    return this.runRequest(request);
                 },
 
                 getRootID: function (rootName) {
