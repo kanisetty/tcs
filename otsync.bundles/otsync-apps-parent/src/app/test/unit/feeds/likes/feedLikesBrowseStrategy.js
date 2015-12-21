@@ -1,9 +1,9 @@
 describe('feedsLikesBrowseStrategy initializeHeader tests', function(){
-    var FeedLikesBrowseStrategy, $displayMessageService, $headerService, $feedService;
+    var FeedLikesBrowseStrategy, $displayMessageService, $headerService, $feedResource;
 
     beforeEach(function(){
         module('FeedLikesBrowseStrategy', 'headerService');
-        $feedService = {};
+        $feedResource = {};
         $displayMessageService = {
             translate: function(inputText){
                 return inputText;
@@ -12,7 +12,7 @@ describe('feedsLikesBrowseStrategy initializeHeader tests', function(){
 
         module(function ($provide) {
             $provide.value('$displayMessageService', $displayMessageService);
-            $provide.value('$feedService', $feedService);
+            $provide.value('$feedResource', $feedResource);
         });
 
         // The injector unwraps the underscores (_) from around the parameter names when matching

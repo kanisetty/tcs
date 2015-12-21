@@ -1,7 +1,8 @@
-angular.module('FeedThreadHeader', ['Header', 'ModalMenu', 'menuItemFactory', 'feedService', 'AddToFeedProviderStrategy'])
+angular.module('FeedThreadHeader', ['Header', 'ModalMenu', 'menuItemFactory', 'AddToFeedProviderStrategy'])
 
-    .factory('FeedThreadHeader', ['$q', 'Header', 'ModalMenu', '$displayMessageService', 'menuItemFactory', '$feedService', '$navigationService', 'AddToFeedProviderStrategy',
-        function ($q, Header, ModalMenu, $displayMessageService, menuItemFactory, $feedService, $navigationService, AddToFeedProviderStrategy) {
+    .factory('FeedThreadHeader', ['$q', 'Header', 'ModalMenu', '$displayMessageService', 'menuItemFactory', '$navigationService',
+            'AddToFeedProviderStrategy',
+        function ($q, Header, ModalMenu, $displayMessageService, menuItemFactory, $navigationService, AddToFeedProviderStrategy) {
             var _refresh = true;
             var _hasModal = true;
 

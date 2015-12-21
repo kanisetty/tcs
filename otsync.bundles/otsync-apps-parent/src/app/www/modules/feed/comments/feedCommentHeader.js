@@ -1,7 +1,8 @@
-angular.module('FeedCommentsHeader', ['Header', 'ModalMenu', 'menuItemFactory', 'feedService', 'FeedThreadHeader', 'AddToFeedCommentStrategy'])
+angular.module('FeedCommentsHeader', ['Header', 'ModalMenu', 'menuItemFactory', 'FeedThreadHeader', 'AddToFeedCommentStrategy'])
 
-    .factory('FeedCommentsHeader', ['$q', 'Header', 'ModalMenu', '$displayMessageService', 'menuItemFactory', '$feedService', '$navigationService', 'FeedThreadHeader', 'AddToFeedCommentStrategy',
-        function ($q, Header, ModalMenu, $displayMessageService, menuItemFactory, $feedService, $navigationService, FeedThreadHeader, AddToFeedCommentStrategy) {
+    .factory('FeedCommentsHeader', ['$q', 'Header', 'ModalMenu', '$displayMessageService', 'menuItemFactory', '$navigationService',
+                'FeedThreadHeader', 'AddToFeedCommentStrategy',
+        function ($q, Header, ModalMenu, $displayMessageService, menuItemFactory, $navigationService, FeedThreadHeader, AddToFeedCommentStrategy) {
             var _refresh = true;
             var _hasModal = true;
 

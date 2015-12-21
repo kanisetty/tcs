@@ -1,6 +1,6 @@
-angular.module('AddToFeedCommentStrategy', ['feedService', 'AddToFeedStatusStrategy'])
-    .factory('AddToFeedCommentStrategy', ['$q', '$feedService', '$ionicHistory', '$displayMessageService', 'AddToFeedStatusStrategy',
-        function($q, $feedService, $ionicHistory, $displayMessageService, AddToFeedStatusStrategy) {
+angular.module('AddToFeedCommentStrategy', ['feedResource', 'AddToFeedStatusStrategy'])
+    .factory('AddToFeedCommentStrategy', ['$q', '$feedResource', '$ionicHistory', '$displayMessageService', 'AddToFeedStatusStrategy',
+        function($q, $feedResource, $ionicHistory, $displayMessageService, AddToFeedStatusStrategy) {
 
             var AddToFeedCommentStrategy = function(node){
                 this.node = node;
@@ -14,7 +14,7 @@ angular.module('AddToFeedCommentStrategy', ['feedService', 'AddToFeedStatusStrat
                 var feedProviderType = "PulseContent";
 
                 if (file == null){
-                    $feedService.addToFeedForNode(message, feedProviderType, this.node.getID()).then(function(){
+                    $feedResource.addToFeedForNode(message, feedProviderType, this.node.getID()).then(function(){
                         $ionicHistory.goBack();
                         deferred.resolve();
                     }, function () {
@@ -22,7 +22,7 @@ angular.module('AddToFeedCommentStrategy', ['feedService', 'AddToFeedStatusStrat
                         deferred.reject();
                     });
                 } else {
-                    $feedService.addToFeedForNodeWithAttachment(file, message, feedProviderType, this.node.getID()).then(function(){
+                    $feedResource.addToFeedForNodeWithAttachment(file, message, feedProviderType, this.node.getID()).then(function(){
                             $ionicHistory.goBack();
                             deferred.resolve();
                         }, function () {

@@ -1,7 +1,8 @@
-angular.module('feedItemDetailController', ['Header', 'headerService', 'nodeOpenService', 'feedService', 'AddToFeedProviderStrategy'])
-    .controller('feedItemDetailController', ['$scope', '$stateParams', '$displayMessageService', 'Header', '$headerService', '$nodeOpenService', '$feedService',
-				'$sessionService', '$navigationService', 'AddToFeedProviderStrategy',
-        function ($scope, $stateParams, $displayMessageService, Header, $headerService, $nodeOpenService, $feedService, $sessionService, $navigationService, AddToFeedProviderStrategy) {
+angular.module('feedItemDetailController', ['Header', 'headerService', 'nodeOpenService', 'feedResource', 'feedService', 'AddToFeedProviderStrategy'])
+    .controller('feedItemDetailController', ['$scope', '$stateParams', '$displayMessageService', 'Header', '$headerService', '$nodeOpenService', '$feedResource',
+				'$sessionService', '$navigationService', 'AddToFeedProviderStrategy', '$feedService',
+        function ($scope, $stateParams, $displayMessageService, Header, $headerService, $nodeOpenService, $feedResource, $sessionService, $navigationService,
+				  AddToFeedProviderStrategy, $feedService) {
 			$scope.messagePlaceholder = $displayMessageService.translate("ADD COMMENT");
 			$scope.showCancel = false;
 			$scope.feedMessage = {message:''};
@@ -68,12 +69,12 @@ angular.module('feedItemDetailController', ['Header', 'headerService', 'nodeOpen
 				$displayMessageService.showDisplayMessage('LOADING');
 
 				if ($scope.feedItem.isFollowing() == true){
-					$feedService.doUnfollow($scope.feedItem.getUsername()).then(function(){
+					$feedResource.doUnfollow($scope.feedItem.getUsername()).then(function(){
 						$scope.feedItem.setIsFollowing(false);
 						$displayMessageService.hideMessage();
 					});
 				} else {
-					$feedService.doFollow($scope.feedItem.getUsername()).then(function(){
+					$feedResource.doFollow($scope.feedItem.getUsername()).then(function(){
 						$scope.feedItem.setIsFollowing(true);
 						$displayMessageService.hideMessage();
 					});
@@ -85,13 +86,13 @@ angular.module('feedItemDetailController', ['Header', 'headerService', 'nodeOpen
 				$displayMessageService.showDisplayMessage('LOADING');
 
 				if ($scope.feedItem.isLiked() == true){
-					$feedService.doUnlike($scope.feedItem.getProviderType(),$scope.feedItem.getSequenceNumber()).then(function(){
+					$feedResource.doUnlike($scope.feedItem.getProviderType(),$scope.feedItem.getSequenceNumber()).then(function(){
 						$scope.feedItem.setIsLiked(false);
 						$scope.viewLikesMessage = _getViewLikesMessage();
 						$displayMessageService.hideMessage();
 					});
 				} else {
-					$feedService.doLike($scope.feedItem.getProviderType(),$scope.feedItem.getSequenceNumber()).then(function(){
+					$feedResource.doLike($scope.feedItem.getProviderType(),$scope.feedItem.getSequenceNumber()).then(function(){
 						$scope.feedItem.setIsLiked(true);
 						$scope.viewLikesMessage = _getViewLikesMessage();
 						$displayMessageService.hideMessage();

@@ -6,7 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -15,7 +17,7 @@ import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.core.StreamingOutput;
 
-import com.opentext.otag.api.shared.util.ForwardHeaders;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,19 +26,26 @@ import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+
+import 	java.util.Iterator;
 
 public class CSMultiPartRequest implements StreamingOutput {
 	public static final Log log = LogFactory.getLog(CSRequest.class);
 
 	public static final String FUNC_PARAM_NAME = "func";
 
-	private static final HttpClient http = new HttpClient();
+	private static final DefaultHttpClient httpClient = new DefaultHttpClient();
 
 	private final String csUrl;
 	private final List<NameValuePair> params;
-	private final ForwardHeaders headers;
+	private final CSForwardHeaders headers;
 	private final InputStream fileStream;
 	private final String filePartName;
 	private final String filename;
@@ -44,9 +53,14 @@ public class CSMultiPartRequest implements StreamingOutput {
 	private HttpResponse response = null;
 
 
-	public CSMultiPartRequest(String csUrl, String func, List<NameValuePair> params,
-			InputStream fileStream, String filePartName, String filename,
-			ForwardHeaders headers){
+	public CSMultiPartRequest(
+			String csUrl,
+			String func,
+			List<NameValuePair> params,
+			InputStream fileStream,
+			String filePartName,
+			String filename,
+			CSForwardHeaders headers){
 
 		params.add(new BasicNameValuePair(FUNC_PARAM_NAME, func));
 		this.csUrl = csUrl;
@@ -57,37 +71,38 @@ public class CSMultiPartRequest implements StreamingOutput {
 		this.filename = filename;
 	}
 	
-	public static void stop(){
-		http.stop();
-	}
-	
 	@Override
 	public void write(OutputStream out) throws IOException, WebApplicationException {
 
 		HttpPost request = null;
 		FileInputStream localIn = null;
 		File tmpFile = new File(getTmpFilePath());
+
+
 		try {
 			// Since we need the file size (which Jersey doesn't report correctly), we write to a temporary file then stream our upload from there
 			saveToFile(fileStream, tmpFile);
-			long fileSize = tmpFile.length();
+			long filesize = tmpFile.length();
 			localIn = new FileInputStream(tmpFile);
-			
-			request = http.getMultipartPostRequest(
-					csUrl,
-					localIn,
-					params,
-					filePartName,
-					filename,
-					fileSize);
-			
+
+			ContentBody filePart = new FixedInputStreamBody(localIn, this.filename, filesize);
+
+			MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
+
+			for (NameValuePair param : params) {
+				entity.addPart(param.getName(), new StringBody(param.getValue()));
+			}
+
+			entity.addPart(this.filePartName, filePart);
+
+			request = new HttpPost(this.csUrl);
+			request.setEntity(entity);
+
 			headers.addTo(request);
-			
-			// for SEA compatibility, we must include the llcookie
-			//TODO: test that this is still required
-			// request.addHeader("Cookie", CS_COOKIE_NAME + "=" + cstoken);
-			
-			response = http.executeRaw(request, null);
+			headers.getLLCookie().addLLCookieToRequest(httpClient, request);
+
+			response = httpClient.execute(request);
+
 			final StatusLine status = response.getStatusLine();
 
 			if(status.getStatusCode() == HttpStatus.SC_OK){

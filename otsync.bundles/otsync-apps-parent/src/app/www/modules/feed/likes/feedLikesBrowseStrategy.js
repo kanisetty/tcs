@@ -1,7 +1,7 @@
-angular.module('FeedLikesBrowseStrategy', ['feedService', 'feedBrowseDecoratingService', 'Header', 'headerService'])
+angular.module('FeedLikesBrowseStrategy', ['feedResource', 'feedBrowseDecoratingService', 'Header', 'headerService'])
 
-    .factory('FeedLikesBrowseStrategy', ['$q', '$feedService', '$feedBrowseDecoratingService', 'Header', '$headerService', '$displayMessageService',
-        function($q, $feedService, $feedBrowseDecoratingService, Header, $headerService, $displayMessageService) {
+    .factory('FeedLikesBrowseStrategy', ['$q', '$feedResource', '$feedBrowseDecoratingService', 'Header', '$headerService', '$displayMessageService',
+        function($q, $feedResource, $feedBrowseDecoratingService, Header, $headerService, $displayMessageService) {
 
             var FeedLikesBrowseStrategy = function(rootName){
                 this.rootName = rootName;
@@ -23,7 +23,7 @@ angular.module('FeedLikesBrowseStrategy', ['feedService', 'feedBrowseDecoratingS
                 var browseDecorators;
                 var self = this;
 
-                $feedService.getFeedLikes(feedProviderType, feedItem.getSequenceNumber()).then(function(feed) {
+                $feedResource.getFeedLikes(feedProviderType, feedItem.getSequenceNumber()).then(function(feed) {
                     var isThread = false;
                     browseDecorators = $feedBrowseDecoratingService.decorateFeedForBrowse(feed, isThread, self.templateURL);
                     deferred.resolve(browseDecorators);

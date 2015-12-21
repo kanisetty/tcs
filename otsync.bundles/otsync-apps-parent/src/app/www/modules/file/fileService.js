@@ -1,33 +1,43 @@
-angular.module('fileService', [])
+angular.module('fileService', ['appworksService'])
 
-    .factory('$fileService', function(){
+    .factory('$fileService', ['$q', '$appworksService', function($q, $appworksService){
 
         return {
 
             getFileFromCamera: function() {
                 var deferred = $q.defer();
 
-                appworks.camera.takePicture(function (dataUrl) {
-                    console.log(dataUrl);
-                    deferred.resolve(dataUrl);
-                }, function (err) {
-                    console.log(err);
+                var camera = new Appworks.AWCamera(success, failure);
+
+                function success(data) {
+                    deferred.resolve(data);
+                }
+
+                function failure(err) {
                     deferred.reject(err);
-                });
+                }
+
+                camera.takePicture($appworksService.getCameraOptions());
 
                 return deferred.promise;
             },
 
-           getFileFromGallery: function() {
+            getFileFromGallery: function() {
                 var deferred = $q.defer();
 
-                appworks.camera.chooseFromLibrary(function (dataUrl) {
-                    deferred.resolve(dataUrl);
-                }, function (err) {
-                    deferred.reject(err);
-                });
+                var camera = new Appworks.AWCamera(success, failure);
+
+                function success(data) {
+                    deferred.resolve(data);
+                }
+
+                function failure(err) {
+                   deferred.reject(err);
+                }
+
+                camera.openGallery($appworksService.getCameraOptions());
 
                 return deferred.promise;
             }
         }
-    });
+    }]);

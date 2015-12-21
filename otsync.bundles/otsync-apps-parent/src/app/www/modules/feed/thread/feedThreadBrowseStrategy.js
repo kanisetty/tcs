@@ -1,7 +1,7 @@
-angular.module('FeedThreadBrowseStrategy', ['feedService', 'feedBrowseDecoratingService', 'FeedBrowseStrategy', 'headerService', 'FeedThreadHeader'])
+angular.module('FeedThreadBrowseStrategy', ['feedResource', 'feedBrowseDecoratingService', 'FeedBrowseStrategy', 'headerService', 'FeedThreadHeader'])
 
-    .factory('FeedThreadBrowseStrategy', ['$q', '$feedService', '$feedBrowseDecoratingService', 'FeedBrowseStrategy', '$headerService', '$displayMessageService', 'FeedThreadHeader',
-        function($q, $feedService, $feedBrowseDecoratingService, FeedBrowseStrategy, $headerService, $displayMessageService, FeedThreadHeader) {
+    .factory('FeedThreadBrowseStrategy', ['$q', '$feedResource', '$feedBrowseDecoratingService', 'FeedBrowseStrategy', '$headerService', '$displayMessageService', 'FeedThreadHeader',
+        function($q, $feedResource, $feedBrowseDecoratingService, FeedBrowseStrategy, $headerService, $displayMessageService, FeedThreadHeader) {
 
             var FeedThreadBrowseStrategy = function(rootName){
                 this.rootName = rootName;
@@ -17,7 +17,7 @@ angular.module('FeedThreadBrowseStrategy', ['feedService', 'feedBrowseDecorating
                 var browseDecorators;
                 var self = this;
 
-                $feedService.getFeedFromConversation(feedProviderType, feedItem.getConversationID()).then(function(feed) {
+                $feedResource.getFeedFromConversation(feedProviderType, feedItem.getConversationID()).then(function(feed) {
                     var isThread = true;
                     self.feed = feed;
                     browseDecorators = $feedBrowseDecoratingService.decorateFeedForBrowse(feed, isThread, self.templateURL);

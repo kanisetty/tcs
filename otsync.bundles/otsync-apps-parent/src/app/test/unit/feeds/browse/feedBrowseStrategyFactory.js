@@ -1,11 +1,11 @@
 describe('feedsBrowseStrategyFactory getFeedBrowseStrategy tests', function(){
-    var $displayMessageService, FeedBrowseStrategy, FeedLikesBrowseStrategy, FeedThreadBrowseStrategy, feedBrowseStrategyFactory, $feedService, ModalMenu, $navigationService, FeedHeader,
+    var $displayMessageService, FeedBrowseStrategy, FeedLikesBrowseStrategy, FeedThreadBrowseStrategy, feedBrowseStrategyFactory, $feedResource, ModalMenu, $navigationService, FeedHeader,
 			$ionicHistory, $fileMenuService;
 
     beforeEach(function(){
         module('feedBrowseStrategyFactory', 'FeedBrowseStrategy', 'FeedLikesBrowseStrategy', 'FeedThreadBrowseStrategy');
 
-        $feedService = {};
+        $feedResource = {};
         ModalMenu = {};
         $navigationService = {};
         FeedHeader = {};
@@ -20,7 +20,7 @@ describe('feedsBrowseStrategyFactory getFeedBrowseStrategy tests', function(){
 
         module(function ($provide) {
             $provide.value('$displayMessageService', $displayMessageService);
-            $provide.value('$feedService', $feedService);
+            $provide.value('$feedResource', $feedResource);
             $provide.value('ModalMenu', ModalMenu);
             $provide.value('$navigationService', $navigationService);
             $provide.value('FeedHeader', FeedHeader);

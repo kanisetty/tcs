@@ -1,7 +1,7 @@
-angular.module('FeedBrowseStrategy', ['feedService', 'feedBrowseDecoratingService', 'FeedHeader', 'headerService'])
+angular.module('FeedBrowseStrategy', ['feedResource', 'feedBrowseDecoratingService', 'FeedHeader', 'headerService'])
 
-    .factory('FeedBrowseStrategy', ['$q', '$feedService', '$feedBrowseDecoratingService', 'FeedHeader', '$headerService', '$displayMessageService', '$navigationService',
-        function($q, $feedService, $feedBrowseDecoratingService, FeedHeader, $headerService, $displayMessageService, $navigationService) {
+    .factory('FeedBrowseStrategy', ['$q', '$feedResource', '$feedBrowseDecoratingService', 'FeedHeader', '$headerService', '$displayMessageService', '$navigationService',
+        function($q, $feedResource, $feedBrowseDecoratingService, FeedHeader, $headerService, $displayMessageService, $navigationService) {
 
             var FeedBrowseStrategy = function(rootName){
                 this.rootName = rootName;
@@ -29,7 +29,7 @@ angular.module('FeedBrowseStrategy', ['feedService', 'feedBrowseDecoratingServic
                 var browseDecorators;
 				var self = this;
 
-				$feedService.getFeed(feedProviderType, query, self.feed).then(function(feed) {
+                $feedResource.getFeed(feedProviderType, query, self.feed).then(function(feed) {
 					var isThread = false;
 					self.feed = feed;
 					browseDecorators = $feedBrowseDecoratingService.decorateFeedForBrowse(feed, isThread, self.templateURL);

@@ -33,6 +33,14 @@ angular.module('appworksService', [])
 
                 return deferred.promise;
             },
+            
+            getCameraOptions: function(){
+                var options = {
+                    destinationType: Camera.DestinationType.DATA_URL
+                };
+
+                return options;
+            },
 
             getDefaultLanguage: function(){
                 var deferred = $q.defer();

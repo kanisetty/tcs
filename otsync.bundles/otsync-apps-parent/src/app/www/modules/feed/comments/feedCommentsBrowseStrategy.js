@@ -1,7 +1,8 @@
-angular.module('FeedCommentsBrowseStrategy', ['feedService', 'feedBrowseDecoratingService', 'FeedBrowseStrategy', 'headerService', 'FeedCommentsHeader'])
+angular.module('FeedCommentsBrowseStrategy', ['feedResource', 'feedBrowseDecoratingService', 'FeedBrowseStrategy', 'headerService', 'FeedCommentsHeader'])
 
-    .factory('FeedCommentsBrowseStrategy', ['$q', '$feedService', '$feedBrowseDecoratingService', 'FeedBrowseStrategy', '$headerService', 'FeedCommentsHeader',
-        function($q, $feedService, $feedBrowseDecoratingService, FeedBrowseStrategy, $headerService, FeedCommentsHeader) {
+    .factory('FeedCommentsBrowseStrategy', ['$q', '$feedResource', '$feedBrowseDecoratingService', 'FeedBrowseStrategy', '$headerService',
+                'FeedCommentsHeader',
+        function($q, $feedResource, $feedBrowseDecoratingService, FeedBrowseStrategy, $headerService, FeedCommentsHeader) {
 
             var FeedCommentsBrowseStrategy = function(rootName){
                 this.rootName = rootName;
@@ -18,7 +19,7 @@ angular.module('FeedCommentsBrowseStrategy', ['feedService', 'feedBrowseDecorati
                 var isRecursive = root.isRecursive;
                 var self = this;
 
-                $feedService.getFeedFromNode(feedProviderType, node.getID(), isRecursive).then(function(feed) {
+                $feedResource.getFeedFromNode(feedProviderType, node.getID(), isRecursive).then(function(feed) {
                     var isThread = false;
                     self.feed = feed;
                     browseDecorators = $feedBrowseDecoratingService.decorateFeedForBrowse(feed, isThread, self.templateURL);

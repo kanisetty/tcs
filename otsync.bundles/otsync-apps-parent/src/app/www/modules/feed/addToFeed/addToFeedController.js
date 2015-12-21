@@ -1,4 +1,4 @@
-angular.module('addToFeedController', ['feedService'])
+angular.module('addToFeedController', [])
     .controller('addToFeedController', ['$scope', '$stateParams', '$ionicHistory', '$displayMessageService',
         function ($scope, $stateParams, $ionicHistory, $displayMessageService) {
 			$scope.messagePlaceholder = $displayMessageService.translate("ADD FEED STATUS");

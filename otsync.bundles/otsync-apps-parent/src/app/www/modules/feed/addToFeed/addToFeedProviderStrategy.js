@@ -1,6 +1,6 @@
-angular.module('AddToFeedProviderStrategy', ['feedService', 'AddToFeedStatusStrategy'])
-    .factory('AddToFeedProviderStrategy', ['$q', '$feedService', '$ionicHistory', '$displayMessageService', 'AddToFeedStatusStrategy',
-        function($q, $feedService, $ionicHistory, $displayMessageService, AddToFeedStatusStrategy) {
+angular.module('AddToFeedProviderStrategy', ['feedResource', 'AddToFeedStatusStrategy'])
+    .factory('AddToFeedProviderStrategy', ['$q', '$feedResource', '$ionicHistory', '$displayMessageService', 'AddToFeedStatusStrategy',
+        function($q, $feedResource, $ionicHistory, $displayMessageService, AddToFeedStatusStrategy) {
 
             var AddToFeedProviderStrategy = function(feedItem, goBack){
                 this.feedItem = feedItem;
@@ -15,7 +15,7 @@ angular.module('AddToFeedProviderStrategy', ['feedService', 'AddToFeedStatusStra
                 var self = this;
 
                 if (file == null){
-                    $feedService.addToFeedProvider(message, self.feedItem.getProviderType(), self.feedItem.getSequenceNumber()).then(function(){
+                    $feedResource.addToFeedProvider(message, self.feedItem.getProviderType(), self.feedItem.getSequenceNumber()).then(function(){
                         if (self.goBack)
                             $ionicHistory.goBack();
 
@@ -25,7 +25,7 @@ angular.module('AddToFeedProviderStrategy', ['feedService', 'AddToFeedStatusStra
                         deferred.reject();
                     });
                 } else {
-                    $feedService.addToFeedProviderWithAttachment(file, message, self.feedItem.getProviderType(),
+                    $feedResource.addToFeedProviderWithAttachment(file, message, self.feedItem.getProviderType(),
                         self.feedItem.getSequenceNumber()).then(function(){
                             if (self.goBack)
                                 $ionicHistory.goBack();

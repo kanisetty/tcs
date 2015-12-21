@@ -1,7 +1,8 @@
-angular.module('FeedHeader', ['Header', 'ModalMenu', 'menuItemFactory', 'feedService', 'AddToFeedStatusStrategy'])
+angular.module('FeedHeader', ['Header', 'ModalMenu', 'menuItemFactory', 'feedResource', 'AddToFeedStatusStrategy'])
 
-    .factory('FeedHeader', ['$q', 'Header', 'ModalMenu', '$displayMessageService', 'menuItemFactory', '$feedService', '$navigationService', '$stateParams', 'AddToFeedStatusStrategy',
-			function ($q, Header, ModalMenu, $displayMessageService, menuItemFactory, $feedService, $navigationService, $stateParams, AddToFeedStatusStrategy) {
+    .factory('FeedHeader', ['$q', 'Header', 'ModalMenu', '$displayMessageService', 'menuItemFactory', '$feedResource', '$navigationService', '$stateParams',
+				'AddToFeedStatusStrategy',
+			function ($q, Header, ModalMenu, $displayMessageService, menuItemFactory, $feedResource, $navigationService, $stateParams, AddToFeedStatusStrategy) {
 				var _refresh = true;
 				var _hasModal = true;
 
@@ -43,7 +44,7 @@ angular.module('FeedHeader', ['Header', 'ModalMenu', 'menuItemFactory', 'feedSer
 				FeedHeader.prototype.getFilterMenuItems = function(){
 					var deferred = $q.defer();
 
-					$feedService.getFeedProviders().then(function(feedProviders){
+					$feedResource.getFeedProviders().then(function(feedProviders){
 						_getFilterMenuItemsPromises(feedProviders).then(function(filterMenuItems){
 							deferred.resolve(filterMenuItems);
 						});

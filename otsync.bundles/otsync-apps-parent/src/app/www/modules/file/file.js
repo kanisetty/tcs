@@ -7,24 +7,29 @@ angular.module('File', [])
             var _fileName = fileName;
             var _dataURL = dataURL;
 
-            var dataURLtoBlob = function (dataURL) {
-                // convert base64/URLEncoded data component to raw binary data held in a string
-                var byteString;
-                if (dataURL.split(',')[0].indexOf('base64') >= 0)
-                    byteString = atob(dataURL.split(',')[1]);
-                else
-                    byteString = unescape(dataURL.split(',')[1]);
+            var _dataURLtoBlob = function (dataURL) {
+                var contentType = "image/jpeg";
+                var sliceSize = 512;
+                contentType = contentType || '';
 
-                // separate out the mime component
-                var mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+                var byteCharacters = atob(dataURL);
+                var byteArrays = [];
 
-                // write the bytes of the string to a typed array
-                var ia = new Uint8Array(byteString.length);
-                for (var i = 0; i < byteString.length; i++) {
-                    ia[i] = byteString.charCodeAt(i);
+                for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+                    var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+                    var byteNumbers = new Array(slice.length);
+                    for (var i = 0; i < slice.length; i++) {
+                        byteNumbers[i] = slice.charCodeAt(i);
+                    }
+
+                    var byteArray = new Uint8Array(byteNumbers);
+
+                    byteArrays.push(byteArray);
                 }
 
-                return new Blob([ia], {type:mimeString});
+                var blob = new Blob(byteArrays, {type: contentType});
+                return blob;
             };
 
 
@@ -37,7 +42,7 @@ angular.module('File', [])
             };
 
             this.getFileBlob = function() {
-                return dataURLtoBlob(_dataURL)
+                return _dataURLtoBlob(_dataURL)
             }
         };
 

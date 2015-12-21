@@ -1,6 +1,6 @@
-angular.module('AddToFeedStatusStrategy', ['feedService', 'ModalMenu', 'fileMenuService'])
-    .factory('AddToFeedStatusStrategy', ['$q', '$feedService', '$ionicHistory', '$displayMessageService', 'ModalMenu', '$fileMenuService',
-        function($q, $feedService, $ionicHistory, $displayMessageService, ModalMenu, $fileMenuService) {
+angular.module('AddToFeedStatusStrategy', ['feedResource', 'ModalMenu', 'fileMenuService'])
+    .factory('AddToFeedStatusStrategy', ['$q', '$feedResource', '$ionicHistory', '$displayMessageService', 'ModalMenu', '$fileMenuService',
+        function($q, $feedResource, $ionicHistory, $displayMessageService, ModalMenu, $fileMenuService) {
             var AddToFeedStatusStrategy = function(){
                 this.type = 'status';
             };
@@ -9,7 +9,7 @@ angular.module('AddToFeedStatusStrategy', ['feedService', 'ModalMenu', 'fileMenu
                 var deferred = $q.defer();
 
                 if (file == null){
-                    $feedService.addFeedStatus(message).then(function(){
+                    $feedResource.addFeedStatus(message).then(function(){
                         $ionicHistory.goBack();
                         deferred.resolve();
                     }, function () {
@@ -17,7 +17,7 @@ angular.module('AddToFeedStatusStrategy', ['feedService', 'ModalMenu', 'fileMenu
                         deferred.reject();
                     });
                 } else {
-                    $feedService.addFeedStatusWithAttachment(file, message).then(function(){
+                    $feedResource.addFeedStatusWithAttachment(file, message).then(function(){
                         $ionicHistory.goBack();
                         deferred.resolve();
                     }, function () {
@@ -32,7 +32,8 @@ angular.module('AddToFeedStatusStrategy', ['feedService', 'ModalMenu', 'fileMenu
             AddToFeedStatusStrategy.prototype.getFile = function(scope){
                 var shouldRefresh = false;
 
-                var menu = new ModalMenu($fileMenuService.getFileMenuItemsReturnsFile(shouldRefresh), $displayMessageService.translate('OPTIONS'), $displayMessageService.translate('CANCEL'));
+                var menu = new ModalMenu($fileMenuService.getFileMenuItemsReturnsFile(shouldRefresh), $displayMessageService.translate('OPTIONS'),
+                    $displayMessageService.translate('CANCEL'));
                 menu.showModalMenu(scope);
 
                 scope.menu = menu;

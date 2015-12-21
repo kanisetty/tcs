@@ -1,9 +1,9 @@
 describe('feedsThreadBrowseStrategy initializeHeader tests', function(){
-    var FeedThreadBrowseStrategy, $displayMessageService, $headerService, $feedService, $navigationService, $ionicModal, FeedHeader, $ionicHistory, $fileMenuService;
+    var FeedThreadBrowseStrategy, $displayMessageService, $headerService, $feedResource, $navigationService, $ionicModal, FeedHeader, $ionicHistory, $fileMenuService;
 
     beforeEach(function(){
         module('FeedThreadBrowseStrategy', 'headerService');
-        $feedService = {};
+        $feedResource = {};
         $navigationService = {};
         $ionicModal = {};
         FeedHeader = {};
@@ -18,7 +18,7 @@ describe('feedsThreadBrowseStrategy initializeHeader tests', function(){
 
         module(function ($provide) {
             $provide.value('$displayMessageService', $displayMessageService);
-            $provide.value('$feedService', $feedService);
+            $provide.value('$feedResource', $feedResource);
             $provide.value('$navigationService', $navigationService);
             $provide.value('$ionicModal', $ionicModal);
             $provide.value('FeedHeader', FeedHeader);
