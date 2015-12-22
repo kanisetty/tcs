@@ -1,7 +1,8 @@
-angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'])
+angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService', 'appworksService'])
 
-    .factory('$nodeOpenService', ['$q', '$location', '$nodeService', '$displayMessageService',  '$fileResource', '$cacheService', '$stateParams', '$navigationService',
-        function($q, $location, $nodeService, $displayMessageService, $fileResource, $cacheService, $stateParams, $navigationService) {
+    .factory('$nodeOpenService', ['$q', '$nodeService', '$displayMessageService',  '$fileResource', '$cacheService', '$stateParams', '$navigationService',
+                '$appworksService',
+        function($q, $nodeService, $displayMessageService, $fileResource, $cacheService, $stateParams, $navigationService, $appworksService) {
 
         var _getNodeToOpen = function(node){
             var deferred = $q.defer();
@@ -23,15 +24,15 @@ angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'
             var deferred = $q.defer();
             var found = false;
 
-            _getComponents().then(function(components){
+            $appworksService.getComponentList().then(function(components){
 
                 components.forEach(function (component) {
                     var viewTypes = _getViewTypesFromComponent(component);
 
                     viewTypes.forEach(function(viewType){
                         if(node.getSubtype() == parseInt(viewType)){
-                            deferred.resolve(component);
                             found = true;
+                            deferred.resolve(component);
                         }
                     });
                 });
@@ -41,38 +42,6 @@ angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'
                 }
             });
 
-            return deferred.promise;
-        };
-
-        var _openUsingComponent = function(component, dataForComponent){
-            var destComponentName = component.name;
-            var destMethod = 'onCallFromApp';
-			var refreshOnReturn = false;
-			
-            var openCompReq = AppWorksComms.getOpenAppRequest(destComponentName, destMethod, dataForComponent, refreshOnReturn);
-            AppWorksComms.openApp(openCompReq);
-        };
-
-        var _getComponents = function(){
-            var deferred = $q.defer();
-
-            try {
-                successFn = function () {
-                    // Convert the arguments into an array and resolve
-                    var args = Array.prototype.slice.call(arguments);
-                    if (args[0] != null && args[0].components != null) {
-                        deferred.resolve(args[0].components);
-                    } else {
-                        $displayMessageService.showErrorMessage("ERROR OPEN FAILED");
-                    }
-
-                };
-
-                AppWorks.getComponents(successFn);
-            }
-            catch(error) {
-                deferred.resolve([]);
-            }
             return deferred.promise;
         };
 
@@ -93,6 +62,7 @@ angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'
         };
 
         return {
+
             openNode: function (node, rootNode, menuItem) {
                 var documentSubtype = 144;
                 var emailSubtype = 749;
@@ -107,7 +77,7 @@ angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'
 
                                 var dataForComponent = {id: nodeToOpen.getID(), parentID: rootNode.getID()};
 
-                                if (component.name == "workflowview"){
+                                if (component.name == "workflow-component"){
                                     dataForComponent.action = 'view';
                                 }
 

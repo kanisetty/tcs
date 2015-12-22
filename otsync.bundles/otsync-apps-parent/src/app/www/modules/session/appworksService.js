@@ -42,6 +42,11 @@ angular.module('appworksService', [])
                 return options;
             },
 
+            getComponentList: function(){
+                var args = ["component"];
+                return this.execCordovaRequest('AWComponent', 'list', args);
+            },
+
             getDefaultLanguage: function(){
                 var deferred = $q.defer();
                 var _defaultLanguage = 'en';
