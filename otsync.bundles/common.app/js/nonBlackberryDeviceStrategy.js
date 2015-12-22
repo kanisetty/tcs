@@ -1,12 +1,6 @@
 var NonBlackBerryStrategy = function(){
     var _defaultLanguage = 'en';
 
-    this.browseObject = function(nodeID, title){
-        var openData = [nodeID, title];
-
-        this.execRequest("Content", "browseObject", openData);
-    };
-
     this.close = function(){
         var successFn = function() {};
         var errorFn = function(error) {
@@ -50,19 +44,13 @@ var NonBlackBerryStrategy = function(){
         return this.execRequest("AWAuth", "gateway");
     };
 
-    this.openComponent = function(data, refreshOnReturn){
+    this.openFromAppworks = function(destComponentName, data, refreshOnReturn, isComponent){
+        var appworksType = "component";
 
-        var destComponentName = null;
+        if (!isComponent)
+            appworksType = "app";
 
-        if(data.type == "task") {
-            destComponentName = 'tasks-component';
-        }else if(data.type == "workflow") {
-            destComponentName = 'workflow-component';
-        }
-
-        data.action = 'assignment';
-
-        this.execRequest("AWComponent", "open", [destComponentName, $.param(data)])
+        this.execRequest("AWComponent", "open", [destComponentName, $.param(data), appworksType])
             .done(function(){
                 if (refreshOnReturn)
                     location.reload();

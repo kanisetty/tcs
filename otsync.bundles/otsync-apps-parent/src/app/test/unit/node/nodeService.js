@@ -182,7 +182,7 @@ describe('nodeService loadNodeChildren tests', function(){
 });
 
 describe('nodeService getNodeFromQueryString tests', function(){
-    var $nodeService, $q, $location, $sessionService, $displayMessageService, $httpParamSerializerJQLike, $stateParams;
+    var $nodeService, $q, $sessionService, $displayMessageService, $httpParamSerializerJQLike, $stateParams;
 
     beforeEach(module('nodeService', 'cacheService', 'dummyNodeService','urlEncodingService'));
 
@@ -191,13 +191,8 @@ describe('nodeService getNodeFromQueryString tests', function(){
         $stateParams = {};
         $displayMessageService = {};
 
-        $location = {
-            search: function(){}
-        };
-
 
         module(function ($provide) {
-            $provide.value('$location', $location);
             $provide.value('$sessionService', $sessionService);
             $provide.value('$displayMessageService', $displayMessageService);
             $provide.value('$stateParams', $stateParams);
@@ -211,16 +206,24 @@ describe('nodeService getNodeFromQueryString tests', function(){
         });
     });
 
-    it('should return a null nodeID if the query string JSON is null', function() {
-        spyOn($location, 'search').and.returnValue(null);
+    it('should return a null nodeID if the query string is null', function() {
+        spyOn($nodeService, 'getQueryString').and.returnValue(null);
 
         var nodeID = $nodeService.getNodeFromQueryString();
 
         expect(nodeID).toEqual(null);
     });
 
-    it('should return a null nodeID if the query string JSON is an empty string', function() {
-        spyOn($location, 'search').and.returnValue('');
+    it('should return a null nodeID if the query string is an empty string', function() {
+        spyOn($nodeService, 'getQueryString').and.returnValue('');
+
+        var nodeID = $nodeService.getNodeFromQueryString();
+
+        expect(nodeID).toEqual(null);
+    });
+
+    it('should return a null nodeID if the query string JSON can not be parsed', function() {
+        spyOn($nodeService, 'getQueryString').and.returnValue(",");
 
         var nodeID = $nodeService.getNodeFromQueryString();
 
@@ -228,7 +231,7 @@ describe('nodeService getNodeFromQueryString tests', function(){
     });
 
     it('should return a null nodeID if the query string JSON has no length', function() {
-        spyOn($location, 'search').and.returnValue({});
+        spyOn($nodeService, 'getQueryString').and.returnValue('{}');
 
         var nodeID = $nodeService.getNodeFromQueryString();
 
@@ -236,9 +239,7 @@ describe('nodeService getNodeFromQueryString tests', function(){
     });
 
     it('should return a null nodeID if the query string JSON has a null nodeID', function() {
-        spyOn($location, 'search').and.returnValue({
-            nodeID: null
-        });
+        spyOn($nodeService, 'getQueryString').and.returnValue('nodeID=null');
 
         var nodeID = $nodeService.getNodeFromQueryString();
 
@@ -248,11 +249,21 @@ describe('nodeService getNodeFromQueryString tests', function(){
     it('should return a valid nodeID if the query string contains a nodeID', function() {
         var expectedNodeID = 1234;
 
-        var queryStringJSON = {
-            nodeID: expectedNodeID
-        };
+        var queryString = 'nodeID=1234';
 
-        spyOn($location, 'search').and.returnValue(queryStringJSON);
+        spyOn($nodeService, 'getQueryString').and.returnValue(queryString);
+
+        var nodeID = $nodeService.getNodeFromQueryString();
+
+        expect(nodeID).toEqual(expectedNodeID);
+    });
+
+    it('should return a valid nodeID if the query string contains multiple items including a nodeID', function() {
+        var expectedNodeID = 1234;
+
+        var queryString = 't=1231232131231&nodeID=1234&title=Attachments';
+
+        spyOn($nodeService, 'getQueryString').and.returnValue(queryString);
 
         var nodeID = $nodeService.getNodeFromQueryString();
 

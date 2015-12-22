@@ -245,10 +245,17 @@ $(document).ready(function () {
         }
 
         if (data.attachments) {
+            var nodeID = data.attachments;
 
             $('#step-view-attachments-btn').click(function () {
+                var data = {
+                    nodeID : nodeID,
+                    title : apputil.T("label.Attachments")
+                };
 
-                workflow.browseObject(data.attachments, apputil.T("label.Attachments"), false);
+                var destComponentName = 'ews-app';
+
+                workflow.openFromAppworks(destComponentName, data, false, false);
             });
 
             if (data.attachmentInstructions != null) {

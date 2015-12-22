@@ -232,7 +232,17 @@
    */
   function openAssignment (data) {
 	var refreshOnReturn = true;
-    Assignments.openComponent(data, refreshOnReturn);
+    var destComponentName = '';
+
+    if(data.type == "task") {
+      destComponentName = 'tasks-component';
+    }else if(data.type == "workflow") {
+      destComponentName = 'workflow-component';
+    }
+
+    data.action = 'assignment';
+
+    Assignments.openFromAppworks(destComponentName, data, refreshOnReturn, true);
   }
 
   // Manually start the application

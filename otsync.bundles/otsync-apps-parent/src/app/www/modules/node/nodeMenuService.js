@@ -37,7 +37,7 @@ angular.module('nodeMenuService', ['nodeResource', 'fileMenuService', 'menuItemF
                             var deferred = $q.defer();
                             var data = { 'id' : node.getID() };
 
-                            $appworksService.openComponent('objectdetails-component', data);
+                            $appworksService.openFromAppworks('objectdetails-component', data, true);
 
                             //TODO Currently appworks doesn't fire a close-me with their x button. just return here so the loading closes properly
                             deferred.resolve();

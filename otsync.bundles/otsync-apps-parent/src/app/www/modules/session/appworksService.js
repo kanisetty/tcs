@@ -122,9 +122,13 @@ angular.module('appworksService', [])
                 });
             },
 
-            openComponent: function(componentName, data){
+            openFromAppworks: function(componentName, data, isComponent){
+                var appworksType = "component";
 
-                return this.execCordovaRequest("AWComponent", "open", [componentName, $httpParamSerializerJQLike(data), "component"]);
+                if (!isComponent)
+                    appworksType = "app";
+
+                return this.execCordovaRequest("AWComponent", "open", [componentName, $httpParamSerializerJQLike(data), appworksType]);
             },
 
             storeFile: function(downloadURL, fileName){

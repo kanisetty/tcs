@@ -143,15 +143,10 @@
 
         return deviceStrategy.openWindow(url);
     };
-
-    App.prototype.browseObject = function(nodeID, title, refreshOnReturn) {
-
-        return deviceStrategy.browseObject(nodeID, title, refreshOnReturn);
-    };
 	
-	App.prototype.openComponent = function(data, refreshOnReturn) {
+	App.prototype.openFromAppworks = function(destComponentName, data, refreshOnReturn, isComponent) {
 
-        return deviceStrategy.openComponent(data, refreshOnReturn);
+        return deviceStrategy.openFromAppworks(destComponentName, data, refreshOnReturn, isComponent);
     };
 
 

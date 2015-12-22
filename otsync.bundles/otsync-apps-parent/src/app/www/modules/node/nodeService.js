@@ -1,7 +1,7 @@
 angular.module('nodeService', ['Node', 'Request', 'Sharing', 'nodeResource'])
 
-.factory('$nodeService', ['$q', 'Node', '$rootScope', '$displayMessageService', '$cacheService', 'Sharing', '$location', '$nodeResource',
-    function($q, Node, $rootScope, $displayMessageService, $cacheService, Sharing, $location, $nodeResource) {
+.factory('$nodeService', ['$q', 'Node', '$rootScope', '$displayMessageService', '$cacheService', 'Sharing', '$nodeResource',
+    function($q, Node, $rootScope, $displayMessageService, $cacheService, Sharing, $nodeResource) {
         var _pageNumber;
         var _moreNodesCanBeLoaded;
 
@@ -83,13 +83,48 @@ angular.module('nodeService', ['Node', 'Request', 'Sharing', 'nodeResource'])
 
             getNodeFromQueryString: function(){
                 var nodeID = null;
-                var queryStringJSON = $location.search();
+                var queryString = this.getQueryString();
+                var queryStringJSON = {};
 
-                if (queryStringJSON != null && queryStringJSON != '' && queryStringJSON.nodeID != null){
-                    nodeID = queryStringJSON.nodeID;
+                if (queryString != null && queryString != ''){
+
+                    if ( typeof(queryString) === 'string') {
+                        var pairs = queryString.split("&");
+                        var len = pairs.length;
+                        var idx, pair, key;
+
+                        // Iterate through each pair and build the array
+                        for (idx = 0; idx < len; idx += 1) {
+                            pair = pairs[idx].split("=");
+                            key = pair[0];
+
+                            switch (typeof queryStringJSON[key]) {
+                                // Key has not been found, create entry
+                                case "undefined":
+                                    queryStringJSON[key] = pair[1];
+                                    break;
+                                // Key exists, create an array
+                                case "string":
+                                    queryStringJSON[key] = [queryStringJSON[key], pair[1]];
+                                    break;
+                                // Add to the array
+                                default:
+                                    queryStringJSON[key].push(pair[1]);
+                            }
+                        }
+
+                        if (queryStringJSON != null && queryStringJSON != '' && queryStringJSON.nodeID != null && queryStringJSON.nodeID != 'null') {
+
+                            nodeID = parseInt(queryStringJSON.nodeID);
+                        }
+                    }
                 }
 
                 return nodeID;
+            },
+
+            getQueryString: function(){
+                return decodeURIComponent(window.location.search.toString().substring(1));
             },
 
             processResponseForNodeChildren:function(response){
