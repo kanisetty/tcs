@@ -1,7 +1,7 @@
-angular.module('fileResource', ['browseService', 'Request', 'cacheService'])
+angular.module('fileResource', ['browseService', 'Request', 'cacheService', 'appworksService'])
 
-		.factory('$fileResource', ['$stateParams', '$sessionService', '$browseService', '$q', 'Request', '$cacheService',
-			function ($stateParams, $sessionService, $browseService, $q, Request, $cacheService) {
+		.factory('$fileResource', ['$stateParams', '$sessionService', '$browseService', '$q', 'Request', '$cacheService', '$navigationService','$appworksService',
+			function ($stateParams, $sessionService, $browseService, $q, Request, $cacheService, $navigationService, $appworksService) {
 
 				return {
 
@@ -35,23 +35,28 @@ angular.module('fileResource', ['browseService', 'Request', 'cacheService'])
                         return deferred.promise;
 					},
 
-                    getAddNodeForm: function(dataForDest) {
-                        var destComponentName = 'forms';
-                        var destMethod = 'onCallFromApp';
+                    getAddNodeForm: function(dataForDest, refresh) {
+                        var destComponentName = 'forms-component';
 
                         if(dataForDest.id == undefined) {
                             return $q.when($browseService.getRootID($stateParams)).then(function (id) {
 
                                 dataForDest.id = id;
 
-                                var openCompReq = AppWorksComms.getOpenAppRequest(destComponentName, destMethod, dataForDest, true);
-                                AppWorksComms.openApp(openCompReq);
+                                $appworksService.openFromAppworks(destComponentName, dataForDest, true).then(function() {
+                                        if (refresh)
+                                            $navigationService.reloadPage();
+                                    }
+                                );
 
                             });
                         }
                         else {
-                            var openCompReq = AppWorksComms.getOpenAppRequest(destComponentName, destMethod, dataForDest, true);
-                            AppWorksComms.openApp(openCompReq);
+                           $appworksService.openFromAppworks(destComponentName, dataForDest, true).then(function() {
+                                    if (refresh)
+                                        $navigationService.reloadPage();
+                                }
+                            );
                         }
                     }
                 };

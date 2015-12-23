@@ -28,7 +28,7 @@ angular.module('NodeHeader', ['Header', 'ModalMenu', 'menuItemFactory', 'fileMen
                     addMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('FOLDER'), !_refresh, !_hasModal,
                             function () {
 
-                                return $fileResource.getAddNodeForm({'type':FOLDER_SUBTYPE});
+                                return $fileResource.getAddNodeForm({'type':FOLDER_SUBTYPE}, true);
                             }
                     ));
 

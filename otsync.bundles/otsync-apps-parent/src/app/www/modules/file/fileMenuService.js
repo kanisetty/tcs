@@ -49,15 +49,15 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileServi
 
                         fileMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('FROM CAMERA'), shouldRefresh, !hasModal,
                                 function () {
-                                    addNodeOptions.fileSource = 'openCamera';
-                                    return $fileResource.getAddNodeForm(addNodeOptions);
+                                    addNodeOptions.fileSource = 'camera';
+                                    return $fileResource.getAddNodeForm(addNodeOptions, shouldRefresh);
                                 }
                         ));
 
                         fileMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('FROM GALLERY'), shouldRefresh, !hasModal,
                                 function () {
-                                    addNodeOptions.fileSource = 'getFromGallery';
-                                    return $fileResource.getAddNodeForm(addNodeOptions);
+                                    addNodeOptions.fileSource = 'gallery';
+                                    return $fileResource.getAddNodeForm(addNodeOptions, shouldRefresh);
                                 }
                         ));
 						return fileMenuItems;
