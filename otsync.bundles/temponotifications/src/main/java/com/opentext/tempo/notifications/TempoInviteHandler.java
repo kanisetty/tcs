@@ -1,8 +1,11 @@
 package com.opentext.tempo.notifications;
 
-import com.opentext.otag.api.HttpClient;
-import com.opentext.otag.auth.*;
-import com.opentext.otag.rest.util.ForwardHeaders;
+import org.apache.http.impl.client.DefaultHttpClient;
+import com.opentext.otag.auth.IdentityService;
+import com.opentext.otag.auth.IdentityProvider;
+import com.opentext.otag.auth.OtdsIdentityService;
+import com.opentext.otag.auth.CSIdentityService;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.tempo.notifications.api.auth.CSExternalUserAPI;
 import com.opentext.tempo.notifications.api.auth.ExternalUserAPI;
 import com.opentext.tempo.notifications.api.auth.ExternalUserAPIResult;
@@ -209,7 +212,7 @@ public final class TempoInviteHandler {
             generateHTMLOutput(servletContext, response, xml, langFolder + "/signupvalidation.xsl"); 
         } else {
             ExternalUserAPIResult result = getExternalUserAPI()
-                    .inviteeValidated(newuser.getEmail(), password, firstname, lastname, new ForwardHeaders(request));
+                    .inviteeValidated(newuser.getEmail(), password, firstname, lastname, new CSForwardHeaders(request));
 
             if (result.status != ExternalUserAPIResult.ResultType.SUCCESS) {
                 captureExceptionMessage(result.errMsg, user, messages);
@@ -326,7 +329,7 @@ public final class TempoInviteHandler {
             NewInvitee invitee = db.loadInviteeFromToken(invitationtoken);
 
             ExternalUserAPIResult result = getExternalUserAPI()
-                    .inviteeValidated(invitee.getEmail(), username, password, new ForwardHeaders(request));
+                    .inviteeValidated(invitee.getEmail(), username, password, new CSForwardHeaders(request));
             if (result.status != ExternalUserAPIResult.ResultType.SUCCESS) {
                 captureExceptionMessage(result.errMsg, user, messages);
                 generateHTMLOutput(servletContext, response, xml, langFolder + "/signupexistinguser.xsl"); 
@@ -372,7 +375,7 @@ public final class TempoInviteHandler {
 
         if (!isUserError) {
             ExternalUserAPIResult result = getExternalUserAPI()
-                    .userExist(username, new ForwardHeaders(request));
+                    .userExist(username, new CSForwardHeaders(request));
             if (result.status != ExternalUserAPIResult.ResultType.SUCCESS) {
                 isBadUsernameError = true;
             }
@@ -465,14 +468,14 @@ public final class TempoInviteHandler {
             }
 
             String notFoundMsg = messages.getString("TempoInviteHandler.ExternalUserNotFound", pwReset.getUsername());
-            ExternalUserAPIResult result = getExternalUserAPI().userExist(pwReset.getUsername(), new ForwardHeaders(request));
+            ExternalUserAPIResult result = getExternalUserAPI().userExist(pwReset.getUsername(), new CSForwardHeaders(request));
             if (result.status != ExternalUserAPIResult.ResultType.SUCCESS) {
                 captureExceptionMessage(notFoundMsg, user, messages);
                 generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetvalidation.xsl"); 
                 return;
             }
 
-            result = getExternalUserAPI().sendPasswordUpdate(pwReset.getUsername(), null, password, new ForwardHeaders(request));
+            result = getExternalUserAPI().sendPasswordUpdate(pwReset.getUsername(), null, password, new CSForwardHeaders(request));
             if (result.status != ExternalUserAPIResult.ResultType.SUCCESS) {
                 captureExceptionMessage(notFoundMsg, user, messages);
                 generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetvalidation.xsl"); 
@@ -553,7 +556,7 @@ public final class TempoInviteHandler {
         }
 
         if (service instanceof CSIdentityService)
-            externalUserAPI = new CSExternalUserAPI(new HttpClient());
+            externalUserAPI = new CSExternalUserAPI(new DefaultHttpClient());
 
         if (externalUserAPI == null)
             throw new RuntimeException("Unable to resolve the IdentityService type that the " +

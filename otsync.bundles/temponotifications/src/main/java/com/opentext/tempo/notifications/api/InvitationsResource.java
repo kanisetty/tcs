@@ -1,6 +1,6 @@
 package com.opentext.tempo.notifications.api;
 
-import com.opentext.otag.annotations.PrivateApi;
+import com.opentext.otsync.annotations.PrivateApi;
 import com.opentext.otag.common.notifications.Provider;
 import com.opentext.tempo.notifications.TempoInviteHandler;
 import com.opentext.tempo.notifications.api.auth.ExternalUserAPIResult;

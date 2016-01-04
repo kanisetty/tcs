@@ -1,6 +1,7 @@
 package com.opentext.tempo.notifications;
 
-import com.opentext.otag.rest.util.Mail;
+import com.opentext.otag.sdk.client.MailClient;
+import com.opentext.otag.api.shared.types.MailRequest;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletContext;
@@ -11,7 +12,7 @@ import java.io.StringWriter;
 
 public class ExternalUserEmailClient {
 
-    private final Mail mail = new Mail();
+    private final MailClient mailClient = new MailClient();
 
     public void sendSuccessEmail(ServletContext context, XmlPackage xml, String email, String langFolder)
             throws IOException, TransformerException, MessagingException {
@@ -49,7 +50,11 @@ public class ExternalUserEmailClient {
 
         xml.write(subjectStringWriter, xslSubjectPath, xslSubject);
         xml.write(bodyStringWriter, xslBodyPath, xslBody);
-        mail.SendEmail(email, subjectStringWriter.toString(), bodyStringWriter.toString());
+
+        //TODO figure out how to get to/from from email. Might have to change some interfaces
+        MailRequest mailRequest = new MailRequest("", null, subjectStringWriter.toString(), bodyStringWriter.toString());
+
+        mailClient.sendMail(mailRequest);
     }
 
 }

@@ -1,15 +1,20 @@
 package com.opentext.tempo.notifications.api.auth;
 
-import com.opentext.otag.api.HttpClient;
-import com.opentext.otag.api.Setting;
+import com.opentext.otsync.api.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import com.opentext.otag.common.notifications.Provider;
-import com.opentext.otag.rest.util.ForwardHeaders;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
+import com.opentext.tempo.notifications.TempoNotificationsService;
 import com.opentext.tempo.notifications.persistence.PersistenceHelper;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectReader;
-import org.codehaus.jackson.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -41,16 +46,16 @@ public class CSExternalUserAPI implements ExternalUserAPI {
     private final static String OK_KEY_NAME = "ok";
     private final static String ERROR_MSG_KEY_NAME = "errMsg";
 
-    private final HttpClient http;
+    private final DefaultHttpClient httpClient;
     private final ObjectMapper mapper = new ObjectMapper();
     private final ObjectReader reader = mapper.reader(new TypeReference<Map<String, Object>>(){});
 
-    public CSExternalUserAPI(HttpClient client) {
-        http = client;
+    public CSExternalUserAPI(DefaultHttpClient client) {
+        httpClient = client;
     }
 
     public ExternalUserAPIResult inviteeValidated(String email, String password, String firstName,
-                                                  String lastName, ForwardHeaders headers){
+                                                  String lastName, CSForwardHeaders headers){
         Map<String, Object> info = new HashMap<String, Object>();
 
         info.put(USERNAME_KEY_NAME, email);
@@ -62,7 +67,7 @@ public class CSExternalUserAPI implements ExternalUserAPI {
     }
 
     public ExternalUserAPIResult inviteeValidated(String email, String existingEmail,
-                                                  String existingPassword, ForwardHeaders headers){
+                                                  String existingPassword, CSForwardHeaders headers){
         Map<String, Object> info = new HashMap<String, Object>();
 
         info.put(REJECTED_EMAIL_KEY, email);
@@ -72,7 +77,7 @@ public class CSExternalUserAPI implements ExternalUserAPI {
         return sendInfo(info, TRANSFER_SHARE_SUBTYPE, headers);
     }
 
-    public ExternalUserAPIResult userExist(String username, ForwardHeaders headers) {
+    public ExternalUserAPIResult userExist(String username, CSForwardHeaders headers) {
         Map<String, Object> info = new HashMap<String, Object>();
 
         info.put(USERNAME_KEY_NAME, username);
@@ -81,7 +86,7 @@ public class CSExternalUserAPI implements ExternalUserAPI {
     }
 
     public ExternalUserAPIResult sendPasswordUpdate(String email, String oldPwd,
-                                                    String newPwd, ForwardHeaders headers){
+                                                    String newPwd, CSForwardHeaders headers){
         Map<String, Object> info = new HashMap<String, Object>();
 
         info.put(USERNAME_KEY_NAME, email);
@@ -91,7 +96,7 @@ public class CSExternalUserAPI implements ExternalUserAPI {
         return sendInfo(info, PASSWORD_UPDATE_SUBTYPE, headers);
     }
 
-    private ExternalUserAPIResult sendInfo(Map<String, Object> info, String subtype, ForwardHeaders headers) {
+    private ExternalUserAPIResult sendInfo(Map<String, Object> info, String subtype, CSForwardHeaders headers) {
         try {
             Provider provider = PersistenceHelper.getGatewayEm().
                     find(Provider.class, Provider.CONTENTSERVER_NAME);
@@ -100,7 +105,7 @@ public class CSExternalUserAPI implements ExternalUserAPI {
                         "can't perform external user functions.");
             }
 
-            Map<String, Object> payload = new HashMap<String, Object>();
+            Map<String, Object> payload = new HashMap<>();
 
             payload.put(INFO_KEY_NAME, info);
             payload.put(TYPE_KEY_NAME, EXTERNAL_USER_MSG_TYPE);
@@ -124,14 +129,22 @@ public class CSExternalUserAPI implements ExternalUserAPI {
         }
     }
 
-    private Map<String, Object> send(Map<String, Object> payload, ForwardHeaders headers) throws IOException{
+    private Map<String, Object> send(Map<String, Object> payload, CSForwardHeaders headers) throws IOException{
         List<NameValuePair> postParams = new ArrayList<NameValuePair>(2);
 
         String json = mapper.writeValueAsString(payload);
         postParams.add(new BasicNameValuePair(FUNCTION_PARAMETER_NAME, EXTERNAL_USER_API_REQUESTHANDLER));
         postParams.add(new BasicNameValuePair(PAYLOAD_KEY_NAME, json));
 
-        String jsonResult = http.post(Setting.get(Setting.CONTENTSERVER_URL), postParams, headers);
+        HttpPost request = null;
+
+        request = new HttpPost(TempoNotificationsService.getCsUrl());
+        request.setEntity(new UrlEncodedFormEntity(postParams));
+        headers.addTo(request);
+        headers.getLLCookie().addLLCookieToRequest(httpClient, request);
+
+        HttpResponse response = httpClient.execute(request);
+        String jsonResult = EntityUtils.toString(response.getEntity());
 
         return reader.readValue(jsonResult);
     }

@@ -1,6 +1,6 @@
 package com.opentext.tempo.notifications.api.auth;
 
-import com.opentext.otag.rest.util.ForwardHeaders;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 
 /**
  * External user authentication API. We use CS or OTDS based authentication based
@@ -15,7 +15,7 @@ public interface ExternalUserAPI {
                                            String password,
                                            String firstName,
                                            String lastName,
-                                           ForwardHeaders headers);
+                                           CSForwardHeaders headers);
 
     /**
      * Don't activate the given email; instead, merge it with an existing account.
@@ -23,12 +23,12 @@ public interface ExternalUserAPI {
     ExternalUserAPIResult inviteeValidated(String email,
                                            String existingEmail,
                                            String existingPassword,
-                                           ForwardHeaders headers);
+                                           CSForwardHeaders headers);
 
     /**
      * Return a success if the user exists.
      */
-    ExternalUserAPIResult userExist(String username, ForwardHeaders headers);
+    ExternalUserAPIResult userExist(String username, CSForwardHeaders headers);
 
     /**
      * Reset the user's password.
@@ -36,6 +36,6 @@ public interface ExternalUserAPI {
     ExternalUserAPIResult sendPasswordUpdate(String email,
                                              String oldPwd,
                                              String newPwd,
-                                             ForwardHeaders headers);
+                                             CSForwardHeaders headers);
 
 }

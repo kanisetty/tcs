@@ -1,10 +1,10 @@
 package com.opentext.tempo.notifications.api.auth;
 
-import com.opentext.otag.api.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.otag.auth.NewUserProfile;
 import com.opentext.otag.auth.OtdsIdentityService;
 import com.opentext.otag.auth.OtdsUserProfile;
-import com.opentext.otag.rest.util.ForwardHeaders;
 import com.opentext.otds.OtdsException;
 
 import javax.ws.rs.WebApplicationException;
@@ -17,11 +17,11 @@ public class OtdsExternalUserAPI implements ExternalUserAPI {
 
     public OtdsExternalUserAPI(OtdsIdentityService otdsIdentityService) {
         service = otdsIdentityService;
-        csService = new CSExternalUserAPI(new HttpClient());
+        csService = new CSExternalUserAPI(new DefaultHttpClient());
     }
 
     public ExternalUserAPIResult inviteeValidated(String email, String password, String firstName, 
-                                                  String lastName, ForwardHeaders headers) {
+                                                  String lastName, CSForwardHeaders headers) {
         try {
             OtdsUserProfile currentProfile = new OtdsUserProfile(service, email + '@' + service.getOtagUserPartition());
             NewUserProfile newProfile = new NewUserProfile(currentProfile);
@@ -47,12 +47,12 @@ public class OtdsExternalUserAPI implements ExternalUserAPI {
     public ExternalUserAPIResult inviteeValidated(String email,
                                                   String existingEmail,
                                                   String existingPassword,
-                                                  ForwardHeaders headers) {
+                                                  CSForwardHeaders headers) {
         // forward to CS to move the user's shares to the existing account
         return csService.inviteeValidated(email, existingEmail, existingPassword, headers);
     }
 
-    public ExternalUserAPIResult userExist(String username, ForwardHeaders headers) {
+    public ExternalUserAPIResult userExist(String username, CSForwardHeaders headers) {
         try {
             service.getClient().getUser(username + '@' + service.getOtagUserPartition());
         } catch (OtdsException e) {
@@ -62,7 +62,7 @@ public class OtdsExternalUserAPI implements ExternalUserAPI {
     }
 
     public ExternalUserAPIResult sendPasswordUpdate(String email, String oldPwd,
-                                                    String newPwd, ForwardHeaders headers) {
+                                                    String newPwd, CSForwardHeaders headers) {
         try {
             if (oldPwd == null){
                 service.getAdminClient().resetPasswordByAdministrator(email + '@' + service.getOtagUserPartition(), newPwd);
