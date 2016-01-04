@@ -1,0 +1,8 @@
+{
+  "ERROR_CREATING_NODE": "FR Error Creating Node",
+  "ERROR_RENDERING_FROM": "FR Error Rendering Form",
+  "ERROR_INVALID_ARGUMENTS": "FR Invalid Arguments",
+  "LOADING": "FR Loading",
+  "REQUIRED_ATTRIBUTES_MISSING": "FR Required Attributes Missing",
+  "SUBMIT": "FR Submit"
+}

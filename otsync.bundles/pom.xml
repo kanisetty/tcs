@@ -35,6 +35,7 @@
         <module>workflow-component</module>
         <module>tempo-bundle</module>
         <module>webui</module>
+		<module>otsync-forms</module>
     </modules>
 
     <properties>
