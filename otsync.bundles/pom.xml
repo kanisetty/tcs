@@ -23,6 +23,7 @@
         <module>favorites</module>
         <module>feeds</module>
         <module>objectdetails-component</module>
+        <module>otehelp-app</module>
         <module>otsync-apps-parent</module>
         <module>shares</module>
         <module>tasks-component</module>
