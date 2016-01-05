@@ -36,12 +36,12 @@
         <module>workflow-component</module>
         <module>tempo-bundle</module>
         <module>webui</module>
-		<module>otsync-forms</module>
+		<module>forms-component</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <otag.platform.version>16.01-ALPHA-4</otag.platform.version>
+        <otag.platform.version>16.01-ALPHA-5</otag.platform.version>
         <!-- child modules can reference this using  -->
         <main.basedir>${project.basedir}</main.basedir>
 
