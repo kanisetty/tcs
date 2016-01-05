@@ -1,8 +1,9 @@
-/* OTAG App */
-body {
-    padding-left: 0;
-    padding-right: 0;
+
+.bootstrap-datetimepicker-widget table {
+    margin: 0 auto;
+    width: inherit;
 }
+
 .otag-header {
     background: #2f6699;
     color: #ffffff;
@@ -56,19 +57,28 @@ body {
     padding: 0.5em 0.7em;
 }
 
+body {
+    padding-left: 0;
+    padding-right: 0;
+}
+
 label {
     font-weight: bold;
 }
+
 label.checkbox {
     font-weight: normal;
 }
-.bootstrap-datetimepicker-widget table {
-    margin: 0 auto;
-    width: inherit;
-}
+
 label.control-label strong.text-error {
     font-size: 1.5em;
 }
+
 #comments {
     padding: 0 10px;
+    overflow: scroll;
+}
+
+#instructions {
+    overflow: scroll;
 }
