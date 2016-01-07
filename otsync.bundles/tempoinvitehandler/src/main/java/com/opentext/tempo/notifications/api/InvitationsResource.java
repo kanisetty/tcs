@@ -1,10 +1,10 @@
 package com.opentext.tempo.notifications.api;
 
+import com.opentext.otag.api.shared.types.TrustedProvider;
+import com.opentext.otag.sdk.client.TrustedProviderClient;
 import com.opentext.otsync.annotations.PrivateApi;
-import com.opentext.otag.common.notifications.Provider;
 import com.opentext.tempo.notifications.TempoInviteHandler;
 import com.opentext.tempo.notifications.api.auth.ExternalUserAPIResult;
-import com.opentext.tempo.notifications.persistence.PersistenceHelper;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -33,20 +33,15 @@ public class InvitationsResource {
                                        @FormParam("lang") String lang) {
 
         // Check the sender's trusted provider key
-        List<Provider> providers;
-        try {
-            // use the OTAG PU as it contains the Provider
-            providers = PersistenceHelper.getGatewayEm()
-                    .createNamedQuery("getByKey", Provider.class)
-                    .setParameter("key", key)
-                    .getResultList();
-        } catch (Exception e) {
-            LOG.error("We were unable to find a provider for the supplied key " + key +
-                    ", error - " + e.getMessage(), e);
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+        TrustedProviderClient client = new TrustedProviderClient();
+        TrustedProvider provider = null;
+        List<TrustedProvider> allProviders = client.getAllProviders();
+        for (TrustedProvider trustedProvider : allProviders) {
+            if (key.equals(trustedProvider.getKey())) {
+                provider = trustedProvider;
+            }
         }
 
-        Provider provider = providers.isEmpty() ? null : providers.get(0);
         if (provider == null) {
             LOG.warn("Someone POST-ed to invitations with an invalid provider key: " + key);
             return Response.status(Response.Status.FORBIDDEN).build();

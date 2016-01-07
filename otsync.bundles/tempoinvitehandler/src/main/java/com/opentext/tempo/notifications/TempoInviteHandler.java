@@ -1,10 +1,9 @@
 package com.opentext.tempo.notifications;
 
-import org.apache.http.impl.client.DefaultHttpClient;
-import com.opentext.otag.auth.IdentityService;
-import com.opentext.otag.auth.IdentityProvider;
-import com.opentext.otag.auth.OtdsIdentityService;
-import com.opentext.otag.auth.CSIdentityService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
+import com.opentext.otsync.api.HttpClient;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.tempo.notifications.api.auth.CSExternalUserAPI;
 import com.opentext.tempo.notifications.api.auth.ExternalUserAPI;
@@ -15,6 +14,9 @@ import com.opentext.tempo.notifications.persistence.domain.NewInvitee;
 import com.opentext.tempo.notifications.persistence.domain.PasswordReset;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.NameValuePair;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.w3c.dom.Element;
 
 import javax.servlet.ServletContext;
@@ -26,26 +28,33 @@ import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 public final class TempoInviteHandler {
-    
+
     public static final Log log = LogFactory.getLog(TempoInviteHandler.class);
+
+    public static final String GET_OTDS_RESOURCEID_FUNC = "otdsintegration.getresourceid";
+
+    private static final HttpClient client = new HttpClient();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static ExternalUserAPI externalUserAPI;
 
     public static ExternalUserAPIResult handleSendInvitationAction(ServletContext servletContext,
-                                                                         String email, 
-																		 String inviterFirstName,
-                                                                         String inviterLastName,
-                                                                         String lang,
-                                                                         String folderName,
-                                                                         String folderDesc,
-																		 String extraInfo) {
+                                                                   String email,
+                                                                   String inviterFirstName,
+                                                                   String inviterLastName,
+                                                                   String lang,
+                                                                   String folderName,
+                                                                   String folderDesc,
+                                                                   String extraInfo) {
 
-        String invitername = trimParameterValue(inviterFirstName) + " " + trimParameterValue(inviterLastName); 
+        String invitername = trimParameterValue(inviterFirstName) + " " + trimParameterValue(inviterLastName);
         ExternalUserAPIResult result = new ExternalUserAPIResult();
 
         try {
@@ -54,17 +63,17 @@ public final class TempoInviteHandler {
 
             TempoInviteRepository db = new TempoInviteRepository();
 
-            Element invitee = xml.addElement(xml.getRoot(), "invitee"); 
-            invitee.setAttribute("email", email); 
-            invitee.setAttribute("inviterdisplayname", invitername); 
+            Element invitee = xml.addElement(xml.getRoot(), "invitee");
+            invitee.setAttribute("email", email);
+            invitee.setAttribute("inviterdisplayname", invitername);
 
             String token = db.addNewInvitee(email, invitername);
-            invitee.setAttribute("token", token); 
-			
-			xml.getRoot().setAttribute("foldername", folderName); 
-			xml.getRoot().setAttribute("folderdesc", folderDesc); 
-			xml.getRoot().setAttribute("extrainfo", extraInfo); 
-			
+            invitee.setAttribute("token", token);
+
+            xml.getRoot().setAttribute("foldername", folderName);
+            xml.getRoot().setAttribute("folderdesc", folderDesc);
+            xml.getRoot().setAttribute("extrainfo", extraInfo);
+
             ExternalUserEmailClient mail = new ExternalUserEmailClient();
             mail.sendInvitationEmail(servletContext, xml, email, getFolderFromLanguageString(lang, servletContext));
         } catch (Exception e) {
@@ -79,23 +88,23 @@ public final class TempoInviteHandler {
 
     private static String getFolderFromLanguageString(String lang, ServletContext context) {
         // If we can't find an appropriate language folder, default to English
-        String folder = "en"; 
+        String folder = "en";
 
         if (lang == null)
             return folder;
 
-        if (availableLanguageFolders == null){
+        if (availableLanguageFolders == null) {
             initializeLanguageFolders(context);
         }
 
-        if (availableLanguageFolders.contains(lang)){
+        if (availableLanguageFolders.contains(lang)) {
             folder = lang;
         } else {
             // get the string before the first dash, e.g. "en-US" ==> "en"
             int indexOfHyphen = lang.indexOf('-');
-            if(indexOfHyphen >= 0){
+            if (indexOfHyphen >= 0) {
                 String trimmedLang = lang.substring(0, indexOfHyphen);
-                if (availableLanguageFolders.contains(trimmedLang)){
+                if (availableLanguageFolders.contains(trimmedLang)) {
                     folder = trimmedLang;
                 }
             }
@@ -110,15 +119,15 @@ public final class TempoInviteHandler {
         // Get a list of all resources in the xsl directory, then remember the names
         // of those ending in "/", which are the sub-directories. The directory is
         // structured such that there is one of these for each available language.-
-        Set<String> resources = context.getResourcePaths("/WEB-INF/xsl/"); 
+        Set<String> resources = context.getResourcePaths("/WEB-INF/xsl/");
 
-        if(resources != null){
-            for(String path : resources){
-                if(path.endsWith("/")){
-                    File abstractPath = new File(path);
-                    folders.add(abstractPath.getName());
-                }
-            }
+        if (resources != null) {
+            resources.stream()
+                    .filter(path -> path.endsWith("/"))
+                    .forEach(path -> {
+                        File abstractPath = new File(path);
+                        folders.add(abstractPath.getName());
+                    });
         }
 
         availableLanguageFolders = folders;
@@ -131,19 +140,19 @@ public final class TempoInviteHandler {
                                                  TempoInviteRepository db,
                                                  String langFolder)
             throws ClassNotFoundException, SQLException, IOException, TransformerException {
-        Element user = xml.addElement(xml.getRoot(), "user"); 
-        String invitationtoken = request.getParameter("invitationtoken"); 
-        user.setAttribute("showstep", request.getParameter("showstep"));  
+        Element user = xml.addElement(xml.getRoot(), "user");
+        String invitationtoken = request.getParameter("invitationtoken");
+        user.setAttribute("showstep", request.getParameter("showstep"));
 
         NewInvitee newuser = db.loadInviteeFromToken(invitationtoken);
         populateUserElement(newuser, user);
 
-        generateHTMLOutput(servletContext, response, xml, langFolder + "/signupsuccess.xsl"); 
+        generateHTMLOutput(servletContext, response, xml, langFolder + "/signupsuccess.xsl");
     }
 
     /**
      * Handles the request from the user pressing the create account button on the
-     * signup validation form. User is clicking on a link in an email they received 
+     * signup validation form. User is clicking on a link in an email they received
      * when they were invited to join. A valid token should exist representing the data for
      * the user (name, email, etc).
      * </p><p>
@@ -157,40 +166,40 @@ public final class TempoInviteHandler {
                                               TempoInviteRepository db,
                                               String langFolder,
                                               Messages messages) throws Exception {
-        Element user = xml.addElement(xml.getRoot(), "user"); 
+        Element user = xml.addElement(xml.getRoot(), "user");
 
         if (request.getCharacterEncoding() == null)
             request.setCharacterEncoding("UTF-8");
 
-        String invitationtoken = request.getParameter("invitationtoken"); 
+        String invitationtoken = request.getParameter("invitationtoken");
 
         if (invitationtoken == null)
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
 
-        user.setAttribute("showstep", "none");  
+        user.setAttribute("showstep", "none");
 
         NewInvitee newuser = db.loadInviteeFromToken(invitationtoken);
         populateUserElement(newuser, user);
-        user.setAttribute("invitationtoken", invitationtoken); 
+        user.setAttribute("invitationtoken", invitationtoken);
 
         String username = newuser.getEmail();
-        user.setAttribute("username", username); 
+        user.setAttribute("username", username);
 
-        String password = trimParameterValue(request.getParameter("password")); 
-        user.setAttribute("password", password); 
+        String password = trimParameterValue(request.getParameter("password"));
+        user.setAttribute("password", password);
 
-        String password_confirm = trimParameterValue(request.getParameter("password_confirm")); 
-        user.setAttribute("password_confirm", password_confirm); 
+        String password_confirm = trimParameterValue(request.getParameter("password_confirm"));
+        user.setAttribute("password_confirm", password_confirm);
 
         String firstname = trimParameterValue(request.getParameter("firstname")
                 .replace("<", "&lt;")
-                .replace(">", "&gt;")); 
-        user.setAttribute("firstname", firstname); 
+                .replace(">", "&gt;"));
+        user.setAttribute("firstname", firstname);
 
         String lastname = trimParameterValue(request.getParameter("lastname")
                 .replace("<", "&lt;")
                 .replace(">", "&gt;"));
-        user.setAttribute("lastname", lastname); 
+        user.setAttribute("lastname", lastname);
 
         boolean isPasswordConfirmError = false, isNameMissingError = false;
 
@@ -204,26 +213,26 @@ public final class TempoInviteHandler {
 
         if (isNameMissingError || isPasswordConfirmError) {
             if (isNameMissingError) {
-                user.setAttribute("user_error", "true");  
+                user.setAttribute("user_error", "true");
             }
             if (isPasswordConfirmError) {
-                user.setAttribute("password_confirm_error", "true");  
+                user.setAttribute("password_confirm_error", "true");
             }
-            generateHTMLOutput(servletContext, response, xml, langFolder + "/signupvalidation.xsl"); 
+            generateHTMLOutput(servletContext, response, xml, langFolder + "/signupvalidation.xsl");
         } else {
             ExternalUserAPIResult result = getExternalUserAPI()
                     .inviteeValidated(newuser.getEmail(), password, firstname, lastname, new CSForwardHeaders(request));
 
             if (result.status != ExternalUserAPIResult.ResultType.SUCCESS) {
                 captureExceptionMessage(result.errMsg, user, messages);
-                generateHTMLOutput(servletContext, response, xml, langFolder + "/signupvalidation.xsl"); 
+                generateHTMLOutput(servletContext, response, xml, langFolder + "/signupvalidation.xsl");
                 return;
             }
 
             db.validateInvitee(invitationtoken, firstname, lastname);
             ExternalUserEmailClient mail = new ExternalUserEmailClient();
             mail.sendSuccessEmail(servletContext, xml, newuser.getEmail(), langFolder);
-            String showStepParam = "none"; 
+            String showStepParam = "none";
             redirect(response, request.getContextPath() + "/register/success?invitationtoken=" +
                     invitationtoken + "&showstep=" + showStepParam);
         }
@@ -232,34 +241,34 @@ public final class TempoInviteHandler {
     /**
      * Handles the request from a user clicking a validation link received in an
      * email. Here the user will be allowed to enter a password, first & last name.
-     * Called from a user who received an invitation email to join. In that case, 
-     * only the invitation token is passed in representing the invite information 
+     * Called from a user who received an invitation email to join. In that case,
+     * only the invitation token is passed in representing the invite information
      * collected.
      */
     public static void handleValidateUserAction(ServletContext servletContext,
-                                                 HttpServletRequest request, 
-                                                 HttpServletResponse response, 
-                                                 XmlPackage xml, 
-                                                 TempoInviteRepository db,
-                                                 String langFolder) 
+                                                HttpServletRequest request,
+                                                HttpServletResponse response,
+                                                XmlPackage xml,
+                                                TempoInviteRepository db,
+                                                String langFolder)
             throws ClassNotFoundException, SQLException, IOException, TransformerException {
-        
-        Element user = xml.addElement(xml.getRoot(), "user"); 
-        String invitationtoken = request.getParameter("invitationtoken"); 
+
+        Element user = xml.addElement(xml.getRoot(), "user");
+        String invitationtoken = request.getParameter("invitationtoken");
 
         NewInvitee invitee = db.loadInviteeFromToken(invitationtoken);
 
         if (invitee.getValidationdate() != null) {
             // Invitee is clicking on the link a second time after having registered already
             user.setAttribute("username", invitee.getEmail());
-            user.setAttribute("token_already_used", "true");  
+            user.setAttribute("token_already_used", "true");
         }
 
-        user.setAttribute("invitationtoken", invitationtoken); 
-        user.setAttribute("showstep", "none");  
+        user.setAttribute("invitationtoken", invitationtoken);
+        user.setAttribute("showstep", "none");
 
         populateUserElement(invitee, user);
-        generateHTMLOutput(servletContext, response, xml, langFolder + "/signupvalidation.xsl"); 
+        generateHTMLOutput(servletContext, response, xml, langFolder + "/signupvalidation.xsl");
     }
 
     /**
@@ -268,35 +277,35 @@ public final class TempoInviteHandler {
      * here by clicking a link on the signup validation web page.
      */
     public static void handleValidateExistingUser(ServletContext servletContext,
-                                                        HttpServletRequest request,
-                                                        HttpServletResponse response,
-                                                        XmlPackage xml,
-                                                        TempoInviteRepository db,
-                                                        String langFolder)
+                                                  HttpServletRequest request,
+                                                  HttpServletResponse response,
+                                                  XmlPackage xml,
+                                                  TempoInviteRepository db,
+                                                  String langFolder)
             throws ClassNotFoundException, SQLException, IOException, TransformerException {
-        Element user = xml.addElement(xml.getRoot(), "user"); 
-        String invitationtoken = request.getParameter("invitationtoken"); 
+        Element user = xml.addElement(xml.getRoot(), "user");
+        String invitationtoken = request.getParameter("invitationtoken");
 
         NewInvitee newuser = db.loadInviteeFromToken(invitationtoken);
 
         populateUserElement(newuser, user);
-        user.setAttribute("invitationtoken", invitationtoken); 
-        user.setAttribute("showstep", "none");  
+        user.setAttribute("invitationtoken", invitationtoken);
+        user.setAttribute("showstep", "none");
 
-        generateHTMLOutput(servletContext, response, xml, langFolder + "/signupexistinguser.xsl"); 
+        generateHTMLOutput(servletContext, response, xml, langFolder + "/signupexistinguser.xsl");
     }
 
     public static void handleSignupExistingUser(ServletContext servletContext,
-                                                      HttpServletRequest request,
-                                                      HttpServletResponse response,
-                                                      XmlPackage xml,
-                                                      TempoInviteRepository db,
-                                                      String langFolder)
+                                                HttpServletRequest request,
+                                                HttpServletResponse response,
+                                                XmlPackage xml,
+                                                TempoInviteRepository db,
+                                                String langFolder)
             throws ClassNotFoundException, SQLException, IOException, TransformerException {
-        Element user = xml.addElement(xml.getRoot(), "user"); 
-        user.setAttribute("showstep", "two");  
-        user.setAttribute("domain_prefix_force_show", "true");  
-        generateHTMLOutput(servletContext, response, xml, langFolder + "/signupexistinguser.xsl"); 
+        Element user = xml.addElement(xml.getRoot(), "user");
+        user.setAttribute("showstep", "two");
+        user.setAttribute("domain_prefix_force_show", "true");
+        generateHTMLOutput(servletContext, response, xml, langFolder + "/signupexistinguser.xsl");
     }
 
     /**
@@ -304,27 +313,27 @@ public final class TempoInviteHandler {
      * setup existing user form.
      */
     public static void handleSetupExistingUser(ServletContext servletContext,
-                                                     HttpServletRequest request,
-                                                     HttpServletResponse response,
-                                                     XmlPackage xml,
-                                                     TempoInviteRepository db,
-                                                     String langFolder,
-                                                     Messages messages) throws Exception {
-        Element user = xml.addElement(xml.getRoot(), "user"); 
-        String invitationtoken = request.getParameter("invitationtoken"); 
+                                               HttpServletRequest request,
+                                               HttpServletResponse response,
+                                               XmlPackage xml,
+                                               TempoInviteRepository db,
+                                               String langFolder,
+                                               Messages messages) throws Exception {
+        Element user = xml.addElement(xml.getRoot(), "user");
+        String invitationtoken = request.getParameter("invitationtoken");
 
-        user.setAttribute("invitationtoken", invitationtoken); 
-        user.setAttribute("showstep", "none");  
+        user.setAttribute("invitationtoken", invitationtoken);
+        user.setAttribute("showstep", "none");
 
-        String username = trimParameterValue(request.getParameter("username")); 
-        user.setAttribute("username", username); 
+        String username = trimParameterValue(request.getParameter("username"));
+        user.setAttribute("username", username);
 
-        String password = trimParameterValue(request.getParameter("password")); 
-        user.setAttribute("password", password); 
+        String password = trimParameterValue(request.getParameter("password"));
+        user.setAttribute("password", password);
 
         if (username.isEmpty() || password.isEmpty()) {
-            user.setAttribute("user_error", "true");  
-            generateHTMLOutput(servletContext, response, xml, langFolder + "/signupexistinguser.xsl"); 
+            user.setAttribute("user_error", "true");
+            generateHTMLOutput(servletContext, response, xml, langFolder + "/signupexistinguser.xsl");
         } else {
             NewInvitee invitee = db.loadInviteeFromToken(invitationtoken);
 
@@ -332,14 +341,14 @@ public final class TempoInviteHandler {
                     .inviteeValidated(invitee.getEmail(), username, password, new CSForwardHeaders(request));
             if (result.status != ExternalUserAPIResult.ResultType.SUCCESS) {
                 captureExceptionMessage(result.errMsg, user, messages);
-                generateHTMLOutput(servletContext, response, xml, langFolder + "/signupexistinguser.xsl"); 
+                generateHTMLOutput(servletContext, response, xml, langFolder + "/signupexistinguser.xsl");
                 return;
             }
 
-            db.validateInvitee(invitationtoken, "", "");  
+            db.validateInvitee(invitationtoken, "", "");
             ExternalUserEmailClient mail = new ExternalUserEmailClient();
             mail.sendSuccessEmail(servletContext, xml, username, langFolder);
-            String showStepParam = "none"; 
+            String showStepParam = "none";
             redirect(response, request.getContextPath() + "/register/success?invitationtoken=" +
                     invitationtoken + "&showstep=" + showStepParam);
         }
@@ -350,21 +359,21 @@ public final class TempoInviteHandler {
                                                   XmlPackage xml,
                                                   String langFolder)
             throws ClassNotFoundException, SQLException, IOException, TransformerException {
-        Element user = xml.addElement(xml.getRoot(), "user"); 
-        user.setAttribute("showstep", "one");  
-        generateHTMLOutput(servletContext, response, xml, langFolder + "/forgotpassword.xsl"); 
+        Element user = xml.addElement(xml.getRoot(), "user");
+        user.setAttribute("showstep", "one");
+        generateHTMLOutput(servletContext, response, xml, langFolder + "/forgotpassword.xsl");
     }
 
     public static void handleSendPasswordResetAction(ServletContext servletContext,
-                                                           HttpServletRequest request,
-                                                           HttpServletResponse response,
-                                                           XmlPackage xml,
-                                                           TempoInviteRepository db,
-                                                           String langFolder) throws Exception {
-        String username = trimParameterValue(request.getParameter("username")); 
+                                                     HttpServletRequest request,
+                                                     HttpServletResponse response,
+                                                     XmlPackage xml,
+                                                     TempoInviteRepository db,
+                                                     String langFolder) throws Exception {
+        String username = trimParameterValue(request.getParameter("username"));
 
-        Element user = xml.addElement(xml.getRoot(), "user"); 
-        user.setAttribute("username", username); 
+        Element user = xml.addElement(xml.getRoot(), "user");
+        user.setAttribute("username", username);
 
         boolean isBadUsernameError = false;
         boolean isUserError = false;
@@ -381,66 +390,66 @@ public final class TempoInviteHandler {
             }
         }
 
-        if (isUserError ) {
+        if (isUserError) {
             user.setAttribute("user_error", "true");
             generateHTMLOutput(servletContext, response, xml, langFolder + "/forgotpassword.xsl");
         } else {
-            user.setAttribute("email", username); 
-            if (!isBadUsernameError){
+            user.setAttribute("email", username);
+            if (!isBadUsernameError) {
                 // We have good form values. Enter them into the DB and send e-mail(s).
                 String token = db.addPasswordReset(username);
-                user.setAttribute("token", token); 
+                user.setAttribute("token", token);
                 ExternalUserEmailClient mail = new ExternalUserEmailClient();
                 mail.sendPasswordResetEmail(servletContext, xml, username, langFolder);
             }
             // we show the email sent page regardless of whether the username was valid, so
             // no-one can fish for existing e-mails
-            generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetmailsent.xsl"); 
+            generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetmailsent.xsl");
         }
     }
 
     public static void handleValidatePasswordResetAction(ServletContext servletContext,
-                                                               HttpServletRequest request,
-                                                               HttpServletResponse response,
-                                                               XmlPackage xml,
-                                                               TempoInviteRepository db,
-                                                               String langFolder)
-            throws ClassNotFoundException, SQLException, IOException, TransformerException {
-        Element user = xml.addElement(xml.getRoot(), "user");
-        String token = request.getParameter("token"); 
-
-        user.setAttribute("token", token); 
-        user.setAttribute("showstep", "two");  
-
-        PasswordReset pwReset = db.loadPasswordResetFromToken(token);
-        user.setAttribute("username", pwReset.getUsername());
-        if (pwReset.getValidationdate() != null) {
-            user.setAttribute("token_already_used", "true");  
-        }
-
-        generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetvalidation.xsl"); 
-    }
-
-    public static void handleDoPasswordResetAction(ServletContext servletContext,
                                                          HttpServletRequest request,
                                                          HttpServletResponse response,
                                                          XmlPackage xml,
                                                          TempoInviteRepository db,
-                                                         String langFolder,
-                                                         Messages messages) throws Exception {
-        Element user = xml.addElement(xml.getRoot(), "user"); 
-        String token = request.getParameter("token"); 
+                                                         String langFolder)
+            throws ClassNotFoundException, SQLException, IOException, TransformerException {
+        Element user = xml.addElement(xml.getRoot(), "user");
+        String token = request.getParameter("token");
 
-        user.setAttribute("token", token); 
-        user.setAttribute("showstep", "two");  
+        user.setAttribute("token", token);
+        user.setAttribute("showstep", "two");
 
-        String password = trimParameterValue(request.getParameter("password")); 
-        user.setAttribute("password", password); 
+        PasswordReset pwReset = db.loadPasswordResetFromToken(token);
+        user.setAttribute("username", pwReset.getUsername());
+        if (pwReset.getValidationdate() != null) {
+            user.setAttribute("token_already_used", "true");
+        }
 
-        String password_confirm = trimParameterValue(request.getParameter("password_confirm")); 
-        user.setAttribute("password_confirm", password_confirm); 
+        generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetvalidation.xsl");
+    }
 
-        boolean isPasswordConfirmError = false, isUserError=false;
+    public static void handleDoPasswordResetAction(ServletContext servletContext,
+                                                   HttpServletRequest request,
+                                                   HttpServletResponse response,
+                                                   XmlPackage xml,
+                                                   TempoInviteRepository db,
+                                                   String langFolder,
+                                                   Messages messages) throws Exception {
+        Element user = xml.addElement(xml.getRoot(), "user");
+        String token = request.getParameter("token");
+
+        user.setAttribute("token", token);
+        user.setAttribute("showstep", "two");
+
+        String password = trimParameterValue(request.getParameter("password"));
+        user.setAttribute("password", password);
+
+        String password_confirm = trimParameterValue(request.getParameter("password_confirm"));
+        user.setAttribute("password_confirm", password_confirm);
+
+        boolean isPasswordConfirmError = false, isUserError = false;
 
         if (password.length() == 0) {
             isUserError = true;
@@ -451,19 +460,19 @@ public final class TempoInviteHandler {
 
         if (isPasswordConfirmError || isUserError) {
             if (isPasswordConfirmError) {
-                user.setAttribute("password_confirm_error", "true");  
+                user.setAttribute("password_confirm_error", "true");
             }
             if (isUserError) {
-                user.setAttribute("user_error", "true");  
+                user.setAttribute("user_error", "true");
             }
-            generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetvalidation.xsl"); 
+            generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetvalidation.xsl");
         } else {
             PasswordReset pwReset = db.loadPasswordResetFromToken(token);
             user.setAttribute("username", pwReset.getUsername());
 
             if (pwReset.getValidationdate() != null) {
-                user.setAttribute("token_already_used", "true");  
-                generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetvalidation.xsl"); 
+                user.setAttribute("token_already_used", "true");
+                generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetvalidation.xsl");
                 return;
             }
 
@@ -471,17 +480,17 @@ public final class TempoInviteHandler {
             ExternalUserAPIResult result = getExternalUserAPI().userExist(pwReset.getUsername(), new CSForwardHeaders(request));
             if (result.status != ExternalUserAPIResult.ResultType.SUCCESS) {
                 captureExceptionMessage(notFoundMsg, user, messages);
-                generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetvalidation.xsl"); 
+                generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetvalidation.xsl");
                 return;
             }
 
             result = getExternalUserAPI().sendPasswordUpdate(pwReset.getUsername(), null, password, new CSForwardHeaders(request));
             if (result.status != ExternalUserAPIResult.ResultType.SUCCESS) {
                 captureExceptionMessage(notFoundMsg, user, messages);
-                generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetvalidation.xsl"); 
+                generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetvalidation.xsl");
             } else {
                 db.validatePasswordReset(token);
-                redirect(response, request.getContextPath() + "/register/successpwreset?token=" + token + "&showstep=two");  
+                redirect(response, request.getContextPath() + "/register/successpwreset?token=" + token + "&showstep=two");
             }
         }
     }
@@ -493,29 +502,29 @@ public final class TempoInviteHandler {
                                                         String langFolder)
             throws ClassNotFoundException, SQLException, IOException, TransformerException {
 
-        Element user = xml.addElement(xml.getRoot(), "user"); 
-        String token = request.getParameter("token"); 
-        user.setAttribute("token", token); 
-        user.setAttribute("showstep", request.getParameter("showstep"));  
+        Element user = xml.addElement(xml.getRoot(), "user");
+        String token = request.getParameter("token");
+        user.setAttribute("token", token);
+        user.setAttribute("showstep", request.getParameter("showstep"));
 
-        generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetsuccess.xsl"); 
+        generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetsuccess.xsl");
     }
 
     public static void generateHTMLOutput(ServletContext servletContext,
-                                                HttpServletResponse response,
-                                                XmlPackage xml,
-                                                String xslpath) throws IOException, TransformerException {
-        InputStream xsl = servletContext.getResourceAsStream("/WEB-INF/xsl/" + xslpath); 
-        String xslPath = servletContext.getRealPath("/WEB-INF/xsl/" + xslpath); 
-        response.setContentType("text/html; charset=UTF-8"); 
-        response.setCharacterEncoding("UTF-8"); 
+                                          HttpServletResponse response,
+                                          XmlPackage xml,
+                                          String xslpath) throws IOException, TransformerException {
+        InputStream xsl = servletContext.getResourceAsStream("/WEB-INF/xsl/" + xslpath);
+        String xslPath = servletContext.getRealPath("/WEB-INF/xsl/" + xslpath);
+        response.setContentType("text/html; charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
         xml.write(response.getWriter(), xslPath, xsl);
         xsl.close();
     }
 
     private static void redirect(HttpServletResponse response, String location) {
         response.setStatus(302);
-        response.setHeader("location", location); 
+        response.setHeader("location", location);
     }
 
     private static String trimParameterValue(String value) {
@@ -534,11 +543,11 @@ public final class TempoInviteHandler {
     }
 
     private static void captureExceptionMessage(String errMsg, Element userElement, Messages messages) {
-        userElement.setAttribute("webservice_error", "true");  
+        userElement.setAttribute("webservice_error", "true");
         if (errMsg != null) {
-            userElement.setAttribute("webservice_error_message", errMsg); 
+            userElement.setAttribute("webservice_error_message", errMsg);
         } else {
-            userElement.setAttribute("webservice_error_message", messages.getString("TempoInviteHandler.InternalError"));  
+            userElement.setAttribute("webservice_error_message", messages.getString("TempoInviteHandler.InternalError"));
         }
     }
 
@@ -546,23 +555,49 @@ public final class TempoInviteHandler {
         if (externalUserAPI != null)
             return externalUserAPI;
 
-        // the IdentityServiceProvider determines the implementation the Gateway is currently using
-        // so we build our external auth API handler accordingly
-        IdentityService service = IdentityProvider.getService();
-
-        if (service instanceof OtdsIdentityService) {
-            OtdsIdentityService otdsIdentityService = (OtdsIdentityService) service;
-            externalUserAPI = new OtdsExternalUserAPI(otdsIdentityService);
+        // CS will return the OTDS resource id if it has been configured to use OTDS based auth
+        if (isCsUsingOtds()) {
+            TempoNotificationsService tempoNotificationsService =
+                    AppworksComponentContext.getComponent(TempoNotificationsService.class);
+            if (tempoNotificationsService != null) {
+                log.info("Using OTDS External User API");
+                externalUserAPI = new OtdsExternalUserAPI(tempoNotificationsService.getAuthClient());
+            } else {
+                throw new RuntimeException("Failed to get TempoNotificationService component, " +
+                        "cannot create OtdsExternalUserAPI");
+            }
+        } else {
+            log.info("Using CS External User API");
+            externalUserAPI = new CSExternalUserAPI(new DefaultHttpClient());
         }
 
-        if (service instanceof CSIdentityService)
-            externalUserAPI = new CSExternalUserAPI(new DefaultHttpClient());
-
-        if (externalUserAPI == null)
-            throw new RuntimeException("Unable to resolve the IdentityService type that the " +
-                    "Gateway is using");
-
         return externalUserAPI;
+    }
+
+    private static boolean isCsUsingOtds() {
+        String csUrl = TempoNotificationsService.getCsUrl();
+        if (csUrl != null && !csUrl.isEmpty()) {
+            ArrayList<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("func", GET_OTDS_RESOURCEID_FUNC));
+            try {
+                String json = client.get(csUrl, params);
+                if (!isEmpty(json)) {
+                    JsonNode node = OBJECT_MAPPER.readTree(new StringReader(json));
+                    String resourceId = node.get("ResourceID").asText();
+
+                    return isEmpty(resourceId);
+                }
+            } catch (Exception e) {
+                log.error("Cannot determine CS resource id via func otdsintegration.getresourceid, " +
+                        "unable to determine whether CS was using OTDS or not", e);
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean isEmpty(String s) {
+        return s == null || s.trim().length() == 0;
     }
 
 }

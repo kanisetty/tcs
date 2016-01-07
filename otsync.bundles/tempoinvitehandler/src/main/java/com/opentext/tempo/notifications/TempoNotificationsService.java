@@ -3,7 +3,10 @@ package com.opentext.tempo.notifications;
 import com.opentext.otag.api.shared.types.management.DeploymentResult;
 import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
 import com.opentext.otag.api.shared.types.sdk.EIMConnector;
+import com.opentext.otag.sdk.client.AuthClient;
+import com.opentext.otag.sdk.client.MailClient;
 import com.opentext.otag.sdk.client.ServiceClient;
+import com.opentext.otag.sdk.client.SettingsClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
 import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
@@ -21,11 +24,18 @@ public class TempoNotificationsService implements AppworksServiceContextHandler 
     private EIMConnector csConnection;
     private ServiceClient serviceClient;
 
+    private AuthClient authClient;
+    private SettingsClient settingsClient;
+    private MailClient mailClient;
+
     @AppworksServiceStartupComplete
     @Override
     public void onStart(String appName) {
         LOG.info("Started Tempo Notifications service");
         serviceClient = new ServiceClient();
+        settingsClient = new SettingsClient();
+        authClient = new AuthClient();
+        mailClient = new MailClient();
 
         try {
             EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.0");
@@ -46,6 +56,18 @@ public class TempoNotificationsService implements AppworksServiceContextHandler 
     @Override
     public void onStop(String appName) {
         LOG.info("Tempo Notifications Service has stopped");
+    }
+
+    public SettingsClient getSettingsClient() {
+        return settingsClient;
+    }
+
+    public AuthClient getAuthClient() {
+        return authClient;
+    }
+
+    public MailClient getMailClient() {
+        return mailClient;
     }
 
     public String getCsConnection() {

@@ -1,6 +1,7 @@
 package com.opentext.tempo.notifications;
 
-import com.opentext.otag.api.Setting;
+import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
+import com.opentext.otag.sdk.client.SettingsClient;
 import com.opentext.tempo.notifications.persistence.TempoInviteRepository;
 import org.w3c.dom.Element;
 
@@ -24,6 +25,7 @@ public final class OtagInviteServlet extends HttpServlet {
      * we provide.
      */
     public static final String INVITE_HANDLER_SERVICE_PATH = "/tempoinvitehandler";
+    public static final String OTAG_URL = "otag.url";
 
     public OtagInviteServlet() {
         super();
@@ -106,7 +108,7 @@ public final class OtagInviteServlet extends HttpServlet {
         try {
             Properties properties = readClientsProperties(System.getProperty("catalina.base") + "/conf/tempo.clients.properties");  
 
-            String otagUrl = Setting.get(Setting.OTAG_URL);
+            String otagUrl = getOtagUrl();
 
             String webappUrl = otagUrl + "/webaccess";
             String updatePageUrl = otagUrl + "/content/update.jsp"; 
@@ -147,10 +149,10 @@ public final class OtagInviteServlet extends HttpServlet {
         XmlPackage xml = new XmlPackage();
         xml.getRoot().setAttribute("base", contextPath); 
         xml.getRoot().setAttribute("media", contextPath + "/media");  
-        xml.getRoot().setAttribute("fullbase", getBaseURL()); 
-        xml.getRoot().setAttribute("productName", Setting.getProductName()); 
-        xml.getRoot().setAttribute("shortProductName", Setting.getShortProductName()); 
-        xml.getRoot().setAttribute("companyName", Setting.getCompanyName()); 
+        xml.getRoot().setAttribute("fullbase", getBaseURL());
+        xml.getRoot().setAttribute("productName", BrandingStrings.getProductName());
+        xml.getRoot().setAttribute("shortProductName", BrandingStrings.getShortProductName());
+        xml.getRoot().setAttribute("companyName", BrandingStrings.getCompanyName());
         return xml;
     }
 
@@ -163,8 +165,13 @@ public final class OtagInviteServlet extends HttpServlet {
         return generateXmlPackage(contextPath);
     }
 
+    // TODO FIXME - You NEED to make the name of this service match the INIVITE_HANDLER_SERVICE_PATH or this wont work!
     private static String getBaseURL() {
-        return Setting.get(Setting.OTAG_URL) + INVITE_HANDLER_SERVICE_PATH;
+        return getOtagUrl() + INVITE_HANDLER_SERVICE_PATH;
+    }
+
+    private static String getOtagUrl() {
+        return getSettingValue(OTAG_URL);
     }
 
     private String getLangFolder(Locale locale) {
@@ -192,6 +199,18 @@ public final class OtagInviteServlet extends HttpServlet {
             langFolder = "zh-CN";
         }
         return langFolder;
+    }
+
+    private static String getSettingValue(String settingKey) {
+        TempoNotificationsService notificationService =
+                AppworksComponentContext.getComponent(TempoNotificationsService.class);
+        if (notificationService != null) {
+            SettingsClient client = notificationService.getSettingsClient();
+            if (client != null)
+                return client.getSettingAsString(settingKey);
+        }
+
+        return null;
     }
 
 }

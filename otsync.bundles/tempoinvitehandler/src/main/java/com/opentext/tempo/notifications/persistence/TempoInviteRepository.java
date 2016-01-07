@@ -10,6 +10,12 @@ import java.util.UUID;
 
 public class TempoInviteRepository {
 
+    private final PersistenceHelper persistenceHelper;
+
+    public TempoInviteRepository() {
+        persistenceHelper = new PersistenceHelper();
+    }
+
     public NewInvitee loadInviteeFromToken(String token) throws SQLException {
         return getEm().find(NewInvitee.class, token);
     }
@@ -91,7 +97,7 @@ public class TempoInviteRepository {
     }
 
     private EntityManager getEm() {
-        return PersistenceHelper.getTempoInviteEm();
+        return persistenceHelper.getEm();
     }
 
 }
