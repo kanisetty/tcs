@@ -31,6 +31,7 @@
         <module>tempotasks-component</module>
         <module>tempocontent</module>
         <module>tempohelp-app</module>
+        <module>tempoinvitehandler</module>
         <module>url-component</module>
         <module>workflow</module>
         <module>workflow-component</module>
@@ -41,12 +42,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <otag.platform.version>16.01-ALPHA-5</otag.platform.version>
         <!-- child modules can reference this using  -->
         <main.basedir>${project.basedir}</main.basedir>
 
         <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
-
+        <appworks.platform.version>16.01-ALPHA-6-SNAPSHOT</appworks.platform.version>
     </properties>
 
     <build>
