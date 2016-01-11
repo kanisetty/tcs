@@ -1,5 +1,7 @@
 package com.opentext.otsync.connector;
 
+import com.opentext.otag.api.shared.types.proxy.OutgoingRuleRepresentation;
+import com.opentext.otag.api.shared.types.proxy.ProxyRulesRepresentation;
 import com.opentext.otag.api.shared.util.Cookie;
 import com.opentext.otsync.connector.auth.trustedprovider.TrustedServerKeyRegistrationHandler;
 import com.opentext.otsync.rest.util.LLCookie;
@@ -109,8 +111,10 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
             resolveSettings();
             // listen for changes to our settings
             registerSettingHandlers();
+            ProxySettings proxySettings = getProxySettings();
+            ProxyRulesRepresentation proxyRules = proxySettings.getRules().iterator().next();
             EIMConnector eimConnector = new EIMConnector(getConnectorName(), getConnectorVersion(),
-                    getConnectionString(), getConnectionStringSettingKey(), getTrustedServerKey(), getProxySettings());
+                    getConnectionString(), getConnectionStringSettingKey(), getTrustedServerKey(), proxyRules);
 
             if (serviceClient.registerConnector(eimConnector)) {
                 // tell the Gateway we have finished deploying
@@ -180,7 +184,7 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
 
                 params.add(new BasicNameValuePair("func", "otsync.settings"));
                 params.add(new BasicNameValuePair("sharedKey", key));
-                
+
                 // Also use the configured otag url for this server to set up communications
                 // from the otsync notifier, and redirects for Tempo Box
                 String otagUrl = getOtagUrl();
@@ -263,11 +267,8 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
 
     @Override
     public ProxySettings getProxySettings() {
-        Set<ProxyMappingRepresentation> mappings = Sets.newHashSet(Arrays.asList(
-                new ProxyMappingRepresentation("otcs", "localhost/otcs", null),
-                new ProxyMappingRepresentation("otcs_support", "localhost/otcs_support", null)));
 
-        Set<String> whiteList = Sets.newHashSet(Arrays.asList(
+        Set<String> whitelist = Sets.newHashSet(Arrays.asList(
                 "otcs_support/.*",
                 "otcs/cs.exe?func=form.*",
                 "otcs/cs.exe/displayform.*",
@@ -285,7 +286,17 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
                 "otcs/cs.exe?func=ll&objAction=targetBrowse&formName=.*"
         ));
 
-        return new ProxySettings(mappings, whiteList);
+        ArrayList<ProxyMappingRepresentation> urlRules = new ArrayList<>(Arrays.asList(
+                new ProxyMappingRepresentation("(?i)(^otcs)/?(.*|$)", "{{cs-host}}/$1/$2",
+                        false /* continue */ , 0),
+                new ProxyMappingRepresentation("(?i)(^otcs_support)/?(.*|$)", "{{cs-host}}/$1/$2",
+                        false /* continue */ , 1)
+        ));
+
+        ProxyRulesRepresentation rulesRepresentation = new ProxyRulesRepresentation("Tempo Box", true, 0,
+                whitelist, urlRules, Collections.emptyList());
+
+        return new ProxySettings(Collections.singleton(rulesRepresentation));
     }
 
     @Override

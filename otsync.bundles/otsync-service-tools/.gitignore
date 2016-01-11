@@ -19,3 +19,5 @@ x86/
 # Maven
 log/
 target/
+
+dependency-reduced-pom.xml
