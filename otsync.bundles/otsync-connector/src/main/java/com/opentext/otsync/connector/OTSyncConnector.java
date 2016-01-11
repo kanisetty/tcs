@@ -293,7 +293,8 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
                         false /* continue */ , 1)
         ));
 
-        ProxyRulesRepresentation rulesRepresentation = new ProxyRulesRepresentation("Tempo Box", true, 0,
+        ProxyRulesRepresentation rulesRepresentation = new ProxyRulesRepresentation(
+                "OpenText Tempo Box Content Server - All versions", true, 0,
                 whitelist, urlRules, Collections.emptyList());
 
         return new ProxySettings(Collections.singleton(rulesRepresentation));
