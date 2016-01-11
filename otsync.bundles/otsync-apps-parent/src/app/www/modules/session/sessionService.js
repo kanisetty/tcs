@@ -7,6 +7,7 @@ angular.module('sessionService', ['appworksService', 'requestService', 'Request'
             var _defaultLanguage = '';
             var _systemProperties = null;
             var _clientType = 'all';
+            var _tempoAppName = "tempo";
 
             return {
 
@@ -49,8 +50,8 @@ angular.module('sessionService', ['appworksService', 'requestService', 'Request'
 
                 getClientType: function () {
 
-                    if (_appName === "tempo") {
-                        _clientType = "tempo";
+                    if (_appName === _tempoAppName) {
+                        _clientType = _tempoAppName;
                     } else {
                         _clientType = "all";
                     }
@@ -89,6 +90,10 @@ angular.module('sessionService', ['appworksService', 'requestService', 'Request'
 
                 getRootID: function (rootName) {
                     return _systemProperties[rootName];
+                },
+
+                getUserID: function(){
+                    return _systemProperties.UserID
                 },
 
                 getUsername: function () {

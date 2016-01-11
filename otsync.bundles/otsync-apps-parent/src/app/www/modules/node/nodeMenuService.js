@@ -41,6 +41,7 @@ angular.module('nodeMenuService', ['nodeResource', 'fileMenuService', 'menuItemF
 
                             //TODO Currently appworks doesn't fire a close-me with their x button. just return here so the loading closes properly
                             deferred.resolve();
+
                             return deferred.promise;
                         }));
 
@@ -115,6 +116,11 @@ angular.module('nodeMenuService', ['nodeResource', 'fileMenuService', 'menuItemF
                             modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('SHARE'), !refresh, !hasModal,
                                 function () {
                                     $navigationService.openPage('app.collaborators', {node: node});
+                                }));
+
+                            modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('TEMPO TASKS'), !refresh, !hasModal,
+                                function () {
+                                    $navigationService.openPage('app.tempotasks', {node: node});
                                 }));
                         }
                     }

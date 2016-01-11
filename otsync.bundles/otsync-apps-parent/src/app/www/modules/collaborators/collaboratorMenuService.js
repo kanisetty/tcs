@@ -1,5 +1,5 @@
-angular.module('collaboratorMenuService', ['menuItemFactory', 'collaboratorsService', 'PopoverMenu'])
-    .factory('$collaboratorMenuService', ['menuItemFactory', '$collaboratorsService', 'PopoverMenu', function (menuItemFactory, $collaboratorsService, PopoverMenu){
+angular.module('collaboratorMenuService', ['menuItemFactory', 'collaboratorsResource', 'PopoverMenu'])
+    .factory('$collaboratorMenuService', ['menuItemFactory', '$collaboratorsResource', 'PopoverMenu', function (menuItemFactory, $collaboratorsResource, PopoverMenu){
 
         return {
 
@@ -10,7 +10,7 @@ angular.module('collaboratorMenuService', ['menuItemFactory', 'collaboratorsServ
                     displayMenuItems.push(
                         menuItemFactory.createMenuItem(collaborator.getDisplayName(), true, false,
                             function () {
-                                return $collaboratorsService.addCollaborator(collaborator, node, shareType);
+                                return $collaboratorsResource.addCollaborator(collaborator, node, shareType);
                             })
                     );
                 });

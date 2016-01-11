@@ -1,7 +1,9 @@
-angular.module('collaboratorsController', ['collaboratorsService', 'collaboratorMenuService', 'collaboratorDirectives', 'headerService', 'Header'])
-    .controller('collaboratorsController', ['$scope', '$stateParams', '$headerService', '$displayMessageService','$sessionService', '$collaboratorsService', '$collaboratorMenuService',
-            '$navigationService', 'Header',
-        function ($scope, $stateParams, $headerService, $displayMessageService, $sessionService, $collaboratorsService, $collaboratorMenuService, $navigationService, Header) {
+angular.module('collaboratorsController', ['collaboratorsService', 'collaboratorsResource', 'collaboratorMenuService', 'collaboratorDirectives',
+        'headerService', 'Header'])
+    .controller('collaboratorsController', ['$scope', '$stateParams', '$headerService', '$displayMessageService','$sessionService', '$collaboratorsResource',
+            '$collaboratorsService', '$collaboratorMenuService', '$navigationService', 'Header',
+        function ($scope, $stateParams, $headerService, $displayMessageService, $sessionService, $collaboratorsResource, $collaboratorsService,
+                  $collaboratorMenuService, $navigationService, Header) {
             var READ_WRITE_IMG_URL = $sessionService.getGatewayURL() + "/content/img/read_write_drop.png";
             var READ_IMG_URL = $sessionService.getGatewayURL() + "/content/img/read_drop.png";
             var READ_PERMS = 1;
@@ -22,7 +24,7 @@ angular.module('collaboratorsController', ['collaboratorsService', 'collaborator
 
 				$headerService.setHeader(header);
 
-                $collaboratorsService.getCollaborators($stateParams.node).then(function(collaborators){
+                $collaboratorsResource.getCollaborators($stateParams.node).then(function(collaborators){
                     $displayMessageService.hideMessage();
                     $scope.collaborators = collaborators || [];
                 });
@@ -38,7 +40,7 @@ angular.module('collaboratorsController', ['collaboratorsService', 'collaborator
 
                 if ( $scope.collaboratorQuery.length > 0 ) {
 
-                    $collaboratorsService.collaboratorSearch($scope.collaboratorQuery, $scope.isReadOnlyPerms).then(function (allCollaborators) {
+                    $collaboratorsResource.collaboratorSearch($scope.collaboratorQuery, $scope.isReadOnlyPerms).then(function (allCollaborators) {
                         var collaboratorsAvailableForSharing = $collaboratorsService.getCollaboratorsAvailableForSharing($scope.collaborators, allCollaborators);
 
                         if ( collaboratorsAvailableForSharing.length > 0 ) {
@@ -74,7 +76,7 @@ angular.module('collaboratorsController', ['collaboratorsService', 'collaborator
                 confirmPopup.then(function(confirmed) {
 					if (confirmed) {
 						$displayMessageService.showDisplayMessage('LOADING');
-						$collaboratorsService.removeCollaborator($stateParams.node, collaborator).then(function () {
+						$collaboratorsResource.removeCollaborator($stateParams.node, collaborator).then(function () {
 							var index = $scope.collaborators.indexOf(collaborator);
 							$scope.collaborators.splice(index, 1);
 							$scope.clearSearchBar();

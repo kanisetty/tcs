@@ -28,7 +28,6 @@
         <module>shares</module>
         <module>tasks-component</module>
         <module>tasks</module>
-        <module>tempotasks-component</module>
         <module>tempocontent</module>
         <module>tempohelp-app</module>
         <module>url-component</module>

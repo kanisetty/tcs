@@ -46,9 +46,9 @@ public class NodeTasks extends ResourcePath {
         Message.infoPut(payload, Message.FOLDER_ID_KEY_NAME, parentNode);
         Message.infoPut(payload, Message.NAME_KEY_NAME, name);
 
-        String assigneeString = req.getParameter(Message.ASSIGNED_TO_KEY_NAME);
+        String assigneeString = req.getParameter(Message.ASSIGNED_TO_LOGIN_KEY_NAME);
         if (assigneeString != null) {
-            Message.infoPut(payload, Message.ASSIGNED_TO_KEY_NAME, assigneeString);
+            Message.infoPut(payload, Message.ASSIGNED_TO_LOGIN_KEY_NAME, assigneeString);
         }
 
         String dueDateString = req.getParameter(Message.DUE_DATE_KEY_NAME);

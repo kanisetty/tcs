@@ -1,0 +1,29 @@
+<ion-view>
+  <ion-content>
+    <ng-include src="'modules/tempotasks/tempoTaskForm.html'"></ng-include>
+    <ion-list>
+      <ion-item class="task-item" ng-repeat="tempoTask in tempoTasks">
+        <div class="task-row">
+          <div class="task-description">
+            {{tempoTask.getName()}}
+          </div>
+          <div class="delete-button" ng-click="remove(tempoTask)" ng-show="tempoTask.isRemovable()">
+            <a class="ion-close"></a>
+          </div>
+        </div>
+        <div class="task-row">
+          <div class="task-assignee-box">
+            <div>{{"ASSIGNEE"|translate}}:{{tempoTask.getAssignedToDisplayName()}}</div>
+            <div>{{"DUE"|translate}}:{{tempoTask.getDueDate() | date:'MM/dd/yy'}}</div>
+          </div>
+          <div class="task-status">
+            <select ng-change="update(tempoTask)" ng-model="tempoTask.tempoTaskData.status" ng-disabled="!tempoTask.canChangeStatus()"
+                    ng-options="status|translate for status in statusOptions">
+            </select>
+          </div>
+        </div>
+      </ion-item>
+			<ion-item class="no-tasks" ng-show="tempoTasks.length == 0">{{"NO TASKS FOUND"|translate}}</ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

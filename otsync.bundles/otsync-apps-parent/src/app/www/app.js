@@ -6,8 +6,8 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('ews', ['ionic', 'browseController', 'collaboratorsController', 'headerController', 'addToFeedController', 'navigationService',
-	'sessionService', 'displayMessageService', 'pascalprecht.translate', 'feedItemDetailController', 'ngIOS9UIWebViewPatch'] )
+angular.module('ews', ['ionic', 'browseController', 'collaboratorsController', 'headerController', 'addToFeedController', 'tempoTasksController',
+	'navigationService', 'sessionService', 'displayMessageService', 'pascalprecht.translate', 'feedItemDetailController', 'ngIOS9UIWebViewPatch'] )
 
 		.run(['$sessionService', '$injector',
 			function($sessionService) {
@@ -71,6 +71,17 @@ angular.module('ews', ['ionic', 'browseController', 'collaboratorsController', '
 						}
 					})
 
+					.state('app.tempotasks', {
+						cache: false,
+						url: '/tempotasks',
+						params: {node: null},
+						views: {
+							'menuContent' :{
+								templateUrl: 'modules/tempotasks/tempoTasks.html',
+								controller: 'tempoTasksController'
+							}
+						}
+					})
 					.state('app.feeditemdetail', {
 						cache: false,
 						url: '/feedItemDetail',
