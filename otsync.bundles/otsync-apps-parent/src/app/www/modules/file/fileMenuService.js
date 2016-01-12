@@ -2,9 +2,9 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileServi
 
 		.factory('$fileMenuService', ['menuItemFactory', '$fileResource', '$fileService', '$displayMessageService', 'File',
 			function(menuItemFactory, $fileResource, $fileService, $displayMessageService, File){
-				var refresh = true;
-				var hasModal = true;
 				var disablePromptLoading = true;
+				var hasModal = true;
+				var refresh = true;
 
 				return {
 
@@ -13,6 +13,30 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileServi
 								function () {
 									return $fileResource.downloadAndStore(node, false);
 								});
+					},
+
+					getFileMenuItemsAddVersion : function(shouldRefresh, node){
+						var fileMenuItems = [];
+
+						fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM CAMERA'), shouldRefresh, !hasModal,
+							function () {
+								return $fileResource.addVersion(node, new File(null, this.data));
+							},
+							function () {
+								return $fileService.getFileFromCamera();
+							},
+							!disablePromptLoading));
+
+						fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM GALLERY'), shouldRefresh, !hasModal,
+							function () {
+								return $fileResource.addVersion(node, new File(null, this.data));
+							},
+							function () {
+								return $fileService.getFileFromGallery();
+							},
+							!disablePromptLoading));
+
+						return fileMenuItems;
 					},
 
 					getFileMenuItemsReturnsFile: function(shouldRefresh){
@@ -62,28 +86,29 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileServi
                         ));
 						return fileMenuItems;
 					},
-                    getFileMenuItemsAddVersion : function(shouldRefresh, node){
 
-                        var fileMenuItems = [];
+					getFileMenuItemsWithUpload: function(node, shouldRefresh){
+						var fileMenuItems = [];
 
-                        fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM CAMERA'), shouldRefresh, !hasModal,
-                                function () {
-                                    return $fileResource.addVersion(node, new File(null, this.data));
-                                },
-                                function () {
-                                    return $fileService.getFileFromCamera();
-                                },
-                                !disablePromptLoading));
+						fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM CAMERA'), shouldRefresh, !hasModal,
+							function () {
+								return $fileResource.addDocument(node, new File('photo_' + Date.now() + '.jpg', this.data));
+							},
+							function () {
+								return $fileService.getFileFromCamera();
+							},
+							!disablePromptLoading));
 
-                        fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM GALLERY'), shouldRefresh, !hasModal,
-                                function () {
-                                    return $fileResource.addVersion(node, new File(null, this.data));
-                                },
-                                function () {
-                                    return $fileService.getFileFromGallery();
-                                },
-                                !disablePromptLoading));
-                        return fileMenuItems;
-                    }
+						fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM GALLERY'), shouldRefresh, !hasModal,
+							function () {
+								return $fileResource.addDocument(node, new File('photo_' + Date.now() + '.jpg', this.data));
+							},
+							function () {
+								return $fileService.getFileFromGallery();
+							},
+							!disablePromptLoading));
+
+						return fileMenuItems;
+					}
 				}
 			}]);

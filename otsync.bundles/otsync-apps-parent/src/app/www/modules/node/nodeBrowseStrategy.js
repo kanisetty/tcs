@@ -1,8 +1,11 @@
-angular.module('NodeBrowseStrategy', ['nodeService', 'nodeBrowseDecoratingService', 'NodeHeader', 'headerService', 'nodeMenuService', 'Menu'])
+angular.module('NodeBrowseStrategy', ['nodeService', 'nodeBrowseDecoratingService', 'NodeHeader', 'headerService', 'nodeMenuService', 'Menu',
+                    'WorkflowAttachmentFolderHeader'])
     .factory('NodeBrowseStrategy', ['$q', '$sessionService', '$nodeService', '$nodeBrowseDecoratingService', 'NodeHeader', '$headerService',
-        '$nodeMenuService', 'Menu',
-        function($q, $sessionService, $nodeService, $nodeBrowseDecoratingService, NodeHeader, $headerService, $nodeMenuService, Menu) {
+        '$nodeMenuService', 'Menu', 'WorkflowAttachmentFolderHeader',
+        function($q, $sessionService, $nodeService, $nodeBrowseDecoratingService, NodeHeader, $headerService, $nodeMenuService, Menu,
+                 WorkflowAttachmentFolderHeader) {
             var _rootNodeID;
+            var _workflowAttachmentFolderSubtype = 154;
 
             var NodeBrowseStrategy = function(rootName) {
                 this.rootName = rootName;
@@ -34,8 +37,15 @@ angular.module('NodeBrowseStrategy', ['nodeService', 'nodeBrowseDecoratingServic
             };
 
             NodeBrowseStrategy.prototype.initializeHeader = function(root){
+                var header;
                 var addPerms = 0x00004;
-                var header = new NodeHeader(root.getName(), (root.getPermissions() & addPerms) == addPerms);
+
+                if (root.getSubtype() == _workflowAttachmentFolderSubtype){
+                    header = new WorkflowAttachmentFolderHeader(root);
+                } else {
+                    header = new NodeHeader(root.getName(), (root.getPermissions() & addPerms) == addPerms);
+                }
+
                 $headerService.setHeader(header);
             };
 
