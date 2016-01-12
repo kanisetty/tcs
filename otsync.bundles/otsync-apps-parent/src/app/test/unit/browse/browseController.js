@@ -1,7 +1,7 @@
 describe('browseController tests', function(){
     var $scope, $controller, $q, nodesURL, displayMessageServiceMock, sessionServiceMock, $browseService, $translate, ModalMenu, browseStrategyFactory,
         $nodeService, $nodeBrowseDecoratingService, $cacheService, $favoritesService, $dummyNodeService, $displayMessageService, NodeHeader,
-        $nodeResource, FeedHeader,$navigationService, $ionicModal,$ionicHistory;
+        $nodeResource, FeedHeader,$navigationService, $ionicModal,$ionicHistory, WorkflowAttachmentFolderHeader;
     var $stateParams = {};
     var rootName = "RootName";
     var addPerms = 0x00004;
@@ -21,6 +21,7 @@ describe('browseController tests', function(){
 		$navigationService = {};
         $ionicModal = {};
 		$ionicHistory = {};
+        WorkflowAttachmentFolderHeader = {};
 
         $browseService = {
             initialize: function(){},
@@ -79,6 +80,7 @@ describe('browseController tests', function(){
             $provide.value('$stateParams', $stateParams);
             $provide.value('$ionicModal', $ionicModal);
 			$provide.value('$ionicHistory', $ionicHistory);
+            $provide.value('WorkflowAttachmentFolderHeader', WorkflowAttachmentFolderHeader);
         });
 
         inject(function (_$controller_,_$rootScope_, _$q_, _$translate_, _browseStrategyFactory_, _$dummyNodeService_, _ModalMenu_) {

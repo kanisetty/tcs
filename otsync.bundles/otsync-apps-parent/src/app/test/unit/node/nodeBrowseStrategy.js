@@ -1,6 +1,6 @@
 describe('nodeBrowseStrategy getRoot tests', function(){
     var $q, $rootScope, NodeBrowseStrategy, $sessionService, $nodeService, $nodeBrowseDecoratingService, $dummyNodeService, $headerService, NodeHeader,
-        $displayMessageService, $nodeResource, $stateParams, $ionicModal, $navigationService;
+        $displayMessageService, $nodeResource, $stateParams, $ionicModal, $navigationService, WorkflowAttachmentFolderHeader;
 
     beforeEach(module('NodeBrowseStrategy','nodeService', 'nodeBrowseDecoratingService', 'dummyNodeService'));
 
@@ -9,6 +9,7 @@ describe('nodeBrowseStrategy getRoot tests', function(){
         $ionicModal = {};
         $navigationService = {};
 		NodeHeader = {};
+        WorkflowAttachmentFolderHeader = {};
         $nodeResource = {};
         $sessionService = {};
         $headerService = {};
@@ -37,6 +38,7 @@ describe('nodeBrowseStrategy getRoot tests', function(){
             $provide.value('$stateParams', $stateParams);
             $provide.value('$navigationService', $navigationService);
             $provide.value('$ionicModal', $ionicModal);
+            $provide.value('WorkflowAttachmentFolderHeader', WorkflowAttachmentFolderHeader);
         });
 
         // The injector unwraps the underscores (_) from around the parameter names when matching
@@ -130,7 +132,7 @@ describe('nodeBrowseStrategy getRoot tests', function(){
 
 describe('nodeBrowseStrategy  getRootID tests', function(){
     var $q, $rootScope, NodeBrowseStrategy, $sessionService, $nodeService, $nodeBrowseDecoratingService, $dummyNodeService, $headerService, NodeHeader,
-        $displayMessageService, $nodeResource, $stateParams, $ionicModal, $navigationService;
+        $displayMessageService, $nodeResource, $stateParams, $ionicModal, $navigationService, WorkflowAttachmentFolderHeader;
 
     beforeEach(module('NodeBrowseStrategy','nodeService', 'nodeBrowseDecoratingService', 'dummyNodeService'));
 
@@ -139,6 +141,7 @@ describe('nodeBrowseStrategy  getRootID tests', function(){
         $ionicModal = {};
         $navigationService = {};
         NodeHeader = {};
+        WorkflowAttachmentFolderHeader = {};
         $nodeResource = {};
         $sessionService = {};
         $headerService = {};
@@ -167,6 +170,7 @@ describe('nodeBrowseStrategy  getRootID tests', function(){
             $provide.value('$stateParams', $stateParams);
             $provide.value('$navigationService', $navigationService);
             $provide.value('$ionicModal', $ionicModal);
+            $provide.value('WorkflowAttachmentFolderHeader', WorkflowAttachmentFolderHeader);
         });
 
         // The injector unwraps the underscores (_) from around the parameter names when matching

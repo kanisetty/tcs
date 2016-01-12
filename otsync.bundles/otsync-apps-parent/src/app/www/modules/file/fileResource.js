@@ -5,14 +5,31 @@ angular.module('fileResource', ['browseService', 'Request', 'cacheService', 'app
 
 				return {
 
-					addVersion: function(node, file) {
-
+                    addDocument: function(node, file) {
                         var formData = new FormData();
-                        formData.append('file', file.getFileBlob());
+                        formData.append('file', file.getFileBlob(), file.getName());
 
                         var params = {
                             method: 'POST',
-                            url:$sessionService.getContentServerURL() + '/v1/nodes/' + node.getID() + '/versions',
+                            url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + node.getID() + '/children',
+                            data: formData,
+                            transformRequest: angular.identity,
+                            headers: {'Content-Type': undefined}
+                        };
+
+                        var uploadRequest = new Request(params);
+
+                        return $sessionService.runRequest(uploadRequest);
+                    },
+
+					addVersion: function(node, file) {
+
+                        var formData = new FormData();
+                        formData.append('file', file.getFileBlob(), file.getName());
+
+                        var params = {
+                            method: 'POST',
+                            url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + node.getID() + '/content',
                             data: formData,
                             transformRequest: angular.identity,
                             headers: {'Content-Type': undefined}
