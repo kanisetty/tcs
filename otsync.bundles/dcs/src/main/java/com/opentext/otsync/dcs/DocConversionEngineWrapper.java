@@ -24,12 +24,12 @@ public class DocConversionEngineWrapper {
             String outputFileName = new File(outputPath.toString(), inputFile.getName() + ".png").getAbsolutePath();
             String doneFile = new File(outputPath.toString(), inputFile.getName() + ".dcs." + fromPage + "-" + toPage + ".done").getAbsolutePath();
             ProcessBuilder pb = new ProcessBuilder(
-                    DCSConfiguration.docConversionPath,
+                    DCSSettings.conversionEnginePath,
                     inputFile.getAbsolutePath(),
                     outputFileName,
                     doneFile,
                     fromPage + "-" + toPage,
-                    Integer.toString(DCSConfiguration.maxWidth()));
+                    Integer.toString(DCSSettings.maxWidth()));
 
             execute(pb);
 
@@ -76,7 +76,7 @@ public class DocConversionEngineWrapper {
     }
 
     private void scalePageFiles(Map<Integer, String> pageFilesMap) {
-        int maxFileSize = DCSConfiguration.maxFileSize();
+        int maxFileSize = DCSSettings.maxFileSize();
         for (Integer pageNumber : pageFilesMap.keySet()) {
             try {
                 File imageToScale = new File(pageFilesMap.get(pageNumber));
