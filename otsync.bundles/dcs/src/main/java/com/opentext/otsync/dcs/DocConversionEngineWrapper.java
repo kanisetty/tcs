@@ -3,7 +3,7 @@ package com.opentext.otsync.dcs;
 import com.opentext.otsync.dcs.utils.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.me.JSONObject;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
