@@ -21,7 +21,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <appworks.platform.version>16.01-ALPHA-5</appworks.platform.version>
     </properties>
 
     <build>

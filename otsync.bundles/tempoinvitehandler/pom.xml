@@ -2,7 +2,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
-
+                             
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -11,17 +11,25 @@
         <version>16.0.0</version>
     </parent>
 
-    <artifactId>content</artifactId>
+    <artifactId>tempoinvitehandler</artifactId>
     <packaging>war</packaging>
-    <name>Content Service</name>
-    <description>Content Server-backed APIs for document management and sharing</description>
+    <name>Tempo Notifications Service</name>
+    <description>Allows external invitees to confirm their invites, update their external profiles (passwords),
+        and receive emails regarding the invite and share.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <!-- General app.properties -->
+        <app.properties.displayName>Tempo Notifications Service</app.properties.displayName>
+        <app.properties.description>Tempo Notifications Service</app.properties.description>
+        <app.properties.version>16.0.0</app.properties.version>
+        <app.properties.minimumClientVersion>2</app.properties.minimumClientVersion>
+        <app.properties.type>service</app.properties.type>
+
         <!-- Output artifacts properties -->
-        <appworks.service.name>content</appworks.service.name>
-        <appworks.service.version>16.0.0</appworks.service.version>
+        <appworks.service.name>temponotifications</appworks.service.name>
+        <appworks.service.version>${app.properties.version}</appworks.service.version>
     </properties>
 
     <build>
@@ -62,13 +70,6 @@
                             <filtering>true</filtering>
                         </resource>
                     </webResources>
-                    <overlays>
-                      <overlay>
-                        <artifactId>webui</artifactId>
-                        <groupId>com.opentext.otsync</groupId>
-                        <type>zip</type>
-                      </overlay>
-                  </overlays>
                 </configuration>
             </plugin>
 
@@ -98,57 +99,13 @@
 
     <dependencies>
 
-      <!-- WEBUI dependencies -->
-      <dependency>
-          <groupId>com.opentext.otsync</groupId>
-          <artifactId>webui</artifactId>
-          <version>${appworks.service.version}</version>
-          <type>zip</type>
-      </dependency>
-
         <!-- OTAG dependencies -->
         <dependency>
             <groupId>com.opentext.otsync</groupId>
             <artifactId>otsync-service-tools</artifactId>
             <version>${version}</version>
         </dependency>
-
-        <!-- Make sure these elderly gents don't drag our Servlet level down -->
-        <dependency>
-            <groupId>javax.servlet.jsp.jstl</groupId>
-            <artifactId>jstl-api</artifactId>
-            <version>1.2</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>servlet-api</artifactId>
-                    <groupId>javax.servlet</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.web</groupId>
-            <artifactId>jstl-impl</artifactId>
-            <version>1.2</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>servlet-api</artifactId>
-                    <groupId>javax.servlet</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.2.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
-        </dependency>
-
+  
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -156,6 +113,42 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <!-- DBACCESS -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>2.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.opentext.otag.security</groupId>
+            <artifactId>otag-security</artifactId>
+            <version>${appworks.platform.version}</version>
+        </dependency>
+        <!-- These two are published locally by us and the vendors do
+            not publish content to Maven central -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>sqljdbc4</artifactId>
+            <version>4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.2.0.3</version>
+        </dependency>
+        <!-- DBACCESS -->
     </dependencies>
 
     <distributionManagement>

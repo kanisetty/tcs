@@ -5,18 +5,15 @@
 
     <parent>
         <groupId>com.opentext.otsync</groupId>
-        <artifactId>otsync.apps.parent</artifactId>
+        <artifactId>otsync-apps-parent</artifactId>
         <version>16.0.0</version>
     </parent>
 
     <artifactId>feeds-app</artifactId>
 	<name>Feeds App</name>
-    <description></description>
 
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
-        <appworks.platform.version>16.01-ALPHA-4</appworks.platform.version>
 
         <!-- General app.properties -->
         <app.properties.displayName>Feeds App</app.properties.displayName>

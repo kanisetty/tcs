@@ -9,15 +9,15 @@
         <version>16.0.0</version>
     </parent>
 
-    <artifactId>dcs-component</artifactId>
-	<name>Document Conversion Component</name>
+    <artifactId>tempotasks-component</artifactId>
+	<name>Tempo Tasks Component</name>
 
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- General app.properties -->
-        <app.properties.displayName>Document Conversion Component</app.properties.displayName>
-        <app.properties.description>Document Conversion Component</app.properties.description>
+        <app.properties.displayName>Tempo Tasks Component</app.properties.displayName>
+        <app.properties.description>Tempo Tasks Component</app.properties.description>
         <app.properties.version>16.0.0</app.properties.version>
         <app.properties.type>component</app.properties.type>
     </properties>

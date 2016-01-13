@@ -17,8 +17,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
-        <appworks.platform.version>16.01-ALPHA-5</appworks.platform.version>
 
         <!-- General app.properties -->
         <app.properties.displayName>Favorites Service</app.properties.displayName>
