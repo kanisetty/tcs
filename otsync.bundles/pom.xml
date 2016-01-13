@@ -31,7 +31,6 @@
         <module>tempocontent</module>
         <module>tempohelp-app</module>
         <module>tempoinvitehandler</module>
-        <module>tempotasks-component</module>
         <module>url-component</module>
         <module>workflow</module>
         <module>workflow-component</module>
