@@ -1,5 +1,6 @@
 package com.opentext.otsync.connector;
 
+import com.opentext.otag.api.shared.types.client.ClientRepresentation;
 import com.opentext.otag.api.shared.types.proxy.OutgoingRuleRepresentation;
 import com.opentext.otag.api.shared.types.proxy.ProxyRulesRepresentation;
 import com.opentext.otag.api.shared.util.Cookie;
@@ -227,7 +228,8 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
             if (csAdminUser != null && !csAdminUser.isEmpty() &&
                     csAdminPassword != null && !csAdminPassword.isEmpty()) {
                 OTSyncAuthHandler authHandler = (OTSyncAuthHandler) getAuthHandler();
-                AuthHandlerResult result = authHandler.auth(csAdminUser, csAdminPassword, new ForwardHeaders());
+                AuthHandlerResult result = authHandler.auth(csAdminUser, csAdminPassword,
+                        new ForwardHeaders(), new ClientRepresentation());
                 Map<String, Cookie> cookies = result.getCookies();
 
                 return new LLCookie(cookies);

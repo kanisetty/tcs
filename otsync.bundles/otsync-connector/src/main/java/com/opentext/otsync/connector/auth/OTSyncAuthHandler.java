@@ -2,6 +2,7 @@ package com.opentext.otsync.connector.auth;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opentext.otag.api.shared.types.client.ClientRepresentation;
 import com.opentext.otsync.api.HttpClient;
 import com.opentext.otag.sdk.handlers.AbstractAuthRequestHandler;
 import com.opentext.otag.sdk.handlers.AuthResponseDecorator;
@@ -45,8 +46,9 @@ public class OTSyncAuthHandler extends AbstractAuthRequestHandler {
      */
     OTSyncConnector connector;
 
+    // TODO FIXME - Make use of the requested ClientRepresentation
     @Override
-    public AuthHandlerResult auth(String otdsticket, ForwardHeaders headers) {
+    public AuthHandlerResult auth(String otdsticket, ForwardHeaders headers, ClientRepresentation clientDat) {
         String csUrl = getCsUrl();
         if (csUrl == null) {
             String errMsg = "No content server url defined for authorization";
@@ -68,8 +70,9 @@ public class OTSyncAuthHandler extends AbstractAuthRequestHandler {
         }
     }
 
+    // TODO FIXME - Make use of the requested ClientRepresentation
     @Override
-    public AuthHandlerResult auth(String username, String password, ForwardHeaders headers) {
+    public AuthHandlerResult auth(String username, String password, ForwardHeaders headers, ClientRepresentation clientDat) {
         String csUrl = getCsUrl();
         if (csUrl == null) {
             String errMsg = "No content server url defined for authorization";
