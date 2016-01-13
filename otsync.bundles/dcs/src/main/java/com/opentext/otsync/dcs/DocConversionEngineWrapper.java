@@ -1,19 +1,19 @@
 package com.opentext.otsync.dcs;
 
 import com.opentext.otsync.dcs.utils.IOUtils;
-import com.opentext.otsync.dcs.utils.ImageUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
+import com.opentext.otsync.dcs.utils.ImageUtils;
 
 public class DocConversionEngineWrapper {
-    private String docConversionPath = System.getProperty("catalina.base") + "/webapps/dcs/WEB-INF/DocConversionEngine/DocConversionEngine.exe";
     public static final Log log = LogFactory.getLog(DocConversionEngineWrapper.class);
 
     private static Semaphore maxProcessSemaphore = new Semaphore(10);
@@ -24,12 +24,12 @@ public class DocConversionEngineWrapper {
             String outputFileName = new File(outputPath.toString(), inputFile.getName() + ".png").getAbsolutePath();
             String doneFile = new File(outputPath.toString(), inputFile.getName() + ".dcs." + fromPage + "-" + toPage + ".done").getAbsolutePath();
             ProcessBuilder pb = new ProcessBuilder(
-                    docConversionPath,
+                    DCSSettings.conversionEnginePath,
                     inputFile.getAbsolutePath(),
                     outputFileName,
                     doneFile,
                     fromPage + "-" + toPage,
-                    "1200");
+                    Integer.toString(DCSSettings.maxWidth()));
 
             execute(pb);
 
@@ -76,14 +76,13 @@ public class DocConversionEngineWrapper {
     }
 
     private void scalePageFiles(Map<Integer, String> pageFilesMap) {
+        int maxFileSize = DCSSettings.maxFileSize();
         for (Integer pageNumber : pageFilesMap.keySet()) {
-            File imageToScale = new File(pageFilesMap.get(pageNumber));
-            if (imageToScale.length() > 256 * 1000) {
-                try {
-                    ImageUtils.scaleDocImageBeforeUpload(imageToScale, 700, true, false);
-                } catch (Exception e) {
-                    log.error("Scale page " + pageNumber + "failed.", e);
-                }
+            try {
+                File imageToScale = new File(pageFilesMap.get(pageNumber));
+                ImageUtils.scaleDocImageToProperSize(imageToScale, maxFileSize);
+            } catch (IOException e) {
+                log.error("Scale image file failed", e);
             }
         }
     }

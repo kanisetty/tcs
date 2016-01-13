@@ -1,9 +1,13 @@
 angular.module('dateService', [])
-    .factory('$dateService', ['$displayMessageService', function ($displayMessageService) {
+    .factory('$dateService', ['$displayMessageService', '$filter', function ($displayMessageService, $filter) {
         return {
 
             getCurrentDate: function(){
                 return new Date();
+            },
+
+            getFormattedNow: function(){
+                return $filter('date')(new Date(), 'yyyy-MM-dd');
             },
 
             getTimeAgo: function(dateString){
@@ -47,6 +51,20 @@ angular.module('dateService', [])
                 }
 
                 return timeAgo;
+            },
+
+            getISODateString: function(date) {
+                function _pad(n) {
+                    return n < 10 ? '0' + n : n
+                }
+
+                return  date.getUTCFullYear()
+                    + '-' + _pad(date.getUTCMonth()+1)
+                    + '-' + _pad(date.getUTCDate())
+                    + 'T' + _pad(date.getUTCHours())
+                    + ':' + _pad(date.getUTCMinutes())
+                    + ':' + _pad(date.getUTCSeconds())
+                    + 'Z';
             }
         }
     }]);

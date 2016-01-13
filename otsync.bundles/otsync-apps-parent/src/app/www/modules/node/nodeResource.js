@@ -4,6 +4,20 @@ angular.module('nodeResource', ['urlEncodingService', 'browseService', 'Request'
 
 			return {
 
+				addFolder: function (root, name) {
+
+					var requestParams = {
+						method: 'POST',
+						url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + root.getID() + '/children',
+						headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+						data: $urlEncode({name: name})
+					};
+
+					var request = new Request(requestParams);
+
+					return $sessionService.runRequest(request);
+				},
+
 				copyNode: function (node) {
 
 					return $q.when($browseService.getRootID($stateParams)).then(function(destNodeId) {

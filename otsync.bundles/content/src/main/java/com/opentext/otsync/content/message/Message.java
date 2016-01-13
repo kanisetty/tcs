@@ -34,7 +34,7 @@ public class Message extends SuspendedAction {
 	public final static String MAX_STORED_RESPONSES_KEY_NAME = "storeResponses";
 	public final static String ATTRIBUTES_KEY_NAME = "attributes";
 	public final static String FOLDER_ID_KEY_NAME = "folderID";
-	public final static String ASSIGNED_TO_KEY_NAME = "assignedTo";
+	public final static String ASSIGNED_TO_LOGIN_KEY_NAME = "assignedToLoginName";
 	public final static String DUE_DATE_KEY_NAME = "dueDate";
 	public final static String STATUS_KEY_NAME = "status";
 	public final static String TASK_ID_KEY_NAME = "taskID";

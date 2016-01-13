@@ -1,6 +1,6 @@
 describe('collaboratorsController tests', function(){
-    var $scope, $stateParams, $headerService, $displayMessageService, $sessionService, $collaboratorsService, $collaboratorMenuService, $navigationService, $controller, $q,
-        $dummyCollaboratorService, $ionicPopover, Header;
+    var $scope, $stateParams, $headerService, $displayMessageService, $sessionService, $collaboratorsResource, $collaboratorMenuService, $navigationService, $controller, $q,
+        $dummyCollaboratorService, $ionicPopover, Header, $collaboratorsService;
 
     beforeEach(module('collaboratorsController', 'dummyCollaboratorService'));
 
@@ -18,10 +18,11 @@ describe('collaboratorsController tests', function(){
 
 		$headerService = {};
         $collaboratorMenuService = {};
+        $collaboratorsService = {};
         $navigationService = {};
         $ionicPopover = {};
 
-        $collaboratorsService = {
+        $collaboratorsResource = {
             removeCollaborator: function(){}
         };
 
@@ -45,9 +46,11 @@ describe('collaboratorsController tests', function(){
             $provide.value('$displayMessageService', $displayMessageService);
             $provide.value('$navigationService', $navigationService);
             $provide.value('$sessionService', $sessionService);
-            $provide.value('$collaboratorsService', $collaboratorsService);
+            $provide.value('$collaboratorsResource', $collaboratorsResource);
             $provide.value('$ionicPopover', $ionicPopover);
             $provide.value('$collaboratorMenuService', $collaboratorMenuService);
+            $provide.value('$stateParams', $stateParams);
+            $provide.value('$collaboratorsService', $collaboratorsService);
         });
 
         inject(function (_$controller_,_$rootScope_, _$q_, _$dummyCollaboratorService_, _Header_) {
@@ -74,8 +77,8 @@ describe('collaboratorsController tests', function(){
         spyOn($displayMessageService, 'showToastMessage');
 
         var collaboratorsController = $controller('collaboratorsController', {$scope:$scope, $stateParams:$stateParams, $headerService:$headerService, $displayMessageService:$displayMessageService,
-            $sessionService:$sessionService, $collaboratorsService:$collaboratorsService, $collaboratorMenuService:$collaboratorMenuService,
-            $navigationService:$navigationService, Header:Header});
+            $sessionService:$sessionService, $collaboratorsResource:$collaboratorsResource, $collaboratorsService:$collaboratorsService,
+            $collaboratorMenuService:$collaboratorMenuService, $navigationService:$navigationService, Header:Header});
 
         $scope.collaborators = collaborators;
         $scope.removeCollaborator(collaborator);
@@ -99,15 +102,15 @@ describe('collaboratorsController tests', function(){
         spyOn($displayMessageService, 'hideMessage');
         spyOn($displayMessageService, 'showToastMessage');
 
-        spyOn($collaboratorsService, 'removeCollaborator').and.callFake(function(){
+        spyOn($collaboratorsResource, 'removeCollaborator').and.callFake(function(){
             var deferred = $q.defer();
             deferred.resolve();
             return deferred.promise;
         });
 
         var collaboratorsController = $controller('collaboratorsController', {$scope:$scope, $stateParams:$stateParams, $headerService:$headerService, $displayMessageService:$displayMessageService,
-            $sessionService:$sessionService, $collaboratorsService:$collaboratorsService, $collaboratorMenuService:$collaboratorMenuService,
-            $navigationService:$navigationService, Header:Header});
+            $sessionService:$sessionService, $collaboratorsResource:$collaboratorsResource, $collaboratorsService:$collaboratorsService,
+            $collaboratorMenuService:$collaboratorMenuService, $navigationService:$navigationService, Header:Header});
 
         $scope.collaborators = collaborators;
         $scope.removeCollaborator(collaborator);

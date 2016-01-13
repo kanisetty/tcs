@@ -1,5 +1,6 @@
 describe('browseStrategyFactory tests', function(){
-    var browseStrategyFactory, $q, $displayMessageService, NodeHeader,FeedHeader, $actionService,$navigationService, $stateParams, $ionicModal, $ionicHistory;
+    var browseStrategyFactory, $q, $displayMessageService, NodeHeader,FeedHeader, $actionService,$navigationService, $stateParams, $ionicModal, $ionicHistory,
+        WorkflowAttachmentFolderHeader;
 
     beforeEach(module('browseStrategyFactory', 'sessionService', 'nodeService', 'nodeBrowseDecoratingService', 'cacheService', 'headerService',
                         'favoritesService', 'fileService', 'feedService', 'headerService'));
@@ -8,6 +9,7 @@ describe('browseStrategyFactory tests', function(){
     beforeEach(function() {
 		$stateParams = {};
 		NodeHeader = {};
+        WorkflowAttachmentFolderHeader = {};
 		FeedHeader = {};
 		$actionService = {};
 		$navigationService = {};
@@ -30,6 +32,7 @@ describe('browseStrategyFactory tests', function(){
 			$provide.value('$stateParams', $stateParams);
 			$provide.value('$ionicModal', $ionicModal);
 			$provide.value('$ionicHistory', $ionicHistory);
+            $provide.value('WorkflowAttachmentFolderHeader', WorkflowAttachmentFolderHeader);
         });
 
         inject(function (_browseStrategyFactory_,_$rootScope_, _$q_) {

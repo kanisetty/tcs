@@ -20,6 +20,7 @@ module.exports = function(config){
       	'src/app/www/modules/menu/**/*.js',
       	'src/app/www/modules/node/**/*.js',
       	'src/app/www/modules/session/**/*.js',
+		'src/app/www/modules/tempotasks/**/*.js',
       	'src/app/www/modules/utilities/**/*.js',
       	'src/app/test/unit/browse/**/*.js',
       	'src/app/test/unit/collaborator/**/*.js',
