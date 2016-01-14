@@ -6,14 +6,26 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.opentext.otsync</groupId>
-    <artifactId>otsync.bundles</artifactId>
+    <artifactId>otsync.services</artifactId>
     <packaging>pom</packaging>
     <version>16.0.0</version>
 
-    <name>OTSync Bundles</name>
+    <name>OTSync Services</name>
 
     <modules>
-        <module>tempo-bundle</module>
+        <module>assignments</module>
+        <module>content</module>
+        <module>dcs</module>
+        <module>favorites</module>
+        <module>feeds</module>
+        <module>otsync-connector</module>
+		<module>otsync-service-tools</module>
+        <module>shares</module>
+        <module>tasks</module>
+        <module>tempocontent</module>
+        <module>tempoinvitehandler</module>
+        <module>workflow</module>
+        <module>webui</module>
     </modules>
 
     <properties>

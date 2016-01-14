@@ -6,14 +6,23 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.opentext.otsync</groupId>
-    <artifactId>otsync.bundles</artifactId>
+    <artifactId>otsync.html5</artifactId>
     <packaging>pom</packaging>
     <version>16.0.0</version>
 
-    <name>OTSync Bundles</name>
+    <name>OTSync HTML5</name>
 
     <modules>
-        <module>tempo-bundle</module>
+        <module>assignments-app</module>
+        <module>dcs-component</module>
+		<module>forms-component</module>
+        <module>objectdetails-component</module>
+        <module>otehelp-app</module>
+        <module>otsync-apps-parent</module>
+        <module>tasks-component</module>
+        <module>tempohelp-app</module>
+        <module>url-component</module>
+        <module>workflow-component</module>
     </modules>
 
     <properties>

@@ -5,7 +5,7 @@
 
     <parent>
         <groupId>com.opentext.otsync</groupId>
-        <artifactId>otsync.bundles.parent</artifactId>
+        <artifactId>otsync.bundles</artifactId>
         <version>16.0.0</version>
     </parent>
 
@@ -57,6 +57,22 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>dcs-component</artifactId>
+                                    <version>${app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>dcs</artifactId>
+                                    <version>${app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
                                     <artifactId>favorites-app</artifactId>
                                     <version>${app.properties.version}</version>
                                     <type>zip</type>
@@ -89,6 +105,14 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>tempohelp-app</artifactId>
+                                    <version>${app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
                                     <artifactId>tempo-app</artifactId>
                                     <version>${app.properties.version}</version>
                                     <type>zip</type>
@@ -105,22 +129,6 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
-                                    <artifactId>tempotasks-component</artifactId>
-                                    <version>${app.properties.version}</version>
-                                    <type>zip</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>dependencies</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.opentext.otsync</groupId>
-                                    <artifactId>tempohelp-app</artifactId>
-                                    <version>${app.properties.version}</version>
-                                    <type>zip</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>dependencies</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.opentext.otsync</groupId>
                                     <artifactId>forms-component</artifactId>
                                     <version>${app.properties.version}</version>
                                     <type>zip</type>
@@ -130,6 +138,14 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>tempoinvitehandler</artifactId>
+                                    <version>${app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>otsync-connector</artifactId>
                                     <version>${app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
