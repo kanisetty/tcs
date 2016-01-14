@@ -13,7 +13,7 @@
 
     <artifactId>tempoinvitehandler</artifactId>
     <packaging>war</packaging>
-    <name>Tempo Notifications Service</name>
+    <name>Tempo Invite Handler Service</name>
     <description>Allows external invitees to confirm their invites, update their external profiles (passwords),
         and receive emails regarding the invite and share.</description>
 
