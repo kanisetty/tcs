@@ -1,0 +1,28 @@
+# Eclipse
+#.classpath
+#.project
+.settings/
+
+#Momentix/BB
+arm-p/
+arm/
+x86/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+
+# artifact dependencies
+dependencies/
+
+
+
+otag/otag-gateway/src/main/resources/tomcat/lib/otag-tomcat-listener-2.0-SNAPSHOT.jar
