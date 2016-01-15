@@ -1,6 +1,7 @@
 angular.module('appworksService', [])
 
     .factory('$appworksService', ['$q', '$httpParamSerializerJQLike', function($q, $httpParamSerializerJQLike){
+
         return {
 
             addToCache: function(key, value, usePersistentStorage){
@@ -105,15 +106,20 @@ angular.module('appworksService', [])
             },
 
             getOTCSTICKET: function() {
-                var otcsticket = '';
+                var deferred = $q.defer();
 
-                var authObject = Appworks.Auth();
+                this.execCordovaRequest("AWAuth", "authenticate")
+                    .then(function(authResponse){
+                        if (authResponse != null && authResponse.addtl && authResponse.addtl.otsync-connector && authResponse.addtl.otsync-connector.otcsticket) {
+                            deferred.resolve(authResponse.addtl.otsync-connector.otcsticket);
+                        }else
+                            deferred.resolve('');
+                    })
+                    .catch(function(error){
+                        deferred.reject(error);
+                    });
 
-                if (authObject != null && authObject.addtl && authObject.addtl.otsync-connector && authObject.addtl.otsync-connector.otcsticket) {
-                    otcsticket = authObject.addtl.otsync-connector.otcsticket;
-                }
-
-                return otcsticket;
+                return deferred.promise;
             },
 
             isNodeInStorage: function(node, key){
