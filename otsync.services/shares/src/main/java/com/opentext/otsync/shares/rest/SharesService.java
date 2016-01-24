@@ -15,7 +15,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 
-public class SharesService implements AppworksServiceContextHandler{
+public class SharesService implements AppworksServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(SharesService.class);
 
@@ -33,12 +33,17 @@ public class SharesService implements AppworksServiceContextHandler{
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
+                String connectionUrl = csConnection.getConnectionUrl();
+                if (connectionUrl != null && !connectionUrl.isEmpty()) {
+                    serviceClient.completeDeployment(new DeploymentResult(true));
+                } else {
+                    failBuild("OTSync EIM Connector was resolved but connection URL was not valid");
+                }
             } else {
                 failBuild("Failed to resolve the OTSync EIM " +
                         "connector, message=" + connectionResult.getMessage());
             }
 
-            serviceClient.completeDeployment(new DeploymentResult(true));
         } catch (Exception e) {
             failBuild("Failed to start Shares Service, " + e.getMessage());
         }

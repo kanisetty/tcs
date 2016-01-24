@@ -26,7 +26,6 @@ public class TempoNotificationsService implements AppworksServiceContextHandler 
 
     private AuthClient authClient;
     private SettingsClient settingsClient;
-    private MailClient mailClient;
 
     @AppworksServiceStartupComplete
     @Override
@@ -35,19 +34,23 @@ public class TempoNotificationsService implements AppworksServiceContextHandler 
         serviceClient = new ServiceClient();
         settingsClient = new SettingsClient();
         authClient = new AuthClient();
-        mailClient = new MailClient();
 
         try {
             EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.0");
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
+                String connectionUrl = csConnection.getConnectionUrl();
+                if (connectionUrl != null && !connectionUrl.isEmpty()) {
+                    serviceClient.completeDeployment(new DeploymentResult(true));
+                } else {
+                    failBuild("OTSync EIM Connector was resolved but connection URL was not valid");
+                }
             } else {
                 failBuild("Failed to resolve the OTSync EIM " +
                         "connector, message=" + connectionResult.getMessage());
             }
 
-            serviceClient.completeDeployment(new DeploymentResult(true));
         } catch (Exception e) {
             failBuild("Failed to start Tempo Notifications Service, " + e.getMessage());
         }
@@ -64,10 +67,6 @@ public class TempoNotificationsService implements AppworksServiceContextHandler 
 
     public AuthClient getAuthClient() {
         return authClient;
-    }
-
-    public MailClient getMailClient() {
-        return mailClient;
     }
 
     public String getCsConnection() {

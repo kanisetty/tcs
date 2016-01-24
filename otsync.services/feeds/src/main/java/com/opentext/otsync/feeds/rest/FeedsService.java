@@ -32,12 +32,17 @@ public class FeedsService implements AppworksServiceContextHandler {
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
+                String connectionUrl = csConnection.getConnectionUrl();
+                if (connectionUrl != null && !connectionUrl.isEmpty()) {
+                    serviceClient.completeDeployment(new DeploymentResult(true));
+                } else {
+                    failBuild("OTSync EIM Connector was resolved but connection URL was not valid");
+                }
             } else {
                 failBuild("Failed to resolve the OTSync EIM " +
                         "connector, message=" + connectionResult.getMessage());
             }
 
-            serviceClient.completeDeployment(new DeploymentResult(true));
         } catch (Exception e) {
             failBuild("Failed to start Feeds Service, " + e.getMessage());
         }
@@ -50,14 +55,6 @@ public class FeedsService implements AppworksServiceContextHandler {
 
     public String getCsConnection() {
         return (csConnection != null) ? csConnection.getConnectionUrl() : null;
-    }
-
-    public static FeedsService getService() {
-        FeedsService feedsService = AppworksComponentContext.getComponent(FeedsService.class);
-        if (feedsService == null)
-            throw new RuntimeException("Unable to resolve FeedsService");
-
-        return feedsService;
     }
 
     /**

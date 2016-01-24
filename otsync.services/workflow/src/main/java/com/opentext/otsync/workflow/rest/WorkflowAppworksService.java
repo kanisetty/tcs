@@ -33,19 +33,17 @@ public class WorkflowAppworksService implements AppworksServiceContextHandler {
             ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
-
                 String connectionUrl = csConnection.getConnectionUrl();
-                LOG.info("Got a connection to OTSync, URL=" + connectionUrl);
-                LOG.info("Connection details " + csConnection.toString());
-                if (connectionUrl == null || connectionUrl.isEmpty())
-                    failBuild("Managed to resolve OTSync connector but it did not have a " +
-                            "valid URL connection String");
+                if (connectionUrl != null && !connectionUrl.isEmpty()) {
+                    serviceClient.completeDeployment(new DeploymentResult(true));
+                } else {
+                    failBuild("OTSync EIM Connector was resolved but connection URL was not valid");
+                }
             } else {
                 failBuild("Failed to resolve the OTSync EIM " +
                         "connector, message=" + connectionResult.getMessage());
             }
 
-            serviceClient.completeDeployment(new DeploymentResult(true));
         } catch (Exception e) {
             failBuild("Failed to start Workflow Service, " + e.getMessage());
         }
@@ -79,6 +77,7 @@ public class WorkflowAppworksService implements AppworksServiceContextHandler {
         LOG.error("Unable to resolve Content Server connection, all requests will be rejected");
         throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
+
     private void failBuild(String errMsg) {
         LOG.error(errMsg);
         if (!serviceClient.completeDeployment(new DeploymentResult(errMsg))) {
