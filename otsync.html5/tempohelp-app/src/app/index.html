@@ -1,147 +1,24 @@
+<!DOCTYPE html>
+<!-- Need to add a redirect to launch the correct help based on device and locale-->
 <html lang="en">
-<head>
-	    <title>OpenText Tempo Box Help</title>
+  <head>
+    <title>OpenText Tempo Box Help</title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	
 
-	<!--Builder sources -->
-	<script src="./othhUrlBuilder.js"></script>
-	<!--Encryption sources, mandatory dependency -->
-	<script src="./tripledes.js"></script>
-</head>
-<body >
-	<script type="text/javascript">
-		var url1,url2,url3,url4,url5,url6;
+  </head>
+  <body>
+    <script type="text/javascript">
+        var simpleLang= navigator.language.indexOf("-") != -1?navigator.language.substring(0,navigator.language.indexOf("-")):navigator.language;
 
-		var simpleLang= navigator.language.indexOf("-") != -1?navigator.language.substring(0,navigator.language.indexOf("-")):navigator.language;
- 
-		(function generateUrls() {
-
-			//****************************************
-			//*************** NEW STYLE **************
-			//****************************************
-			var othh1 = new OTHHUrlBuilder({
-				product: 'syncmod', //optional, default product
-				version: 'v160000', //optional, default version
-				urlRoot: 'http://docsapiqa.opentext.com/mapperpi' //optional, will default to PROD server
-			});			
-			//Basic call, using default product and version, and adding module and type
-			url1 = othh1.buildHelpUrl(simpleLang,"top-of-doc", {
-				type: 'mhp',
-				module: 'syncmod-h-ugd'
-			});
-
-
-			var othh2 = new OTHHUrlBuilder({
-				urlRoot: 'http://docsapiqa.opentext.com/mapperpi' //optional, will default to PROD server
-			});			
-			//Full call, with all the parameters, hitting the constructor's urlRoot
-			url2 = othh2.buildHelpUrl(simpleLang,"top-of-doc", {
-				product: 'syncmod',
-				version: 'v160000',
-				type: 'mhp',
-				module: 'syncmod-h-ugd'
-			});
-
-
-			//Simple instanciation, will hit PROD server and will not have defaults
-			var othh3 = new OTHHUrlBuilder();
-
-			//Full call, with all the parameters
-			url3 = othh3.buildHelpUrl(simpleLang,"top-of-doc", {
-				product: 'syncmod',
-				version: 'v160000',
-				type: 'mhp',
-				module: 'syncmod-h-ugd'
-			});
-
-
-			//****************************************
-			//************ DEPRECATED STYLE **********
-			//****************************************
-			//Builder initialized with provided product, version, and urlRoot
-			//product and version will be used if they are not specified in the call
-			//see url1 below			
-			var othh4 = new OTHHUrlBuilder({
-				product: 'syncmod', //optional, default product
-				version: '16.0.0', //optional, default version
-				urlRoot: 'http://docsapiqa.opentext.com/mapper' //optional, will default to PROD server
-			});
-			//Minimum call, needs the builder to be instanciated with default product and version
-			//Locale and context are both mandatory in all cases
-			//This example is for backward compatibility, 4 parameters is only for old cases
-			url4 = othh4.buildHelpUrl(simpleLang,"navigation-tree")
-
-
-			//****************************************
-
-			//Builder initialized only with specific urlRoot. Product and version will have to be specified
-			// on every call
-			var othh5 = new OTHHUrlBuilder({
-				urlRoot: 'http://docsapiqa.opentext.com/mapper' 
-			});
-
-			//Full call, with all the parameters
-			url5 = othh5.buildHelpUrl(simpleLang,"navigation-tree", {
-				product: 'syncmod',
-				version: '16.0.0'
-			});
-
-
-
-			//******** ILLEGAL USE ********************
-
-			var othh6 = new OTHHUrlBuilder();
-
-			//Missing product and version
-			//Will generate a failing url
-			var illegalUrl1 = othh6.buildHelpUrl(simpleLang,"top-of-doc");
-			//Missing version, nonexistent default version will be used
-			//Will generate a failing url
-			var illegalUrl2 = othh6.buildHelpUrl(simpleLang,"top-of-doc", {
-				product: 'syncmod'
-			});
-			//Missing type. Module and type have to be both specified, or both undefined
-			//Will return blank url and throw a console error
-			var illegalUrl3 = othh6.buildHelpUrl(simpleLang,"top-of-doc", {
-				product: 'syncmod',
-				version: 'v160000',
-				type: 'mhp',
-				module: 'syncmod-h-ugd'
-			});
-			//Using properly initialized othh1 builder with all the defaults, but missing context
-			//Will return blank url and throw a console error
-			var illegalUrl4 = othh1.buildHelpUrl(simpleLang, "top-of-doc");
-
-			console.log('url1: ' + url1);
-			console.log('url2: ' + url2);
-			console.log('url3: ' + url3);
-			console.log('url4: ' + url4);
-			console.log('url5: ' + url5);
-			console.log('illegalUrl1: ' + illegalUrl1);
-			console.log('illegalUrl2: ' + illegalUrl2);
-			console.log('illegalUrl3: ' + illegalUrl3);
-			console.log('illegalUrl4: ' + illegalUrl4);
-			
-			//Write the url on the page, just for demo
-			
-			
-		})();
-
-		
         if ( navigator.userAgent.match( /(iPhone|iPod|iPad)/ ) )
-           window.location.href=url2;
-		else if ( navigator.userAgent.match (/BB10/) )
-           window.location.href=url2;
+           window.location="help/"+simpleLang+"/ios/index.htm";
         else if ( navigator.userAgent.match (/Android/) )
-           window.location.href=url2;
+           window.location="help/"+simpleLang+"/android/index.htm";
         else
            alert("No help for the current type of device!");
-		   
-	</script>
 
-
-</body>
+    </script>
+  </body>
 </html>

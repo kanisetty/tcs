@@ -1,0 +1,7 @@
+.if-syncmodan-h-ugd-show { display:inline; }
+.if-syncmodan-h-ugd-showblock { display:block; }
+.if-syncmodan-h-ugd-show-trff { display:inline;    }  /* table rows in firefox (before ie! sigh) */
+.if-syncmodan-h-ugd-show-trie { display:table-row; }  /* table rows in ie */
+.if-syncmodan-h-ugd-show-tcff { display:inline; }
+.if-syncmodan-h-ugd-show-tcie { display:table-cell; }
+.if-syncmodan-h-ugd-hide { display:none; }
