@@ -1,6 +1,6 @@
 package com.opentext.tempo.notifications;
 
-import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
+import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
 import com.opentext.otag.sdk.client.SettingsClient;
 import com.opentext.tempo.notifications.persistence.TempoInviteRepository;
 import org.w3c.dom.Element;
@@ -203,7 +203,7 @@ public final class OtagInviteServlet extends HttpServlet {
 
     private static String getSettingValue(String settingKey) {
         TempoNotificationsService notificationService =
-                AppworksComponentContext.getComponent(TempoNotificationsService.class);
+                AWComponentContext.getComponent(TempoNotificationsService.class);
         if (notificationService != null) {
             SettingsClient client = notificationService.getSettingsClient();
             if (client != null)

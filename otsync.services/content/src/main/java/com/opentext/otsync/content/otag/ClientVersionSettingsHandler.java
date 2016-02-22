@@ -2,7 +2,7 @@ package com.opentext.otsync.content.otag;
 
 import com.opentext.otsync.content.ws.server.ClientTypeSet;
 import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
-import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -19,7 +19,7 @@ import static com.opentext.otsync.content.ContentServiceConstants.*;
  * in incoming authentication requests.
  */
 public class ClientVersionSettingsHandler extends AbstractMultiSettingChangeHandler
-        implements AppworksServiceContextHandler {
+        implements AWServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(ClientVersionSettingsHandler.class);
 

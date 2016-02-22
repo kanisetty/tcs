@@ -2,7 +2,7 @@ package com.opentext.tempo.notifications;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
+import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
 import com.opentext.otsync.api.HttpClient;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.tempo.notifications.api.auth.CSExternalUserAPI;
@@ -558,7 +558,7 @@ public final class TempoInviteHandler {
         // CS will return the OTDS resource id if it has been configured to use OTDS based auth
         if (isCsUsingOtds()) {
             TempoNotificationsService tempoNotificationsService =
-                    AppworksComponentContext.getComponent(TempoNotificationsService.class);
+                    AWComponentContext.getComponent(TempoNotificationsService.class);
             if (tempoNotificationsService != null) {
                 log.info("Using OTDS External User API");
                 externalUserAPI = new OtdsExternalUserAPI(tempoNotificationsService.getAuthClient());

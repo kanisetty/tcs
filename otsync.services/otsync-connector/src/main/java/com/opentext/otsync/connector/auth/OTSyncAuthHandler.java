@@ -8,7 +8,7 @@ import com.opentext.otag.sdk.handlers.AbstractAuthRequestHandler;
 import com.opentext.otag.sdk.handlers.AuthResponseDecorator;
 import com.opentext.otag.api.shared.types.auth.AuthHandlerResult;
 import com.opentext.otag.api.shared.types.auth.FailedAuthHandlerResult;
-import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
+import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
 import com.opentext.otag.api.shared.util.Cookie;
 import com.opentext.otag.api.shared.util.ForwardHeaders;
 import org.apache.commons.logging.Log;
@@ -128,7 +128,7 @@ public class OTSyncAuthHandler extends AbstractAuthRequestHandler {
     private String getCsUrl() {
         // grab the reference to the connector from our AW context
         if (connector == null)
-            connector = AppworksComponentContext.getComponent(OTSyncConnector.class);
+            connector = AWComponentContext.getComponent(OTSyncConnector.class);
 
         return (connector != null) ? connector.getConnectionString() : null;
     }

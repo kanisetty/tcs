@@ -12,8 +12,8 @@ import com.opentext.otag.sdk.client.SettingsClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient.ConnectionResult;
 import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
-import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
-import com.opentext.otag.sdk.handlers.AppworksServiceStartupComplete;
+import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,7 +31,7 @@ import java.util.Properties;
  * Content Server Appworks Service. Responds to the Gateways startup signal initialising
  * the Engine component and the rest of the service.
  */
-public class ContentServerService implements AppworksServiceContextHandler {
+public class ContentServerService implements AWServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(ContentServerService.class);
 
@@ -59,7 +59,7 @@ public class ContentServerService implements AppworksServiceContextHandler {
     private static HTTPRequestManager httpRequestManager;
 
     // this method will attempt to complete the deployment passing the result to the Gateway
-    @AppworksServiceStartupComplete
+    @AWServiceStartupComplete
     @Override
     public void onStart(String appName) {
         ServiceClient serviceClient = new ServiceClient();

@@ -1,11 +1,11 @@
 package com.opentext.otsync.assignments.rest;
 
-import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
+import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
 import com.opentext.otag.sdk.client.ServiceClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
-import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
-import com.opentext.otag.sdk.handlers.AppworksServiceStartupComplete;
+import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
 import com.opentext.otag.api.shared.types.management.DeploymentResult;
 import com.opentext.otag.api.shared.types.sdk.EIMConnector;
 import org.apache.commons.logging.Log;
@@ -14,14 +14,14 @@ import org.apache.commons.logging.LogFactory;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
-public class AssignmentsService implements AppworksServiceContextHandler {
+public class AssignmentsService implements AWServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(AssignmentsService.class);
 
     private EIMConnector csConnection;
     private ServiceClient serviceClient;
 
-    @AppworksServiceStartupComplete
+    @AWServiceStartupComplete
     @Override
     public void onStart(String appName) {
         LOG.info("Started workflow service");
@@ -59,7 +59,7 @@ public class AssignmentsService implements AppworksServiceContextHandler {
     }
 
     public static String getCsUrl() {
-        AssignmentsService assignmentsService = AppworksComponentContext.getComponent(AssignmentsService.class);
+        AssignmentsService assignmentsService = AWComponentContext.getComponent(AssignmentsService.class);
 
         if (assignmentsService != null) {
             String csConnection = assignmentsService.getCsConnection();

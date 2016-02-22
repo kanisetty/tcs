@@ -16,8 +16,8 @@ import com.opentext.otag.sdk.client.SettingsClient;
 import com.opentext.otag.sdk.client.TrustedProviderClient;
 import com.opentext.otag.sdk.connector.EIMConnectorService;
 import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
-import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
-import com.opentext.otag.sdk.handlers.AppworksServiceStartupComplete;
+import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
 import com.opentext.otag.sdk.handlers.AuthRequestHandler;
 import com.opentext.otag.sdk.provided.OtagUrlUpdateHandler;
 import com.opentext.otsync.connector.auth.OTSyncAuthHandler;
@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static com.opentext.otag.api.shared.types.sdk.AppworksComponentContext.getComponent;
+import static com.opentext.otag.api.shared.types.sdk.AWComponentContext.getComponent;
 
 /**
  * OTSync EIM Connector.
@@ -56,7 +56,7 @@ import static com.opentext.otag.api.shared.types.sdk.AppworksComponentContext.ge
  * these details.
  */
 public class OTSyncConnector extends AbstractMultiSettingChangeHandler
-        implements EIMConnectorService, AppworksServiceContextHandler {
+        implements EIMConnectorService, AWServiceContextHandler {
 
     private static final ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager();
     private static final Log LOG = LogFactory.getLog(OTSyncConnector.class);
@@ -86,7 +86,7 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
         httpClient = new DefaultHttpClient(connectionManager);
     }
 
-    @AppworksServiceStartupComplete
+    @AWServiceStartupComplete
     @Override
     public void onStart(String appName) {
         LOG.info("Starting OTSyncConnector EIM connector");

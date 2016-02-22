@@ -3,21 +3,21 @@ package com.opentext.otsync.favorites.rest;
 import com.opentext.otag.sdk.client.ServiceClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
-import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
-import com.opentext.otag.sdk.handlers.AppworksServiceStartupComplete;
+import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
 import com.opentext.otag.api.shared.types.management.DeploymentResult;
 import com.opentext.otag.api.shared.types.sdk.EIMConnector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class FavoritesService implements AppworksServiceContextHandler {
+public class FavoritesService implements AWServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(FavoritesService.class);
 
     private EIMConnector csConnection;
     private ServiceClient serviceClient;
 
-    @AppworksServiceStartupComplete
+    @AWServiceStartupComplete
     @Override
     public void onStart(String appName) {
         LOG.info("Started favorites service");

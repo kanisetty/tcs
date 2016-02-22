@@ -3,10 +3,10 @@ package com.opentext.otsync.feeds.rest;
 import com.opentext.otag.sdk.client.ServiceClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
-import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
-import com.opentext.otag.sdk.handlers.AppworksServiceStartupComplete;
+import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
 import com.opentext.otag.api.shared.types.management.DeploymentResult;
-import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
+import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
 import com.opentext.otag.api.shared.types.sdk.EIMConnector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,14 +14,14 @@ import org.apache.commons.logging.LogFactory;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
-public class FeedsService implements AppworksServiceContextHandler {
+public class FeedsService implements AWServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(FeedsService.class);
 
     private EIMConnector csConnection;
     private ServiceClient serviceClient;
 
-    @AppworksServiceStartupComplete
+    @AWServiceStartupComplete
     @Override
     public void onStart(String appName) {
         LOG.info("Started feeds service");
@@ -65,7 +65,7 @@ public class FeedsService implements AppworksServiceContextHandler {
      * @throws WebApplicationException 403, if we haven't managed to get a connection URL
      */
     public static String getCsUrl() {
-        FeedsService feedsService = AppworksComponentContext.getComponent(FeedsService.class);
+        FeedsService feedsService = AWComponentContext.getComponent(FeedsService.class);
         if (feedsService == null) {
             LOG.error("Unable to resolve FeedsService, unable to get Content Server connection");
             throw new WebApplicationException(Response.Status.FORBIDDEN);

@@ -1,7 +1,7 @@
 package com.opentext.tempo.notifications;
 
 import com.opentext.otag.api.shared.types.management.DeploymentResult;
-import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
+import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
 import com.opentext.otag.api.shared.types.sdk.EIMConnector;
 import com.opentext.otag.sdk.client.AuthClient;
 import com.opentext.otag.sdk.client.MailClient;
@@ -9,15 +9,15 @@ import com.opentext.otag.sdk.client.ServiceClient;
 import com.opentext.otag.sdk.client.SettingsClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
-import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
-import com.opentext.otag.sdk.handlers.AppworksServiceStartupComplete;
+import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
-public class TempoNotificationsService implements AppworksServiceContextHandler {
+public class TempoNotificationsService implements AWServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(TempoNotificationsService.class);
 
@@ -27,7 +27,7 @@ public class TempoNotificationsService implements AppworksServiceContextHandler 
     private AuthClient authClient;
     private SettingsClient settingsClient;
 
-    @AppworksServiceStartupComplete
+    @AWServiceStartupComplete
     @Override
     public void onStart(String appName) {
         LOG.info("Started Tempo Notifications service");
@@ -74,7 +74,7 @@ public class TempoNotificationsService implements AppworksServiceContextHandler 
     }
 
     public static String getCsUrl() {
-        TempoNotificationsService tempoNotificationsService = AppworksComponentContext.getComponent(TempoNotificationsService.class);
+        TempoNotificationsService tempoNotificationsService = AWComponentContext.getComponent(TempoNotificationsService.class);
 
         if (tempoNotificationsService != null) {
             String csConnection = tempoNotificationsService.getCsConnection();

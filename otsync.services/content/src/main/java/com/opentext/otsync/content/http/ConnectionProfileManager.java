@@ -4,7 +4,7 @@ import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.otag.SettingsService;
 import com.opentext.otag.sdk.client.SettingsClient;
 import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
-import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.params.HttpClientParams;
@@ -18,7 +18,7 @@ import java.util.Set;
  * Encapsulates the HTTP connection profile we use to communicate with Content Server.
  * Handles changes tot
  */
-public class ConnectionProfileManager extends AbstractMultiSettingChangeHandler implements AppworksServiceContextHandler {
+public class ConnectionProfileManager extends AbstractMultiSettingChangeHandler implements AWServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(ConnectionProfileManager.class);
 

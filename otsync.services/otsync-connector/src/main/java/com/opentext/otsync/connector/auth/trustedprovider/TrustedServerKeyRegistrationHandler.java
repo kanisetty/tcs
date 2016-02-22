@@ -3,9 +3,9 @@ package com.opentext.otsync.connector.auth.trustedprovider;
 import com.opentext.otag.api.shared.util.StringObfuscator;
 import com.opentext.otag.sdk.client.TrustedProviderClient;
 import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
-import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.api.shared.types.TrustedProvider;
-import com.opentext.otag.api.shared.types.sdk.AppworksComponentContext;
+import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
 import com.opentext.otsync.connector.auth.registration.AuthRegistrationHandler;
 import com.opentext.otsync.connector.OTSyncConnectorConstants;
 import com.opentext.otsync.connector.OTSyncConnector;
@@ -22,13 +22,13 @@ import java.util.Set;
  * will attempt the registration, we might not be able to register right
  * away as we need CS auth to be setup to do the registration.
  * <p>
- * As it is an {@code AppworksServiceContextHandler} implementation it will
+ * As it is an {@code AWServiceContextHandler} implementation it will
  * be informed when the service is started and stopped.
  *
  * @see com.opentext.otsync.connector.OTSyncConnector#registerTrustedServerKey(String, String)
  */
 public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingChangeHandler
-        implements AppworksServiceContextHandler {
+        implements AWServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(TrustedServerKeyRegistrationHandler.class);
 
@@ -59,7 +59,7 @@ public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingCha
     }
 
     public void updateProviderKey(String updatedKey) {
-        OTSyncConnector connector = AppworksComponentContext.getComponent(OTSyncConnector.class);
+        OTSyncConnector connector = AWComponentContext.getComponent(OTSyncConnector.class);
         if (connector != null) {
             connector.registerTrustedServerKey(connector.getTrustedServerName(), updatedKey);
         } else {
@@ -111,11 +111,11 @@ public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingCha
 
         public RegisterKeyThread(TrustedProviderClient providerClient) {
             super("Register Trusted Provider Key Thread");
-            connector = AppworksComponentContext.getComponent(OTSyncConnector.class);
-            authRegistrationHandler = AppworksComponentContext.getComponent(AuthRegistrationHandler.class);
+            connector = AWComponentContext.getComponent(OTSyncConnector.class);
+            authRegistrationHandler = AWComponentContext.getComponent(AuthRegistrationHandler.class);
 
             if (connector == null)
-                throw new IllegalStateException("Unable to resolve connector via the AppworksComponentContext");
+                throw new IllegalStateException("Unable to resolve connector via the AWComponentContext");
 
             TrustedProvider provider = providerClient.getOrCreate(connector.getTrustedServerName());
 
@@ -153,7 +153,7 @@ public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingCha
             if (authRegistrationHandler != null)
                 return authRegistrationHandler.isAuthRegistered();
 
-            authRegistrationHandler = AppworksComponentContext.getComponent(AuthRegistrationHandler.class);
+            authRegistrationHandler = AWComponentContext.getComponent(AuthRegistrationHandler.class);
             return authRegistrationHandler != null && authRegistrationHandler.isAuthRegistered();
         }
 

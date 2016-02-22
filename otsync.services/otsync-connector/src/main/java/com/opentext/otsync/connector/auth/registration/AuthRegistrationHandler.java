@@ -2,7 +2,7 @@ package com.opentext.otsync.connector.auth.registration;
 
 import com.opentext.otag.sdk.client.AuthClient;
 import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
-import com.opentext.otag.sdk.handlers.AppworksServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import jersey.repackaged.com.google.common.collect.Sets;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +24,7 @@ import java.util.Set;
  * @see RegisterAuthProviderThread
  * @see com.opentext.otsync.connector.auth.OTSyncAuthHandler
  */
-public class AuthRegistrationHandler extends AbstractMultiSettingChangeHandler implements AppworksServiceContextHandler {
+public class AuthRegistrationHandler extends AbstractMultiSettingChangeHandler implements AWServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(AuthRegistrationHandler.class);
 
