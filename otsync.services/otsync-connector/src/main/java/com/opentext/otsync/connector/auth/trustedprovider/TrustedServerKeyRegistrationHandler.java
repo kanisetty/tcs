@@ -5,7 +5,7 @@ import com.opentext.otag.sdk.client.TrustedProviderClient;
 import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.api.shared.types.TrustedProvider;
-import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
+import com.opentext.otag.deployments.shared.AWComponentContext;
 import com.opentext.otsync.connector.auth.registration.AuthRegistrationHandler;
 import com.opentext.otsync.connector.OTSyncConnectorConstants;
 import com.opentext.otsync.connector.OTSyncConnector;

@@ -4,7 +4,7 @@ import com.opentext.otag.sdk.client.AuthClient;
 import com.opentext.otag.sdk.client.SettingsClient;
 import com.opentext.otag.api.shared.types.auth.AuthHandler;
 import com.opentext.otag.api.shared.types.auth.RegisterAuthHandlersRequest;
-import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
+import com.opentext.otag.deployments.shared.AWComponentContext;
 import com.opentext.otag.api.shared.types.settings.Setting;
 import com.opentext.otsync.connector.auth.OTSyncAuthHandler;
 import com.opentext.otsync.connector.OTSyncConnectorConstants;

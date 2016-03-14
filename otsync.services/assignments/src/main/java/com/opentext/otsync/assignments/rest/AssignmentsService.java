@@ -1,6 +1,6 @@
 package com.opentext.otsync.assignments.rest;
 
-import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
+import com.opentext.otag.deployments.shared.AWComponentContext;
 import com.opentext.otag.sdk.client.ServiceClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;

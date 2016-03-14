@@ -1,7 +1,7 @@
 package com.opentext.otsync.favorites.rest;
 
 import com.opentext.otsync.api.CSRequest;
-import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
+import com.opentext.otag.deployments.shared.AWComponentContext;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

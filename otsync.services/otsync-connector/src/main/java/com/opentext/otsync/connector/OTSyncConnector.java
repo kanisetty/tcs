@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static com.opentext.otag.api.shared.types.sdk.AWComponentContext.getComponent;
+import static com.opentext.otag.deployments.shared.AWComponentContext.getComponent;
 
 /**
  * OTSync EIM Connector.

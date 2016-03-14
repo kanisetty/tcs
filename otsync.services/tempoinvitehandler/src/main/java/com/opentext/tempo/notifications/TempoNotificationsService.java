@@ -1,7 +1,7 @@
 package com.opentext.tempo.notifications;
 
 import com.opentext.otag.api.shared.types.management.DeploymentResult;
-import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
+import com.opentext.otag.deployments.shared.AWComponentContext;
 import com.opentext.otag.api.shared.types.sdk.EIMConnector;
 import com.opentext.otag.sdk.client.AuthClient;
 import com.opentext.otag.sdk.client.MailClient;

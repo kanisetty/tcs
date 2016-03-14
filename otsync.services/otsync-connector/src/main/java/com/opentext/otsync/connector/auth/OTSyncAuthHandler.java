@@ -8,7 +8,7 @@ import com.opentext.otag.sdk.handlers.AbstractAuthRequestHandler;
 import com.opentext.otag.sdk.handlers.AuthResponseDecorator;
 import com.opentext.otag.api.shared.types.auth.AuthHandlerResult;
 import com.opentext.otag.api.shared.types.auth.FailedAuthHandlerResult;
-import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
+import com.opentext.otag.deployments.shared.AWComponentContext;
 import com.opentext.otag.api.shared.util.Cookie;
 import com.opentext.otag.api.shared.util.ForwardHeaders;
 import org.apache.commons.logging.Log;

@@ -1,8 +1,8 @@
 package com.opentext.tempo.notifications.persistence;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.opentext.otag.api.shared.util.AppWorksConfig;
 import com.opentext.otag.api.shared.util.UrlPathUtil;
+import com.opentext.otag.deployments.shared.AWConfig;
 import com.opentext.otag.security.EncryptedProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,7 +64,7 @@ public class PersistenceHelper {
      * @return db values from encrypted properties file
      */
     private EncryptedProperties getDbProperties() {
-        AppWorksConfig propsHelper = new AppWorksConfig();
+        AWConfig propsHelper = new AWConfig();
         String appKey = propsHelper.getAppKey();
         String appName = propsHelper.getAppName();
 
@@ -160,7 +160,7 @@ public class PersistenceHelper {
     }
 
     private EncryptedProperties loadDbAccessProps(String appKey, String propsPath) {
-        EncryptedProperties dbAccessProps = new EncryptedProperties(appKey);
+        EncryptedProperties dbAccessProps = new EncryptedProperties(appKey.toCharArray());
         try (FileInputStream fis = new FileInputStream(propsPath)) {
             dbAccessProps.load(fis);
         } catch (Exception e) {

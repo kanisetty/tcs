@@ -1,6 +1,6 @@
 package com.opentext.tempo.notifications;
 
-import com.opentext.otag.api.shared.types.sdk.AWComponentContext;
+import com.opentext.otag.deployments.shared.AWComponentContext;
 import com.opentext.otag.sdk.client.SettingsClient;
 import com.opentext.tempo.notifications.persistence.TempoInviteRepository;
 import org.w3c.dom.Element;
