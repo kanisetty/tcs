@@ -1,5 +1,6 @@
 package com.opentext.otsync.content.engine.core;
 
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.content.engine.threading.NamedThreadFactory;
 import com.opentext.otsync.content.otag.ContentServerService;
 import com.opentext.otsync.content.otag.SettingsService;
@@ -62,8 +63,14 @@ public class SuspendedActionQueue {
     }
 
     private boolean wantFrontChannelLogs() {
-        SettingsService settingsService = ContentServerService.getSettingsService();
-        return (settingsService != null) && settingsService.wantFrontChannelLogs();
+        try {
+            SettingsService settingsService = ContentServerService.getSettingsService();
+            return (settingsService != null) && settingsService.wantFrontChannelLogs();
+        } catch (APIException e) {
+            String errMsg = "Failed to retrieve setting";
+            LOG.error(errMsg + " - " + e.getCallInfo());
+            throw new RuntimeException(errMsg, e);
+        }
     }
 
     public void setThreads(int threadCount) {

@@ -1,22 +1,5 @@
 package com.opentext.otsync.api;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.Response.Status.Family;
-import javax.ws.rs.core.Response.StatusType;
-import javax.ws.rs.core.StreamingOutput;
-
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -34,7 +17,15 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import 	java.util.Iterator;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.Status.Family;
+import javax.ws.rs.core.Response.StatusType;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.List;
 
 public class CSMultiPartRequest implements StreamingOutput {
 	public static final Log log = LogFactory.getLog(CSRequest.class);

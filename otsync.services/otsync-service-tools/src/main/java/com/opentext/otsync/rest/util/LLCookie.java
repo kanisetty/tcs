@@ -1,10 +1,10 @@
 package com.opentext.otsync.rest.util;
 
+import com.opentext.otag.sdk.util.Cookie;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import com.opentext.otag.api.shared.util.Cookie;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;

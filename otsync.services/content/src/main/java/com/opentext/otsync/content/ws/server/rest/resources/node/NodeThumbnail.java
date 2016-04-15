@@ -1,5 +1,6 @@
 package com.opentext.otsync.content.ws.server.rest.resources.node;
 
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.content.engine.core.SuspendedAction;
 import com.opentext.otsync.content.http.HTTPRequestManager;
 import com.opentext.otsync.content.message.Message;
@@ -7,6 +8,8 @@ import com.opentext.otsync.content.otag.ContentServerService;
 import com.opentext.otsync.content.ws.server.rest.AdminAPI;
 import com.opentext.otsync.content.ws.server.rest.ResourcePath;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
 public class NodeThumbnail extends ResourcePath {
+
+    public final Log log = LogFactory.getLog(NodeThumbnail.class);
+
     @Override
     protected String getPath() {
         return "thumbnail";
@@ -60,7 +66,13 @@ public class NodeThumbnail extends ResourcePath {
                     .toString();
 
             AsyncContext asyncRequest = req.startAsync();
-            asyncRequest.setTimeout(getSettingsService().getServlet3RequestTimeout());
+            try {
+                asyncRequest.setTimeout(getSettingsService().getServlet3RequestTimeout());
+            } catch (APIException e) {
+                log.error("Failed to resolve the request timeout setting - " + e.getCallInfo());
+                rejectRequest(resp);
+                return;
+            }
 
             HTTPRequestManager serverConnection = getServerConnection();
 

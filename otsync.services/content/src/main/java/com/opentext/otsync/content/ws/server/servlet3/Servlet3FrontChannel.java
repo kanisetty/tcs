@@ -1,6 +1,7 @@
 package com.opentext.otsync.content.ws.server.servlet3;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.engine.core.SuspendedActionQueue;
 import com.opentext.otsync.content.listeners.SynchronousMessageSwitch;
@@ -44,7 +45,11 @@ public class Servlet3FrontChannel {
         try {
             asyncRequest = request.startAsync();
             response = (HttpServletResponse) asyncRequest.getResponse();
-            asyncRequest.setTimeout(settingsService.getServlet3RequestTimeout());
+            try {
+                asyncRequest.setTimeout(settingsService.getServlet3RequestTimeout());
+            } catch (APIException e) {
+                throw new RuntimeException("Failed to get request timeout setting from Gateway", e);
+            }
 
             ServletUtil.ensureMethod(request, response, ContentServiceConstants.METHOD_POST);
             ServletUtil.ensureMediaType(request, response, ContentServiceConstants.MEDIA_TYPE_JSON);
@@ -98,9 +103,14 @@ public class Servlet3FrontChannel {
         sendFrontChannelPayload(request, payload, null, enqueue);
     }
 
-    public void sendFrontChannelPayload(HttpServletRequest request, Map<String, Object> payload, Map<String, Object> extraData, boolean enqueue) {
+    public void sendFrontChannelPayload(HttpServletRequest request, Map<String, Object> payload,
+                                        Map<String, Object> extraData, boolean enqueue) {
         AsyncContext asyncRequest = request.startAsync();
-        asyncRequest.setTimeout(settingsService.getServlet3RequestTimeout());
+        try {
+            asyncRequest.setTimeout(settingsService.getServlet3RequestTimeout());
+        } catch (APIException e) {
+            throw new RuntimeException("Could not resolve request timeout", e);
+        }
         sendFrontChannelPayload(request, asyncRequest, payload, extraData, enqueue);
     }
 

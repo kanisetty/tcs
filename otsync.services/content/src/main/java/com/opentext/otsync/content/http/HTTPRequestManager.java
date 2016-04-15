@@ -1,6 +1,7 @@
 package com.opentext.otsync.content.http;
 
-import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
+import com.opentext.otag.sdk.types.v3.message.SettingsChangeMessage;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.otag.sdk.handlers.AbstractSettingChangeHandler;
 import com.opentext.otsync.content.ContentServiceConstants;
@@ -87,8 +88,14 @@ public class HTTPRequestManager {
     }
 
     private static void setConnectionPool() {
-        connectionManager.setDefaultMaxPerRoute(settingsService.getCSConnectionPoolSize());
-        connectionManager.setMaxTotal(settingsService.getCSConnectionPoolSize());
+        try {
+            connectionManager.setDefaultMaxPerRoute(settingsService.getCSConnectionPoolSize());
+            connectionManager.setMaxTotal(settingsService.getCSConnectionPoolSize());
+        } catch (APIException e) {
+            String errMsg = "Failed to set connection pool details";
+            log.error(errMsg + " - " + e.getCallInfo());
+            throw new RuntimeException(errMsg, e);
+        }
     }
 
     public String postData(String serverUrl, Map<String, String> parameters, HttpServletRequest incoming) throws IOException {

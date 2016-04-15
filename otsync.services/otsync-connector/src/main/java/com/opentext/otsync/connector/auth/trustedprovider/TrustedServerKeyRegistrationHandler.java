@@ -1,14 +1,14 @@
 package com.opentext.otsync.connector.auth.trustedprovider;
 
-import com.opentext.otag.api.shared.util.StringObfuscator;
-import com.opentext.otag.sdk.client.TrustedProviderClient;
-import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
+import com.opentext.otag.sdk.client.v3.TrustedProviderClient;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
-import com.opentext.otag.api.shared.types.TrustedProvider;
-import com.opentext.otag.deployments.shared.AWComponentContext;
-import com.opentext.otsync.connector.auth.registration.AuthRegistrationHandler;
-import com.opentext.otsync.connector.OTSyncConnectorConstants;
+import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
+import com.opentext.otag.sdk.types.v3.TrustedProvider;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
+import com.opentext.otag.service.context.components.AWComponentContext;
 import com.opentext.otsync.connector.OTSyncConnector;
+import com.opentext.otsync.connector.OTSyncConnectorConstants;
+import com.opentext.otsync.connector.auth.registration.AuthRegistrationHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,7 +25,7 @@ import java.util.Set;
  * As it is an {@code AWServiceContextHandler} implementation it will
  * be informed when the service is started and stopped.
  *
- * @see com.opentext.otsync.connector.OTSyncConnector#registerTrustedServerKey(String, String)
+ * @see com.opentext.otsync.connector.OTSyncConnector#registerTrustedProviderKey(String, String)
  */
 public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingChangeHandler
         implements AWServiceContextHandler {
@@ -52,8 +52,7 @@ public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingCha
             restartTrustedKeyThread();
         });
         addHandler(OTSyncConnectorConstants.CS_ADMIN_PWORD, (s) -> {
-            LOG.info("Restarting trusted server key thread as " + OTSyncConnectorConstants.CS_ADMIN_PWORD + " was changed to " +
-                    StringObfuscator.obfuscate(s.getNewValue()));
+            LOG.info("Restarting trusted server key thread as " + OTSyncConnectorConstants.CS_ADMIN_PWORD + " was changed");
             restartTrustedKeyThread();
         });
     }
@@ -61,7 +60,7 @@ public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingCha
     public void updateProviderKey(String updatedKey) {
         OTSyncConnector connector = AWComponentContext.getComponent(OTSyncConnector.class);
         if (connector != null) {
-            connector.registerTrustedServerKey(connector.getTrustedServerName(), updatedKey);
+            connector.registerTrustedProviderKey(connector.getTrustedProviderName(), updatedKey);
         } else {
             LOG.warn("Failed to force provider key update as we could not resolve the OTSyncConnector");
         }
@@ -117,13 +116,21 @@ public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingCha
             if (connector == null)
                 throw new IllegalStateException("Unable to resolve connector via the AWComponentContext");
 
-            TrustedProvider provider = providerClient.getOrCreate(connector.getTrustedServerName());
+            String errMessage = "Failed to retrieve/create Trusted Provider Key";
+            TrustedProvider provider = null;
+            try {
+                provider = providerClient.getOrCreate(connector.getTrustedProviderName());
+            } catch (APIException e) {
+                LOG.error(errMessage + " - " + e.getCallInfo(), e);
+                throw new RuntimeException(errMessage);
+            }
 
-            if (provider == null)
-                throw new RuntimeException("Failed to retrieve/create Trusted Provider Key");
+            if (provider == null) {
+                throw new RuntimeException(errMessage);
+            }
 
             trustedServerKey = provider.getKey();
-            trustedServerName = connector.getTrustedServerName();
+            trustedServerName = connector.getTrustedProviderName();
         }
 
         @Override
@@ -134,7 +141,7 @@ public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingCha
                 if (authRegistered()) {
                     LOG.info("Detected CS Auth Handler has been registered attempted to contact " +
                             "Content Server with Trusted provider key");
-                    if (connector.registerTrustedServerKey(trustedServerName, trustedServerKey)) {
+                    if (connector.registerTrustedProviderKey(trustedServerName, trustedServerKey)) {
                         keepRunning = false;
                         LOG.info("Registered Trusted Provider key with Content Server");
                     } else {

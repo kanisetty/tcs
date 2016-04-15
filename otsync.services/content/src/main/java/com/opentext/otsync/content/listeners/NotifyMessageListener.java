@@ -1,7 +1,7 @@
 package com.opentext.otsync.content.listeners;
 
-import com.opentext.otag.api.shared.types.notification.NotificationSeqBounds;
-import com.opentext.otag.sdk.client.NotificationsClient;
+import com.opentext.otag.sdk.client.v3.NotificationsClient;
+import com.opentext.otag.sdk.types.v3.notification.NotificationSeqBounds;
 import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.http.HTTPRequestManager;
 import com.opentext.otsync.content.message.Message;

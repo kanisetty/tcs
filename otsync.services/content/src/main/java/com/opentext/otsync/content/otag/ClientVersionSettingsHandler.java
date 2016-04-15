@@ -1,8 +1,9 @@
 package com.opentext.otsync.content.otag;
 
-import com.opentext.otsync.content.ws.server.ClientTypeSet;
-import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
+import com.opentext.otsync.content.ws.server.ClientTypeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -28,41 +29,51 @@ public class ClientVersionSettingsHandler extends AbstractMultiSettingChangeHand
 
         LOG.info("Registering settings handlers for Client Version settings");
 
+        String errMsg = "Failed to build client links - ";
+
         addHandler(MIN_VERSION_MAC, (s) -> {
             LOG.info("Restarting trusted server key thread as " +
                     MIN_VERSION_MAC + " was changed to " + s.getNewValue());
-            ClientTypeSet.buildClientLinks();
+            buildClientSet(errMsg);
         });
 
         addHandler(CUR_VERSION_MAC, (s) -> {
             LOG.info("Restarting trusted server key thread as " +
                     CUR_VERSION_MAC + " was changed to " + s.getNewValue());
-            ClientTypeSet.buildClientLinks();
+            buildClientSet(errMsg);
         });
 
         addHandler(INSTALL_FOLDER_MAC, (s) -> {
             LOG.info("Restarting trusted server key thread as " +
                     INSTALL_FOLDER_MAC + " was changed to " + s.getNewValue());
-            ClientTypeSet.buildClientLinks();
+            buildClientSet(errMsg);
         });
 
         addHandler(MIN_VERSION_WIN, (s) -> {
             LOG.info("Restarting trusted server key thread as " +
                     MIN_VERSION_WIN + " was changed to " + s.getNewValue());
-            ClientTypeSet.buildClientLinks();
+            buildClientSet(errMsg);
         });
 
         addHandler(CUR_VERSION_WIN, (s) -> {
             LOG.info("Restarting trusted server key thread as " +
                     CUR_VERSION_WIN + " was changed to " + s.getNewValue());
-            ClientTypeSet.buildClientLinks();
+            buildClientSet(errMsg);
         });
 
         addHandler(INSTALL_FOLDER_WIN, (s) -> {
             LOG.info("Restarting trusted server key thread as " +
                     INSTALL_FOLDER_WIN + " was changed to " + s.getNewValue());
-            ClientTypeSet.buildClientLinks();
+            buildClientSet(errMsg);
         });
+    }
+
+    private void buildClientSet(String errMsg) {
+        try {
+            ClientTypeSet.buildClientLinks();
+        } catch (APIException e) {
+            LOG.error(errMsg + e.getCallInfo(), e);
+        }
     }
 
     @Override

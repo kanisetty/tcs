@@ -1,25 +1,24 @@
 package com.opentext.otsync.connector;
 
-import com.opentext.otag.api.shared.types.TrustedProvider;
-import com.opentext.otag.api.shared.types.auth.AuthHandlerResult;
-import com.opentext.otag.api.shared.types.client.ClientRepresentation;
-import com.opentext.otag.api.shared.types.management.DeploymentResult;
-import com.opentext.otag.api.shared.types.proxy.ProxyMappingRepresentation;
-import com.opentext.otag.api.shared.types.proxy.ProxyRulesRepresentation;
-import com.opentext.otag.api.shared.types.proxy.ProxySettings;
-import com.opentext.otag.api.shared.types.sdk.EIMConnector;
-import com.opentext.otag.api.shared.types.settings.Setting;
-import com.opentext.otag.api.shared.util.Cookie;
-import com.opentext.otag.api.shared.util.ForwardHeaders;
-import com.opentext.otag.sdk.client.ServiceClient;
-import com.opentext.otag.sdk.client.SettingsClient;
-import com.opentext.otag.sdk.client.TrustedProviderClient;
+import com.opentext.otag.sdk.client.v3.ServiceClient;
+import com.opentext.otag.sdk.client.v3.SettingsClient;
+import com.opentext.otag.sdk.client.v3.TrustedProviderClient;
 import com.opentext.otag.sdk.connector.EIMConnectorService;
 import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
 import com.opentext.otag.sdk.handlers.AuthRequestHandler;
 import com.opentext.otag.sdk.provided.OtagUrlUpdateHandler;
+import com.opentext.otag.sdk.types.v3.TrustedProvider;
+import com.opentext.otag.sdk.types.v3.api.SDKResponse;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
+import com.opentext.otag.sdk.types.v3.auth.AuthHandlerResult;
+import com.opentext.otag.sdk.types.v3.client.ClientRepresentation;
+import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
+import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
+import com.opentext.otag.sdk.types.v3.settings.Setting;
+import com.opentext.otag.sdk.util.Cookie;
+import com.opentext.otag.sdk.util.ForwardHeaders;
 import com.opentext.otsync.connector.auth.OTSyncAuthHandler;
 import com.opentext.otsync.connector.auth.registration.AuthRegistrationHandler;
 import com.opentext.otsync.connector.auth.trustedprovider.TrustedServerKeyRegistrationHandler;
@@ -40,7 +39,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static com.opentext.otag.deployments.shared.AWComponentContext.getComponent;
+import static com.opentext.otag.service.context.components.AWComponentContext.getComponent;
 
 /**
  * OTSync EIM Connector.
@@ -97,7 +96,7 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
         TrustedProviderClient trustedProviderClient = new TrustedProviderClient();
 
         try {
-            TrustedProvider connectorProvider = trustedProviderClient.getOrCreate(getTrustedServerName());
+            TrustedProvider connectorProvider = trustedProviderClient.getOrCreate(getTrustedProviderName());
             if (connectorProvider != null) {
                 trustedServerKey = connectorProvider.getKey();
             } else {
@@ -111,12 +110,12 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
             resolveSettings();
             // listen for changes to our settings
             registerSettingHandlers();
-            ProxySettings proxySettings = getProxySettings();
-            ProxyRulesRepresentation proxyRules = proxySettings.getRules().iterator().next();
-            EIMConnector eimConnector = new EIMConnector(getConnectorName(), getConnectorVersion(),
-                    getConnectionString(), getConnectionStringSettingKey(), getTrustedServerKey(), proxyRules);
 
-            if (serviceClient.registerConnector(eimConnector)) {
+            EIMConnector eimConnector = new EIMConnector(getConnectorName(), getConnectorVersion(),
+                    getConnectionString(), getConnectionStringSettingKey(), getTrustedProviderKey());
+
+            SDKResponse registerConnector = serviceClient.registerConnector(eimConnector);
+            if (registerConnector.isSuccess()) {
                 // tell the Gateway we have finished deploying
                 serviceClient.completeDeployment(new DeploymentResult(true));
             } else {
@@ -124,10 +123,14 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
                 LOG.error(errMsg);
                 serviceClient.completeDeployment(new DeploymentResult(errMsg));
             }
-        } catch (Exception e) {
+        } catch (APIException e) {
             String errMsg = "Failed to start the OTSync " + "Connector with the Gateway, " + e.getMessage();
             LOG.error(errMsg, e);
-            serviceClient.completeDeployment(new DeploymentResult(errMsg));
+            try {
+                serviceClient.completeDeployment(new DeploymentResult(errMsg));
+            } catch (APIException e1) {
+                LOG.error("Could not report outcome of deployment - " + e1.getCallInfo());
+            }
         }
 
     }
@@ -158,17 +161,17 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
     }
 
     @Override
-    public String getTrustedServerName() {
+    public String getTrustedProviderName() {
         return "OTSync";
     }
 
     @Override
-    public String getTrustedServerKey() {
+    public String getTrustedProviderKey() {
         return trustedServerKey;
     }
 
     @Override
-    public boolean registerTrustedServerKey(String serverName, String key) {
+    public boolean registerTrustedProviderKey(String serverName, String key) {
         String connectionString = getConnectionString();
 
         LLCookie llCookie = getLLCookie(csAdminUser, csAdminPassword);
@@ -267,41 +270,6 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
     }
 
     @Override
-    public ProxySettings getProxySettings() {
-
-        Set<String> whitelist = Sets.newHashSet(Arrays.asList(
-                "otcs_support/.*",
-                "otcs/cs.exe?func=form.*",
-                "otcs/cs.exe/displayform.*",
-                "otcs/cs.exe?func=formwf.*",
-                "otcs/cs.exe?func=work.*",
-                "otcs/cs.exe?func=ll&objAction=EditForm.*",
-                "otcs/cs.exe?func=webform.*",
-                "otcs/cs.exe?func=ll.login",
-                "otcs/cs.exe?func=LL.getlogin",
-                "otcs/cs.exe?func=ll.DoLogout",
-                "otcs/cs.exe?func=ll&objAction=initiate&nexturl=.*workflowview.*",
-                "otcs/cs.exe?func=ll&objAction=create*&nextURL=.*workflowview.*",
-                "otcs/cs.exe?func=ll&objAction=EditAttrValuesEdit&formname=.*",
-                "otcs/cs.exe?func=ll&objAction=targetBrowse&formname=.*",
-                "otcs/cs.exe?func=ll&objAction=targetBrowse&formName=.*"
-        ));
-
-        ArrayList<ProxyMappingRepresentation> urlRules = new ArrayList<>(Arrays.asList(
-                new ProxyMappingRepresentation("(?i)(^otcs)/?(.*|$)", "{{cs-host}}/$1/$2",
-                        false /* continue */ , 0),
-                new ProxyMappingRepresentation("(?i)(^otcs_support)/?(.*|$)", "{{cs-host}}/$1/$2",
-                        false /* continue */ , 1)
-        ));
-
-        ProxyRulesRepresentation rulesRepresentation = new ProxyRulesRepresentation(
-                "OpenText Tempo Box Content Server - All versions", true, 0,
-                whitelist, urlRules, Collections.emptyList());
-
-        return new ProxySettings(Collections.singleton(rulesRepresentation));
-    }
-
-    @Override
     public void onUpdateConnector(EIMConnector eimConnector) {
         LOG.info("EIM Connector Update Received, publishing updated key to CS");
         // kick of the key registration thread again as someone updated the connector in the Gateway
@@ -348,14 +316,18 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
     }
 
     private void resolveSetting(String settingKey, Consumer<String> setter) {
-        Setting setting = settingsClient.getSetting(settingKey);
-        if (setting != null) {
-            String value = setting.getValue();
-            if (value != null) {
-                LOG.info("Discovered " + settingKey + " setting was defined, " +
-                        "setting local value " + value);
-                setter.accept(value);
+        try {
+            Setting setting = settingsClient.getSetting(settingKey);
+            if (setting != null) {
+                String value = setting.getValue();
+                if (value != null) {
+                    LOG.info("Discovered " + settingKey + " setting was defined, " +
+                            "setting local value " + value);
+                    setter.accept(value);
+                }
             }
+        } catch (APIException e) {
+            LOG.error("Failed ro resolve setting " + settingKey + " - " + e.getCallInfo());
         }
     }
 

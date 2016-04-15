@@ -2,7 +2,7 @@ package com.opentext.otsync.rest.util;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.opentext.otag.api.shared.util.ForwardHeaders;
+import com.opentext.otag.sdk.util.ForwardHeaders;
 import org.apache.http.impl.cookie.BasicClientCookie;
 
 import javax.servlet.http.HttpServletRequest;

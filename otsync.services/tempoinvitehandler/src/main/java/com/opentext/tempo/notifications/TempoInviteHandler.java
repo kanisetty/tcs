@@ -2,7 +2,7 @@ package com.opentext.tempo.notifications;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.opentext.otag.deployments.shared.AWComponentContext;
+import com.opentext.otag.service.context.components.AWComponentContext;
 import com.opentext.otsync.api.HttpClient;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.tempo.notifications.api.auth.CSExternalUserAPI;

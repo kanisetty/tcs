@@ -1,6 +1,7 @@
 package com.opentext.otsync.dcs.cache;
 
-import com.opentext.otag.sdk.client.SettingsClient;
+import com.opentext.otag.sdk.client.v3.SettingsClient;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,7 +34,14 @@ public class DocumentConversionFileCache {
     }
 
     public synchronized static DocumentConversionFileCache createFolder(String name) throws IOException {
-        String tmpPath = getDcsCachePath();
+        String tmpPath = null;
+        try {
+            tmpPath = getDcsCachePath();
+        } catch (APIException e) {
+            String errMsg = "Failed to resolve DCS cache path using Gateway";
+            log.error(errMsg + " - " + e.getCallInfo());
+            throw new RuntimeException(errMsg, e);
+        }
 
         Path tempPath = Paths.get(tmpPath);
         Path path = Paths.get(tmpPath, name);
@@ -57,7 +65,7 @@ public class DocumentConversionFileCache {
         DocumentConversionFileCache.unlock(path);
     }
 
-    public synchronized static void cleanup() {
+    public synchronized static void cleanup() throws APIException {
         Long tmpCleanupTimeout = getSettingsClient().getSettingAsLong(TMP_CLEANUP_TIMEOUT_KEY);
         long cutoff = System.currentTimeMillis() - tmpCleanupTimeout * 1000;
 
@@ -79,7 +87,7 @@ public class DocumentConversionFileCache {
         }
     }
 
-    private static String getDcsCachePath() {
+    private static String getDcsCachePath() throws APIException {
         return getSettingsClient().getSettingAsString(TMP_PATH_KEY) + DCS_PARTITION;
     }
 

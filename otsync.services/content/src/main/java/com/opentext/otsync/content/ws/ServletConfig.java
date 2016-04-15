@@ -1,8 +1,9 @@
 package com.opentext.otsync.content.ws;
 
+import com.opentext.otag.sdk.client.v3.SettingsClient;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.content.ws.server.ClientType;
 import com.opentext.otsync.content.otag.ContentServerService;
-import com.opentext.otag.sdk.client.SettingsClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.opentext.otsync.content.ContentServiceConstants;
@@ -54,7 +55,7 @@ public class ServletConfig {
         return ContentServerService.getCsUrl();
     }
 
-    public static String getContentServerDirectUrl() {
+    public static String getContentServerDirectUrl() throws APIException {
         final SettingsClient settingsClient = getSettingsClient();
         String url = null;
 
@@ -77,7 +78,7 @@ public class ServletConfig {
         return csUrl.substring(0, csUrl.length() - relativeUrl.length());
     }
 
-    public static String getContentServerDirectBaseURL() {
+    public static String getContentServerDirectBaseURL() throws APIException {
         String relativeUrl = getContentServerDirectRelativeURL();
         String csUrl = getContentServerDirectUrl();
         return csUrl.substring(0, csUrl.length() - relativeUrl.length());
@@ -98,7 +99,7 @@ public class ServletConfig {
         }
     }
 
-    public static String getContentServerDirectRelativeURL() {
+    public static String getContentServerDirectRelativeURL() throws APIException {
         try {
             String contentServerDirectUrl = getContentServerDirectUrl();
             if (contentServerDirectUrl != null) {
@@ -112,12 +113,12 @@ public class ServletConfig {
         }
     }
 
-    public static boolean isTempoBoxEnabled() {
+    public static boolean isTempoBoxEnabled() throws APIException {
         final SettingsClient settingsClient = getSettingsClient();
         return settingsClient != null && settingsClient.getSettingAsBool(ContentServiceConstants.IS_TEMPO_BOX_ENABLED);
     }
 
-    public static String getRepo() {
+    public static String getRepo() throws APIException {
         final SettingsClient settingsClient = getSettingsClient();
         return (settingsClient != null) ? settingsClient.getSettingAsString(ContentServiceConstants.REPO) : "";
     }

@@ -3,11 +3,14 @@ package com.opentext.tempo.notifications.api.auth;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.opentext.otag.api.shared.types.TrustedProvider;
-import com.opentext.otag.sdk.client.TrustedProviderClient;
+import com.opentext.otag.sdk.client.v3.TrustedProviderClient;
+import com.opentext.otag.sdk.types.v3.TrustedProvider;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.api.HttpClient;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.tempo.notifications.TempoNotificationsService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -24,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 public class CSExternalUserAPI implements ExternalUserAPI {
+
+    private static final Log LOG = LogFactory.getLog(CSExternalUserAPI.class);
 
     private static final String EXTERNAL_USER_API_REQUESTHANDLER = "otsync.UserAdminRequest";
     private static final String FUNCTION_PARAMETER_NAME = "func";
@@ -125,6 +130,9 @@ public class CSExternalUserAPI implements ExternalUserAPI {
             }
 
         } catch (IOException e) {
+            return new ExternalUserAPIResult(ExternalUserAPIResult.ResultType.IOERROR, null);
+        } catch (APIException e) {
+            LOG.error("Gateway API call failed - " + e.getCallInfo());
             return new ExternalUserAPIResult(ExternalUserAPIResult.ResultType.IOERROR, null);
         }
     }

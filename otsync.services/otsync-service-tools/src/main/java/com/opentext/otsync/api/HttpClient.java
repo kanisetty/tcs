@@ -13,7 +13,7 @@ import java.util.List;
 
 import javax.servlet.http.Cookie;
 
-import com.opentext.otag.api.shared.util.ForwardHeaders;
+import com.opentext.otag.sdk.util.ForwardHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;

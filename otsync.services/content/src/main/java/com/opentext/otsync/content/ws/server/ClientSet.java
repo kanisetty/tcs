@@ -1,5 +1,6 @@
 package com.opentext.otsync.content.ws.server;
 
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.content.otag.ContentServerService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -162,7 +163,14 @@ public class ClientSet {
         synchronized (clientMap) {
             Iterator<Client> i = clientMap.values().iterator();
 
-            long clientTimeOut = ContentServerService.getSettingsService().getClientTimeOut();
+            long clientTimeOut = 0;
+            try {
+                clientTimeOut = ContentServerService.getSettingsService().getClientTimeOut();
+            } catch (APIException e) {
+                String errMsg = "Failed to get client timeout setting";
+                log.error(errMsg + " - " + e.getCallInfo());
+                throw new RuntimeException(errMsg, e);
+            }
             while (i.hasNext()) {
                 Client client = i.next();
                 Long diff = (now.getTime() - client.getLastConnectTime().getTime()) / 1000;

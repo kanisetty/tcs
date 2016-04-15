@@ -1,13 +1,15 @@
 package com.opentext.otsync.shares.rest;
 
-import com.opentext.otag.api.shared.types.management.DeploymentResult;
-import com.opentext.otag.deployments.shared.AWComponentContext;
-import com.opentext.otag.api.shared.types.sdk.EIMConnector;
-import com.opentext.otag.sdk.client.ServiceClient;
+import com.opentext.otag.sdk.client.v3.ServiceClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
+import com.opentext.otag.sdk.types.v3.api.SDKResponse;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
+import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
+import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
+import com.opentext.otag.service.context.components.AWComponentContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -92,9 +94,15 @@ public class SharesService implements AWServiceContextHandler {
     }
 
     private void failBuild(String errMsg) {
-        LOG.error(errMsg);
-        if (!serviceClient.completeDeployment(new DeploymentResult(errMsg))) {
-            LOG.error("Failed to report deployment outcome to the Gateway");
+        String reportFailureMsg = "Failed to report deployment outcome to the Gateway";
+        try {
+            LOG.error(errMsg);
+            SDKResponse sdkResponse = serviceClient.completeDeployment(new DeploymentResult(errMsg));
+            if (!sdkResponse.isSuccess()) {
+                LOG.error(reportFailureMsg);
+            }
+        } catch (APIException e) {
+            LOG.error(errMsg + " - " + e.getCallInfo());
         }
     }
 

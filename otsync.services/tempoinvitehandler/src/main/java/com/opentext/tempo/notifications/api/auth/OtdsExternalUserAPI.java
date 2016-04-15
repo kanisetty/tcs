@@ -1,14 +1,17 @@
 package com.opentext.tempo.notifications.api.auth;
 
-import com.opentext.otag.api.shared.types.auth.PasswordUpdateRequest;
-import com.opentext.otag.api.shared.types.auth.ProfileUpdate;
-import com.opentext.otag.api.shared.types.auth.UpdateUserRequest;
-import com.opentext.otag.sdk.client.AuthClient;
+import com.opentext.otag.sdk.client.v3.AuthClient;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.util.Objects;
 
+/**
+ * TODO FIXME - The operations this class was previously carrying out were not safe
+ * TODO FIXME - this needs to be reimplemented with proper OTDS support from inside the service
+ * TODO FIXME - these users are not AppWorks users, please isolate them in their own OTDS partition
+ */
+@Deprecated
 public class OtdsExternalUserAPI implements ExternalUserAPI {
 
     private final CSExternalUserAPI csService;
@@ -24,25 +27,26 @@ public class OtdsExternalUserAPI implements ExternalUserAPI {
 
     public ExternalUserAPIResult inviteeValidated(String email, String password, String firstName,
                                                   String lastName, CSForwardHeaders headers) {
-        try {
-            String externalUserName = getExternalUserName(email);
-
-            // tell the Gateway to use these new first and last name values for our external user
-            ProfileUpdate update = new ProfileUpdate();
-            update.setFirstName(firstName);
-            update.setLastName(lastName);
-
-            UpdateUserRequest editUserRequest = new UpdateUserRequest(externalUserName, password, update);
-
-            if (!authClient.editUser(editUserRequest)) {
-                return new ExternalUserAPIResult(ExternalUserAPIResult.ResultType.VALIDATION_ERROR,
-                        "Request to edit user " + externalUserName + " has failed");
-            }
-        } catch (Exception e) {
-            return new ExternalUserAPIResult(ExternalUserAPIResult.ResultType.VALIDATION_ERROR,
-                    e.getLocalizedMessage());
-        }
-        return new ExternalUserAPIResult();
+            throw new UnsupportedOperationException("NO LONGER SUPPORTED");
+//        try {
+//            String externalUserName = getExternalUserName(email);
+//
+//            // tell the Gateway to use these new first and last name values for our external user
+//            ProfileUpdate update = new ProfileUpdate();
+//            update.setFirstName(firstName);
+//            update.setLastName(lastName);
+//
+//            UpdateUserRequest editUserRequest = new UpdateUserRequest(externalUserName, password, update);
+//
+//            if (!authClient.editUser(editUserRequest)) {
+//                return new ExternalUserAPIResult(ExternalUserAPIResult.ResultType.VALIDATION_ERROR,
+//                        "Request to edit user " + externalUserName + " has failed");
+//            }
+//        } catch (Exception e) {
+//            return new ExternalUserAPIResult(ExternalUserAPIResult.ResultType.VALIDATION_ERROR,
+//                    e.getLocalizedMessage());
+//        }
+//        return new ExternalUserAPIResult();
     }
 
     public ExternalUserAPIResult inviteeValidated(String email,
@@ -54,31 +58,33 @@ public class OtdsExternalUserAPI implements ExternalUserAPI {
     }
 
     public ExternalUserAPIResult userExist(String email, CSForwardHeaders headers) {
-        if (authClient.getUserProfie(getExternalUserName(email)) == null)
-            return new ExternalUserAPIResult(ExternalUserAPIResult.ResultType.VALIDATION_ERROR, "no such user");
-
-        return new ExternalUserAPIResult();
+            throw new UnsupportedOperationException("NO LONGER SUPPORTED");
+//        if (authClient.getUserProfie(getExternalUserName(email)) == null)
+//            return new ExternalUserAPIResult(ExternalUserAPIResult.ResultType.VALIDATION_ERROR, "no such user");
+//
+//        return new ExternalUserAPIResult();
     }
 
     public ExternalUserAPIResult sendPasswordUpdate(String email, String oldPwd,
                                                     String newPwd, CSForwardHeaders headers) {
-        try {
-            String externalUserName = getExternalUserName(email);
-            PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest(externalUserName, oldPwd, newPwd);
-            if (!authClient.updateUserPassword(passwordUpdateRequest)) {
-                return new ExternalUserAPIResult(ExternalUserAPIResult.ResultType.VALIDATION_ERROR,
-                        "Password update for user " + externalUserName + "has failed");
-            }
-        } catch (Exception e) {
-            return new ExternalUserAPIResult(ExternalUserAPIResult.ResultType.VALIDATION_ERROR, e.getLocalizedMessage());
-        }
-
-        return new ExternalUserAPIResult();
+            throw new UnsupportedOperationException("NO LONGER SUPPORTED");
+//        try {
+//            String externalUserName = getExternalUserName(email);
+//            PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest(externalUserName, oldPwd, newPwd);
+//            if (!authClient.updateUserPassword(passwordUpdateRequest)) {
+//                return new ExternalUserAPIResult(ExternalUserAPIResult.ResultType.VALIDATION_ERROR,
+//                        "Password update for user " + externalUserName + "has failed");
+//            }
+//        } catch (Exception e) {
+//            return new ExternalUserAPIResult(ExternalUserAPIResult.ResultType.VALIDATION_ERROR, e.getLocalizedMessage());
+//        }
+//
+//        return new ExternalUserAPIResult();
     }
 
     private String getOtagUserPartition() {
-        if (otagUserPartition == null)
-            otagUserPartition = authClient.getOtagUserPartition();
+//        if (otagUserPartition == null)
+//            otagUserPartition = authClient.getOtagUserPartition();
 
         return otagUserPartition;
     }

@@ -1,14 +1,16 @@
 package com.opentext.otsync.content.otag;
 
+import com.opentext.otag.sdk.client.v3.AuthClient;
+import com.opentext.otag.sdk.client.v3.NotificationsClient;
+import com.opentext.otag.sdk.client.v3.ServiceClient;
+import com.opentext.otag.sdk.client.v3.SettingsClient;
+import com.opentext.otag.sdk.types.v3.api.SDKResponse;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
+import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
+import com.opentext.otag.sdk.types.v3.settings.Setting;
 import com.opentext.otsync.content.engine.ContentServiceEngine;
 import com.opentext.otsync.content.ws.server.ClientType;
 import com.opentext.otsync.content.http.HTTPRequestManager;
-import com.opentext.otag.api.shared.types.management.DeploymentResult;
-import com.opentext.otag.api.shared.types.settings.Setting;
-import com.opentext.otag.sdk.client.AuthClient;
-import com.opentext.otag.sdk.client.NotificationsClient;
-import com.opentext.otag.sdk.client.ServiceClient;
-import com.opentext.otag.sdk.client.SettingsClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient.ConnectionResult;
 import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
@@ -54,7 +56,7 @@ public class ContentServerService implements AWServiceContextHandler {
     // Gateway services
     private static SettingsClient settingsClient;
     private static SettingsService settingsService;
-    private static AuthClient AuthClient;
+    private static AuthClient authClient;
 
     private static HTTPRequestManager httpRequestManager;
 
@@ -85,7 +87,7 @@ public class ContentServerService implements AWServiceContextHandler {
             LOG.debug("Created SettingsClient");
             settingsService = new SettingsService(settingsClient);
             LOG.debug("Created SettingsService");
-            AuthClient = new AuthClient();
+            authClient = new AuthClient();
             LOG.debug("Created AuthClient");
 
             httpRequestManager = new HTTPRequestManager(settingsService);
@@ -119,7 +121,8 @@ public class ContentServerService implements AWServiceContextHandler {
             // Read and set client properties for client tracking and maintenance
             setClientProperties();
 
-            boolean completeAck = serviceClient.completeDeployment(new DeploymentResult(true));
+            SDKResponse sdkResponse = serviceClient.completeDeployment(new DeploymentResult(true));
+            boolean completeAck = sdkResponse.isSuccess();
             if (completeAck) {
                 LOG.info("ContentService init complete");
             } else {
@@ -128,7 +131,11 @@ public class ContentServerService implements AWServiceContextHandler {
         } catch (Exception e) {
             String errMsg = "Service failed to start correctly, " + e.getMessage();
             LOG.error(errMsg, e);
-            serviceClient.completeDeployment(new DeploymentResult(errMsg));
+            try {
+                serviceClient.completeDeployment(new DeploymentResult(errMsg));
+            } catch (APIException e1) {
+                LOG.error(errMsg + " - " + e1.getCallInfo());
+            }
         }
     }
 
@@ -169,7 +176,7 @@ public class ContentServerService implements AWServiceContextHandler {
     }
 
     public static AuthClient getIdService() {
-        return AuthClient;
+        return authClient;
     }
 
     public static SettingsClient getSettingsClient() {
@@ -273,41 +280,53 @@ public class ContentServerService implements AWServiceContextHandler {
     }
 
     private void setOldProperties(Properties properties) {
-        importSetting(properties, ContentServiceConstants.REPO, "repo");
-        importSetting(properties, ContentServiceConstants.TEMPDIR, "TempfileDir");
-        importSetting(properties, ContentServiceConstants.CS_SYNCTHREADS_MAX, "cs.syncthreads.max");
-        importSetting(properties, ContentServiceConstants.WHITELIST, "ValidURLWhiteList");
-        importSetting(properties, ContentServiceConstants.LOGGING_VERBOSE, "WantFrontChannelLogs");
-        importSetting(properties, ContentServiceConstants.CS_CONNECTIONS_MAX, "cs.connections.max");
-        importSetting(properties, ContentServiceConstants.REQUEST_TIMEOUT, "request.timeout");
-        importSetting(properties, ContentServiceConstants.CS_CONNECTION_TIMEOUT, "cs.connection.timeout");
-        importSetting(properties, ContentServiceConstants.UPLOAD_SOCKET_TIMEOUT, "upload.socket.timeout");
-        importSetting(properties, ContentServiceConstants.CLEAN_UP_INTERVAL, "CleanUpInterval");
+        try {
+            importSetting(properties, ContentServiceConstants.REPO, "repo");
+            importSetting(properties, ContentServiceConstants.TEMPDIR, "TempfileDir");
+            importSetting(properties, ContentServiceConstants.CS_SYNCTHREADS_MAX, "cs.syncthreads.max");
+            importSetting(properties, ContentServiceConstants.WHITELIST, "ValidURLWhiteList");
+            importSetting(properties, ContentServiceConstants.LOGGING_VERBOSE, "WantFrontChannelLogs");
+            importSetting(properties, ContentServiceConstants.CS_CONNECTIONS_MAX, "cs.connections.max");
+            importSetting(properties, ContentServiceConstants.REQUEST_TIMEOUT, "request.timeout");
+            importSetting(properties, ContentServiceConstants.CS_CONNECTION_TIMEOUT, "cs.connection.timeout");
+            importSetting(properties, ContentServiceConstants.UPLOAD_SOCKET_TIMEOUT, "upload.socket.timeout");
+            importSetting(properties, ContentServiceConstants.CLEAN_UP_INTERVAL, "CleanUpInterval");
 
-        String directBaseUrl = properties.getProperty("ContentServerDirectBaseURL");
-        String directRelativeUrl = properties.getProperty("ContentServerDirectRelativeURL");
+            String directBaseUrl = properties.getProperty("ContentServerDirectBaseURL");
+            String directRelativeUrl = properties.getProperty("ContentServerDirectRelativeURL");
 
-        if (directBaseUrl != null && directRelativeUrl != null) {
-            String fullDirectUrl = directBaseUrl + directRelativeUrl;
-            LOG.info("Content service importing " + ContentServiceConstants.DIRECT_URL + " as " + fullDirectUrl);
-            Setting directUrl = settingsClient.getSetting(ContentServiceConstants.DIRECT_URL);
-            directUrl.setValue(fullDirectUrl);
-            settingsClient.updateSetting(directUrl);
+            if (directBaseUrl != null && directRelativeUrl != null) {
+                String fullDirectUrl = directBaseUrl + directRelativeUrl;
+                LOG.info("Content service importing " + ContentServiceConstants.DIRECT_URL + " as " + fullDirectUrl);
+                Setting directUrl = settingsClient.getSetting(ContentServiceConstants.DIRECT_URL);
+                directUrl.setValue(fullDirectUrl);
+                settingsClient.updateSetting(directUrl);
+            }
+        } catch (APIException e) {
+            String errMsg = "Failed to set service configuration";
+            LOG.error(errMsg + " - " + e.getCallInfo());
+            throw new RuntimeException(errMsg, e);
         }
 
         overrideMailSettings(properties);
     }
 
     private void overrideMailSettings(Properties properties) {
-        importSetting(properties, ContentServiceConstants.OTAG_SMTP_FROM, "com.opentext.tempoinvite.mail.smtp.from");
-        importSetting(properties, ContentServiceConstants.OTAG_SMTP_HOST, "com.opentext.tempoinvite.mail.smtp.host");
-        importSetting(properties, ContentServiceConstants.OTAG_SMTP_PASSWORD, "com.opentext.tempoinvite.mail.smtp.password");
-        importSetting(properties, ContentServiceConstants.OTAG_SMTP_PORT, "com.opentext.tempoinvite.mail.smtp.port");
-        importSetting(properties, ContentServiceConstants.OTAG_SMTP_SSL, "com.opentext.tempoinvite.mail.smtp.ssl");
-        importSetting(properties, ContentServiceConstants.OTAG_SMTP_USERNAME, "com.opentext.tempoinvite.mail.smtp.username");
+        try {
+            importSetting(properties, ContentServiceConstants.OTAG_SMTP_FROM, "com.opentext.tempoinvite.mail.smtp.from");
+            importSetting(properties, ContentServiceConstants.OTAG_SMTP_HOST, "com.opentext.tempoinvite.mail.smtp.host");
+            importSetting(properties, ContentServiceConstants.OTAG_SMTP_PASSWORD, "com.opentext.tempoinvite.mail.smtp.password");
+            importSetting(properties, ContentServiceConstants.OTAG_SMTP_PORT, "com.opentext.tempoinvite.mail.smtp.port");
+            importSetting(properties, ContentServiceConstants.OTAG_SMTP_SSL, "com.opentext.tempoinvite.mail.smtp.ssl");
+            importSetting(properties, ContentServiceConstants.OTAG_SMTP_USERNAME, "com.opentext.tempoinvite.mail.smtp.username");
+        } catch (APIException e) {
+            String errMsg = "Failed to override mail settings";
+            LOG.error(errMsg + " - " + e.getCallInfo());
+            throw new RuntimeException(errMsg, e);
+        }
     }
 
-    private void importSetting(Properties properties, String otagSetting, String property) {
+    private void importSetting(Properties properties, String otagSetting, String property) throws APIException {
         String oldValue = properties.getProperty(property);
         Setting setting = settingsClient.getSetting(otagSetting);
         if (oldValue != null && !oldValue.equals(setting.getValue())) {

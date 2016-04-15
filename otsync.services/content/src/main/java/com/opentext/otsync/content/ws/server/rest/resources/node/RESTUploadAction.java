@@ -1,5 +1,6 @@
 package com.opentext.otsync.content.ws.server.rest.resources.node;
 
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.content.engine.ContentServiceEngine;
 import com.opentext.otsync.content.engine.core.SuspendedAction;
 import com.opentext.otsync.content.http.HTTPRequestManager;
@@ -96,7 +97,11 @@ public class RESTUploadAction extends SuspendedAction {
                     HTTPRequestManager serverConnection = getHttpManager();
 
                     AsyncContext asyncRequest = req.startAsync();
-                    asyncRequest.setTimeout(ContentServerService.getSettingsService().getServlet3ContentTimeout());
+                    try {
+                        asyncRequest.setTimeout(ContentServerService.getSettingsService().getServlet3ContentTimeout());
+                    } catch (APIException e) {
+                        throw new RuntimeException("Failed to get content timeout setting from the Gateway", e);
+                    }
 
                     SuspendedAction action = new RESTUploadAction(serverConnection, asyncRequest, new CSForwardHeaders(req),
                             stream, fileSize, filename, fileFieldName, params);

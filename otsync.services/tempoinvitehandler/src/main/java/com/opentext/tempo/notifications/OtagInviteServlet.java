@@ -1,8 +1,11 @@
 package com.opentext.tempo.notifications;
 
-import com.opentext.otag.deployments.shared.AWComponentContext;
-import com.opentext.otag.sdk.client.SettingsClient;
+import com.opentext.otag.sdk.client.v3.SettingsClient;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
+import com.opentext.otag.service.context.components.AWComponentContext;
 import com.opentext.tempo.notifications.persistence.TempoInviteRepository;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 
 import javax.servlet.ServletContext;
@@ -19,6 +22,8 @@ import java.util.Properties;
 public final class OtagInviteServlet extends HttpServlet {
 
     private static final long serialVersionUID = 7768014454016544509L;
+
+    private static final Log LOG = LogFactory.getLog(OtagInviteServlet.class);
 
     /**
      * Used to form the links in emails to direct the user to acceptance form and general invite UI
@@ -206,8 +211,12 @@ public final class OtagInviteServlet extends HttpServlet {
                 AWComponentContext.getComponent(TempoNotificationsService.class);
         if (notificationService != null) {
             SettingsClient client = notificationService.getSettingsClient();
-            if (client != null)
-                return client.getSettingAsString(settingKey);
+            try {
+                if (client != null)
+                    return client.getSettingAsString(settingKey);
+            } catch (APIException e) {
+                LOG.error("Failed to get setting " + settingKey + " from Gateway - " + e.getCallInfo());
+            }
         }
 
         return null;

@@ -1,10 +1,11 @@
 package com.opentext.otsync.content.http;
 
+import com.opentext.otag.sdk.client.v3.SettingsClient;
+import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.otag.SettingsService;
-import com.opentext.otag.sdk.client.SettingsClient;
-import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
-import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.params.HttpClientParams;
@@ -44,33 +45,50 @@ public class ConnectionProfileManager extends AbstractMultiSettingChangeHandler 
     public void onStart(String appName) {
         settingsService = new SettingsService(new SettingsClient());
 
-        /**
-         * Downloads: long socket timeout times, as the data may take a long time for the server to prepare. No
-         *   redirecting, as we don't want to serve up a login or error page from Content Server.
-         * Uploads: configurable, moderately-long timeout as the server may take a while to process the uploaded data.
-         * Front-channel: shorter socket timeout, as there is no point in waiting longer than the
-         *   request is active.
-         * Connection timeout in all cases is shorter, as the server is either down or busy if it takes
-         *   long at all to get a connection.
-         */
-        setConnectionTimeoutParams();
-        setRequestTimeoutParams();
-        setUploadTimeoutParams();
-        HttpClientParams.setRedirecting(downloadParams, false);
-
-        // add the handlers for the settings we are interested in
-        addHandler(ContentServiceConstants.CS_CONNECTION_TIMEOUT, (s) -> {
-            LOG.info("Updating upstream http connection timeout");
+        String apiCallErr = "API call failed - ";
+        try {
+            /**
+             * Downloads: long socket timeout times, as the data may take a long time for the server to prepare. No
+             *   redirecting, as we don't want to serve up a login or error page from Content Server.
+             * Uploads: configurable, moderately-long timeout as the server may take a while to process the uploaded data.
+             * Front-channel: shorter socket timeout, as there is no point in waiting longer than the
+             *   request is active.
+             * Connection timeout in all cases is shorter, as the server is either down or busy if it takes
+             *   long at all to get a connection.
+             */
             setConnectionTimeoutParams();
-        });
-        addHandler(ContentServiceConstants.REQUEST_TIMEOUT, (s) -> {
-            LOG.info("Updating upstream http request timeout");
             setRequestTimeoutParams();
-        });
-        addHandler(ContentServiceConstants.UPLOAD_SOCKET_TIMEOUT, (s) -> {
-            LOG.info("Updating upstream http upload socket timeout");
             setUploadTimeoutParams();
-        });
+            HttpClientParams.setRedirecting(downloadParams, false);
+
+            // add the handlers for the settings we are interested in
+            addHandler(ContentServiceConstants.CS_CONNECTION_TIMEOUT, (s) -> {
+                LOG.info("Updating upstream http connection timeout");
+                try {
+                    setConnectionTimeoutParams();
+                } catch (APIException e) {
+                    throw new RuntimeException("API call failed - " + e.getCallInfo());
+                }
+            });
+            addHandler(ContentServiceConstants.REQUEST_TIMEOUT, (s) -> {
+                LOG.info("Updating upstream http request timeout");
+                try {
+                    setRequestTimeoutParams();
+                } catch (APIException e) {
+                    throw new RuntimeException("API call failed - " + e.getCallInfo());
+                }
+            });
+            addHandler(ContentServiceConstants.UPLOAD_SOCKET_TIMEOUT, (s) -> {
+                LOG.info("Updating upstream http upload socket timeout");
+                try {
+                    setUploadTimeoutParams();
+                } catch (APIException e) {
+                    throw new RuntimeException(apiCallErr + e.getCallInfo());
+                }
+            });
+        } catch (APIException e) {
+            throw new RuntimeException(apiCallErr + e.getCallInfo());
+        }
     }
 
     @Override
@@ -89,7 +107,7 @@ public class ConnectionProfileManager extends AbstractMultiSettingChangeHandler 
         return downloadParams;
     }
 
-    private void setConnectionTimeoutParams() {
+    private void setConnectionTimeoutParams() throws APIException {
         if (settingsService != null) {
             final int connectionTimeout = settingsService.getConnectionTimeout();
             HttpConnectionParams.setConnectionTimeout(downloadParams, connectionTimeout);
@@ -98,7 +116,7 @@ public class ConnectionProfileManager extends AbstractMultiSettingChangeHandler 
         }
     }
 
-    private void setRequestTimeoutParams() {
+    private void setRequestTimeoutParams() throws APIException {
         if (settingsService != null) {
             HttpConnectionParams.setSoTimeout(downloadParams,
                     settingsService.getServlet3ContentTimeout());
@@ -107,7 +125,7 @@ public class ConnectionProfileManager extends AbstractMultiSettingChangeHandler 
         }
     }
 
-    private void setUploadTimeoutParams() {
+    private void setUploadTimeoutParams() throws APIException {
         HttpConnectionParams.setSoTimeout(uploadParams, settingsService.getUploadSocketTimeout());
     }
 

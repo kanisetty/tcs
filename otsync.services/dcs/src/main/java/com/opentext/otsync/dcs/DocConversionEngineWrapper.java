@@ -1,5 +1,6 @@
 package com.opentext.otsync.dcs;
 
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.dcs.utils.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -76,14 +77,18 @@ public class DocConversionEngineWrapper {
     }
 
     private void scalePageFiles(Map<Integer, String> pageFilesMap) {
-        int maxFileSize = DCSSettings.maxFileSize();
-        for (Integer pageNumber : pageFilesMap.keySet()) {
-            try {
-                File imageToScale = new File(pageFilesMap.get(pageNumber));
-                ImageUtils.scaleDocImageToProperSize(imageToScale, maxFileSize);
-            } catch (IOException e) {
-                log.error("Scale image file failed", e);
+        try {
+            int maxFileSize = DCSSettings.maxFileSize();
+            for (Integer pageNumber : pageFilesMap.keySet()) {
+                try {
+                    File imageToScale = new File(pageFilesMap.get(pageNumber));
+                    ImageUtils.scaleDocImageToProperSize(imageToScale, maxFileSize);
+                } catch (IOException e) {
+                    log.error("Scale image file failed", e);
+                }
             }
+        } catch (APIException e) {
+            log.error("Failed to resolve max file size using SDK call - " + e.getCallInfo());
         }
     }
 }

@@ -1,11 +1,13 @@
 package com.opentext.otsync.connector.auth.registration;
 
-import com.opentext.otag.sdk.client.AuthClient;
-import com.opentext.otag.sdk.client.SettingsClient;
-import com.opentext.otag.api.shared.types.auth.AuthHandler;
-import com.opentext.otag.api.shared.types.auth.RegisterAuthHandlersRequest;
-import com.opentext.otag.deployments.shared.AWComponentContext;
-import com.opentext.otag.api.shared.types.settings.Setting;
+import com.opentext.otag.sdk.client.v3.AuthClient;
+import com.opentext.otag.sdk.client.v3.SettingsClient;
+import com.opentext.otag.sdk.types.v3.api.SDKResponse;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
+import com.opentext.otag.sdk.types.v3.auth.AuthHandler;
+import com.opentext.otag.sdk.types.v3.auth.RegisterAuthHandlersRequest;
+import com.opentext.otag.sdk.types.v3.settings.Setting;
+import com.opentext.otag.service.context.components.AWComponentContext;
 import com.opentext.otsync.connector.auth.OTSyncAuthHandler;
 import com.opentext.otsync.connector.OTSyncConnectorConstants;
 import org.apache.commons.logging.Log;
@@ -82,8 +84,8 @@ public class RegisterAuthProviderThread extends Thread {
                     issueRequest(handler, registerAuthHandlersRequest);
                     keepRunning = false;
                 }
-            } catch (Exception e) {
-                LOG.info("Failed to retrieve OTDS resource id");
+            } catch (APIException e) {
+                LOG.info("Failed to retrieve OTDS resource id - " + e.getCallInfo());
                 sleep();
             }
         }
@@ -96,7 +98,8 @@ public class RegisterAuthProviderThread extends Thread {
             Setting otdsResId = settingsClient.getSetting(OTSyncConnectorConstants.OTDS_RES_ID);
             if (otdsResId != null) {
                 otdsResId.setValue(otdsResourceId);
-                if (settingsClient.updateSetting(otdsResId)) {
+                SDKResponse updateSetting = settingsClient.updateSetting(otdsResId);
+                if (updateSetting.isSuccess()) {
                     LOG.info("Successfully set OTDS resource id setting");
                 } else {
                     LOG.warn("Failed to update setting " + OTSyncConnectorConstants.OTDS_RES_ID +
@@ -124,9 +127,10 @@ public class RegisterAuthProviderThread extends Thread {
     }
 
     private boolean issueRequest(AuthHandler handler,
-                              RegisterAuthHandlersRequest registerAuthHandlersRequest) {
+                              RegisterAuthHandlersRequest registerAuthHandlersRequest) throws APIException {
         registerAuthHandlersRequest.addHandler(handler);
-        return identityServiceClient.registerAuthHandlers(registerAuthHandlersRequest);
+        SDKResponse sdkResponse = identityServiceClient.registerAuthHandlers(registerAuthHandlersRequest);
+        return sdkResponse.isSuccess();
     }
 
     private void sleep() {

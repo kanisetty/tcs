@@ -1,9 +1,9 @@
 package com.opentext.tempo.notifications.persistence;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.opentext.otag.api.shared.util.UrlPathUtil;
-import com.opentext.otag.deployments.shared.AWConfig;
+import com.opentext.otag.sdk.util.UrlPathUtil;
 import com.opentext.otag.security.EncryptedProperties;
+import com.opentext.otag.service.context.AWConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

@@ -1,10 +1,11 @@
 package com.opentext.otsync.content.listeners;
 
+import com.opentext.otag.sdk.client.v3.NotificationsClient;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
+import com.opentext.otag.sdk.types.v3.notification.NotificationRequest;
 import com.opentext.otsync.content.message.SynchronousMessageListener;
 import com.opentext.otsync.content.message.Message;
 import com.opentext.otsync.content.payload.Payload;
-import com.opentext.otag.api.shared.types.notification.NotificationRequest;
-import com.opentext.otag.sdk.client.NotificationsClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -59,6 +60,8 @@ public class ContentRequestListener implements SynchronousMessageListener {
 		} catch (IOException e) {
 			// couldn't send the authorization, for whatever reason
 			log.warn("Could not send upload or download authorization", e);
+		} catch (APIException e) {
+			log.error("Failed to send notification via Gateway - " + e.getCallInfo());
 		}
 	}
 

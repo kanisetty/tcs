@@ -2,7 +2,7 @@ package com.opentext.otsync.connector.auth;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.opentext.otag.api.shared.types.auth.AuthHandlerResult;
+import com.opentext.otag.sdk.types.v3.auth.AuthHandlerResult;
 import com.opentext.otsync.connector.OTSyncConnector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

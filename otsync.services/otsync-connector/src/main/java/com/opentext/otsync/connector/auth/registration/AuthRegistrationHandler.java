@@ -1,6 +1,6 @@
 package com.opentext.otsync.connector.auth.registration;
 
-import com.opentext.otag.sdk.client.AuthClient;
+import com.opentext.otag.sdk.client.v3.AuthClient;
 import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import jersey.repackaged.com.google.common.collect.Sets;

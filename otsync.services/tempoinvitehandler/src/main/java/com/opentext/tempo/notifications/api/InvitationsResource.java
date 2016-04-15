@@ -1,7 +1,9 @@
 package com.opentext.tempo.notifications.api;
 
-import com.opentext.otag.api.shared.types.TrustedProvider;
-import com.opentext.otag.sdk.client.TrustedProviderClient;
+import com.opentext.otag.sdk.client.v3.TrustedProviderClient;
+import com.opentext.otag.sdk.types.v3.TrustedProvider;
+import com.opentext.otag.sdk.types.v3.TrustedProviders;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.annotations.PrivateApi;
 import com.opentext.tempo.notifications.TempoInviteHandler;
 import com.opentext.tempo.notifications.api.auth.ExternalUserAPIResult;
@@ -13,7 +15,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 @Path("invitations")
 @PrivateApi
@@ -32,30 +33,35 @@ public class InvitationsResource {
                                        @FormParam("extraInfo") String extraInfo,
                                        @FormParam("lang") String lang) {
 
-        // Check the sender's trusted provider key
-        TrustedProviderClient client = new TrustedProviderClient();
-        TrustedProvider provider = null;
-        List<TrustedProvider> allProviders = client.getAllProviders();
-        for (TrustedProvider trustedProvider : allProviders) {
-            if (key.equals(trustedProvider.getKey())) {
-                provider = trustedProvider;
+        try {
+            // Check the sender's trusted provider key
+            TrustedProviderClient client = new TrustedProviderClient();
+            TrustedProvider provider = null;
+            TrustedProviders allProviders = client.getAllProviders();
+            for (TrustedProvider trustedProvider : allProviders.getTrustedProviders()) {
+                if (key.equals(trustedProvider.getKey())) {
+                    provider = trustedProvider;
+                }
             }
-        }
 
-        if (provider == null) {
-            LOG.warn("Someone POST-ed to invitations with an invalid provider key: " + key);
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-		
-        ExternalUserAPIResult result = TempoInviteHandler.handleSendInvitationAction(
-                servletContext, email, firstName, lastName, lang, folderName, folderDesc, extraInfo);
+            if (provider == null) {
+                LOG.warn("Someone POST-ed to invitations with an invalid provider key: " + key);
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
 
-        if (result.status != ExternalUserAPIResult.ResultType.SUCCESS) {
-            LOG.error(result.errMsg);
+            ExternalUserAPIResult result = TempoInviteHandler.handleSendInvitationAction(
+                    servletContext, email, firstName, lastName, lang, folderName, folderDesc, extraInfo);
+
+            if (result.status != ExternalUserAPIResult.ResultType.SUCCESS) {
+                LOG.error(result.errMsg);
+                return Response.serverError().build();
+            }
+
+            return Response.ok().build();
+        } catch (APIException e) {
+            LOG.error("Gateway API call failed - " + e.getCallInfo());
             return Response.serverError().build();
         }
-
-        return Response.ok().build();
     }
 
 }

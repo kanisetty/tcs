@@ -68,12 +68,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.opentext.otag.api.shared</groupId>
-            <artifactId>otag-api-shared</artifactId>
-            <version>${appworks.platform.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.opentext.otag.sdk</groupId>
             <artifactId>otag-service-development-kit</artifactId>
             <version>${appworks.platform.version}</version>

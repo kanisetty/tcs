@@ -1,9 +1,9 @@
 package com.opentext.otsync.content.ws.server;
 
+import com.opentext.otag.sdk.client.v3.SettingsClient;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.content.message.Message;
 import com.opentext.otsync.content.otag.SettingsService;
-import com.opentext.otag.sdk.client.SettingsClient;
-import com.opentext.otsync.content.ws.server.ClientType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,13 +37,19 @@ public class ClientTypeSet {
             _settingsService = new SettingsService(new SettingsClient());
         }
 
-        buildClientLinks();
+        try {
+            buildClientLinks();
+        } catch (APIException e) {
+            String errMsg = "Failed to build client links";
+            log.error(errMsg + " - " + e.getCallInfo());
+            throw new RuntimeException(errMsg, e);
+        }
     }
 
     /**
      * Read the AppWorks settings for the Content Service and cache the client info
      */
-    public static void buildClientLinks(){
+    public static void buildClientLinks() throws APIException {
 
         if (_clientInstallers == null){
             _clientInstallers = new HashMap<>();

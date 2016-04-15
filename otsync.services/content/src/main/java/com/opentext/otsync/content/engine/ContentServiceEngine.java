@@ -1,5 +1,8 @@
 package com.opentext.otsync.content.engine;
 
+import com.opentext.otag.sdk.client.v3.NotificationsClient;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
+import com.opentext.otag.sdk.types.v3.message.SettingsChangeMessage;
 import com.opentext.otsync.content.listeners.*;
 import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.engine.core.SuspendedActionQueue;
@@ -14,8 +17,6 @@ import com.opentext.otsync.content.ws.server.ClientSet;
 import com.opentext.otsync.content.ws.server.servlet3.Servlet3BackChannel;
 import com.opentext.otsync.content.ws.server.servlet3.Servlet3ContentChannel;
 import com.opentext.otsync.content.ws.server.servlet3.Servlet3FrontChannel;
-import com.opentext.otag.api.shared.types.message.SettingsChangeMessage;
-import com.opentext.otag.sdk.client.NotificationsClient;
 import com.opentext.otag.sdk.handlers.AbstractSettingChangeHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -101,8 +102,12 @@ public class ContentServiceEngine {
         messageConverter = new JsonMessageConverter();
         clients = new ClientSet();
         serverConnection = httpRequestManager;
-        sharedThreadPool = SuspendedActionQueue.getThreadPool(
-                settingsService.getSharedThreadPoolSize(), "mainQueue-");
+        try {
+            sharedThreadPool = SuspendedActionQueue.getThreadPool(
+                    settingsService.getSharedThreadPoolSize(), "mainQueue-");
+        } catch (APIException e) {
+            LOG.error("Failed to resolve shared thread pool size setting via Gateway - " + e.getCallInfo());
+        }
 
         initListeners();
 

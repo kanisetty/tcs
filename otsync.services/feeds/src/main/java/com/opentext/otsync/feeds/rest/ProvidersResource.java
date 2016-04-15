@@ -1,7 +1,6 @@
 package com.opentext.otsync.feeds.rest;
 
-import com.opentext.otag.sdk.client.SettingsClient;
-import com.opentext.otag.sdk.handlers.SettingChangeHandler;
+import com.opentext.otag.sdk.client.v3.SettingsClient;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

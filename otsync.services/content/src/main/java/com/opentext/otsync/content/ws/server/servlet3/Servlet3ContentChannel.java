@@ -1,5 +1,6 @@
 package com.opentext.otsync.content.ws.server.servlet3;
 
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.content.engine.core.SuspendedAction;
 import com.opentext.otsync.content.engine.core.SuspendedActionQueue;
 import com.opentext.otsync.content.http.HTTPRequestManager;
@@ -30,7 +31,11 @@ public class Servlet3ContentChannel {
     public void handle(HttpServletRequest request, HttpServletResponse response) {
         if (ServletUtil.isGet(request)) {
             AsyncContext asyncRequest = request.startAsync();
-            asyncRequest.setTimeout(settingsClient.getServlet3ContentTimeout());
+            try {
+                asyncRequest.setTimeout(settingsClient.getServlet3ContentTimeout());
+            } catch (APIException e) {
+                throw new RuntimeException("Failed to get content timeout setting from the Gateway", e);
+            }
             DownloadAction action = new DownloadAction(serverConnection, asyncRequest);
 
             // enqueue only downloads marked "auto", representing automatic file-sync;
@@ -39,7 +44,11 @@ public class Servlet3ContentChannel {
             sendDownload(action, auto);
         } else if (ServletUtil.isPost(request)) {
             AsyncContext asyncRequest = request.startAsync();
-            asyncRequest.setTimeout(settingsClient.getServlet3ContentTimeout());
+            try {
+                asyncRequest.setTimeout(settingsClient.getServlet3ContentTimeout());
+            } catch (APIException e) {
+                throw new RuntimeException("Failed to get content timeout setting from the Gateway", e);
+            }
 
             UploadAction action = new UploadAction(serverConnection, asyncRequest);
             sendUpload(action);

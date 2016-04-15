@@ -1,8 +1,9 @@
 package com.opentext.tempo.notifications;
 
-import com.opentext.otag.api.shared.types.MailRequest;
-import com.opentext.otag.sdk.client.MailClient;
-import com.opentext.otag.sdk.client.SettingsClient;
+import com.opentext.otag.sdk.client.v3.MailClient;
+import com.opentext.otag.sdk.client.v3.SettingsClient;
+import com.opentext.otag.sdk.types.v3.MailRequest;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -58,14 +59,18 @@ public class ExternalUserEmailClient {
         xml.write(subjectStringWriter, xslSubjectPath, xslSubject);
         xml.write(bodyStringWriter, xslBodyPath, xslBody);
 
-        SettingsClient settingsClient = new SettingsClient();
-        String mailFromSetting = settingsClient.getSettingAsString(OTAG_SMTP_FROM);
-        if (mailFromSetting != null) {
-            MailRequest mailRequest = new MailRequest(mailFromSetting, Collections.singletonList(email),
-                    subjectStringWriter.toString(), bodyStringWriter.toString());
-            mailClient.sendMail(mailRequest);
-        } else {
-            log.warn("Failed to get the Gateway's \"from\" email address setting");
+        try {
+            SettingsClient settingsClient = new SettingsClient();
+            String mailFromSetting = settingsClient.getSettingAsString(OTAG_SMTP_FROM);
+            if (mailFromSetting != null) {
+                MailRequest mailRequest = new MailRequest(mailFromSetting, Collections.singletonList(email),
+                        subjectStringWriter.toString(), bodyStringWriter.toString());
+                mailClient.sendMail(mailRequest);
+            } else {
+                log.warn("Failed to get the Gateway's \"from\" email address setting");
+            }
+        } catch (APIException e) {
+            log.error("Gateway API call failed, could not send email - " + e.getCallInfo());
         }
     }
 

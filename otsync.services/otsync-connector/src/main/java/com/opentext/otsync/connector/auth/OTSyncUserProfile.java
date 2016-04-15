@@ -2,7 +2,7 @@ package com.opentext.otsync.connector.auth;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.opentext.otag.api.shared.types.auth.UserProfile;
+import com.opentext.otag.sdk.types.v3.auth.UserProfile;
 
 import java.io.IOException;
 import java.util.Map;

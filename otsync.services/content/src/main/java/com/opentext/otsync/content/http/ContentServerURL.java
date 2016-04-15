@@ -1,6 +1,7 @@
 
 package com.opentext.otsync.content.http;
 
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.content.otag.ContentServerService;
 import com.opentext.otsync.content.otag.SettingsService;
 
@@ -22,9 +23,14 @@ public class ContentServerURL {
     }
 
     public boolean isValid() {
-        String checkURL = url;
-        String[] whitelist = getSettingService().getValidURLWhiteList();
         boolean validURL = false;
+        String checkURL = url;
+        String[] whitelist;
+        try {
+            whitelist = getSettingService().getValidURLWhiteList();
+        } catch (APIException e) {
+            throw new RuntimeException("Failed to get URL white list setting", e);
+        }
 
         //confirm that the url is for the known Content Server
         if (checkURL.startsWith(getSettingService().getContentServerBaseUrl())) {
