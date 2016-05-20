@@ -23,7 +23,7 @@
         <main.basedir>${project.basedir}</main.basedir>
 
         <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
-        <appworks.platform.version>16.01-RC-4</appworks.platform.version>
+        <appworks.platform.version>16</appworks.platform.version>
     </properties>
 
     <build>
