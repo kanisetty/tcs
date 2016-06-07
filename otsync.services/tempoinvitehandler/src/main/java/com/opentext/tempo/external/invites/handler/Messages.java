@@ -11,7 +11,7 @@ public final class Messages {
      * We keep our property files locally within the same package structure as the classes
      * that need them.
      */
-    private static final String BUNDLE_NAME = "com.opentext.tempo.invitations.messages";
+    private static final String BUNDLE_NAME = "com.opentext.tempo.external.invites.handler.messages";
 
     private final ResourceBundle resourceBundle;
     private final Locale locale;
