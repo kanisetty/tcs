@@ -1,9 +1,13 @@
 package com.opentext.tempo.external.invites.persistence;
 
+import com.opentext.otag.sdk.client.v3.SettingsClient;
+import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
+import com.opentext.otag.sdk.util.StringUtil;
 import com.opentext.tempo.external.invites.InviteHandlerConstants;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -21,9 +25,9 @@ import static org.eclipse.persistence.config.PersistenceUnitProperties.*;
  */
 public class DatabaseConnectionManagerService
         extends AbstractMultiSettingChangeHandler /* AppWorks setting handling */
-        implements DatabaseConnectionManager {
+        implements DatabaseConnectionManager, AWServiceContextHandler {
 
-    public static final Log LOG = LogFactory.getLog(DatabaseConnectionManagerService.class);
+    public static final Logger LOG = LoggerFactory.getLogger(DatabaseConnectionManagerService.class);
 
     /**
      * Invite handler persistence unit name (see persistence.xml).
@@ -55,6 +59,36 @@ public class DatabaseConnectionManagerService
             }
             updateEmf();
         });
+    }
+
+    @Override
+    public void onStart(String appName) {
+        LOG.info("DatabaseConnectionManagerService#onStart");
+
+        // attempt to resolve our settings now it is safe to instantiate SDK clients
+        SettingsClient settingsClient = new SettingsClient();
+
+        getSettingKeys().forEach(key -> {
+            switch (key) {
+                case InviteHandlerConstants.USER_NAME:
+                    username = resolveSetting(key, settingsClient);
+                    break;
+                case InviteHandlerConstants.PASSWORD:
+                    password = resolveSetting(key, settingsClient);
+                    break;
+                case InviteHandlerConstants.JDBC_URL:
+                    jdbcUrl = resolveSetting(key, settingsClient);
+                    resolveDriver(jdbcUrl);
+                    break;
+                default:
+                    LOG.warn("Unknown setting key {}", key);
+            }
+        });
+    }
+
+    @Override
+    public void onStop(String appName) {
+        LOG.info("DatabaseConnectionManagerService#onStop");
     }
 
     @Override
@@ -103,6 +137,8 @@ public class DatabaseConnectionManagerService
                 !isNullOrEmpty(jdbcDriver) && !isNullOrEmpty(jdbcUrl)) {
             try {
                 emf = this.getEMF(INVITE_HANDLER_PU_NAME, jdbcUrl, username, password, jdbcDriver);
+                // attempt entity manager creation to ensure our EMF is good
+                emf.createEntityManager();
             } catch (Exception e) {
                 LOG.error("Failed to create the Entity Manager Factory for the invite handler service, " +
                         "please check the service settings", e);
@@ -146,6 +182,15 @@ public class DatabaseConnectionManagerService
         persistenceProperties.put(CONNECTION_POOL + CONNECTION_POOL_MAX, "5");
 
         return Persistence.createEntityManagerFactory(persistenceContextName, persistenceProperties);
+    }
+
+    private String resolveSetting(String key, SettingsClient settingsClient) {
+        try {
+            return settingsClient.getSettingAsString(key);
+        } catch (APIException e) {
+            LOG.warn("Failed to lookup setting {} - {}", key, e.getCallInfo());
+            return "";
+        }
     }
 
 }

@@ -11,10 +11,10 @@ import com.opentext.otag.sdk.types.v3.api.SDKResponse;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
 import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
+import com.opentext.otag.sdk.util.StringUtil;
 import com.opentext.otag.service.context.components.AWComponentContext;
 import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
 import com.opentext.tempo.external.invites.appworks.settings.SettingsBuilder;
-import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -54,7 +54,7 @@ public class TempoInviteHandlerService implements AWServiceContextHandler {
                 // we get the connection URL from the connect result
                 String connectionUrl = csConnection.getConnectionUrl();
 
-                if (connectionUrl != null && !connectionUrl.isEmpty()) {
+                if (!StringUtil.isNullOrEmpty(connectionUrl)) {
                     LOG.info("Initialising settings for the invite handler service");
                     SettingsBuilder settingsBuilder = new SettingsBuilder(settingsClient);
                     settingsBuilder.initServiceSettings();

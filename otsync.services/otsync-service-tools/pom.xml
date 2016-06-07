@@ -12,7 +12,6 @@
     </parent>
 
     <artifactId>otsync-service-tools</artifactId>
-    <packaging>jar</packaging>
     <name>OTSync Service Tools</name>
 
     <description>Common classes used by Content Server client/services deployed to the
