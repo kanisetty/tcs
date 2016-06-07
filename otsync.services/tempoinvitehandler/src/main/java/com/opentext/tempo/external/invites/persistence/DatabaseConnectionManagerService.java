@@ -25,14 +25,15 @@ import static org.eclipse.persistence.config.PersistenceUnitProperties.*;
  */
 public class DatabaseConnectionManagerService
         extends AbstractMultiSettingChangeHandler /* AppWorks setting handling */
-        implements DatabaseConnectionManager, AWServiceContextHandler {
+        implements AWServiceContextHandler, /* AppWorks startup handler, so we can resolve settings */
+        DatabaseConnectionManager{
 
-    public static final Logger LOG = LoggerFactory.getLogger(DatabaseConnectionManagerService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DatabaseConnectionManagerService.class);
 
     /**
      * Invite handler persistence unit name (see persistence.xml).
      */
-    public static final String INVITE_HANDLER_PU_NAME = "tempoinvitehandler";
+    private static final String INVITE_HANDLER_PU_NAME = "tempoinvitehandler";
 
     private EntityManagerFactory emf;
 
@@ -84,6 +85,9 @@ public class DatabaseConnectionManagerService
                     LOG.warn("Unknown setting key {}", key);
             }
         });
+
+        // we may have all the info we need to create our connection now
+        updateEmf();
     }
 
     @Override
