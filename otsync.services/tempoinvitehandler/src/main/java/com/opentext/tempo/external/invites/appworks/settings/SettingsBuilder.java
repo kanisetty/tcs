@@ -51,7 +51,8 @@ public class SettingsBuilder {
     }
 
     private List<Setting> getSettings() {
-        return Arrays.asList(dbUsername(), dbPassword(), dbConnectionString(), emailFrom());
+        return Arrays.asList(dbUsername(), dbPassword(), dbConnectionString(), emailFrom(), otdsPartition(),
+                otdsPartitionAdminName(), otdsPartitionAdminPassword());
     }
 
     private Setting dbUsername() {
@@ -60,9 +61,8 @@ public class SettingsBuilder {
     }
 
     private Setting dbPassword() {
-        return new Setting(InviteHandlerConstants.PASSWORD, InviteHandlerConstants.INVITE_HANDLER_APP_NAME,
-                SettingType.password, "Database Password", "", "", "The password for the invite handler database",
-                false, false, String.valueOf(2));
+        return buildSetting(InviteHandlerConstants.PASSWORD, "Database Password", "",
+                "The password for the invite handler database", SettingType.password, 2);
     }
 
     private Setting dbConnectionString() {
@@ -75,11 +75,33 @@ public class SettingsBuilder {
                 "The \"from\" address to use when sending invite emails", 4);
     }
 
+    private Setting otdsPartition() {
+        return buildSetting(InviteHandlerConstants.OTDS_PARTITION, "OTDS External Users Partition", "otag",
+                "The OTDS User Partition where invited users will be managed", 5);
+    }
+
+    private Setting otdsPartitionAdminName() {
+        return buildSetting(InviteHandlerConstants.OTDS_PARTITION_ADMIN_USER,
+                "OTDS Partition Administrator", "otadmin@otds.admin",
+                "The Partition Administrator for the OTDS User Partition where invited users will be managed", 6);
+    }
+
+    private Setting otdsPartitionAdminPassword() {
+        return buildSetting(InviteHandlerConstants.OTDS_PARTITION_ADMIN_PASSWORD,
+                "OTDS Partition Administrator Password", "",
+                "The Partition Administrator password for the OTDS User Partition where invited users will be managed",
+                7);
+    }
+
     private Setting buildSetting(String key, String displayName, String value,
                                  String description, int seqNo) {
+        return buildSetting(key, displayName, value, description, SettingType.password, seqNo);
+    }
+
+    private Setting buildSetting(String key, String displayName, String value, String description, SettingType type,
+                                 int seqNo) {
         return new Setting(key, InviteHandlerConstants.INVITE_HANDLER_APP_NAME,
-                SettingType.string, displayName, value, "",
-                description, false, false, String.valueOf(seqNo));
+                type, displayName, value, "", description, false, false, String.valueOf(seqNo));
     }
 
 }
