@@ -4,19 +4,18 @@ import com.opentext.otag.sdk.client.v3.SettingsClient;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
-import com.opentext.otag.sdk.util.StringUtil;
 import com.opentext.tempo.external.invites.InviteHandlerConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.spi.PersistenceUnitTransactionType;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import static com.opentext.otag.sdk.util.StringUtil.isNullOrEmpty;
-import static org.eclipse.persistence.config.PersistenceUnitProperties.*;
 
 /**
  * Listener that takes care of the database connection creation for this service.
@@ -35,6 +34,7 @@ public class DatabaseConnectionManagerService
      */
     private static final String INVITE_HANDLER_PU_NAME = "tempoinvitehandler";
 
+    private final EclipseLinkJpaHelper jpaHelper;
     private EntityManagerFactory emf;
 
     // properties required to create a connection
@@ -43,7 +43,10 @@ public class DatabaseConnectionManagerService
     private String jdbcUrl;
     private String jdbcDriver;
 
+
     public DatabaseConnectionManagerService() {
+        jpaHelper = new EclipseLinkJpaHelper(INVITE_HANDLER_PU_NAME);
+
         // handle settings updates
         addHandler(InviteHandlerConstants.USER_NAME, settingsChangeMessage -> {
             username = settingsChangeMessage.getNewValue();
@@ -147,7 +150,7 @@ public class DatabaseConnectionManagerService
         if (!isNullOrEmpty(username) && !isNullOrEmpty(password) &&
                 !isNullOrEmpty(jdbcDriver) && !isNullOrEmpty(jdbcUrl)) {
             try {
-                emf = this.getEMF(INVITE_HANDLER_PU_NAME, jdbcUrl, username, password, jdbcDriver);
+                emf = jpaHelper.getEMF(jdbcUrl, username, password, jdbcDriver);
                 // attempt entity manager creation to ensure our EMF is good
                 emf.createEntityManager();
             } catch (Exception e) {
@@ -157,42 +160,6 @@ public class DatabaseConnectionManagerService
         } else {
             LOG.info("Unable to update EMF yet as we don't have the full set of credentials");
         }
-    }
-
-    /**
-     * Create an {@link EntityManagerFactory} using the supplied details.
-     *
-     * @param persistenceContextName name for our context (see persistence.xml)
-     * @param connectionString       connection url
-     * @param user                   user name
-     * @param password               password
-     * @param jdbcDriver             driver
-     * @return entity manager factory
-     */
-    private EntityManagerFactory getEMF(String persistenceContextName,
-                                        String connectionString,
-                                        String user,
-                                        String password,
-                                        String jdbcDriver) {
-        Properties persistenceProperties = new Properties();
-
-        persistenceProperties.put(TRANSACTION_TYPE, PersistenceUnitTransactionType.RESOURCE_LOCAL.name());
-        // log only errors, since eclipselink otherwise logs a bunch of ordinary behaviour as 'warning's
-        persistenceProperties.put(LOGGING_LEVEL, "FINE");
-        // this puts eclipselink logging in the catalina log
-        persistenceProperties.put(LOGGING_LOGGER, "JavaLogger");
-        // This setting will automatically create any missing tables and add any missing columns.
-        // Any more complicated migrations will need to be handled in another way.
-        persistenceProperties.put(DDL_GENERATION, CREATE_OR_EXTEND);
-
-        persistenceProperties.put(InviteHandlerConstants.JDBC_URL, connectionString);
-        persistenceProperties.put(JDBC_DRIVER, jdbcDriver);
-        persistenceProperties.put(JDBC_USER, user);
-        persistenceProperties.put(JDBC_PASSWORD, password);
-
-        persistenceProperties.put(CONNECTION_POOL + CONNECTION_POOL_MAX, "5");
-
-        return Persistence.createEntityManagerFactory(persistenceContextName, persistenceProperties);
     }
 
     private String resolveSetting(String key, SettingsClient settingsClient) {
