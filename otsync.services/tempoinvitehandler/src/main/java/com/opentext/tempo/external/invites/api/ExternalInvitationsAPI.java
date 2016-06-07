@@ -1,11 +1,14 @@
-package com.opentext.tempo.notifications.api;
+package com.opentext.tempo.external.invites.api;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.glassfish.jersey.server.ResourceConfig;
 
-public class NotificationsAPI extends ResourceConfig {
+/**
+ * Jersey JAX-RS configuration for this service.
+ */
+public class ExternalInvitationsAPI extends ResourceConfig {
 
-    public NotificationsAPI() {
+    public ExternalInvitationsAPI() {
         packages("com.opentext.tempo.notifications.api");
         register(JacksonJsonProvider.class);
     }

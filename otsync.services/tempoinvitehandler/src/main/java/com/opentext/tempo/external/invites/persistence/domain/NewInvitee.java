@@ -1,4 +1,4 @@
-package com.opentext.tempo.notifications.persistence.domain;
+package com.opentext.tempo.external.invites.persistence.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

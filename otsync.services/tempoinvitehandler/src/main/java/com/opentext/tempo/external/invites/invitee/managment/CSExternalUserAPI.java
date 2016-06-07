@@ -1,4 +1,4 @@
-package com.opentext.tempo.notifications.api.auth;
+package com.opentext.tempo.external.invites.invitee.managment;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,7 +8,7 @@ import com.opentext.otag.sdk.types.v3.TrustedProvider;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.api.HttpClient;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
-import com.opentext.tempo.notifications.TempoNotificationsService;
+import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
@@ -61,7 +61,7 @@ public class CSExternalUserAPI implements ExternalUserAPI {
 
     public ExternalUserAPIResult inviteeValidated(String email, String password, String firstName,
                                                   String lastName, CSForwardHeaders headers){
-        Map<String, Object> info = new HashMap<String, Object>();
+        Map<String, Object> info = new HashMap<>();
 
         info.put(USERNAME_KEY_NAME, email);
         info.put(PASSWORD_KEY_NAME, password);
@@ -144,7 +144,7 @@ public class CSExternalUserAPI implements ExternalUserAPI {
         postParams.add(new BasicNameValuePair(FUNCTION_PARAMETER_NAME, EXTERNAL_USER_API_REQUESTHANDLER));
         postParams.add(new BasicNameValuePair(PAYLOAD_KEY_NAME, json));
 
-        HttpPost request = new HttpPost(TempoNotificationsService.getCsUrl());
+        HttpPost request = new HttpPost(ServiceIndex.csUrl());
         request.setEntity(new UrlEncodedFormEntity(postParams));
         headers.addTo(request);
         headers.getLLCookie().addLLCookieToRequest(httpClient, request);

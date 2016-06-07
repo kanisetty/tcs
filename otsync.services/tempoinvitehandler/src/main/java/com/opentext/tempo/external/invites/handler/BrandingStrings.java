@@ -1,4 +1,4 @@
-package com.opentext.tempo.notifications;
+package com.opentext.tempo.external.invites.handler;
 
 import java.util.ResourceBundle;
 

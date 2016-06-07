@@ -1,4 +1,4 @@
-package com.opentext.tempo.notifications.api.auth;
+package com.opentext.tempo.external.invites.invitee.managment;
 
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 

@@ -1,10 +1,7 @@
-package com.opentext.tempo.notifications.api.auth;
+package com.opentext.tempo.external.invites.invitee.managment;
 
-import com.opentext.otag.sdk.client.v3.AuthClient;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.util.Objects;
 
 /**
  * TODO FIXME - The operations this class was previously carrying out were not safe
@@ -15,14 +12,14 @@ import java.util.Objects;
 public class OtdsExternalUserAPI implements ExternalUserAPI {
 
     private final CSExternalUserAPI csService;
-    private final AuthClient authClient;
+    // TODO FIXME we are replacing this with an OTDS client
+//    private final AuthClient authClient;
 
     private String otagUserPartition;
 
-    public OtdsExternalUserAPI(AuthClient authClient) {
-        Objects.requireNonNull(authClient, "SDK AuthClient is required for OTDS interaction");
+    public OtdsExternalUserAPI() {
+        // TODO FIXME RESOLVE SETTINGS FOR OTDS AUTH CONNECTION
         csService = new CSExternalUserAPI(new DefaultHttpClient());
-        this.authClient = authClient;
     }
 
     public ExternalUserAPIResult inviteeValidated(String email, String password, String firstName,

@@ -1,11 +1,11 @@
-package com.opentext.tempo.notifications;
+package com.opentext.tempo.external.invites.email;
 
 import com.opentext.otag.sdk.client.v3.MailClient;
-import com.opentext.otag.sdk.client.v3.SettingsClient;
 import com.opentext.otag.sdk.types.v3.MailRequest;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.opentext.tempo.external.invites.handler.XmlPackage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletContext;
@@ -15,13 +15,29 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Collections;
 
+/**
+ * This client is responsible for creating email from the templates provided within
+ * this service, and sending them via the AppWorks Gateway SDK.
+ */
 public class ExternalUserEmailClient {
 
-    public static final Log log = LogFactory.getLog(ExternalUserEmailClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ExternalUserEmailClient.class);
 
-    private final MailClient mailClient = new MailClient();
+    /**
+     * AppWorks SDK mail client.
+     */
+    private MailClient mailClient;
 
-    public static final String OTAG_SMTP_FROM = "otag.smtp.from";
+    /**
+     * Email from address settings handler
+     */
+    private EmailFromAddressHandler fromAddressHandler;
+
+    public ExternalUserEmailClient(MailClient mailClient,
+                                   EmailFromAddressHandler fromAddressHandler) {
+        this.mailClient = mailClient;
+        this.fromAddressHandler = fromAddressHandler;
+    }
 
     public void sendSuccessEmail(ServletContext context, XmlPackage xml, String email, String langFolder)
             throws IOException, TransformerException, MessagingException {
@@ -44,9 +60,10 @@ public class ExternalUserEmailClient {
                 langFolder + "/passwordresetemail.xsl", xml, email);
     }
 
-    protected void sendContextEmail(ServletContext context, String subjectxsl, String bodyxsl,
-                                    XmlPackage xml, String email)
+    private void sendContextEmail(ServletContext context, String subjectxsl, String bodyxsl,
+                                  XmlPackage xml, String email)
             throws IOException, TransformerException, MessagingException {
+
         InputStream xslSubject = context.getResourceAsStream("/WEB-INF/xsl/" + subjectxsl);
         String xslSubjectPath = context.getRealPath("/WEB-INF/xsl/" + subjectxsl);
 
@@ -60,17 +77,16 @@ public class ExternalUserEmailClient {
         xml.write(bodyStringWriter, xslBodyPath, xslBody);
 
         try {
-            SettingsClient settingsClient = new SettingsClient();
-            String mailFromSetting = settingsClient.getSettingAsString(OTAG_SMTP_FROM);
+            String mailFromSetting = fromAddressHandler.getFromAddress();
             if (mailFromSetting != null) {
                 MailRequest mailRequest = new MailRequest(mailFromSetting, Collections.singletonList(email),
                         subjectStringWriter.toString(), bodyStringWriter.toString());
                 mailClient.sendMail(mailRequest);
             } else {
-                log.warn("Failed to get the Gateway's \"from\" email address setting");
+                LOG.warn("Failed to get the Gateway's \"from\" email address setting");
             }
         } catch (APIException e) {
-            log.error("Gateway API call failed, could not send email - " + e.getCallInfo());
+            LOG.error("Gateway API call failed, could not send email - " + e.getCallInfo());
         }
     }
 

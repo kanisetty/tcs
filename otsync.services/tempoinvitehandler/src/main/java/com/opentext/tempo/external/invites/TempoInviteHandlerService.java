@@ -1,9 +1,9 @@
-package com.opentext.tempo.notifications;
+package com.opentext.tempo.external.invites;
 
-import com.opentext.otag.sdk.client.v3.AuthClient;
 import com.opentext.otag.sdk.client.v3.ServiceClient;
 import com.opentext.otag.sdk.client.v3.SettingsClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
+import com.opentext.otag.sdk.connector.EIMConnectorClient.ConnectionResult;
 import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
@@ -12,37 +12,52 @@ import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
 import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
 import com.opentext.otag.service.context.components.AWComponentContext;
+import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
+import com.opentext.tempo.external.invites.appworks.settings.SettingsBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
+public class TempoInviteHandlerService implements AWServiceContextHandler {
 
-public class TempoNotificationsService implements AWServiceContextHandler {
+    private static final Log LOG = LogFactory.getLog(TempoInviteHandlerService.class);
 
-    private static final Log LOG = LogFactory.getLog(TempoNotificationsService.class);
-
-    private EIMConnector csConnection;
+    // AppWorks SDK clients
     private ServiceClient serviceClient;
-
-    private AuthClient authClient;
     private SettingsClient settingsClient;
+
+    /**
+     * This is our connection to content server, it retains the CS URL and
+     * keeps its value up to date (it can be changed by a Gateway admin).
+     */
+    private EIMConnectorClient csConnector;
 
     @AWServiceStartupComplete
     @Override
     public void onStart(String appName) {
-        LOG.info("Started Tempo Notifications service");
+        LOG.info("Started Tempo External Invites service");
         serviceClient = new ServiceClient();
         settingsClient = new SettingsClient();
-        authClient = new AuthClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
-            EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
+            csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
+            // TODO FIXME FAKE THIS OUT FOR NOW TO GET AROUND CS SETUP
+            ConnectionResult connectionResult = /*csConnector.connect()*/new ConnectionResult(
+                    new EIMConnector("OTSync", "16.0.1", "http://www.cs.com", "settingKeyName", "providerKey"));
             if (connectionResult.isSuccess()) {
-                csConnection = connectionResult.getConnector();
+                EIMConnector csConnection = connectionResult.getConnector();
+                // we get the connection URL from the connect result
                 String connectionUrl = csConnection.getConnectionUrl();
+
                 if (connectionUrl != null && !connectionUrl.isEmpty()) {
+                    LOG.info("Initialising settings for the invite handler service");
+                    SettingsBuilder settingsBuilder = new SettingsBuilder(settingsClient);
+                    settingsBuilder.initServiceSettings();
+
+                    // we build up our main service ourselves and add it to the context so
+                    // other services can use it
+                    LOG.info("Adding TempoInviteHandler to AppWorks component context");
+                    AWComponentContext.add(ServiceIndex.tempoInviteHandler());
+
                     serviceClient.completeDeployment(new DeploymentResult(true));
                 } else {
                     failBuild("OTSync EIM Connector was resolved but connection URL was not valid");
@@ -62,29 +77,18 @@ public class TempoNotificationsService implements AWServiceContextHandler {
         LOG.info("Tempo Notifications Service has stopped");
     }
 
+    public boolean isReady() {
+        // ensure onStart was called
+        return serviceClient != null;
+    }
+
     public SettingsClient getSettingsClient() {
         return settingsClient;
     }
 
-    public AuthClient getAuthClient() {
-        return authClient;
-    }
-
     public String getCsConnection() {
-        return (csConnection != null) ? csConnection.getConnectionUrl() : null;
-    }
-
-    public static String getCsUrl() {
-        TempoNotificationsService tempoNotificationsService = AWComponentContext.getComponent(TempoNotificationsService.class);
-
-        if (tempoNotificationsService != null) {
-            String csConnection = tempoNotificationsService.getCsConnection();
-            if (csConnection != null)
-                return csConnection;
-        }
-
-        LOG.error("Unable to service tempo notifications request, unable to get CS connection URL");
-        throw new WebApplicationException(Response.Status.FORBIDDEN);
+        // get latest connection URL value
+        return (csConnector != null) ? csConnector.getConnectionString() : null;
     }
 
     private void failBuild(String errMsg) {

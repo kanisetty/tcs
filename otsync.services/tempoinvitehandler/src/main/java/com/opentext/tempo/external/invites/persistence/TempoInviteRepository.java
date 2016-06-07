@@ -1,7 +1,8 @@
-package com.opentext.tempo.notifications.persistence;
+package com.opentext.tempo.external.invites.persistence;
 
-import com.opentext.tempo.notifications.persistence.domain.NewInvitee;
-import com.opentext.tempo.notifications.persistence.domain.PasswordReset;
+import com.opentext.tempo.external.invites.api.ServiceNotReadyException;
+import com.opentext.tempo.external.invites.persistence.domain.NewInvitee;
+import com.opentext.tempo.external.invites.persistence.domain.PasswordReset;
 
 import javax.persistence.EntityManager;
 import java.sql.SQLException;
@@ -10,10 +11,10 @@ import java.util.UUID;
 
 public class TempoInviteRepository {
 
-    private final PersistenceHelper persistenceHelper;
+    private final DatabaseConnectionManager databaseConnectionManager;
 
-    public TempoInviteRepository() {
-        persistenceHelper = new PersistenceHelper();
+    public TempoInviteRepository(DatabaseConnectionManager connectionManager) {
+        databaseConnectionManager = connectionManager;
     }
 
     public NewInvitee loadInviteeFromToken(String token) throws SQLException {
@@ -97,7 +98,9 @@ public class TempoInviteRepository {
     }
 
     private EntityManager getEm() {
-        return persistenceHelper.getEm();
+        return databaseConnectionManager.getEm().orElseThrow(() ->
+                new ServiceNotReadyException("We are not connected to the database yet, " +
+                        "please ensure that the service database settings are present and correct"));
     }
 
 }
