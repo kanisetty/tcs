@@ -26,7 +26,7 @@ import static org.eclipse.persistence.config.PersistenceUnitProperties.*;
 public class DatabaseConnectionManagerService
         extends AbstractMultiSettingChangeHandler /* AppWorks setting handling */
         implements AWServiceContextHandler, /* AppWorks startup handler, so we can resolve settings */
-        DatabaseConnectionManager{
+        DatabaseConnectionManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseConnectionManagerService.class);
 
@@ -129,8 +129,15 @@ public class DatabaseConnectionManagerService
     private boolean resolveDriver(String urlValue) {
         String driver = JdbcHelper.getJdbcDriverFromConnection(urlValue);
         if (!isNullOrEmpty(driver)) {
-            jdbcDriver = driver;
-            return true;
+            try {
+                // attempt to resolve the JDBC driver
+                Class.forName(driver);
+                jdbcDriver = driver;
+                return true;
+            } catch (Exception e) {
+                LOG.error("We failed to resolve the JDBC driver - {}", driver, e);
+                return false;
+            }
         }
         return false;
     }
