@@ -14,6 +14,7 @@ import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
 import com.opentext.otag.service.context.components.AWComponentContext;
 import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
 import com.opentext.tempo.external.invites.appworks.settings.SettingsBuilder;
+import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -39,8 +40,13 @@ public class TempoInviteHandlerService implements AWServiceContextHandler {
         settingsClient = new SettingsClient();
 
         try {
-            csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
             // TODO FIXME FAKE THIS OUT FOR NOW TO GET AROUND CS SETUP
+            csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1") {
+                @Override
+                public String getConnectionString() {
+                    return "http://www.cs.com";
+                }
+            };
             ConnectionResult connectionResult = /*csConnector.connect()*/new ConnectionResult(
                     new EIMConnector("OTSync", "16.0.1", "http://www.cs.com", "settingKeyName", "providerKey"));
             if (connectionResult.isSuccess()) {
