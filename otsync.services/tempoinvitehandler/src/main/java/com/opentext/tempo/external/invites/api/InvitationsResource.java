@@ -12,10 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("invitations")
@@ -38,7 +37,7 @@ public class InvitationsResource {
      * @param lang           language
      * @return 200 OK if the invite succeeds
      */
-    @POST
+    @POST // use x-www-form-urlencoded with this endpoint
     public Response inviteExternalUser(@Context ServletContext servletContext,
                                        @FormParam("key") String key,
                                        @FormParam("email") String email,
@@ -62,6 +61,7 @@ public class InvitationsResource {
             for (TrustedProvider trustedProvider : allProviders.getTrustedProviders()) {
                 if (key.equals(trustedProvider.getKey())) {
                     provider = trustedProvider;
+                    break;
                 }
             }
 
