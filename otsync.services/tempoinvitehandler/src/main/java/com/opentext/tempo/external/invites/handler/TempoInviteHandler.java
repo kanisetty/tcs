@@ -281,7 +281,7 @@ public final class TempoInviteHandler implements AWComponent {
 
         Element user = xml.addElement(xml.getRoot(), "user");
 
-        if (invitee.getValidationdate() != null) {
+        if (invitee.getValidationDate() != null) {
             // Invitee is clicking on the link a second time after having registered already
             user.setAttribute("username", invitee.getEmail());
             user.setAttribute("token_already_used", "true");
@@ -438,7 +438,7 @@ public final class TempoInviteHandler implements AWComponent {
         user.setAttribute("showstep", "two");
 
         user.setAttribute("username", pwReset.getUsername());
-        if (pwReset.getValidationdate() != null) {
+        if (pwReset.getValidationDate() != null) {
             user.setAttribute("token_already_used", "true");
         }
 
@@ -484,7 +484,7 @@ public final class TempoInviteHandler implements AWComponent {
             PasswordReset pwReset = inviteRepository.loadPasswordResetFromToken(token);
             user.setAttribute("username", pwReset.getUsername());
 
-            if (pwReset.getValidationdate() != null) {
+            if (pwReset.getValidationDate() != null) {
                 user.setAttribute("token_already_used", "true");
                 generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetvalidation.xsl");
                 return;
@@ -552,11 +552,11 @@ public final class TempoInviteHandler implements AWComponent {
     }
 
     private void populateUserElement(NewInvitee newinvitee, Element userElement) {
-        userElement.setAttribute("firstname", newinvitee.getFirstname());
+        userElement.setAttribute("firstname", newinvitee.getFirstName());
         userElement.setAttribute("lastname", newinvitee.getLastname());
         userElement.setAttribute("email", newinvitee.getEmail());
         userElement.setAttribute("username", newinvitee.getEmail());
-        userElement.setAttribute("invitername", newinvitee.getInvitername());
+        userElement.setAttribute("invitername", newinvitee.getInviterName());
     }
 
     private void captureExceptionMessage(String errMsg, Element userElement, Messages messages) {

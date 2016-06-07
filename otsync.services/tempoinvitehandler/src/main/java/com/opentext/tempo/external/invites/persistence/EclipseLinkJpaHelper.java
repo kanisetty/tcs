@@ -21,16 +21,16 @@ public class EclipseLinkJpaHelper {
     /**
      * Create an {@link EntityManagerFactory} using the supplied details.
      *
-     * @param connectionString       connection url
-     * @param user                   user name
-     * @param password               password
-     * @param jdbcDriver             driver
+     * @param connectionString connection url
+     * @param user             user name
+     * @param password         password
+     * @param jdbcDriver       driver
      * @return entity manager factory
      */
     public EntityManagerFactory getEMF(String connectionString,
-                                              String user,
-                                              String password,
-                                              String jdbcDriver) {
+                                       String user,
+                                       String password,
+                                       String jdbcDriver) {
         Properties persistenceProperties = new Properties();
 
         persistenceProperties.put(TRANSACTION_TYPE, PersistenceUnitTransactionType.RESOURCE_LOCAL.name());

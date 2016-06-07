@@ -32,7 +32,7 @@ public class DatabaseConnectionManagerService
     /**
      * Invite handler persistence unit name (see persistence.xml).
      */
-    private static final String INVITE_HANDLER_PU_NAME = "tempoinvitehandler";
+    public static final String INVITE_HANDLER_PU_NAME = "tempoinvitehandler";
 
     private final EclipseLinkJpaHelper jpaHelper;
     private EntityManagerFactory emf;

@@ -31,9 +31,9 @@ public class TempoInviteRepository {
 
         NewInvitee invitee = manager.find(NewInvitee.class, token);
         if (invitee != null) {
-            invitee.setFirstname(firstname);
+            invitee.setFirstName(firstname);
             invitee.setLastname(lastname);
-            invitee.setValidationdate(new Date());
+            invitee.setValidationDate(new Date());
 
             manager.merge(invitee);
         }
@@ -47,7 +47,7 @@ public class TempoInviteRepository {
 
         PasswordReset reset = manager.find(PasswordReset.class, token);
         if (reset != null) {
-            reset.setValidationdate(new Date());
+            reset.setValidationDate(new Date());
 
             manager.merge(reset);
         }
@@ -64,15 +64,15 @@ public class TempoInviteRepository {
 
         NewInvitee invitee = new NewInvitee();
         invitee.setEmail(email);
-        invitee.setInvitername(invitername);
-        invitee.setInvitedate(new Date());
-        invitee.setValidationcode(generateUUID());
+        invitee.setInviterName(invitername);
+        invitee.setInviteDate(new Date());
+        invitee.setValidationCode(generateUUID());
 
         manager.persist(invitee);
 
         manager.getTransaction().commit();
 
-        return invitee.getValidationcode();
+        return invitee.getValidationCode();
     }
 
     /*
@@ -84,13 +84,13 @@ public class TempoInviteRepository {
 
         PasswordReset reset = new PasswordReset();
         reset.setUsername(username);
-        reset.setValidationcode(generateUUID());
+        reset.setValidationCode(generateUUID());
 
         manager.persist(reset);
 
         manager.getTransaction().commit();
 
-        return reset.getValidationcode();
+        return reset.getValidationCode();
     }
 
     private String generateUUID() {

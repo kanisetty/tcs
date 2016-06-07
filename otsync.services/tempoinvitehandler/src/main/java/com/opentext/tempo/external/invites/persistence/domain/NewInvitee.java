@@ -1,51 +1,57 @@
 package com.opentext.tempo.external.invites.persistence.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(
+                name = NewInvitee.FIND_ALL,
+                query = "SELECT nI FROM NewInvitee nI"
+        )
+})
+@SuppressWarnings("JpaQlInspection")
 public class NewInvitee {
 
+    public static final String FIND_ALL = "newInvitee.findAll";
+
     @Id
-    private String validationcode;
+    private String validationCode;
 
     private String email;
 
-    private String firstname;
+    private String firstName;
 
     private String lastname;
 
-    private String invitername;
+    private String inviterName;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date invitedate;
+    private Date inviteDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date validationdate;
+    private Date validationDate;
 
     public NewInvitee() {
     }
 
-    public NewInvitee(String validationcode, String email, String firstname, String lastname,
-                      String invitername, Date invitedate, Date validationdate) {
-        this.validationcode = validationcode;
+    public NewInvitee(String validationCode, String email, String firstName, String lastName,
+                      String inviterName, Date inviteDate, Date validationDate) {
+        this.validationCode = validationCode;
         this.email = email;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.invitername = invitername;
-        this.invitedate = invitedate;
-        this.validationdate = validationdate;
+        this.firstName = firstName;
+        this.lastname = lastName;
+        this.inviterName = inviterName;
+        this.inviteDate = inviteDate;
+        this.validationDate = validationDate;
     }
 
-    public String getValidationcode() {
-        return validationcode;
+    public String getValidationCode() {
+        return validationCode;
     }
 
-    public void setValidationcode(String validationcode) {
-        this.validationcode = validationcode;
+    public void setValidationCode(String validationCode) {
+        this.validationCode = validationCode;
     }
 
     public String getEmail() {
@@ -56,12 +62,12 @@ public class NewInvitee {
         this.email = email;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastname() {
@@ -72,28 +78,56 @@ public class NewInvitee {
         this.lastname = lastname;
     }
 
-    public String getInvitername() {
-        return invitername;
+    public String getInviterName() {
+        return inviterName;
     }
 
-    public void setInvitername(String invitername) {
-        this.invitername = invitername;
+    public void setInviterName(String inviterName) {
+        this.inviterName = inviterName;
     }
 
-    public Date getInvitedate() {
-        return invitedate;
+    public Date getInviteDate() {
+        return inviteDate;
     }
 
-    public void setInvitedate(Date invitedate) {
-        this.invitedate = invitedate;
+    public void setInviteDate(Date inviteDate) {
+        this.inviteDate = inviteDate;
     }
 
-    public Date getValidationdate() {
-        return validationdate;
+    public Date getValidationDate() {
+        return validationDate;
     }
 
-    public void setValidationdate(Date validationdate) {
-        this.validationdate = validationdate;
+    public void setValidationDate(Date validationDate) {
+        this.validationDate = validationDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NewInvitee that = (NewInvitee) o;
+
+        return validationCode != null ? validationCode.equals(that.validationCode) : that.validationCode == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return validationCode != null ? validationCode.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "NewInvitee{" +
+                "validationCode='" + validationCode + '\'' +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", inviterName='" + inviterName + '\'' +
+                ", inviteDate=" + inviteDate +
+                ", validationDate=" + validationDate +
+                '}';
     }
 
 }
