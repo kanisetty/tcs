@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.0.0</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>workflow</artifactId>
@@ -21,7 +21,7 @@
         <!-- General app.properties -->
         <app.properties.displayName>Workflow Service</app.properties.displayName>
         <app.properties.description>This service provides initiation and management of Content Server workflows</app.properties.description>
-        <app.properties.versionNumber>16.0.0</app.properties.versionNumber>
+        <app.properties.versionNumber>16.0.1</app.properties.versionNumber>
         <app.properties.minimumClientVersion>2</app.properties.minimumClientVersion>
         <app.properties.type>service</app.properties.type>
 

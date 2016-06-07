@@ -37,7 +37,7 @@ public class TempoNotificationsService implements AWServiceContextHandler {
         authClient = new AuthClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.0");
+            EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();

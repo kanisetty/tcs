@@ -8,12 +8,11 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.0.0</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>otsync-service-tools</artifactId>
     <packaging>jar</packaging>
-    <version>16.0.0</version>
     <name>OTSync Service Tools</name>
 
     <description>Common classes used by Content Server client/services deployed to the
@@ -70,7 +69,8 @@
         <dependency>
             <groupId>com.opentext.otag.sdk</groupId>
             <artifactId>otag-service-development-kit</artifactId>
-            <version>${appworks.platform.version}</version>
+            <!-- The 16.0.1 SDK has been released -->
+            <version>16.0.1</version>
         </dependency>
 
         <dependency>
