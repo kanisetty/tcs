@@ -37,11 +37,14 @@ public class ServiceIndex {
         if (existingHandler != null) return existingHandler;
 
         DatabaseConnectionManager connectionManager = getComponent(DatabaseConnectionManagerService.class);
-        if (connectionManager == null || connectionManager.isConnected())
+        if (connectionManager == null || !connectionManager.isConnected())
             throw new ServiceNotReadyException("The invite handler service is yet to connect to the database");
 
         TempoInviteRepository inviteRepository = new TempoInviteRepository(connectionManager);
-        return new TempoInviteHandler(externalUserEmailClient(), inviteRepository);
+        TempoInviteHandler tempoInviteHandler = new TempoInviteHandler(externalUserEmailClient(), inviteRepository);
+        // cache in component context
+        AWComponentContext.add(tempoInviteHandler);
+        return tempoInviteHandler;
     }
 
     /**

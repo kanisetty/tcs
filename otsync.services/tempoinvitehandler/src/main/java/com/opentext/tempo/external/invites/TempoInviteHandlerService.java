@@ -13,14 +13,18 @@ import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
 import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
 import com.opentext.otag.sdk.util.StringUtil;
 import com.opentext.otag.service.context.components.AWComponentContext;
+import com.opentext.tempo.external.invites.api.ServiceNotReadyException;
 import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
 import com.opentext.tempo.external.invites.appworks.settings.SettingsBuilder;
+import com.opentext.tempo.external.invites.handler.TempoInviteHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TempoInviteHandlerService implements AWServiceContextHandler {
 
-    private static final Log LOG = LogFactory.getLog(TempoInviteHandlerService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TempoInviteHandlerService.class);
 
     // AppWorks SDK clients
     private ServiceClient serviceClient;
@@ -59,11 +63,6 @@ public class TempoInviteHandlerService implements AWServiceContextHandler {
                     SettingsBuilder settingsBuilder = new SettingsBuilder(settingsClient);
                     settingsBuilder.initServiceSettings();
 
-                    // we build up our main service ourselves and add it to the context so
-                    // other services can use it
-                    LOG.info("Adding TempoInviteHandler to AppWorks component context");
-                    AWComponentContext.add(ServiceIndex.tempoInviteHandler());
-
                     serviceClient.completeDeployment(new DeploymentResult(true));
                 } else {
                     failBuild("OTSync EIM Connector was resolved but connection URL was not valid");
@@ -72,9 +71,11 @@ public class TempoInviteHandlerService implements AWServiceContextHandler {
                 failBuild("Failed to resolve the OTSync EIM " +
                         "connector, message=" + connectionResult.getMessage());
             }
-
         } catch (Exception e) {
-            failBuild("Failed to start Tempo Notifications Service, " + e.getMessage());
+            if (e instanceof APIException)
+                LOG.error("SDK call failed during deployment - {}",
+                        ((APIException) e).getCallInfo());
+            failBuild("Failed to start Tempo Invite Handler Service, " + e.getMessage());
         }
     }
 

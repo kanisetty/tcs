@@ -97,12 +97,16 @@ public final class TempoInviteHandler implements AWComponent {
             invitee.setAttribute("email", email);
             invitee.setAttribute("inviterdisplayname", inviterName);
 
+            if (LOG.isDebugEnabled())
+                LOG.debug("Storing new invitee - {} invited {}", inviterName, email);
             String token = inviteRepository.addNewInvitee(email, inviterName);
             invitee.setAttribute("token", token);
 
             xml.getRoot().setAttribute("foldername", folderName);
             xml.getRoot().setAttribute("folderdesc", folderDesc);
             xml.getRoot().setAttribute("extrainfo", extraInfo);
+            if (LOG.isDebugEnabled())
+                LOG.debug("Sending invite email to {}", email);
             emailClient.sendInvitationEmail(servletContext, xml, email,
                     getFolderFromLanguageString(lang, servletContext));
         } catch (Exception e) {

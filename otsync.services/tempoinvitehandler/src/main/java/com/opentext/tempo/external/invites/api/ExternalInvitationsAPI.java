@@ -9,7 +9,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class ExternalInvitationsAPI extends ResourceConfig {
 
     public ExternalInvitationsAPI() {
-        packages("com.opentext.tempo.notifications.api");
+        packages("com.opentext.tempo.external.invites.api");
         register(JacksonJsonProvider.class);
     }
 

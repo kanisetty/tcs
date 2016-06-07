@@ -24,6 +24,20 @@ public class InvitationsResource {
 
     private final static Logger LOG = LoggerFactory.getLogger(InvitationsResource.class);
 
+    /**
+     * Invite an external user using a trusted provider client.
+     *
+     * @param servletContext servlet context
+     * @param key            trusted provider key
+     * @param email          invitee email address
+     * @param firstName      invitee first name
+     * @param lastName       invitee last name
+     * @param folderName     folder name
+     * @param folderDesc     folder description
+     * @param extraInfo      extra invitee info
+     * @param lang           language
+     * @return 200 OK if the invite succeeds
+     */
     @POST
     public Response inviteExternalUser(@Context ServletContext servletContext,
                                        @FormParam("key") String key,
@@ -44,6 +58,7 @@ public class InvitationsResource {
             TrustedProviderClient client = new TrustedProviderClient();
             TrustedProvider provider = null;
             TrustedProviders allProviders = client.getAllProviders();
+            // does the Gateway know the supplied key?
             for (TrustedProvider trustedProvider : allProviders.getTrustedProviders()) {
                 if (key.equals(trustedProvider.getKey())) {
                     provider = trustedProvider;
@@ -51,7 +66,7 @@ public class InvitationsResource {
             }
 
             if (provider == null) {
-                LOG.warn("Someone POST-ed to invitations with an invalid provider key: " + key);
+                LOG.warn("Someone POST-ed to invitations with an invalid provider key: {}", key);
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
 

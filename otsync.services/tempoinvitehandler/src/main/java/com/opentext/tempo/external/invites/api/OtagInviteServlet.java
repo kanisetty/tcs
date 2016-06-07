@@ -141,9 +141,8 @@ public final class OtagInviteServlet extends HttpServlet {
 
     public static void setupCommonSetting(XmlPackage xml) {
         try {
-            // TODO FIXME Dependency on Content Service as this is who the props file belongs to!!!
-            Properties properties = readClientsProperties(System.getProperty("catalina.base") +
-                    "/conf/tempo.clients.properties");
+            Properties properties = readSharedTempoClientProps(
+                    System.getProperty("catalina.base") + "/conf/tempo.clients.properties");
 
             String otagUrl = getOtagUrl();
 
@@ -162,7 +161,7 @@ public final class OtagInviteServlet extends HttpServlet {
         }
     }
 
-    private static Properties readClientsProperties(String clientsFile) throws IOException {
+    private static Properties readSharedTempoClientProps(String clientsFile) throws IOException {
         Properties properties = new Properties();
         try (FileInputStream fileInput = new FileInputStream(clientsFile)) {
             properties.load(fileInput);
