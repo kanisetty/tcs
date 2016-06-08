@@ -139,6 +139,7 @@ public final class OtagInviteServlet extends HttpServlet {
         }
     }
 
+    // TODO this needs to be refactored from something static into something useful
     public static void setupCommonSetting(XmlPackage xml) {
         try {
             Properties properties = readSharedTempoClientProps(
@@ -232,7 +233,7 @@ public final class OtagInviteServlet extends HttpServlet {
         return langFolder;
     }
 
-    public static String getSettingValue(String settingKey) {
+    private static String getSettingValue(String settingKey) {
         TempoInviteHandlerService handlerService = ServiceIndex.tempoInviteHandlerService();
         if (handlerService != null) {
             SettingsClient client = handlerService.getSettingsClient();

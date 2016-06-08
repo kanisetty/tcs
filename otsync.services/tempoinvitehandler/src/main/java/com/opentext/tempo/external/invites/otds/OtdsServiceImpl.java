@@ -29,6 +29,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     private String password;
 
     private RestClient otdsClient;
+    private SettingsClient settingsClient;
 
     public OtdsServiceImpl() {
         // handle settings updates
@@ -50,7 +51,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     public void onStart(String s) {
         LOG.info("OtdsServiceImpl#onStart");
         // attempt to resolve our settings now it is safe to instantiate SDK clients
-        SettingsClient settingsClient = new SettingsClient();
+        settingsClient = new SettingsClient();
 
         // init otds url
         getOtdsUrl();
@@ -108,7 +109,11 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     private String getOtdsUrl() {
         if (isNullOrEmpty(otdsUrl)) {
             synchronized (this) {
-                otdsUrl = OtagInviteServlet.getSettingValue("otds.url");
+                try {
+                    otdsUrl = settingsClient.getSettingAsString("otds.url");
+                } catch (APIException e) {
+                    LOG.warn("Failed to lookup otds.url Gateway setting", e.getCallInfo());
+                }
             }
         }
         return otdsUrl;
