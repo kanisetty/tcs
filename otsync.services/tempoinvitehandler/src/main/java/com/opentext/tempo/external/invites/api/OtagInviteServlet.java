@@ -233,7 +233,7 @@ public final class OtagInviteServlet extends HttpServlet {
         return langFolder;
     }
 
-    private static String getSettingValue(String settingKey) {
+    public static String getSettingValue(String settingKey) {
         TempoInviteHandlerService handlerService = ServiceIndex.tempoInviteHandlerService();
         if (handlerService != null) {
             SettingsClient client = handlerService.getSettingsClient();

@@ -1,6 +1,8 @@
 package com.opentext.tempo.external.invites.otds;
 
 import com.opentext.otag.sdk.util.StringUtil;
+import com.opentext.tempo.external.invites.otds.domain.AuthRequestObject;
+import com.opentext.tempo.external.invites.otds.domain.AuthResponse;
 import com.opentext.tempo.external.invites.web.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

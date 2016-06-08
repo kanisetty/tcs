@@ -1,4 +1,4 @@
-package com.opentext.tempo.external.invites.otds;
+package com.opentext.tempo.external.invites.otds.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

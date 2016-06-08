@@ -4,6 +4,7 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -138,23 +139,16 @@ public class RestClient {
                     return entityType == null ? null : response.readEntity(entityType);
                 case 204:
                     return null;
-//                case 404:
-//                    throw new ApiNotFoundException();
-//                case 401:
-//                    throw new ApiUnauthorizedException();
                 default:
-//                    throw new ApiException();
-                // todo proper exception handling
-                throw new RuntimeException("Encountered HTTP response: " + response.getStatus());
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Received error response of status " + status + " " + response);
+                    }
+                    throw new WebApplicationException(status);
             }
         }
-        catch (Exception e) {
-            LOG.debug("Exception handling return entity (may be expected: HTTP " + status + ")", e);
-            throw e;
+        catch (Throwable t) {
+            LOG.debug("Exception handling return entity (may be expected: HTTP " + status + ")", t);
+            throw new WebApplicationException(t);
         }
-//        catch (Throwable t) {
-//            LOG.error("Error handling return entity", t);
-//            throw new ApiException(t.getMessage(), t);
-//        }
     }
 }

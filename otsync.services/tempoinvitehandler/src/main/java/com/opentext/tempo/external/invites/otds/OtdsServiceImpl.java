@@ -6,10 +6,16 @@ import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.tempo.external.invites.InviteHandlerConstants;
 import com.opentext.tempo.external.invites.api.OtagInviteServlet;
+import com.opentext.tempo.external.invites.otds.domain.OtdsUser;
+import com.opentext.tempo.external.invites.otds.domain.PasswordResetObject;
 import com.opentext.tempo.external.invites.web.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.GenericType;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,15 +27,14 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
         OtdsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OtdsServiceImpl.class);
+    private static final GenericType<OtdsUser> OTDS_USER_TYPE = new GenericType<OtdsUser>() {};
 
-    private OtdsClient restClient;
     private String otdsUrl;
     private String partition;
     private String user;
     private String password;
 
     private RestClient otdsClient;
-    private SettingsClient settingsClient;
 
     public OtdsServiceImpl() {
         // handle settings updates
@@ -51,7 +56,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     public void onStart(String s) {
         LOG.info("OtdsServiceImpl#onStart");
         // attempt to resolve our settings now it is safe to instantiate SDK clients
-        settingsClient = new SettingsClient();
+        SettingsClient settingsClient = new SettingsClient();
 
         // init otds url
         getOtdsUrl();
@@ -86,8 +91,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
         LOG.debug("Attempting to construct OTDS client URL: {} User: {} Password Specified: {}",
                 getOtdsUrl(), this.user, isNullOrEmpty(this.password)?"NO":"YES");
         if (isNullOrEmpty(getOtdsUrl()) || isNullOrEmpty(this.user) || isNullOrEmpty(this.password)) {
-            // todo proper exception handling - should return HTTP 503 - not ready
-            throw new RuntimeException("Cannot construct OTDS client");
+            throw new WebApplicationException("Cannot construct OTDS client", 503); // guess we're not ready
         }
         otdsClient = new OtdsClient(getOtdsUrl(), user, password);
         return otdsClient;
@@ -107,14 +111,11 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     }
 
     private String getOtdsUrl() {
-        if (isNullOrEmpty(otdsUrl)) {
-            synchronized (this) {
-                try {
-                    otdsUrl = settingsClient.getSettingAsString("otds.url");
-                } catch (APIException e) {
-                    LOG.warn("Failed to lookup otds.url Gateway setting", e.getCallInfo());
-                }
-            }
+        if (otdsUrl == null) {
+            otdsUrl = OtagInviteServlet.getSettingValue("otds.url");
+        }
+        if (otdsUrl == null) {
+            throw new WebApplicationException("Cannot find otds.url setting - not ready?", 503);
         }
         return otdsUrl;
     }
@@ -127,5 +128,103 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
             return "";
         }
     }
+
+    @Override
+    public OtdsUser createUser(String firstName, String lastName, String email, String password) {
+        OtdsUser user = new OtdsUser(firstName, lastName, email, getPartition(), password);
+        return getClient().post("/users/", user, OTDS_USER_TYPE);
+    }
+
+    private String getPartition() {
+        if (isNullOrEmpty(partition)) {
+            throw new WebApplicationException(503);
+        }
+        return partition;
+    }
+
+    @Override
+    public OtdsUser updateUser(String firstName, String lastName, String email, String newPassword) {
+        String userId = toUserId(email);
+        OtdsUser user = getUser(userId);
+        if (firstName != null || lastName != null) {
+            if (firstName != null) {
+                user.setFirstName(firstName);
+            }
+            if (lastName != null) {
+                user.setLastName(lastName);
+            }
+            getClient().put("/users/" + user.getLocation(), user);
+        }
+        if (newPassword != null) {
+            resetPassword(userId, newPassword);
+        }
+        return user;
+    }
+
+    @Override
+    public OtdsUser findUser(String userId) {
+        try {
+            return getUser(userId);
+        }
+        catch (WebApplicationException e) {
+            if (e.getResponse().getStatus() == 404) {
+                return null;
+            }
+            throw e;
+        }
+    }
+
+    @Override
+    public OtdsUser getUser(String userId) throws WebApplicationException {
+        return getClient().get("/users/" + otdsUrlEncode(userId), OTDS_USER_TYPE);
+    }
+
+    @Override
+    public OtdsUser findUserByEmail(String email) {
+        return findUser(toUserId(email));
+    }
+
+    @Override
+    public OtdsUser getUserByEmail(String email) {
+        return getUser(toUserId(email));
+    }
+
+    @Override
+    public void updatePassword(String userId, String existingPassword, String newPassword) {
+        getClient().post("/users/" + otdsUrlEncode(userId) + "/password/", new PasswordResetObject(newPassword));
+    }
+
+    @Override
+    public void updatePasswordbyEmail(String email, String existingPassword, String newPassword) {
+        updatePassword(toUserId(email), existingPassword, newPassword);
+    }
+
+    @Override
+    public void resetPassword(String userId, String newPassword) {
+        getClient().put("/users/" + otdsUrlEncode(userId) + "/password/", new PasswordResetObject(newPassword));
+    }
+
+    @Override
+    public void resetPasswordByEmail(String email, String newPassword) {
+        resetPassword(toUserId(email), newPassword);
+    }
+
+    private String toUserId(String email) {
+        return email + "@" + getPartition();
+    }
+
+    // otds has a special way of encoding
+    private String otdsUrlEncode(String s) {
+        try {
+            String ret = URLEncoder.encode(s, "UTF-8");
+            ret.replaceAll("%5C", "%EF%82%A6");
+            ret.replaceAll("%2F", "%EF%82%A7");
+            return ret;
+        } catch (UnsupportedEncodingException e) {
+            // utf-8 always supported
+            return s;
+        }
+    }
+
 
 }
