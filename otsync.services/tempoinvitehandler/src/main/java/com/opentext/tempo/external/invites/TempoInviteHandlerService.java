@@ -44,15 +44,8 @@ public class TempoInviteHandlerService implements AWServiceContextHandler {
         settingsClient = new SettingsClient();
 
         try {
-            // TODO FIXME FAKE THIS OUT FOR NOW TO GET AROUND CS SETUP
-            csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1") {
-                @Override
-                public String getConnectionString() {
-                    return "http://www.cs.com";
-                }
-            };
-            ConnectionResult connectionResult = /*csConnector.connect()*/new ConnectionResult(
-                    new EIMConnector("OTSync", "16.0.1", "http://www.cs.com", "settingKeyName", "providerKey"));
+            csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
+            ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 EIMConnector csConnection = connectionResult.getConnector();
                 // we get the connection URL from the connect result
