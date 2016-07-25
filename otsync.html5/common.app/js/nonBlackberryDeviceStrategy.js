@@ -41,24 +41,33 @@ var NonBlackBerryStrategy = function () {
     };
 
     this.getGatewayURL = function () {
-
-        return this.execRequest("AWAuth", "gateway");
+        var deferred = $.Deferred();
+        var auth = new Appworks.Auth(function (authResponse) {
+            deferred.resolve(authResponse.gatewayUrl);
+        });
+        auth.authenticate();
+        return deferred.promise();
     };
 
     this.openFromAppworks = function (destComponentName, data, refreshOnReturn, isComponent) {
         var appworksType = "component";
+        var component = new Appworks.AWComponent();
 
-        if (!isComponent)
+        if (!isComponent) {
             appworksType = "app";
+        }
 
-        this.execRequest("AWComponent", "open", [destComponentName, $.param(data), appworksType])
-            .done(function () {
-                if (refreshOnReturn)
-                    location.reload();
-            })
-            .fail(function (error) {
-                alert(apputil.T("error.NoViewerIsAvailableForThisTypeOfAssignment"));
-            });
+        component.open(success, err, [destComponentName, $.param(data), appworksType]);
+
+        function success() {
+            if (refreshOnReturn) {
+                location.reload();
+            }
+        }
+
+        function err() {
+            alert(apputil.T("error.NoViewerIsAvailableForThisTypeOfAssignment"));
+        }
     };
 
     this.openWindow = function (url) {

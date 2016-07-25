@@ -59,7 +59,8 @@
   function bindEvents () {
     $(document.body)
       .on("click", "#assignments > li", function (event) {
-        $(this).find(".metadata").toggle();
+        // dont toggle metadata -- recommendation from OTE Functionality Issues Doc
+        //$(this).find(".metadata").toggle();
       })
       .on("click", "#assignments > li .open-assignment", function (event) {
         // Don't trigger default events
