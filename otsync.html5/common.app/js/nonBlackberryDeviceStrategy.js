@@ -1,9 +1,10 @@
-var NonBlackBerryStrategy = function(){
+var NonBlackBerryStrategy = function () {
     var _defaultLanguage = 'en';
 
-    this.close = function(){
-        var successFn = function() {};
-        var errorFn = function(error) {
+    this.close = function () {
+        var successFn = function () {
+        };
+        var errorFn = function (error) {
             window.history.back();
         };
 
@@ -30,44 +31,44 @@ var NonBlackBerryStrategy = function(){
         return dfd.promise();
     };
 
-    this.getClientOS = function(){
+    this.getClientOS = function () {
         return window.clientInformation.platform;
     };
 
-    this.getDefaultLanguage = function(){
+    this.getDefaultLanguage = function () {
 
         return this.execRequest("AWGlobalization", "getPreferredLanguage");
     };
 
-    this.getGatewayURL = function(){
+    this.getGatewayURL = function () {
 
         return this.execRequest("AWAuth", "gateway");
     };
 
-    this.openFromAppworks = function(destComponentName, data, refreshOnReturn, isComponent){
+    this.openFromAppworks = function (destComponentName, data, refreshOnReturn, isComponent) {
         var appworksType = "component";
 
         if (!isComponent)
             appworksType = "app";
 
         this.execRequest("AWComponent", "open", [destComponentName, $.param(data), appworksType])
-            .done(function(){
+            .done(function () {
                 if (refreshOnReturn)
                     location.reload();
             })
-            .fail(function(error) {
+            .fail(function (error) {
                 alert(apputil.T("error.NoViewerIsAvailableForThisTypeOfAssignment"));
             });
     };
 
-    this.openWindow = function(url){
+    this.openWindow = function (url) {
         window.open(url, '_system', 'location=no');
     };
 
-    this.processQueryParameters = function(query){
+    this.processQueryParameters = function (query) {
         var params = {};
 
-        if ( typeof(query) === 'string'){
+        if (typeof(query) === 'string') {
             var pairs = query.split("&");
             var len = pairs.length;
             var idx, pair, key;
@@ -77,7 +78,7 @@ var NonBlackBerryStrategy = function(){
                 pair = pairs[idx].split("=");
                 key = pair[0];
 
-                switch(typeof params[key]) {
+                switch (typeof params[key]) {
                     // Key has not been found, create entry
                     case "undefined":
                         params[key] = pair[1];
@@ -96,38 +97,29 @@ var NonBlackBerryStrategy = function(){
         return params;
     };
 
-    this.reauth = function(){
+    this.reauth = function () {
         return this.execRequest('AWAuth', 'authenticate');
     };
 
-    this.runRequestWithAuth = function(requestData){
-        var _this = this;
+    this.authenticate = function () {
+        var deferred = $.Deferred();
+        var auth = new Appworks.Auth(deferred.resolve, deferred.reject);
+        auth.authenticate();
+        return deferred.promise();
+    };
+
+    this.runRequestWithAuth = function (requestData) {
         var deferred = $.Deferred();
 
-        $.ajax(requestData).then(
-            function(data){
-                deferred.resolve(data);
-            },
-            function(jqXHR){
-                // fail: if it's an auth problem, re-auth and try again
-                if(jqXHR.status == 401){
-                    _this.reauth()
-                        .done(function(){
-                            $.ajax(requestData).then(
-                                function(data){
-                                    deferred.resolve(data);
-                                },
-                                function(error){
-                                    deferred.reject(error);
-                                });
-                        })
-                        .fail(function(error){
-                            deferred.reject(error);
-                        });
-                }else{
+        this.authenticate().then(function (authResponse) {
+            $.ajax(requestData, authResponse.authorizationHeader).then(
+                function (data) {
+                    deferred.resolve(data);
+                },
+                function (jqXHR) {
                     deferred.reject(jqXHR.status + " " + jqXHR.statusText);
-                }
-            });
+                });
+        });
 
         return deferred.promise();
     };

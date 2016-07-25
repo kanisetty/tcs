@@ -120,69 +120,73 @@
     var idx, dataLen = data.length, lst = [],
       assignment, $row, priority, overdue;
 
-    for (idx = 0; idx < dataLen; idx += 1) {
-      assignment = data[idx];
+    if (dataLen === 0) {
+      $('#assignments').append($('<li style="text-align:center;">There are no items to display.</li>'));
+    } else {
+      for (idx = 0; idx < dataLen; idx += 1) {
+        assignment = data[idx];
 
-      // Get the priority
-      priority = formatPriority(assignment.priority);
-      overdue = (assignment.due && new Date(assignment.due) < new Date());
+        // Get the priority
+        priority = formatPriority(assignment.priority);
+        overdue = (assignment.due && new Date(assignment.due) < new Date());
 
-      // Create the element
-	  // note: cursor: pointer is a workaround for an iOS bug which prevents clicks on non-anchors from firing
-      lst.push("<li style='cursor: pointer' data-type='" + assignment.type +
-        "' data-id='" + assignment.id +
-        "' data-subwork='" + assignment.subwork +
-        "' data-step='" + assignment.step +
-        "'>");
-      lst.push('<div class="row-fluid">');
+        // Create the element
+        // note: cursor: pointer is a workaround for an iOS bug which prevents clicks on non-anchors from firing
+        lst.push("<li style='cursor: pointer' data-type='" + assignment.type +
+            "' data-id='" + assignment.id +
+            "' data-subwork='" + assignment.subwork +
+            "' data-step='" + assignment.step +
+            "'>");
+        lst.push('<div class="row-fluid">');
 
-      // Add the basic information
-      lst.push('<div class="span10">');
+        // Add the basic information
+        lst.push('<div class="span10">');
 
-      // Assignment Name
-      lst.push("<h4>" +
-        assignment.name.replace(/</g, "&lt;").replace(/>/g, "&gt;") +
-        "</h4>");
+        // Assignment Name
+        lst.push("<h4>" +
+            assignment.name.replace(/</g, "&lt;").replace(/>/g, "&gt;") +
+            "</h4>");
 
-      // Location
-      lst.push("<div><span class='grid-heading'>" + apputil.T("label.Location") + ":</span> " +
-        assignment.location + "</div>");
+        // Location
+        lst.push("<div><span class='grid-heading'>" + apputil.T("label.Location") + ":</span> " +
+            assignment.location + "</div>");
 
-      // Due Date
-      lst.push("<div><span class='grid-heading'>" + apputil.T("label.Due") + ":</span> " +
-        "<span" + (overdue ? " class='overdue'" : "") + ">" +
-        (assignment.due ? Assignments.format.date(assignment.due) : apputil.T("label.None")) +
-        "</span></div>");
+        // Due Date
+        lst.push("<div><span class='grid-heading'>" + apputil.T("label.Due") + ":</span> " +
+            "<span" + (overdue ? " class='overdue'" : "") + ">" +
+            (assignment.due ? Assignments.format.date(assignment.due) : apputil.T("label.None")) +
+            "</span></div>");
 
-      // Add the extra metadata
-      lst.push("<div class='metadata'>");
-      
-      // Status
-      lst.push("<div><span class='grid-heading'>" + apputil.T("label.Status") + ":</span> " +
-    	        assignment.status + "</div>");
+        // Add the extra metadata
+        lst.push("<div class='metadata'>");
 
-      // Priority
-      lst.push("<div><span class='grid-heading'>" + apputil.T("label.Priority") + ":</span> " +
-        "<span class='priority-" + priority.toLowerCase() + "'>" + priority +
-        "</span></div>");
+        // Status
+        lst.push("<div><span class='grid-heading'>" + apputil.T("label.Status") + ":</span> " +
+            assignment.status + "</div>");
 
-      lst.push("</div>");
-      lst.push("</div>");
+        // Priority
+        lst.push("<div><span class='grid-heading'>" + apputil.T("label.Priority") + ":</span> " +
+            "<span class='priority-" + priority.toLowerCase() + "'>" + priority +
+            "</span></div>");
 
-      // Add the open button
-      lst.push("<div class='span2 open-assignment'>");
-      lst.push("<a class='btn btn-circle pull-right'>");
-      lst.push("<i class='icon-chevron-right'></i></a>");
-      lst.push("</div>");
+        lst.push("</div>");
+        lst.push("</div>");
 
-      lst.push("</div>");
-      lst.push("</li>");
+        // Add the open button
+        lst.push("<div class='span2 open-assignment'>");
+        lst.push("<a class='btn btn-circle pull-right'>");
+        lst.push("<i class='icon-chevron-right'></i></a>");
+        lst.push("</div>");
 
-      $(lst.join(""))
-        .appendTo($("#assignments")).data("assignment", assignment);
+        lst.push("</div>");
+        lst.push("</li>");
 
-      // Clear the list
-      lst.length = 0;
+        $(lst.join(""))
+            .appendTo($("#assignments")).data("assignment", assignment);
+
+        // Clear the list
+        lst.length = 0;
+      }
     }
   }
 
