@@ -109,21 +109,27 @@ var NonBlackBerryStrategy = function () {
         return this.execRequest('AWAuth', 'authenticate');
     };
 
-    this.authenticate = function () {
+    this.authenticate = function (force) {
         var deferred = $.Deferred();
         var auth = new Appworks.Auth(deferred.resolve, deferred.reject);
-        auth.authenticate();
+        auth.authenticate([force]);
         return deferred.promise();
     };
 
-    this.runRequestWithAuth = function (requestData) {
+    this.runRequestWithAuth = function (requestData, forceAuth) {
+        var _this = this;
         var deferred = $.Deferred();
 
-        this.authenticate().then(function (authResponse) {
+        this.authenticate(forceAuth).then(function (authResponse) {
             requestData.headers = authResponse.authData.authorizationHeader;
             $.ajax(requestData).then(
                 function (data) {
-                    deferred.resolve(data);
+                    if (data.status === 401) {
+                        deferred.reject(data.status);
+                        _this.runRequestWithAuth(requestData, true);
+                    } else {
+                        deferred.resolve(data);
+                    }
                 },
                 function (jqXHR) {
                     deferred.reject(jqXHR.status + " " + jqXHR.statusText);
