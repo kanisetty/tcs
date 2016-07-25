@@ -36,14 +36,13 @@ var NonBlackBerryStrategy = function () {
     };
 
     this.getDefaultLanguage = function () {
-
         return this.execRequest("AWGlobalization", "getPreferredLanguage");
     };
 
     this.getGatewayURL = function () {
         var deferred = $.Deferred();
         var auth = new Appworks.Auth(function (authResponse) {
-            deferred.resolve(authResponse.gatewayUrl);
+            deferred.resolve(authResponse.authData.gatewayUrl);
         });
         auth.authenticate();
         return deferred.promise();
@@ -121,7 +120,8 @@ var NonBlackBerryStrategy = function () {
         var deferred = $.Deferred();
 
         this.authenticate().then(function (authResponse) {
-            $.ajax(requestData, authResponse.authorizationHeader).then(
+            requestData.headers = authResponse.authData.authorizationHeader;
+            $.ajax(requestData).then(
                 function (data) {
                     deferred.resolve(data);
                 },
