@@ -1,51 +1,51 @@
 angular.module('feedBrowseDecoratingService', ['FeedItemBrowseDecorator', 'dateService'])
 
     .factory('$feedBrowseDecoratingService', ['FeedItemBrowseDecorator', '$dateService',
-			function(FeedItemBrowseDecorator, $dateService){
-				return{
+        function (FeedItemBrowseDecorator, $dateService) {
+            return {
 
-					decorateFeedForBrowse: function(feed, isThread, templateURL){
-						var browseDecorators = [];
-						var self = this;
-						var feedItems = feed.getFeedItems();
+                decorateFeedForBrowse: function (feed, isThread, templateURL) {
+                    var browseDecorators = [];
+                    var self = this;
+                    var feedItems = feed.getFeedItems();
 
-						if (feedItems != null && feedItems != null){
+                    if (feedItems && feedItems instanceof Array) {
 
-							for(var i = 0; i < feedItems.length; i++){
+                        for (var i = 0; i < feedItems.length; i++) {
 
-								var doIndent = false;
-								var feedItem = feedItems[i];
+                            var doIndent = false;
+                            var feedItem = feedItems[i];
 
-								if (isThread && i != 0)
-									doIndent = true;
+                            if (isThread && i != 0)
+                                doIndent = true;
 
-								var browseDecorator = self.decorateFeedItemForBrowse(feedItem, doIndent, templateURL);
-								browseDecorators.push(browseDecorator);
-							}
-						}
+                            var browseDecorator = self.decorateFeedItemForBrowse(feedItem, doIndent, templateURL);
+                            browseDecorators.push(browseDecorator);
+                        }
+                    }
 
-						return browseDecorators;
-					},
+                    return browseDecorators;
+                },
 
-					decorateFeedItemForBrowse: function(feedItem, doIndent, templateURL) {
-						var title = feedItem.getDisplayName();
-						var createDateDisplay = this.getCreateTime(feedItem);
-						var feedItemBrowseDecorator = new FeedItemBrowseDecorator(feedItem, title, doIndent, templateURL);
+                decorateFeedItemForBrowse: function (feedItem, doIndent, templateURL) {
+                    var title = feedItem.getDisplayName();
+                    var createDateDisplay = this.getCreateTime(feedItem);
+                    var feedItemBrowseDecorator = new FeedItemBrowseDecorator(feedItem, title, doIndent, templateURL);
 
-						feedItemBrowseDecorator.setCreateDateDisplay(createDateDisplay);
+                    feedItemBrowseDecorator.setCreateDateDisplay(createDateDisplay);
 
-						return feedItemBrowseDecorator;
-					},
+                    return feedItemBrowseDecorator;
+                },
 
-					getCreateTime: function(feedItem){
-						var displayCreateTime = '';
+                getCreateTime: function (feedItem) {
+                    var displayCreateTime = '';
 
-						if ( feedItem != null){
+                    if (feedItem != null) {
 
-							displayCreateTime += $dateService.getTimeAgo(feedItem.getCreateDate());
-						}
+                        displayCreateTime += $dateService.getTimeAgo(feedItem.getCreateDate());
+                    }
 
-						return displayCreateTime;
-					}
-				}
-			}]);
+                    return displayCreateTime;
+                }
+            }
+        }]);
