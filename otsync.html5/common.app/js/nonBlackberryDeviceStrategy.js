@@ -70,7 +70,8 @@ var NonBlackBerryStrategy = function () {
     };
 
     this.openWindow = function (url) {
-        window.open(url, '_system', 'location=no');
+        var webview = new Appworks.AWWebView();
+        webview.open(url, '_blank', 'EnableViewPortScale=yes,location=no');
     };
 
     this.processQueryParameters = function (query) {
@@ -106,7 +107,7 @@ var NonBlackBerryStrategy = function () {
     };
 
     this.reauth = function () {
-        return this.execRequest('AWAuth', 'authenticate');
+        return this.authenticate(true);
     };
 
     this.authenticate = function (force) {
@@ -116,26 +117,38 @@ var NonBlackBerryStrategy = function () {
         return deferred.promise();
     };
 
-    this.runRequestWithAuth = function (requestData, forceAuth) {
+    this.runRequestWithAuth = function (requestData) {
         var _this = this;
         var deferred = $.Deferred();
 
-        this.authenticate(forceAuth).then(function (authResponse) {
-            requestData.headers = authResponse.authData.authorizationHeader;
-            $.ajax(requestData).then(
-                function (data) {
-                    if (data.status === 401) {
-                        deferred.reject(data.status);
-                        _this.runRequestWithAuth(requestData, true);
-                    } else {
-                        deferred.resolve(data);
-                    }
-                },
-                function (jqXHR) {
-                    deferred.reject(jqXHR.status + " " + jqXHR.statusText);
-                });
-        });
+        this.authenticate().then(runRequestWithCredentials);
 
         return deferred.promise();
+
+        function runRequest(authHeader) {
+            requestData.headers = authHeader;
+            $.ajax(requestData).then(onSuccess, onErr);
+        }
+
+        function runRequestWithCredentials(authResponse) {
+            runRequest(authResponse.authData.authorizationHeader);
+        }
+
+        function onSuccess(data) {
+            if (data.status === 401) {
+               _this.reauth().then(runRequestWithCredentials);
+            } else {
+                deferred.resolve(data);
+            }
+        }
+
+        function onErr(err) {
+            if (err.status === 401) {
+                _this.reauth().then(runRequestWithCredentials);
+            } else {
+                deferred.reject(err.status + ' ' + err.statusText);
+            }
+        }
+
     };
 };

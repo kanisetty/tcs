@@ -1,14 +1,14 @@
 angular.module('FavoritesBrowseStrategy', ['nodeBrowseDecoratingService', 'headerService', 'FavoritesHeader', 'NodeBrowseStrategy'])
 
     .factory('FavoritesBrowseStrategy', ['$q', '$sessionService', '$nodeBrowseDecoratingService', '$nodeService', '$cacheService', '$headerService', '$favoritesService', 'FavoritesHeader',
-            'NodeBrowseStrategy',
-        function($q, $sessionService, $nodeBrowseDecoratingService, $nodeService, $cacheService, $headerService, $favoritesService, FavoritesHeader, NodeBrowseStrategy) {
+        'NodeBrowseStrategy',
+        function ($q, $sessionService, $nodeBrowseDecoratingService, $nodeService, $cacheService, $headerService, $favoritesService, FavoritesHeader, NodeBrowseStrategy) {
             var isOnline;
 
             var favdefaultHeader = new FavoritesHeader("FAVORITES", true);
             var offlineFavHeader = new FavoritesHeader("OFFLINE FAVORITES", false);
 
-            var FavoritesBrowseStrategy = function(rootName){
+            var FavoritesBrowseStrategy = function (rootName) {
                 this.rootName = rootName;
             };
 
@@ -19,7 +19,6 @@ angular.module('FavoritesBrowseStrategy', ['nodeBrowseDecoratingService', 'heade
 
                 favorites.forEach(function (favorite) {
                     if ($cacheService.isNodeStorable(favorite) && !favorite.isStored()) {
-
                         numberOfFilesToSync++;
                         filesToSyncSize += parseInt(favorite.getDataSize());
                     }
@@ -28,22 +27,24 @@ angular.module('FavoritesBrowseStrategy', ['nodeBrowseDecoratingService', 'heade
                 header.setNumberOfFilesToSync(numberOfFilesToSync);
                 header.setFilesToSyncSize(filesToSyncSize);
 
-				$headerService.setHeader(header);
+                $headerService.setHeader(header);
             };
 
             FavoritesBrowseStrategy.prototype = new NodeBrowseStrategy('');
 
-            FavoritesBrowseStrategy.prototype.initialize = function(){};
+            FavoritesBrowseStrategy.prototype.initialize = function () {
+                // noop
+            };
 
-            FavoritesBrowseStrategy.prototype.canMoreBeLoaded = function(){
+            FavoritesBrowseStrategy.prototype.canMoreBeLoaded = function () {
                 return false;
             };
 
-            FavoritesBrowseStrategy.prototype.getBrowseDecorators = function() {
+            FavoritesBrowseStrategy.prototype.getBrowseDecorators = function () {
                 var deferred = $q.defer();
                 var browseDecorators;
 
-                $favoritesService.getFavorites(isOnline).then(function(favorites) {
+                $favoritesService.getFavorites(isOnline).then(function (favorites) {
                     if (isOnline) {
                         _initializeHeader(favorites);
                     }
@@ -55,32 +56,32 @@ angular.module('FavoritesBrowseStrategy', ['nodeBrowseDecoratingService', 'heade
             };
 
 
-            FavoritesBrowseStrategy.prototype.initializeHeader = function() {
+            FavoritesBrowseStrategy.prototype.initializeHeader = function () {
                 var header = null;
 
-                if(isOnline)
+                if (isOnline) {
                     header = favdefaultHeader;
-                else
+                } else {
                     header = offlineFavHeader;
+                }
 
                 $headerService.setHeader(header);
             };
 
-            FavoritesBrowseStrategy.prototype.getRoot = function() {
+            FavoritesBrowseStrategy.prototype.getRoot = function () {
                 var deferred = $q.defer();
 
-                $q.when($sessionService.isOnline()).then(function(response) {
+                $q.when($sessionService.isOnline()).then(function (response) {
                     isOnline = response;
-                    deferred.resolve({ hideSearch: true, isOnline: isOnline});
+                    deferred.resolve({hideSearch: false, isOnline: isOnline});
                 });
 
                 return deferred.promise;
             };
 
-            FavoritesBrowseStrategy.prototype.getRootID = function() {
+            FavoritesBrowseStrategy.prototype.getRootID = function () {
                 return null;
             };
 
-
             return FavoritesBrowseStrategy;
-    }]);
+        }]);
