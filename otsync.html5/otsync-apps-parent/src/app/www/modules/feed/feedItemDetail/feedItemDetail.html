@@ -17,7 +17,7 @@
 			<a class="button button-stable button-outline button-large" ng-show="showFollowing && feedItem.isFollowing() == true" ng-click="toggleIsFollowing(feedItem)">{{"UNFOLLOW" | translate}}</a>
 		</div>
 		<div class="feed-item-detail-message">
-			<span class="feed-item-detail-text feed-item-detail-message-text">{{feedItem.getMessage()}}</span>
+			<span class="feed-item-detail-text feed-item-detail-message-text" ng-bind-html="feedItem.getMessage()"></span>
 		</div>
 		<div class="feed-item-detail-image-container" ng-show='feedItem.getAttachmentName() != null'>
 			<img class="feed-attachment-image feed-item-detail-image">
