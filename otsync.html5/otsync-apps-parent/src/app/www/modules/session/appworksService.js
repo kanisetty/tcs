@@ -128,11 +128,13 @@ angular.module('appworksService', [])
                 var isNodeInCache = false;
                 var favorites = this.getFromCache(key);
 
-                favorites.forEach(function (favorite) {
-                    if (favorite.getID() == node.getID() && favorite.getVersionNumber() == node.getVersionNumber()) {
-                        isNodeInCache = true;
-                    }
-                });
+                if (favorites instanceof Array) {
+                    favorites.forEach(function (favorite) {
+                        if (favorite.getID() == node.getID() && favorite.getVersionNumber() == node.getVersionNumber()) {
+                            isNodeInCache = true;
+                        }
+                    });
+                }
             },
 
             openFromAppworks: function (componentName, data, isComponent) {
