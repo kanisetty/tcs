@@ -20,7 +20,11 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileServi
 
 						fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM CAMERA'), shouldRefresh, !hasModal,
 							function () {
-								return $fileResource.addVersion(node, new File(null, this.data));
+								var filename = node.getName();
+								if (!new RegExp(/\.(jpe?g)$/).test(filename)) {
+									filename += '.jpg';
+								}
+								return $fileResource.addVersion(node, new File(filename, this.data));
 							},
 							function () {
 								return $fileService.getFileFromCamera();
@@ -29,7 +33,11 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileServi
 
 						fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM GALLERY'), shouldRefresh, !hasModal,
 							function () {
-								return $fileResource.addVersion(node, new File(null, this.data));
+								var filename = node.getName();
+								if (!new RegExp(/\.(jpe?g)$/).test(filename)) {
+									filename += '.jpg';
+								}
+								return $fileResource.addVersion(node, new File(filename, this.data));
 							},
 							function () {
 								return $fileService.getFileFromGallery();
