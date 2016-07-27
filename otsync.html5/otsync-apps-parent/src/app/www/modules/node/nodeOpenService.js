@@ -73,7 +73,7 @@ angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'
 
                             _getComponentForOpen(nodeToOpen).then(function (component) {
 
-                                if (component != null) {
+                                if (component !== null) {
 
                                     var dataForComponent = {id: nodeToOpen.getID(), parentID: rootNode.getID()};
                                     var componentManager = new Appworks.AWComponent();

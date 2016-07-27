@@ -121,7 +121,7 @@
      * @return    Object of key:value pairs of parameters.
      */
     App.prototype.getParameters = function () {
-        var query = window.location.search.toString().substring(1);
+        var query = window.location.search.toString().substring(1).split('data=').pop();
         
         var params = deviceStrategy.processQueryParameters(query);
 
