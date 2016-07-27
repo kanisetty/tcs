@@ -11,7 +11,10 @@ angular.module('requestService', ['cacheService', 'appworksService'])
                     var auth = new Appworks.Auth(function (authResponse) {
                         requestParams.type = requestParams.method;
                         requestParams.queryParams = requestParams.params;
-                        requestParams.headers = authResponse.authData.authorizationHeader;
+                        requestParams.headers = angular.merge(
+                            requestParams.headers || {},
+                            authResponse.authData.authorizationHeader
+                        );
 
                         $http(requestParams).then(function (response) {
                             if (response.ok != undefined && response.ok == false) {
