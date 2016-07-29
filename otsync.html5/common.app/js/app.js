@@ -122,10 +122,7 @@
      */
     App.prototype.getParameters = function () {
         var query = window.location.search.toString().substring(1).split('data=').pop();
-        
-        var params = deviceStrategy.processQueryParameters(query);
-
-        return params;
+        return deviceStrategy.processQueryParameters(query);
     };
 
     App.prototype.runRequestWithAuth = function(data) {

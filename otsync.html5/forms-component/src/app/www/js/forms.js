@@ -1,89 +1,87 @@
 var appSettings, request, cordovaRequest;
 
-
-var initialize = function() {
+var initialize = function () {
 
     appSettings = getSettings();
     request = appworksRequest();
     cordovaRequest = CordovaRequest();
 
-    cordovaRequest.getGatewayURL().done(function(url) {
+    cordovaRequest.getGatewayURL().done(function (url) {
+
+        var opts = {fallbackLng: "en"};
+
         appSettings.serverURL = url;
 
-        var opts = {
-            fallbackLng: "en"
-        };
-
-        cordovaRequest.getDefaultLanguage().done(function(lng) {
+        cordovaRequest.getDefaultLanguage().done(function (lng) {
             opts.lng = lng.value;
-        }).always(function() {
-            i18n.init(opts).done(function() {
+        }).always(function () {
+            i18n.init(opts).done(function () {
 
                 //translate submit button
                 $(".btnSubmit").i18n();
 
                 AddCustomAlpacaFields();
 
-                if(isFile(appSettings.nodeType)) {
-                    request.getFile(appSettings.fileSource).done(function (data) {
-
-                        appSettings.FileData = data;
-                        getForms();
-
-                    }).fail(function () {
-                        //no file chosen so go back to ews
-                        closeMe();
-                    });
+                if (isFile(appSettings.nodeType)) {
+                    request.getFile(appSettings.fileSource).done(
+                        function (data) {
+                            appSettings.FileData = data;
+                            getForms();
+                        }
+                    ).fail(
+                        function () {
+                            //no file chosen so go back to ews
+                            closeMe();
+                        }
+                    );
                 }
                 getForms();
 
-            }).fail(function() {
-                alert($.t("ERROR_INVALID_ARGUMENTS"));
-                closeMe();
-            });
+            }).fail(
+                function () {
+                    alert($.t("ERROR_INVALID_ARGUMENTS"));
+                    closeMe();
+                }
+            );
         });
 
-    }).fail(function(){alert("fail epic");});
-
+    }).fail(function () {
+        alert("fail epic");
+    });
 
 };
 
-
-var getSettings = function() {
+var getSettings = function () {
 
     var appSettings = {};
 
     try {
+        var queryParams = processQueryParameters(window.location.search.toString().substring(1).split('data=').pop());
 
         appSettings.CONTENT_SERVER_API_PATH = '/otcsapi';
-
-        var queryParams = processQueryParameters(window.location.search.toString().substring(1));
-
         appSettings.parentID = queryParams.id;
         appSettings.nodeType = queryParams.type;
         appSettings.fileSource = queryParams.fileSource;
 
-        if (appSettings.parentID == undefined || appSettings.nodeType == undefined || (isFile(appSettings.nodeType) && appSettings.fileSource == null))
+        if (appSettings.parentID == undefined || appSettings.nodeType == undefined || (isFile(appSettings.nodeType) && appSettings.fileSource == null)) {
             throw new Error("Invalid Arguments");
+        }
 
-    }
-    catch (e) {
+    } catch (e) {
         alert($.t("ERROR_INVALID_ARGUMENTS"));
         closeMe();
     }
     return appSettings;
 };
 
-var isFile = function(type) {
-
+var isFile = function (type) {
     var DOCUMENT = '144';
     //currently document is the only file type we are looking for
     var FILE_TYPES = [DOCUMENT];
     return (FILE_TYPES.indexOf(type) != -1);
-
 };
 
-var submitForm = function() {
+var submitForm = function () {
 
     var postURL = appSettings.serverURL + appSettings.CONTENT_SERVER_API_PATH + '/v1/nodes';
     var createData, catsData;
@@ -92,38 +90,41 @@ var submitForm = function() {
     var categoriesForm = $("#categories").alpaca("get");
     var formData = new FormData();
 
-    if(createForm != undefined) {
-        if(createForm.isValid(true) == false) {
+    if (createForm) {
+        if (!createForm.isValid(true)) {
             isValid = false;
         }
         createData = createForm.getValue();
-    }
-    else
+    } else {
         createData = {};
+    }
 
-    if(categoriesForm != undefined) {
-        if(categoriesForm.isValid(true) == false) {
+    if (categoriesForm) {
+        if (!categoriesForm.isValid(true)) {
             isValid = false;
         }
         catsData = categoriesForm.getValue();
-    }
-    else
+    } else {
         catsData = {};
+    }
 
     createData.roles = {};
     createData.roles.categories = catsData;
 
-    if(isFile(appSettings.nodeType)) {
-        createData = _.omit(createData, 'file');
+    if (isFile(appSettings.nodeType)) {
         var blob = b64toBlob(appSettings.FileData, "image/jpeg");
-        formData.append('file', blob);
+        createData = _.omit(createData, 'file');
+        // auto add .jpg extensions for proper thumbnailing
+        if (!new RegExp(/\.jpg$/).test(createData.name)) {
+            createData.name += '.jpg';
+        }
+        formData.append('file', blob, createData.name);
     }
 
     formData.append('body', JSON.stringify(createData));
 
-    if(isValid) {
+    if (isValid) {
 
-        loadingDialog.show();
         var requestParams = {
             method: 'POST',
             data: formData,
@@ -132,26 +133,25 @@ var submitForm = function() {
             contentType: false
         };
 
-        request.sendRequest(requestParams).done(function(data) {
+        loadingDialog.show();
 
-            loadingDialog.hide();
-            closeMe();
-
-        }).fail(function(data) {
-            loadingDialog.hide();
-            alert($.t('ERROR_CREATING_NODE'));
-
-        });
-    }
-    else {
+        request.sendRequest(requestParams).done(
+            function () {
+                loadingDialog.hide();
+                closeMe();
+            }
+        ).fail(
+            function () {
+                loadingDialog.hide();
+                alert($.t('ERROR_CREATING_NODE'));
+            }
+        );
+    } else {
         alert($.t('REQUIRED_ATTRIBUTES_MISSING'));
     }
 };
 
-
-var getForms = function() {
-
-    loadingDialog.show();
+var getForms = function () {
 
     var requestParams = {
         method: 'GET',
@@ -159,60 +159,62 @@ var getForms = function() {
         headers: {'Content-Type': 'application/json; charset=utf-8'}
     };
 
-    request.sendRequest(requestParams).done(function (data) {
+    loadingDialog.show();
 
-        loadingDialog.hide();
+    request.sendRequest(requestParams).done(
+        function (data) {
 
-        var forms = data.forms;
+            var forms = data.forms;
 
-        _.each(forms, function (form) {
-            form.id = form.schema.title;
-        });
+            loadingDialog.hide();
 
-        forms.length && (forms[0].id = "general");
+            _.each(forms, function (form) {
+                form.id = form.schema.title;
+            });
 
-        //show node create form
-        if (forms.length > 0) {
+            forms.length && (forms[0].id = "general");
 
-            var nodeCreateForm = forms[0];
+            //show node create form
+            if (forms.length > 0) {
 
-            if (isFile(appSettings.nodeType)) {
-                //remove file input, we already have the file from the file picker
-                nodeCreateForm.data = _.omit(nodeCreateForm.data, 'file');
-                nodeCreateForm.options.fields = _.omit(nodeCreateForm.options.fields, 'file');
-                nodeCreateForm.schema.properties = _.omit(nodeCreateForm.schema.properties, 'file');
+                var nodeCreateForm = forms[0];
 
-                //populate the name field with the name from the filepicker
-                nodeCreateForm.data.name = appSettings.FileData.fileName;
+                if (isFile(appSettings.nodeType)) {
+                    //remove file input, we already have the file from the file picker
+                    nodeCreateForm.data = _.omit(nodeCreateForm.data, 'file');
+                    nodeCreateForm.options.fields = _.omit(nodeCreateForm.options.fields, 'file');
+                    nodeCreateForm.schema.properties = _.omit(nodeCreateForm.schema.properties, 'file');
+
+                    //populate the name field with the name from the filepicker
+                    nodeCreateForm.data.name = appSettings.FileData.fileName;
+                }
+
+                populateForm(nodeCreateForm.data, nodeCreateForm.options, nodeCreateForm.schema, 'nodeCreate');
             }
 
-            populateForm(nodeCreateForm.data, nodeCreateForm.options, nodeCreateForm.schema, 'nodeCreate' );
+            //show categories form if it exists
+            forms.forEach(function (form) {
+                if (form.id.toLowerCase() === 'categories') {
+                    populateForm(form.data, form.options, form.schema, 'categories');
+                }
+            });
+            $('.btnSubmit').show();
+
         }
+    ).fail(
+        function () {
+            loadingDialog.hide();
+            alert($.t('ERROR_RENDERING_FROM'));
+        }
+    );
 
-        //show categories form if it exists
-        forms.forEach(function (form) {
-            if (form.id.toLowerCase() == 'categories') {
-                populateForm(form.data, form.options, form.schema, 'categories' );
-            }
-        });
-        $('.btnSubmit').show();
-
-    }).fail(function (data) {
-        loadingDialog.hide();
-        alert($.t('ERROR_RENDERING_FROM'));
-
-    });
-
-}
-
-var closeMe = function(){
-
-
-  cordovaRequest.closeMe();
 };
 
-var populateForm = function(data, options, schema, div) {
+var closeMe = function () {
+    cordovaRequest.closeMe();
+};
 
+var populateForm = function (data, options, schema, div) {
     $("#" + div + "").alpaca({
         "view": 'bootstrap-edit',
         "data": data,
@@ -221,36 +223,15 @@ var populateForm = function(data, options, schema, div) {
     });
 };
 
-var onDeviceReady = function() {
+var onDeviceReady = function () {
     loadingDialog.show();
     initialize();
 };
 
-function dataURItoBlob(dataURI) {
-    // convert base64/URLEncoded data component to raw binary data held in a string
-    var byteString = dataURI;
-    if (dataURI.split(',')[0].indexOf('base64') >= 0)
-        byteString = atob(dataURI.split(',')[1]);
-    else
-        byteString = unescape(dataURI.split(',')[1]);
-
-    // separate out the mime component
-    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-    // write the bytes of the string to a typed array
-    var ia = new Uint8Array(byteString.length);
-    for (var i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-
-    return new Blob([ia], {type:"image/jpeg"});
-};
-
-
-var processQueryParameters = function(query){
+var processQueryParameters = function (query) {
     var params = {};
 
-    if ( typeof(query) === 'string'){
+    if (typeof(query) === 'string') {
         var pairs = query.split("&");
         var len = pairs.length;
         var idx, pair, key;
@@ -260,7 +241,7 @@ var processQueryParameters = function(query){
             pair = pairs[idx].split("=");
             key = pair[0];
 
-            switch(typeof params[key]) {
+            switch (typeof params[key]) {
                 // Key has not been found, create entry
                 case "undefined":
                     params[key] = pair[1];
@@ -280,11 +261,11 @@ var processQueryParameters = function(query){
 };
 
 function b64toBlob(b64Data, contentType, sliceSize) {
-    contentType = contentType || '';
-    sliceSize = sliceSize || 512;
-
     var byteCharacters = atob(b64Data);
     var byteArrays = [];
+
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
 
     for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
         var slice = byteCharacters.slice(offset, offset + sliceSize);
@@ -299,9 +280,42 @@ function b64toBlob(b64Data, contentType, sliceSize) {
         byteArrays.push(byteArray);
     }
 
-    var blob = new Blob(byteArrays, {type: contentType});
-    return blob;
+    return new Blob(byteArrays, {type: contentType});
 }
 
+function dataURItoBlob(dataURI) {
+    // convert base64/URLEncoded data component to raw binary data held in a string
+    var byteString = dataURI;
+    if (dataURI.split(',')[0].indexOf('base64') >= 0)
+        byteString = atob(dataURI.split(',')[1]);
+    else
+        byteString = unescape(dataURI.split(',')[1]);
+
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to a typed array
+    var ia = new Uint8Array(byteString.length);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ia], {type: "image/jpeg"});
+}
+
+function blurInputFields() {
+    // blur all input fields
+    $("#nodeCreate").find('input').each(function (index, element) {
+        $(element).blur();
+    });
+}
+
+function onSubmit() {
+    // blur input fields to force form values to update before attempting to submit
+    blurInputFields();
+    setTimeout(function () {
+        submitForm();
+    });
+}
 
 document.addEventListener("deviceready", onDeviceReady, false);
