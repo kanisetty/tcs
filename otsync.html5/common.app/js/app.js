@@ -223,20 +223,20 @@
          * @return             String that best represents the user.
          */
         displayName: function (username, firstName, lastName) {
-            var displayName = "";
+            var displayName = '';
 
             // Include the first name, if available
-            if (firstName !== null && firstName !== "") {
+            if (firstName) {
                 displayName += firstName;
             }
 
             // Include the last name, if available
-            if (lastName !== null && lastName !== "") {
-                displayName += " " + lastName;
+            if (lastName && lastName !== 'N/A') {
+                displayName += ' ' + lastName;
             }
 
             // Show a combination of first/last name, otherwise username
-            return displayName.trim() || username;
+            return (displayName || username || '').trim();
         },
         /**
          * ### App.prototype.format.number
