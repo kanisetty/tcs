@@ -25,8 +25,12 @@ angular.module('cacheService', ['appworksService'])
                         if (doOpen) {
                             self.openNodeFromStorage(node)
                                 .then(function (file) {
-                                    window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes');
-                                    deferred.resolve();
+                                    if (file) {
+                                        window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes,location=no');
+                                        deferred.resolve();
+                                    } else {
+                                        deferred.reject();
+                                    }
                                 })
                                 .catch(function (error) {
                                     deferred.reject(error);
@@ -69,8 +73,12 @@ angular.module('cacheService', ['appworksService'])
 
                 $appworksService.getFile(fileName)
                     .then(function (file) {
-                        window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes');
-                        deferred.resolve();
+                        if (file) {
+                            window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes,location=no');
+                            deferred.resolve();
+                        } else {
+                            deferred.reject();
+                        }
                     })
                     .catch(function (error) {
                         deferred.reject(error);

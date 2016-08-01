@@ -2,6 +2,33 @@ angular.module('Node', [])
 
     .factory('Node', ['$sessionService', function ($sessionService) {
 
+        var CATEGORY_TYPE = 131;
+        var ACTIVE_VIEW_TYPE = 30309;
+        var APPEARANCE_TYPE = 480;
+        var CHANNEL_TYPE = 207;
+        var COLLECTION_TYPE = 298;
+        var COMPOUND_DOCUMENT_TYPE = 136;
+        var CUSTOM_VIEW_TYPE = 146;
+        var DISCUSSION_TYPE = 215;
+        var DOCUMENT_TYPE = 144;
+        var EMAIL_TYPE = 749;
+        var EMAIL_FOLDER_TYPE = 751;
+        var FOLDER_TYPE = 0;
+        var FORM_TYPE = 223;
+        var FORM_TEMPLATE_TYPE = 230;
+        var LIVE_REPORT_TYPE = 299;
+        var POLL_TYPE = 218;
+        var PROJECT_TYPE = 202;
+        var PROSPECTOR_TYPE = 384;
+        var SHORTCUT_TYPE = 1;
+        var TASK_LIST_TYPE = 204;
+        var TEXT_DOCUMENT_TYPE = 145;
+        var URL_TYPE = 140;
+        var VIRTUAL_FOLDER_TYPE = 899;
+        var WORKFLOW_MAP_TYPE = 128;
+        var WORKFLOW_STATUS_TYPE = 190;
+        var XML_DTD_TYPE = 335;
+
         var Node = function(nodeData, sharing) {
 			var _nodeData = nodeData;
             var _iconURL = _nodeData.iconURL;
@@ -97,6 +124,14 @@ angular.module('Node', [])
 			this.sharing = function(){
 				return _sharing;
 			};
+
+            this.isDocument = function () {
+                return this.getSubtype() === DOCUMENT_TYPE;
+            };
+
+            this.isFolder = function () {
+                return this.getSubtype() === FOLDER_TYPE;
+            };
 
             this.toString = function(){
                 return _name.toLowerCase();

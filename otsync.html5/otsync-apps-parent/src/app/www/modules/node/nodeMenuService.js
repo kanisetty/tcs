@@ -83,7 +83,7 @@ angular.module('nodeMenuService', ['nodeResource', 'fileMenuService', 'menuItemF
                         }));
 
                     //For Documents
-                    if (!node.isContainer()) {
+                    if (!node.isContainer() && node.isDocument()) {
                         if ((permissions & PermSeeContents) == PermSeeContents) {
                             modalMenuItems.push(this.getOpenMenuItem($displayMessageService.translate('OPEN'), root, node));
                             modalMenuItems.push($fileMenuService.getDownloadFileMenuItem(node));
@@ -105,7 +105,7 @@ angular.module('nodeMenuService', ['nodeResource', 'fileMenuService', 'menuItemF
 									return $navigationService.openPage('app.browse', {id: "PulseContent", additionalParams: additionalParams});
 								}));
 
-                        if ((permissions & PermCreateNode) == PermCreateNode) {
+                        if ((permissions & PermCreateNode) == PermCreateNode && node.isFolder()) {
                             modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('UPLOAD HERE'), !refresh, hasModal,
                                 function () {
                                     var shouldRefresh = true;
