@@ -45,10 +45,11 @@ angular.module('nodeMenuService', ['nodeResource', 'fileMenuService', 'menuItemF
                             return deferred.promise;
                         }));
 
-                    modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('CATEGORIES'), !refresh, !hasModal,
-                        function () {
-                            return null
-                        }));
+                    // TODO feature request: update categories on mobile. Removed by JI on aug 1, 2016.
+                    //modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('CATEGORIES'), !refresh, !hasModal,
+                    //    function () {
+                    //        return null
+                    //    }));
 
                     if (node.isFavorite())
                         modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('REMOVE FROM FAVORITES'), refresh, !hasModal,
