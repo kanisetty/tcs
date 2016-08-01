@@ -1,22 +1,22 @@
 angular.module('favoritesService', ['nodeService', 'Request', 'fileResource', 'favoritesResource'])
 
     .factory('$favoritesService', ['$q', '$sessionService', '$nodeService', '$cacheService', '$fileResource', '$favoritesResource',
-        function($q, $sessionService, $nodeService, $cacheService, $fileResource, $favoritesResource){
+        function ($q, $sessionService, $nodeService, $cacheService, $fileResource, $favoritesResource) {
 
-            return{
+            return {
 
-                doSync:  function() {
+                doSync: function () {
                     var deferred = $q.defer();
                     var self = this;
 
-                    $q.when($sessionService.isOnline()).then(function() {
+                    $q.when($sessionService.isOnline()).then(function () {
                         $favoritesResource.getFavorites()
                             .then(function (favorites) {
                                 self.downloadAndCacheFavorites(favorites)
-                                    .then(function(favorites) {
+                                    .then(function (favorites) {
                                         deferred.resolve(favorites);
                                     })
-                        });
+                            });
                     });
 
                     return deferred.promise;
@@ -26,7 +26,7 @@ angular.module('favoritesService', ['nodeService', 'Request', 'fileResource', 'f
                     var promises = [];
 
                     favorites.forEach(function (favorite) {
-                        if($cacheService.isNodeStorable(favorite) && !favorite.isStored())
+                        if ($cacheService.isNodeStorable(favorite) && !favorite.isStored())
                             promises.push($fileResource.downloadAndStore(favorite, false));
                     });
 
@@ -51,8 +51,8 @@ angular.module('favoritesService', ['nodeService', 'Request', 'fileResource', 'f
                             $nodeService.addCacheDataToNodeChildren(nodeChildren).then(function (favorites) {
 
                                 var filteredFavorites = [];
-                                favorites.forEach(function(fav) {
-                                    if($cacheService.isNodeStorable(fav) && fav.isStored())
+                                favorites.forEach(function (fav) {
+                                    if ($cacheService.isNodeStorable(fav) && fav.isStored())
                                         filteredFavorites.push(fav);
                                 });
 

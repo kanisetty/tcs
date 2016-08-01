@@ -73,7 +73,7 @@ angular.module('FavoritesBrowseStrategy', ['nodeBrowseDecoratingService', 'heade
 
                 $q.when($sessionService.isOnline()).then(function (response) {
                     isOnline = response;
-                    deferred.resolve({hideSearch: false, isOnline: isOnline});
+                    deferred.resolve({hideSearch: true, isOnline: isOnline});
                 });
 
                 return deferred.promise;

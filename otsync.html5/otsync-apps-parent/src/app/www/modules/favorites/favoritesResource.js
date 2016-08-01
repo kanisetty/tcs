@@ -31,8 +31,7 @@ angular.module('favoritesResource', ['Request', 'cacheService', 'nodeService'])
 
                     var request = new Request(requestParams);
 
-                    $sessionService.runRequest(request).then(function(response){
-
+                    $sessionService.runRequest(request).then(function (response) {
                         var favorites = $nodeService.processResponseForNodeChildren(response);
                         $cacheService.addFavoritesToCache(favorites);
                         deferred.resolve(favorites);
