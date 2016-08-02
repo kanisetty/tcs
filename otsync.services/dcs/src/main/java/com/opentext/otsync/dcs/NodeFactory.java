@@ -8,34 +8,34 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NodeFactory {
-  private static NodeFactory instance;
-  private Map<String, SoftReference<Node>> nodesCache = new HashMap<>();
+    private static NodeFactory instance;
+    private Map<String, SoftReference<Node>> nodesCache = new HashMap<>();
 
-  public static NodeFactory singleton() {
-    if (instance == null) {
-      synchronized (NodeFactory.class) {
+    public static NodeFactory singleton() {
         if (instance == null) {
-          instance = new NodeFactory();
+            synchronized (NodeFactory.class) {
+                if (instance == null) {
+                    instance = new NodeFactory();
+                }
+            }
         }
-      }
-    }
-    return instance;
-  }
-
-  public synchronized Node node(String nodeID) {
-    SoftReference<Node> softReference = nodesCache.get(nodeID);
-    if (softReference == null) {
-      softReference = new SoftReference<>(new Node());
-      nodesCache.put(nodeID, softReference);
+        return instance;
     }
 
-    return softReference.get();
-  }
+    public synchronized Node node(String nodeID) {
+        SoftReference<Node> softReference = nodesCache.get(nodeID);
+        if (softReference == null) {
+            softReference = new SoftReference<>(new Node());
+            nodesCache.put(nodeID, softReference);
+        }
 
-  public CSNodeResource newCSNodeResource(String nodeID, HttpServletRequest request) {
-    CSDocumentDownloader csDocumentDownloader = new CSDocumentDownloader(nodeID, new CSForwardHeaders(request));
-    CSDocumentPageUploader csDocumentPageUploader = new CSDocumentPageUploader(nodeID, new CSForwardHeaders(request));
+        return softReference.get();
+    }
 
-    return new CSNodeResource(nodeID, new CSRequestBuilderFactory(new CSForwardHeaders(request)), csDocumentDownloader, csDocumentPageUploader);
-  }
+    public CSNodeResource newCSNodeResource(String nodeID, HttpServletRequest request) {
+        CSDocumentDownloader csDocumentDownloader = new CSDocumentDownloader(nodeID, new CSForwardHeaders(request));
+        CSDocumentPageUploader csDocumentPageUploader = new CSDocumentPageUploader(nodeID, new CSForwardHeaders(request));
+
+        return new CSNodeResource(nodeID, new CSRequestBuilderFactory(new CSForwardHeaders(request)), csDocumentDownloader, csDocumentPageUploader);
+    }
 }

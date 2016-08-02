@@ -5,31 +5,31 @@ import java.nio.file.Paths;
 
 public class IOUtils {
 
-  public static String appendToFileName(String fileName, String suffix) {
-    return Paths.get(fileName).getParent() +"\\"+getFileName(fileName, false) + suffix + "." + getFileExtension(fileName);
-  }
-
-  private static String getFileName(String path, Boolean includeExt) {
-    File file = new File(path);
-    String fileName = file.getName();
-
-    if (!includeExt) {
-      int i = fileName.lastIndexOf('.');
-
-      if (i > 0) {
-        fileName = fileName.substring(0, i);
-      }
-
+    public static String appendToFileName(String fileName, String suffix) {
+        return Paths.get(fileName).getParent() + "\\" + getFileName(fileName, false) + suffix + "." + getFileExtension(fileName);
     }
-    return fileName;
-  }
 
-  private static String getFileExtension(String path) {
-    File file = new File(path);
-    String fileName = file.getName();
+    private static String getFileName(String path, Boolean includeExt) {
+        File file = new File(path);
+        String fileName = file.getName();
 
-    int i = fileName.lastIndexOf('.');
+        if (!includeExt) {
+            int i = fileName.lastIndexOf('.');
 
-    return fileName.substring(i + 1, fileName.length());
-  }
+            if (i > 0) {
+                fileName = fileName.substring(0, i);
+            }
+
+        }
+        return fileName;
+    }
+
+    private static String getFileExtension(String path) {
+        File file = new File(path);
+        String fileName = file.getName();
+
+        int i = fileName.lastIndexOf('.');
+
+        return fileName.substring(i + 1, fileName.length());
+    }
 }

@@ -2,6 +2,7 @@ package com.opentext.otsync.dcs;
 
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.dcs.utils.IOUtils;
+import com.opentext.otsync.dcs.utils.ImageUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
@@ -12,7 +13,6 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
-import com.opentext.otsync.dcs.utils.ImageUtils;
 
 public class DocConversionEngineWrapper {
     public static final Log log = LogFactory.getLog(DocConversionEngineWrapper.class);
