@@ -19,27 +19,27 @@ import java.util.Set;
  */
 public class DocumentConversionFileCache {
 
-    public static final Log log = LogFactory.getLog(DocumentConversionFileCache.class);
+    private static final Log LOG = LogFactory.getLog(DocumentConversionFileCache.class);
 
-    public static final String TMP_PATH_KEY = "otag.tmp.path";
-    public static final String TMP_CLEANUP_TIMEOUT_KEY = "otag.tmp.cleanup.timeout";
-    public static final String DCS_PARTITION = File.separator + "dcs";
+    private static final String TMP_PATH_KEY = "otag.tmp.path";
+    private static final String TMP_CLEANUP_TIMEOUT_KEY = "otag.tmp.cleanup.timeout";
+    private static final String DCS_PARTITION = File.separator + "dcs";
 
     private static final Set<Path> lockedPaths = new HashSet<>();
     private static SettingsClient settingClient;
     private Path path;
 
-    public DocumentConversionFileCache(Path path) {
+    private DocumentConversionFileCache(Path path) {
         this.path = path;
     }
 
     public synchronized static DocumentConversionFileCache createFolder(String name) throws IOException {
-        String tmpPath = null;
+        String tmpPath;
         try {
             tmpPath = getDcsCachePath();
         } catch (APIException e) {
             String errMsg = "Failed to resolve DCS cache path using Gateway";
-            log.error(errMsg + " - " + e.getCallInfo());
+            LOG.error(errMsg + " - " + e.getCallInfo());
             throw new RuntimeException(errMsg, e);
         }
 
@@ -59,9 +59,7 @@ public class DocumentConversionFileCache {
 
     public void secure(FileCacheRunnable runnable) throws Exception {
         DocumentConversionFileCache.lock(path);
-
         runnable.run(path);
-
         DocumentConversionFileCache.unlock(path);
     }
 
@@ -70,18 +68,23 @@ public class DocumentConversionFileCache {
         long cutoff = System.currentTimeMillis() - tmpCleanupTimeout * 1000;
 
         String tmpPath = getDcsCachePath();
+
         File[] files = new File(tmpPath).listFiles();
 
-        for (File file : files) {
-            if (!isLocked(file) && FileUtils.isFileOlder(file, cutoff)) {
-                try {
-                    if (file.isDirectory()) {
-                        FileUtils.deleteDirectory(file);
-                    } else {
-                        file.delete();
+        if (files != null) {
+            for (File file : files) {
+                if (!isLocked(file) && FileUtils.isFileOlder(file, cutoff)) {
+                    try {
+                        if (file.isDirectory()) {
+                            FileUtils.deleteDirectory(file);
+                        } else {
+                            boolean wasDeleted = file.delete();
+                            if (!wasDeleted)
+                                LOG.warn("We failed to delete " + file.getAbsolutePath());
+                        }
+                    } catch (IOException e) {
+                        LOG.error("Delete file " + file.toPath() + " failed", e);
                     }
-                } catch (IOException e) {
-                    log.error("Delete file " + file.toPath() + " failed", e);
                 }
             }
         }
@@ -96,7 +99,6 @@ public class DocumentConversionFileCache {
             return lockedPaths.contains(file.toPath());
         }
     }
-
 
     private static void unlock(Path path) {
         synchronized (lockedPaths) {

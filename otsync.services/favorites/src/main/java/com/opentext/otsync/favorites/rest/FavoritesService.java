@@ -26,7 +26,7 @@ public class FavoritesService implements AWServiceContextHandler {
         serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.0");
+            EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();

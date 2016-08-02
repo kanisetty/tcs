@@ -147,7 +147,7 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
 
     @Override
     public String getConnectorVersion() {
-        return "16.0.0";
+        return "16.0.1";
     }
 
     @Override

@@ -61,7 +61,7 @@ public class CSDocumentPageUploader {
 
             MultipartEntity entity = new MultipartEntity();
 
-            for(NameValuePair param : params){
+            for (NameValuePair param : params) {
                 entity.addPart(param.getName(), new StringBody(param.getValue()));
             }
 

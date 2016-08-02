@@ -70,7 +70,7 @@ public class ContentServerService implements AWServiceContextHandler {
             LOG.info("Starting Content Server ContentService ...");
 
             try {
-                csConnector = new EIMConnectorClientImpl("OTSync", "16.0.0");
+                csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
                 ConnectionResult connectionResult = csConnector.connect();
                 if (!connectionResult.isSuccess()) {
                     String errMsg = "Failed connection result =" + connectionResult.getMessage();

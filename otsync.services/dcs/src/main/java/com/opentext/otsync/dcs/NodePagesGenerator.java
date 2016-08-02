@@ -38,13 +38,12 @@ public class NodePagesGenerator {
     private void convertNode(final CSNodeResource csNodeResource, final int version, final int fromPage,
                              final int toPage, final ResultCollector resultCollector) throws Exception {
         final DocConversionResult result = new DocConversionResult();
-        DocumentConversionFileCache.createFolder(csNodeResource.nodeID).secure(outputPath -> {
-            File nodeFile = getDocumentFileTo(csNodeResource, version, outputPath);
-
-            docConversionEngineWrapper.convert(nodeFile, fromPage, toPage, outputPath, result);
-
-            resultCollector.collect(result);
-        });
+        DocumentConversionFileCache.createFolder(csNodeResource.nodeID)
+                .secure(outputPath -> {
+                    File nodeFile = getDocumentFileTo(csNodeResource, version, outputPath);
+                    docConversionEngineWrapper.convert(nodeFile, fromPage, toPage, outputPath, result);
+                    resultCollector.collect(result);
+                });
     }
 
     private void uploadPages(CSNodeResource csNodeResource, Map<Integer, String> pageFilesMap) throws Exception {
