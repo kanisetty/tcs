@@ -18,7 +18,7 @@ angular.module('appworksService', [])
             authenticate: function (force) {
                 var deferred = $q.defer();
                 var auth = new Appworks.Auth(deferred.resolve, deferred.reject);
-                auth.authenticate([force]);
+                auth.authenticate(force);
                 return deferred.promise;
             },
 

@@ -4,7 +4,6 @@ angular.module('requestService', ['cacheService', 'appworksService'])
         function ($q, $rootScope, $displayMessageService, $http, $appworksService) {
 
             return {
-
                 doRequest: function (requestParams, forceAuth) {
                     var deferred = $q.defer();
                     var error = {};
@@ -48,8 +47,7 @@ angular.module('requestService', ['cacheService', 'appworksService'])
                 },
 
                 reauthUpdateTicket: function () {
-
-                    return $appworksService.authenticate();
+                    return $appworksService.authenticate(true);
                 },
 
                 runRequestWithAuth: function (request) {
