@@ -7,12 +7,18 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileServi
 				var refresh = true;
 
 				return {
-
 					getDownloadFileMenuItem: function(node){
 						return menuItemFactory.createMenuItem($displayMessageService.translate('DOWNLOAD'), !refresh, !hasModal,
 								function () {
 									return $fileResource.downloadAndStore(node, false);
 								});
+					},
+
+					getOpenInFileMenuItem: function (node) {
+						return menuItemFactory.createMenuItem($displayMessageService.translate('OPEN IN') + '...', !refresh, !hasModal,
+							function () {
+								return $fileResource.downloadAndStore(node, false, true);
+							});
 					},
 
 					getFileMenuItemsAddVersion : function(shouldRefresh, node){

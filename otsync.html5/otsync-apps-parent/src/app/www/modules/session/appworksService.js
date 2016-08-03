@@ -1,6 +1,6 @@
 angular.module('appworksService', [])
 
-    .factory('$appworksService', ['$q', '$httpParamSerializerJQLike', function ($q, $httpParamSerializerJQLike) {
+    .factory('$appworksService', ['$q', '$httpParamSerializerJQLike', '$displayMessageService', function ($q, $httpParamSerializerJQLike, $displayMessageService) {
 
         return {
 
@@ -78,10 +78,16 @@ angular.module('appworksService', [])
                 }
 
                 function failure(error) {
+                    var errorMsg;
+                    if (typeof error === 'object' && error.body) {
+                        errorMsg = JSON.parse(error.body);
+                        errorMsg = errorMsg.error || errorMsg;
+                        $displayMessageService.showErrorMessage(errorMsg);
+                    }
                     deferred.reject(error);
                 }
 
-                storage.retrieve(fileName);
+                storage.retrieve(encodeURIComponent(fileName));
 
                 return deferred.promise;
             },
@@ -155,10 +161,16 @@ angular.module('appworksService', [])
                 }
 
                 function failure(error) {
+                    var errorMsg;
+                    if (typeof error === 'object' && error.body) {
+                        errorMsg = JSON.parse(error.body);
+                        errorMsg = errorMsg.error || errorMsg;
+                        $displayMessageService.showErrorMessage(errorMsg);
+                    }
                     deferred.reject(error);
                 }
 
-                storage.store(downloadURL, fileName);
+                storage.store(encodeURI(downloadURL), encodeURIComponent(fileName));
 
                 return deferred.promise;
             }

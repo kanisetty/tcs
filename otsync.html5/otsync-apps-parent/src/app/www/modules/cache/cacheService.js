@@ -1,5 +1,5 @@
 angular.module('cacheService', ['appworksService'])
-    .factory('$cacheService', ['$q', '$appworksService',  function ($q, $appworksService) {
+    .factory('$cacheService', ['$q', '$appworksService', function ($q, $appworksService) {
 
         var _favoritesKey = "OTSync_Favorites";
 
@@ -15,18 +15,18 @@ angular.module('cacheService', ['appworksService'])
                 return deferred.promise;
             },
 
-            addNodeToStorage: function (node, downloadURL, options, doOpen) {
+            addNodeToStorage: function (node, downloadURL, options, doOpen, openIn) {
                 var deferred = $q.defer();
                 var self = this;
                 var fileName = node.getID() + "_" + node.getVersionNumber() + "_" + node.getName();
 
                 $appworksService.storeFile(downloadURL, fileName, options)
-                    .then(function() {
+                    .then(function (file) {
                         if (doOpen) {
                             self.openNodeFromStorage(node)
                                 .then(function (file) {
                                     if (file) {
-                                        window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes,location=no');
+                                        window.open(encodeURI(file.nativeURL), '_blank', 'EnableViewPortScale=yes,location=no');
                                         deferred.resolve();
                                     } else {
                                         deferred.reject();
@@ -35,6 +35,13 @@ angular.module('cacheService', ['appworksService'])
                                 .catch(function (error) {
                                     deferred.reject(error);
                                 });
+                        } else if (openIn) {
+                            if (file) {
+                                var finder = new Appworks.Finder(deferred.resolve, deferred.reject);
+                                finder.openDirect(encodeURI(file.nativeURL));
+                            } else {
+                                deferred.reject();
+                            }
                         } else {
                             deferred.resolve();
                         }
@@ -60,7 +67,7 @@ angular.module('cacheService', ['appworksService'])
 
                 var canStore = false;
 
-                if(node != null && node.getSubtype() != 1 && !node.isContainer())
+                if (node != null && node.getSubtype() != 1 && !node.isContainer())
                     canStore = true;
 
                 return canStore;
@@ -74,7 +81,7 @@ angular.module('cacheService', ['appworksService'])
                 $appworksService.getFile(fileName)
                     .then(function (file) {
                         if (file) {
-                            window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes,location=no');
+                            window.open(encodeURI(file.nativeURL), '_blank', 'EnableViewPortScale=yes,location=no');
                             deferred.resolve();
                         } else {
                             deferred.reject();
@@ -100,7 +107,7 @@ angular.module('cacheService', ['appworksService'])
 
                         deferred.resolve(node);
                     }
-                } catch(error) {
+                } catch (error) {
                     node.setIsStored(false);
                     deferred.resolve(node);
                 }

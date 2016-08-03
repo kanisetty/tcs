@@ -40,7 +40,7 @@ angular.module('fileResource', ['browseService', 'Request', 'cacheService', 'app
 						return $sessionService.runRequest(uploadRequest);
 					},
 
-					downloadAndStore: function(node, doOpen) {
+					downloadAndStore: function(node, doOpen, openIn) {
                         var deferred = $q.defer();
                         var nodeID = node.getID();
                         var downloadURL = $sessionService.getContentServerURL() + '/v1/nodes/' + nodeID + '/content';
@@ -49,7 +49,7 @@ angular.module('fileResource', ['browseService', 'Request', 'cacheService', 'app
                             .then(function(otcsticket){
                                 var options = {headers:{'OTCSTICKET': otcsticket}};
 
-                                $cacheService.addNodeToStorage(node, downloadURL, options, doOpen)
+                                $cacheService.addNodeToStorage(node, downloadURL, options, doOpen, openIn)
                                     .then(function(){
                                         deferred.resolve()
                                     })
