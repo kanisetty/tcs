@@ -1,8 +1,11 @@
-package com.opentext.otsync.dcs;
+package com.opentext.otsync.dcs.cs.node;
+
+import com.opentext.otsync.dcs.cs.CSNodeResource;
 
 import javax.ws.rs.core.StreamingOutput;
 
 public class Node {
+
     private NodePagesGenerator nodePagesGenerator;
 
     public Node() {

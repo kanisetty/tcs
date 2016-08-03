@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class ImageUtils {
+
     private static boolean saveBufferedImageAsJPEG(BufferedImage image, String imagePath) {
         try {
             FileOutputStream outputStream = new FileOutputStream(imagePath);

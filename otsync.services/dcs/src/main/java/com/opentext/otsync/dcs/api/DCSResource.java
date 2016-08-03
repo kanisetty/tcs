@@ -1,7 +1,7 @@
-package com.opentext.otsync.dcs.rest;
+package com.opentext.otsync.dcs.api;
 
-import com.opentext.otsync.dcs.Node;
-import com.opentext.otsync.dcs.NodeFactory;
+import com.opentext.otsync.dcs.cs.node.Node;
+import com.opentext.otsync.dcs.cs.node.NodeFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

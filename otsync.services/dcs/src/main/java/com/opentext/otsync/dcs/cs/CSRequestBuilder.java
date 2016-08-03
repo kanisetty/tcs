@@ -1,6 +1,7 @@
-package com.opentext.otsync.dcs;
+package com.opentext.otsync.dcs.cs;
 
 import com.opentext.otsync.api.CSRequest;
+import com.opentext.otsync.dcs.appworks.ContentServerURLProvider;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -9,9 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CSRequestBuilder {
+
     private List<NameValuePair> params = new ArrayList<>();
     private String func;
     private CSForwardHeaders header;
+    private ContentServerURLProvider urlProvider;
 
     public CSRequestBuilder(CSForwardHeaders headers) {
         this.header = headers;
@@ -28,7 +31,11 @@ public class CSRequestBuilder {
     }
 
     public CSRequest build() {
-        return new CSRequest(DocumentConversionService.getCsUrl(),
+        if (urlProvider == null)
+            urlProvider = ContentServerURLProvider.getProvider();
+
+        return new CSRequest(
+                urlProvider.getContentServerUrl(),
                 this.func, this.params, header);
     }
 }

@@ -1,8 +1,12 @@
-package com.opentext.otsync.dcs;
+package com.opentext.otsync.dcs.cs;
 
 import com.opentext.otsync.api.CSRequest;
+import com.opentext.otsync.dcs.appworks.ContentServerURLProvider;
+import com.opentext.otsync.dcs.appworks.DocumentConversionService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -23,17 +27,20 @@ import java.util.List;
 
 public class CSDocumentDownloader {
 
+    private static final Log LOG = LogFactory.getLog(CSDocumentDownloader.class);
+
     private String nodeID;
     private CSForwardHeaders headers;
-    private String csUrl;
 
     public CSDocumentDownloader(String nodeID, CSForwardHeaders forwardHeaders) {
         this.nodeID = nodeID;
         this.headers = forwardHeaders;
-        csUrl = DocumentConversionService.getCsUrl();
     }
 
     public void download(File file) throws IOException {
+        if (LOG.isDebugEnabled())
+            LOG.debug("Downloading file " + file.getName());
+
         List<NameValuePair> params = new ArrayList<>(4);
         params.add(new BasicNameValuePair(CSRequest.FUNC_PARAM_NAME, "otsyncll"));
         params.add(new BasicNameValuePair("objId", nodeID));
@@ -41,7 +48,7 @@ public class CSDocumentDownloader {
         params.add(new BasicNameValuePair("viewType", "1"));
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        HttpPost request = new HttpPost(csUrl);
+        HttpPost request = new HttpPost(ContentServerURLProvider.getProvider().getContentServerUrl());
         request.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
         try {

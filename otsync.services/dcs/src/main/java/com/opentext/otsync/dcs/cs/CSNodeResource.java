@@ -1,4 +1,4 @@
-package com.opentext.otsync.dcs;
+package com.opentext.otsync.dcs.cs;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,18 +15,25 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class CSNodeResource {
-    public final String nodeID;
     public static final Log log = LogFactory.getLog(CSNodeResource.class);
 
-    private CSRequestBuilderFactory csRequestBuilderFactory;
-    private CSDocumentDownloader csDocumentDownloader;
-    private CSDocumentPageUploader csDocumentPageUploader;
+    private final String nodeID;
+    private final CSRequestBuilderFactory csRequestBuilderFactory;
+    private final CSDocumentDownloader csDocumentDownloader;
+    private final CSDocumentPageUploader csDocumentPageUploader;
 
-    public CSNodeResource(String nodeID, CSRequestBuilderFactory csRequestBuilderFactory, CSDocumentDownloader csDocumentDownload, CSDocumentPageUploader csDocumentPageUploader) {
+    public CSNodeResource(String nodeID,
+                          CSRequestBuilderFactory csRequestBuilderFactory,
+                          CSDocumentDownloader csDocumentDownload,
+                          CSDocumentPageUploader csDocumentPageUploader) {
         this.nodeID = nodeID;
         this.csRequestBuilderFactory = csRequestBuilderFactory;
         this.csDocumentDownloader = csDocumentDownload;
         this.csDocumentPageUploader = csDocumentPageUploader;
+    }
+
+    public String getNodeID() {
+        return nodeID;
     }
 
     public int getPagesCount() {

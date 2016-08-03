@@ -22,6 +22,7 @@ import com.opentext.otag.sdk.util.ForwardHeaders;
 import com.opentext.otsync.connector.auth.OTSyncAuthHandler;
 import com.opentext.otsync.connector.auth.registration.AuthRegistrationHandler;
 import com.opentext.otsync.connector.auth.trustedprovider.TrustedServerKeyRegistrationHandler;
+import com.opentext.otsync.otag.EIMConnectorHelper;
 import com.opentext.otsync.rest.util.LLCookie;
 import jersey.repackaged.com.google.common.collect.Sets;
 import org.apache.commons.logging.Log;
@@ -142,12 +143,12 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
 
     @Override
     public String getConnectorName() {
-        return "OTSync";
+        return EIMConnectorHelper.CS_CONNECTOR_NAME;
     }
 
     @Override
     public String getConnectorVersion() {
-        return "16.0.1";
+        return EIMConnectorHelper.CS_CONNECTOR_VERSION;
     }
 
     @Override
