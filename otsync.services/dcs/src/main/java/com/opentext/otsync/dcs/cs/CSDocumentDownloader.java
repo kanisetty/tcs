@@ -1,8 +1,7 @@
 package com.opentext.otsync.dcs.cs;
 
 import com.opentext.otsync.api.CSRequest;
-import com.opentext.otsync.dcs.appworks.ContentServerURLProvider;
-import com.opentext.otsync.dcs.appworks.DocumentConversionService;
+import com.opentext.otsync.dcs.appworks.ServiceIndex;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -48,7 +47,7 @@ public class CSDocumentDownloader {
         params.add(new BasicNameValuePair("viewType", "1"));
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        HttpPost request = new HttpPost(ContentServerURLProvider.getProvider().getContentServerUrl());
+        HttpPost request = new HttpPost(ServiceIndex.getCSUrlProvider().getContentServerUrl());
         request.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
         try {
@@ -86,6 +85,7 @@ public class CSDocumentDownloader {
 
         } catch (IOException e) {
             request.abort();
+            LOG.error("Download failed", e);
             throw e;
         }
     }

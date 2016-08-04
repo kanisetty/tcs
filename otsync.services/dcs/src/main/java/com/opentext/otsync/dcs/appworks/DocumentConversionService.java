@@ -3,7 +3,6 @@ package com.opentext.otsync.dcs.appworks;
 import com.opentext.otag.sdk.client.v3.ServiceClient;
 import com.opentext.otag.sdk.client.v3.SettingsClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
-import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
 import com.opentext.otag.sdk.types.v3.api.SDKResponse;
@@ -15,9 +14,6 @@ import com.opentext.otsync.dcs.cache.DocumentConversionFileCache;
 import com.opentext.otsync.otag.EIMConnectorHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 
 public class DocumentConversionService implements AWServiceContextHandler {
 

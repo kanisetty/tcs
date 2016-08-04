@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 /**
  * Manages the Document conversion services file cache partition.
  */
-public class DocumentConversionFileCache implements AWComponent, ServletContextListener {
+public class DocumentConversionFileCache implements AWComponent {
 
     private static final Log LOG = LogFactory.getLog(DocumentConversionFileCache.class);
 
@@ -52,30 +52,30 @@ public class DocumentConversionFileCache implements AWComponent, ServletContextL
      * @throws IOException if we cannot create the folder on the host
      */
     public synchronized Path createFolder(String name) throws IOException {
-        String tmpPath;
-        try {
-            tmpPath = getCacheRootPath();
-        } catch (APIException e) {
-            String errMsg = "Failed to resolve DCS cache path using Gateway";
-            LOG.error(errMsg + " - " + e.getCallInfo());
-            throw new RuntimeException(errMsg, e);
+        String cacheRoot = getCacheRootPath();
+        Path cacheRootPath = Paths.get(cacheRoot);
+
+        if (!Files.exists(cacheRootPath)) {
+            if (LOG.isDebugEnabled())
+                LOG.debug("Attempting to create cache root directory as it did not exist yet");
+            Files.createDirectory(cacheRootPath);
         }
 
-        Path tempPath = Paths.get(tmpPath);
-        if (!Files.exists(tempPath)) {
-            Files.createDirectory(tempPath);
-        }
-
-        Path path = Paths.get(tmpPath, name);
+        Path path = Paths.get(cacheRoot, name);
         if (!Files.exists(path)) {
+            if (LOG.isDebugEnabled())
+                LOG.debug("Creating cached directory for node " + name + " as it did not exist yet");
             Files.createDirectory(path);
+        } else {
+            if (LOG.isDebugEnabled())
+                LOG.debug("Cache directory for node " + name + " already existed");
         }
 
         return path;
     }
 
     /**
-     * Run the supplied runable, locking the
+     * Run the supplied runnable, locking the
      *
      * @param toSecure    path we will we working in during the action
      * @param cacheAction cache action
@@ -87,12 +87,10 @@ public class DocumentConversionFileCache implements AWComponent, ServletContextL
         unlock(toSecure);
     }
 
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-    }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
+    /**
+     * Stop this service, and more importantly the thread running within it.
+     */
+    public void shutdown() {
         // stop the thread once the container signals that the context will shut down
         if (this.fileCacheCleanupThread != null) {
             LOG.info("Stopping file cache cleanup thread");
@@ -133,6 +131,7 @@ public class DocumentConversionFileCache implements AWComponent, ServletContextL
         long cutoff = System.currentTimeMillis() - tmpCleanupTimeout * 1000;
         String cacheRootPath = getCacheRootPath();
 
+        // list the directories for each node under the root and examine its timestamp
         File[] files = new File(cacheRootPath).listFiles();
         if (files != null) {
             for (File file : files) {

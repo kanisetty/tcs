@@ -14,8 +14,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * Instances of this class are responsible for managing the interaction between
+ * this service and a particular Content Server node. It provides download
+ * and upload functionality as well as means to make the required HTTP calls
+ * to Content Server.
+ */
 public class CSNodeResource {
-    public static final Log log = LogFactory.getLog(CSNodeResource.class);
+
+    public static final Log LOG = LogFactory.getLog(CSNodeResource.class);
 
     private final String nodeID;
     private final CSRequestBuilderFactory csRequestBuilderFactory;
@@ -45,7 +52,7 @@ public class CSNodeResource {
             JsonNode json = execute(csRequest);
             count = json.get("numPages").asInt();
         } catch (IOException e) {
-            log.warn("Couldn't get pages count from cs.", e);
+            LOG.warn("Couldn't get pages count from cs.", e);
         }
 
         return count;
@@ -81,7 +88,7 @@ public class CSNodeResource {
             JsonNode json = execute(csRequest);
             version = json.get("versionNum").asInt();
         } catch (Exception e) {
-            log.warn("Couldn't get pages count from cs.", e);
+            LOG.warn("Couldn't get pages count from cs.", e);
         }
 
         return version;
@@ -96,7 +103,7 @@ public class CSNodeResource {
         try {
             csRequest.write(streamPipe);
         } catch (Exception e) {
-            log.warn("Couldn't get pages count from cs.", e);
+            LOG.warn("Couldn't get pages count from cs.", e);
             return null;
         }
 
@@ -121,7 +128,7 @@ public class CSNodeResource {
     private JsonNode execute(CSRequest csRequest) throws IOException, WebApplicationException {
         ByteArrayOutputStream bObj = new ByteArrayOutputStream();
         csRequest.write(bObj);
-        ObjectReader reader = new ObjectMapper().reader(JsonNode.class);
+        ObjectReader reader = new ObjectMapper().readerFor(JsonNode.class);
 
         return reader.readValue(bObj.toByteArray());
     }

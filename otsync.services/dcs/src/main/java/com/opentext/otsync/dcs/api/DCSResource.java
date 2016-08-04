@@ -1,6 +1,5 @@
 package com.opentext.otsync.dcs.api;
 
-import com.opentext.otsync.dcs.cs.node.Node;
 import com.opentext.otsync.dcs.cs.node.NodeFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,6 +15,7 @@ import javax.ws.rs.core.StreamingOutput;
 public class DCSResource {
 
     public static final Log log = LogFactory.getLog(DCSResource.class);
+    private NodeFactory nodeFactory = NodeFactory.singleton();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -23,16 +23,13 @@ public class DCSResource {
                                      @Context HttpServletRequest request) {
 
         try {
-            NodeFactory nodeFactory = NodeFactory.singleton();
-            Node node = nodeFactory.node(nodeID);
-            int count = node.getTotalPages(nodeFactory.newCSNodeResource(nodeID, request));
-
+            int count = nodeFactory.getOrCreateNode(nodeID)
+                    .getTotalPages(nodeFactory.createCSNodeResource(nodeID, request));
             return Response.ok(count).build();
-        } catch (WebApplicationException e) {
-            log.error("Get page count error for " + nodeID, e);
-            throw e;
         } catch (Exception e) {
             log.error("Get page count error for " + nodeID, e);
+            if (e instanceof WebApplicationException)
+                throw (WebApplicationException) e;
             throw new WebApplicationException(e);
         }
     }
@@ -43,17 +40,13 @@ public class DCSResource {
     public StreamingOutput getRenderedPage(@PathParam("nodeID") String nodeID,
                                            @PathParam("page") int page,
                                            @Context HttpServletRequest request) {
-
         try {
-            NodeFactory nodeFactory = NodeFactory.singleton();
-            Node node = nodeFactory.node(nodeID);
-
-            return node.getPage(page, nodeFactory.newCSNodeResource(nodeID, request));
-        } catch (WebApplicationException e) {
-            log.error("Get page" + page + " error for " + nodeID, e);
-            throw e;
+            return nodeFactory.getOrCreateNode(nodeID)
+                    .getPage(page, nodeFactory.createCSNodeResource(nodeID, request));
         } catch (Exception e) {
             log.error("Get page" + page + " error for " + nodeID, e);
+            if (e instanceof WebApplicationException)
+                throw (WebApplicationException) e;
             throw new WebApplicationException(e);
         }
     }

@@ -26,7 +26,7 @@ public class SettingsBuilder {
     }
 
     public void initServiceSettings() {
-        getSettings().stream().forEach(setting -> {
+        getSettings().forEach(setting -> {
             String settingKey = setting.getKey();
             try {
                 if (!doesSettingExist(settingKey)) {

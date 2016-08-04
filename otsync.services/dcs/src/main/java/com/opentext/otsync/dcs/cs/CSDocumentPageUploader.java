@@ -6,6 +6,7 @@ import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.api.CSRequest;
 import com.opentext.otsync.api.FixedInputStreamBody;
 import com.opentext.otsync.dcs.appworks.ContentServerURLProvider;
+import com.opentext.otsync.dcs.appworks.ServiceIndex;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -118,7 +119,7 @@ public class CSDocumentPageUploader {
 
     private String getCsUrl() {
         if (urlProvider == null)
-            urlProvider = ContentServerURLProvider.getProvider();
+            urlProvider = ServiceIndex.getCSUrlProvider();
         return urlProvider.getContentServerUrl();
     }
 

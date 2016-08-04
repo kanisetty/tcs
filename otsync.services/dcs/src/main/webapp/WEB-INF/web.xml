@@ -17,4 +17,8 @@
         <url-pattern>/v5/*</url-pattern>
     </servlet-mapping>
 
+    <listener>
+        <listener-class>com.opentext.otsync.dcs.utils.ContextListener</listener-class>
+    </listener>
+
 </web-app>

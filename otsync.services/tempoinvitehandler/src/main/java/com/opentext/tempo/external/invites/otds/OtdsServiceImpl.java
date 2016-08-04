@@ -89,7 +89,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
             otdsClient.close();
         }
         LOG.debug("Attempting to construct OTDS client URL: {} User: {} Password Specified: {}",
-                getOtdsUrl(), this.user, isNullOrEmpty(this.password)?"NO":"YES");
+                getOtdsUrl(), this.user, isNullOrEmpty(this.password) ? "NO" : "YES");
         if (isNullOrEmpty(getOtdsUrl()) || isNullOrEmpty(this.user) || isNullOrEmpty(this.password)) {
             throw new WebApplicationException("Cannot construct OTDS client", 503); // guess we're not ready
         }
@@ -165,8 +165,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     public OtdsUser findUser(String userId) {
         try {
             return getUser(userId);
-        }
-        catch (WebApplicationException e) {
+        } catch (WebApplicationException e) {
             if (e.getResponse().getStatus() == 404) {
                 return null;
             }

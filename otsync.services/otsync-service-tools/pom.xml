@@ -68,8 +68,8 @@
         <dependency>
             <groupId>com.opentext.otag.sdk</groupId>
             <artifactId>otag-service-development-kit</artifactId>
-            <!-- The 16.0.1 SDK has been released -->
-            <version>16.0.1</version>
+            <!-- The 16.0.1.1 SDK has been released -->
+            <version>16.0.1.1</version>
         </dependency>
 
         <dependency>

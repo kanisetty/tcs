@@ -1,9 +1,8 @@
 package com.opentext.otsync.dcs.conversion;
 
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
-import com.opentext.otag.service.context.components.AWComponentContext;
+import com.opentext.otsync.dcs.appworks.ServiceIndex;
 import com.opentext.otsync.dcs.appworks.SettingsService;
-import com.opentext.otsync.dcs.api.DCSApi;
 import com.opentext.otsync.dcs.utils.FilePathUtils;
 import com.opentext.otsync.dcs.utils.IOUtils;
 import com.opentext.otsync.dcs.utils.ImageUtils;
@@ -11,8 +10,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -70,7 +67,7 @@ public class DocConversionEngineWrapper {
                     outputFileName,
                     doneFile,
                     fromPage + "-" + toPage,
-                    Integer.toString(getSettingsService().maxWidth()));
+                    Integer.toString(ServiceIndex.getSettingsService().maxWidth()));
 
             execute(pb);
 
@@ -119,7 +116,7 @@ public class DocConversionEngineWrapper {
 
     private void scalePageFiles(Map<Integer, String> pageFilesMap) {
         try {
-            int maxFileSize = getSettingsService().maxFileSize();
+            int maxFileSize = ServiceIndex.getSettingsService().maxFileSize();
             for (Integer pageNumber : pageFilesMap.keySet()) {
                 try {
                     File imageToScale = new File(pageFilesMap.get(pageNumber));
@@ -141,15 +138,5 @@ public class DocConversionEngineWrapper {
         return conversionEnginePath;
     }
 
-    private SettingsService getSettingsService() {
-        try {
-            if (settingsService == null)
-                settingsService = AWComponentContext.getComponent(SettingsService.class);
-            return settingsService;
-        } catch (Exception e) {
-            LOG.error("Failed to resolve SettingsService component???", e);
-            throw new WebApplicationException(DCSApi.UNAVAILABLE_ERROR, Response.Status.SERVICE_UNAVAILABLE);
-        }
-    }
 
 }

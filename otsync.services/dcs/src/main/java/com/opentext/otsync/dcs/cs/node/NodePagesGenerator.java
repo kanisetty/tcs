@@ -1,7 +1,6 @@
 package com.opentext.otsync.dcs.cs.node;
 
-import com.opentext.otag.service.context.components.AWComponentContext;
-import com.opentext.otsync.dcs.api.DCSApi;
+import com.opentext.otsync.dcs.appworks.ServiceIndex;
 import com.opentext.otsync.dcs.cache.DocumentConversionFileCache;
 import com.opentext.otsync.dcs.conversion.DocConversionEngineWrapper;
 import com.opentext.otsync.dcs.conversion.DocConversionResult;
@@ -9,8 +8,6 @@ import com.opentext.otsync.dcs.cs.CSNodeResource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -29,7 +26,14 @@ public class NodePagesGenerator {
     public void generatePagesCount(final CSNodeResource csNodeResource) throws Exception {
         final int version = csNodeResource.getLatestVersion();
         convertNode(csNodeResource, version, 1, 1, result -> {
-            csNodeResource.setPagesCount(result.getTotalPages(), version);
+            if (LOG.isDebugEnabled())
+                LOG.debug("Converting node " + csNodeResource.getNodeID() + "version " + version);
+
+            int totalPages = result.getTotalPages();
+            csNodeResource.setPagesCount(totalPages, version);
+            if (LOG.isDebugEnabled())
+                LOG.debug("Set page count for  node " + csNodeResource.getNodeID() + "to " + totalPages);
+
             try {
                 uploadPages(csNodeResource, result.getPageFilesMap());
             } catch (Exception e) {
@@ -49,7 +53,7 @@ public class NodePagesGenerator {
         final DocConversionResult result = new DocConversionResult();
 
         // create a new folder for the node id in our file cache
-        DocumentConversionFileCache cacheService = getFileCacheService();
+        DocumentConversionFileCache cacheService = ServiceIndex.getFileCacheService();
 
         // create a folder for this cs node resource to write our content into
         Path nodeFolder = cacheService.createFolder(csNodeResource.getNodeID());
@@ -58,8 +62,11 @@ public class NodePagesGenerator {
         // the node folder involved in the conversion
         cacheService.runCacheActionSecurely(nodeFolder, outputPath -> {
             try {
-                File nodeFile = getDocumentFileTo(csNodeResource, version, outputPath);
+                // read from the local disk or download to that location
+                File nodeFile = getOrDownloadDocFile(csNodeResource, version, outputPath);
+                // run conversion
                 docConversionEngineWrapper.convert(nodeFile, fromPage, toPage, outputPath, result);
+                // inject into result object
                 resultCollector.collect(result);
             } catch (Exception e) {
                 LOG.warn("Failed to convert node contents into images", e);
@@ -67,25 +74,24 @@ public class NodePagesGenerator {
         });
     }
 
-    private DocumentConversionFileCache getFileCacheService() {
-        try {
-            return AWComponentContext.getComponent(DocumentConversionFileCache.class);
-        } catch (Exception e) {
-            LOG.error("Failed to resolve DocumentConversionFileCache component???", e);
-            throw new WebApplicationException(DCSApi.UNAVAILABLE_ERROR, Response.Status.SERVICE_UNAVAILABLE);
-        }
-    }
-
     private void uploadPages(CSNodeResource csNodeResource, Map<Integer, String> pageFilesMap) throws Exception {
         for (Integer pageNumber : pageFilesMap.keySet()) {
+            if (LOG.isDebugEnabled())
+                LOG.debug("Uploading page " + pageNumber + " for node " + csNodeResource.getNodeID());
             csNodeResource.uploadPage(pageNumber, pageFilesMap.get(pageNumber));
         }
     }
 
-    private File getDocumentFileTo(CSNodeResource csNodeResource, int version, Path location) throws IOException {
-        File file = new File(location.toString(), csNodeResource.getNodeID() + "-" + version + ".bin");
+    private File getOrDownloadDocFile(CSNodeResource csNodeResource, int version, Path location) throws IOException {
+        String binFileName = csNodeResource.getNodeID() + "-" + version + ".bin";
+        File file = new File(location.toString(), binFileName);
         if (!file.exists()) {
+            if (LOG.isDebugEnabled())
+                LOG.debug("downloading .bin file as it wasn't found locally - " + binFileName);
             csNodeResource.downloadTo(file);
+        } else {
+            if (LOG.isDebugEnabled())
+                LOG.debug(binFileName + " already existed, returning local copy");
         }
 
         return file;

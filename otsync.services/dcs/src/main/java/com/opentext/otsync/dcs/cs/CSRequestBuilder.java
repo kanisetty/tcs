@@ -2,6 +2,7 @@ package com.opentext.otsync.dcs.cs;
 
 import com.opentext.otsync.api.CSRequest;
 import com.opentext.otsync.dcs.appworks.ContentServerURLProvider;
+import com.opentext.otsync.dcs.appworks.ServiceIndex;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -14,6 +15,7 @@ public class CSRequestBuilder {
     private List<NameValuePair> params = new ArrayList<>();
     private String func;
     private CSForwardHeaders header;
+
     private ContentServerURLProvider urlProvider;
 
     public CSRequestBuilder(CSForwardHeaders headers) {
@@ -32,7 +34,7 @@ public class CSRequestBuilder {
 
     public CSRequest build() {
         if (urlProvider == null)
-            urlProvider = ContentServerURLProvider.getProvider();
+            urlProvider = ServiceIndex.getCSUrlProvider();
 
         return new CSRequest(
                 urlProvider.getContentServerUrl(),
