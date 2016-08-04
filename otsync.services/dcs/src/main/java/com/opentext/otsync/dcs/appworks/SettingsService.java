@@ -19,6 +19,8 @@ public class SettingsService implements AWComponent {
      */
     private static final String TEMPFILE_CLEANUP_INTERVAL = "otag.tmp.cleanup.interval";
 
+    private static final String DCS_SERVICE_NAME = "dcs.";
+
     /**
      * AppWorks SDK config settings client.
      */
@@ -29,11 +31,11 @@ public class SettingsService implements AWComponent {
     }
 
     public int maxWidth() throws APIException {
-        return settingsClient.getSettingAsInt("imageWidth");
+        return settingsClient.getSettingAsInt(DCS_SERVICE_NAME + "imageWidth");
     }
 
     public int maxFileSize() throws APIException {
-        return settingsClient.getSettingAsInt("maxFileSize");
+        return settingsClient.getSettingAsInt(DCS_SERVICE_NAME + "maxFileSize");
     }
 
     public long getCleanupTimeout() throws APIException {

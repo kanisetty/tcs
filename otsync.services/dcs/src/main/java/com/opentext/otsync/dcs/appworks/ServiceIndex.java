@@ -8,7 +8,7 @@ public class ServiceIndex {
     private static final String SERVICE_NAME = "Document Conversion Service";
 
     public static ContentServerURLProvider getCSUrlProvider() {
-        return AWComponentRegistry.getComponent(ContentServerURLProvider.class, SERVICE_NAME);
+        return AWComponentRegistry.getComponent(ContentServerURLProviderImpl.class, SERVICE_NAME);
     }
 
     public static SettingsService getSettingsService() {
