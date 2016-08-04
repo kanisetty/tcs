@@ -15,6 +15,7 @@ import com.opentext.otsync.otag.EIMConnectorHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+@SuppressWarnings("unused")
 public class DocumentConversionService implements AWServiceContextHandler {
 
     private static final Log LOG = LogFactory.getLog(DocumentConversionService.class);

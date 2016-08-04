@@ -45,7 +45,7 @@ public class NodeFactory {
             nodesCache.put(nodeID, softReference);
         } else {
             if (LOG.isDebugEnabled())
-                LOG.debug("Nnode " + nodeID + "was found in factory cache, returning");
+                LOG.debug("Node " + nodeID + "was found in factory cache, returning");
         }
 
         return softReference.get();
