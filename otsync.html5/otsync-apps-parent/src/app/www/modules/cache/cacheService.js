@@ -20,7 +20,7 @@ angular.module('cacheService', ['appworksService'])
                 var self = this;
                 var fileName = node.getID() + "_" + node.getVersionNumber() + "_" + node.getName();
 
-                $appworksService.storeFile(downloadURL, fileName, options)
+                $appworksService.storeFile(downloadURL, fileName, options, openIn)
                     .then(function (file) {
                         if (doOpen) {
                             self.openNodeFromStorage(node)

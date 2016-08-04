@@ -91,14 +91,20 @@ angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'
                                 }
                             });
                         } else {
-                            if ($cacheService.isNodeStorable(nodeToOpen) && nodeToOpen.isStored()) {
-                                return $cacheService.openNodeFromStorage(nodeToOpen);
-                            } else {
-                                if (menuItem != null)
-                                    menuItem.setRefresh(true);
+                            var componentManager = new Appworks.AWComponent();
+                            var dataForComponent = {id: nodeToOpen.getID(), parentID: rootNode.getID()};
+                            componentManager.open(null, null, [
+                                'dcs-component', $httpParamSerializerJQLike(dataForComponent)
+                            ]);
 
-                                return $fileResource.downloadAndStore(nodeToOpen, true);
-                            }
+                            //if ($cacheService.isNodeStorable(nodeToOpen) && nodeToOpen.isStored()) {
+                            //    return $cacheService.openNodeFromStorage(nodeToOpen);
+                            //} else {
+                            //    if (menuItem != null)
+                            //        menuItem.setRefresh(true);
+                            //
+                            //    return $fileResource.downloadAndStore(nodeToOpen, true);
+                            //}
                         }
                     });
                 }

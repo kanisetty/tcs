@@ -113,6 +113,14 @@ angular.module('appworksService', [])
                 return deferred.promise;
             },
 
+            getSharedDocumentUrl: function () {
+                var deferred = $q.defer();
+                this.authenticate().then(function (authResponse) {
+                    deferred.resolve(authResponse.authData.sharedDocumentUrl);
+                }, deferred.reject);
+                return deferred.promise;
+            },
+
             getOTCSTICKET: function () {
                 var deferred = $q.defer();
 
@@ -152,9 +160,18 @@ angular.module('appworksService', [])
                 return this.execCordovaRequest("AWComponent", "open", [componentName, $httpParamSerializerJQLike(data), appworksType]);
             },
 
-            storeFile: function (downloadURL, fileName) {
+            storeFile: function (downloadURL, fileName, options, share) {
                 var deferred = $q.defer();
                 var storage = new Appworks.SecureStorage(success, failure);
+
+                if (share) {
+                    this.getSharedDocumentUrl().then(function (url) {
+                        fileName = url + '/' + fileName;
+                        store();
+                    });
+                } else {
+                    store();
+                }
 
                 function success(file) {
                     deferred.resolve(file);
@@ -170,7 +187,9 @@ angular.module('appworksService', [])
                     deferred.reject(error);
                 }
 
-                storage.store(encodeURI(downloadURL), encodeURIComponent(fileName));
+                function store() {
+                    storage.store(encodeURI(downloadURL), encodeURIComponent(fileName));
+                }
 
                 return deferred.promise;
             }
