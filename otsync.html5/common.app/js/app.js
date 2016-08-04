@@ -206,7 +206,7 @@
 
             // Use moment.js if it exists
             if (moment) {
-                result = moment(theDate, "YYYY-MM-DDTHH:mm:ssZ").format("LLL");
+                result = moment(theDate, "YYYY-MM-DDTHH:mm:ssZ").format("MM/DD/YYYY h:mm A");
             } else {
                 result = theDate.toLocaleDateString();
             }
