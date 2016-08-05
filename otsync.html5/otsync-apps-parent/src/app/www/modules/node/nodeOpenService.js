@@ -1,7 +1,15 @@
 angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService', 'appworksService'])
 
-    .factory('$nodeOpenService', ['$q', '$nodeService', '$displayMessageService', '$fileResource', '$cacheService', '$stateParams', '$navigationService',
-        '$appworksService', '$httpParamSerializerJQLike',
+    .factory('$nodeOpenService', [
+        '$q',
+        '$nodeService',
+        '$displayMessageService',
+        '$fileResource',
+        '$cacheService',
+        '$stateParams',
+        '$navigationService',
+        '$appworksService',
+        '$httpParamSerializerJQLike',
         function ($q, $nodeService, $displayMessageService, $fileResource, $cacheService, $stateParams, $navigationService, $appworksService, $httpParamSerializerJQLike) {
 
             var _getNodeToOpen = function (node) {
@@ -66,6 +74,7 @@ angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'
                 openNode: function (node, rootNode, menuItem) {
                     var documentSubtype = 144;
                     var emailSubtype = 749;
+                    var dataForComponent;
 
                     return _getNodeToOpen(node).then(function (nodeToOpen) {
 
@@ -75,14 +84,13 @@ angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'
 
                                 if (angular.isObject(component)) {
 
-                                    var dataForComponent = {id: nodeToOpen.getID(), parentID: rootNode.getID()};
-                                    var componentManager = new Appworks.AWComponent();
+                                    dataForComponent = {id: nodeToOpen.getID(), parentID: rootNode.getID()};
 
                                     if (component.name == "workflow-component") {
                                         dataForComponent.action = 'view';
                                     }
 
-                                    componentManager.open(null, null, [component.name, $httpParamSerializerJQLike(dataForComponent)]);
+                                    $appworksService.openFromAppworks(component.name, dataForComponent, true);
 
                                 } else if (nodeToOpen.isContainer() == true) {
                                     _openContainer(nodeToOpen.getID());
@@ -91,20 +99,13 @@ angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'
                                 }
                             });
                         } else {
-                            var componentManager = new Appworks.AWComponent();
-                            var dataForComponent = {id: nodeToOpen.getID(), parentID: rootNode.getID()};
-                            componentManager.open(null, null, [
-                                'dcs-component', $httpParamSerializerJQLike(dataForComponent)
-                            ]);
+                            dataForComponent = {id: nodeToOpen.getID()};
 
-                            //if ($cacheService.isNodeStorable(nodeToOpen) && nodeToOpen.isStored()) {
-                            //    return $cacheService.openNodeFromStorage(nodeToOpen);
-                            //} else {
-                            //    if (menuItem != null)
-                            //        menuItem.setRefresh(true);
-                            //
-                            //    return $fileResource.downloadAndStore(nodeToOpen, true);
-                            //}
+                            $appworksService.openFromAppworks('dcs-component', dataForComponent, true);
+
+                            if (menuItem) {
+                                menuItem.setRefresh(true);
+                            }
                         }
                     });
                 }
