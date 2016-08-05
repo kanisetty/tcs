@@ -1,0 +1,8 @@
+<template id="renameItem">
+	<![CDATA[
+		<div class="renameItem">
+			{{tmpl(renameItemInput) 'input'}}{{tmpl(renameItemSubmitButton) 'button'}}{{tmpl(renameItemCancelButton) 'button'}}
+			<div class="errorText renameItemError"> <b>${T('LABEL.Error')}</b>: ${T('LABEL.RenameItemError')}</div>
+		</div>
+	]]>
+</template>
