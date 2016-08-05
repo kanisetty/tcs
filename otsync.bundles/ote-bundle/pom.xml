@@ -1,29 +1,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.bundles</artifactId>
-        <version>16.0.0</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>ote-bundle</artifactId>
-	<name>OpenText Everywhere Bundle</name>
+    <name>OpenText Everywhere Bundle</name>
 
-	<properties>
+    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <app.properties.version>16.0.0</app.properties.version>
         <services.app.properties.version>16.0.1</services.app.properties.version>
-        <bundle.base>${project.build.directory}/${project.artifactId}-${project.version}</bundle.base>
-        <bundle.zip>${bundle.base}.zip</bundle.zip>
-        <bundle.otag>${bundle.base}.otag</bundle.otag>
+
+        <artifact.name>${project.artifactId}-${project.version}</artifact.name>
+        <bundle.zip>${project.build.directory}/${artifact.name}.zip</bundle.zip>
+        <!-- dump to our sibling as we cannot disable the general deploy plugin for this module and
+        deploy the specific .otag files -->
+        <bundle.output>../bundle-deployer/target/${artifact.name}.otag</bundle.output>
     </properties>
 
-	<build>
-		<plugins>
+    <build>
+        <plugins>
             <!-- Clear down the local front end dependencies and  node/npm install -->
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
@@ -238,7 +241,7 @@
                 </executions>
             </plugin>
 
-            <!-- Rename the .zip  to .otag for deployment to Gateway -->
+            <!-- Rename the .zip  to .otag and copy it into the deployer module -->
             <plugin>
                 <groupId>com.coderplus.maven.plugins</groupId>
                 <artifactId>copy-rename-maven-plugin</artifactId>
@@ -248,17 +251,17 @@
                         <id>rename-file</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>rename</goal>
+                            <goal>copy</goal>
                         </goals>
                         <configuration>
                             <sourceFile>${bundle.zip}</sourceFile>
-                            <destinationFile>${bundle.otag}</destinationFile>
+                            <destinationFile>${bundle.output}</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-            <!-- Skip the install here, this is not an artifact to be depended on -->
+            <!-- Skip the install and deploy here, we don't want to do anything with the zip we produce -->
             <plugin>
                 <artifactId>maven-install-plugin</artifactId>
                 <version>2.4</version>
@@ -269,34 +272,15 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.8.2</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>push-the-bundle</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>deploy-file</goal>
-                        </goals>
-                        <configuration>
-                            <file>${bundle.otag}</file>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>${project.artifactId}</artifactId>
-                            <version>${project.version}</version>
-                            <packaging>otag</packaging>
-                            <url>${nexus.base.url}/content/repositories/releases/</url>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
-
-		</plugins>
-	</build>
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
