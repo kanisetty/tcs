@@ -16,7 +16,7 @@
     "use strict";
 
     // Create the application
-    var Assignments = new App();
+    var Assignments = new App(true);
     var deviceStrategy = Assignments.getDeviceStrategy();
     var _gatewayURL = null;
 
