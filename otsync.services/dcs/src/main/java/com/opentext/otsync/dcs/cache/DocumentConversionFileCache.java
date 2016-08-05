@@ -19,6 +19,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+import static com.opentext.otag.sdk.util.StringUtil.isNullOrEmpty;
+
 /**
  * Manages the Document conversion services file cache partition.
  */
@@ -31,12 +33,19 @@ public class DocumentConversionFileCache implements AWComponent {
      */
     private final Set<Path> lockedPaths = ConcurrentHashMap.newKeySet();
 
+    /**
+     * Directory used as the root of the temporary file cache. We process the images
+     * locally then upload them to CS.
+     */
+    private String containerPath;
+
     private final SettingsService settingsService;
 
     /**
      * Thread that periodically deletes cached content.
      */
     private final FileCacheCleanupThread fileCacheCleanupThread;
+
 
     public DocumentConversionFileCache(SettingsService settingsService) {
         this.settingsService = settingsService;
@@ -123,7 +132,19 @@ public class DocumentConversionFileCache implements AWComponent {
      * @return path to physical dcs cache
      */
     private String getCacheRootPath() {
-        return FilePathUtils.getContainerPath("tmp", "dcs");
+        if (!isNullOrEmpty(containerPath))
+            return containerPath;
+
+        containerPath = FilePathUtils.getContainerPath("tmp", "dcs");
+
+        // take care of Windows oddity where leading slash is added
+        if (containerPath.startsWith("\\"))
+            containerPath = containerPath.substring(1);
+
+        if (LOG.isTraceEnabled())
+            LOG.trace("Derived cached root - " + containerPath);
+
+        return containerPath;
     }
 
     private synchronized void cleanup() throws APIException {

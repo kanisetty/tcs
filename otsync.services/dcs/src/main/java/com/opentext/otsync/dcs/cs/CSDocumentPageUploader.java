@@ -51,7 +51,7 @@ public class CSDocumentPageUploader {
 
         TrustedProvider provider = null;
         try {
-            provider = trustedProviderClient.getOrCreate("ContentServer");
+            provider = trustedProviderClient.getOrCreate("OTSync");
         } catch (APIException e) {
             LOG.error("Failed to create CS trusted provider via SDK - " + e.getCallInfo(), e);
         }

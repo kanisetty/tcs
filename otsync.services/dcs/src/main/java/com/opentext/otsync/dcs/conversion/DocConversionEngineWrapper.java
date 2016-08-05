@@ -2,7 +2,6 @@ package com.opentext.otsync.dcs.conversion;
 
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.dcs.appworks.ServiceIndex;
-import com.opentext.otsync.dcs.appworks.SettingsService;
 import com.opentext.otsync.dcs.utils.FilePathUtils;
 import com.opentext.otsync.dcs.utils.IOUtils;
 import com.opentext.otsync.dcs.utils.ImageUtils;
@@ -31,11 +30,6 @@ public class DocConversionEngineWrapper {
      * Max number of jobs to throw at the conversion engine at any given time.
      */
     private static Semaphore maxProcessSemaphore = new Semaphore(10);
-
-    /**
-     * Config settings service.
-     */
-    private volatile SettingsService settingsService;
 
     /**
      * System path to the location of the application used to perform the conversion.

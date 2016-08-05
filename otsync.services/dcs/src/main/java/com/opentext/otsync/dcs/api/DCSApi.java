@@ -6,7 +6,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class DCSApi extends ResourceConfig {
 
     public DCSApi() {
-        packages("com.opentext.otsync.dcs.rest");
+        packages("com.opentext.otsync.dcs.api");
         register(JacksonJsonProvider.class);
     }
 

@@ -16,6 +16,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <app.properties.version>16.0.0</app.properties.version>
+        <services.app.properties.version>16.0.1</services.app.properties.version>
+        <bundle.base>${project.build.directory}/${project.artifactId}-${project.version}</bundle.base>
+        <bundle.zip>${bundle.base}.zip</bundle.zip>
+        <bundle.otag>${bundle.base}.otag</bundle.otag>
     </properties>
 
 	<build>
@@ -50,7 +54,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>assignments</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -66,7 +70,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>content</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -82,7 +86,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>dcs</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -106,7 +110,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>favorites</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -114,7 +118,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>feeds</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -162,7 +166,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>tasks</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -186,7 +190,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>workflow</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -202,7 +206,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>otsync-connector</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -229,6 +233,26 @@
                             <descriptors>
                                 <descriptor>assembly/assembly.xml</descriptor>
                             </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Rename the .zip  to .otag for deployment to Gateway -->
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <id>rename-file</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>rename</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>${bundle.zip}</sourceFile>
+                            <destinationFile>${bundle.otag}</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
