@@ -16,6 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <app.properties.version>16.0.0</app.properties.version>
+        <services.app.properties.version>16.0.1</services.app.properties.version>
     </properties>
 
 	<build>
@@ -50,7 +51,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>assignments</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -66,7 +67,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>content</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -82,7 +83,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>dcs</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -106,7 +107,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>favorites</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -114,7 +115,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>feeds</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -162,7 +163,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>tasks</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -186,7 +187,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>workflow</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -202,7 +203,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>otsync-connector</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
