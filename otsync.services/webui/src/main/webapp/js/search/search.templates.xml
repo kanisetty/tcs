@@ -1,14 +1,19 @@
-<script id="searchInfo_tmpl" type="text/x-jquery-tmpl">
+<template id="searchInfo">
+	<![CDATA[
 		<div class="searchResultInfo">
 			${countString} <b>${termString}</b>
 		</div>
-</script>
+	]]>
+</template>
 
-<script id="searchCount_tmpl" type="text/x-jquery-tmpl">
+<template id="searchCount">
+	<![CDATA[
 		<div class="searchCount">${countString}</div>
-</script>
+	]]>
+</template>
 
-<script id="searchItem_tmpl" type="text/x-jquery-tmpl">
+<template id="searchItem">
+	<![CDATA[
 		<div class="searchItem {{if last}}itemLast{{/if}}" id="searchFile-${dataID}">
 			{{if subtype===CONST_SUBTYPE.FOLDER || subtype===CONST_SUBTYPE.DOCUMENT}}
 				<div class="itemInfo">
@@ -51,4 +56,5 @@
                 </div>
 			{{/if}}
 		</div>
-</script>
+	]]>
+</template>

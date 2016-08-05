@@ -1,4 +1,5 @@
-<script id="copyFolderItem_tmpl" type="text/x-jquery-tmpl">
+<template id="copyFolderItem">
+	<![CDATA[
 		{{if SUBTYPE == CONST_SUBTYPE.FOLDER}}
 			{{if !ISSELF && !ISPARENT && !ISREADONLY}}
 				<li id="selectFolderID${DATAID}" class="browseable selectable dialogWordWrap">
@@ -42,9 +43,11 @@
 				{{/if}}
 			{{/if}}
 		{{/if}}	
-</script>
+	]]>
+</template>
 
-<script id="multiCopyItem_tmpl" type="text/x-jquery-tmpl">
+<template id="multiCopyItem">
+	<![CDATA[
 		{{if SUBTYPE == CONST_SUBTYPE.FOLDER}}
 			{{if !ISSELF && !ISPARENT && !ISREADONLY}}
 				<li id="selectFolderID${DATAID}" class="browseable selectable dialogWordWrap">
@@ -87,4 +90,5 @@
 				{{/if}}							
 			{{/if}}
 		{{/if}}
-</script>
+	]]>
+</template>

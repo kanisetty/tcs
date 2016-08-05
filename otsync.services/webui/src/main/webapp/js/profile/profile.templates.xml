@@ -1,17 +1,20 @@
-<script id="profilePictureAndPasswordDialogTemplate_tmpl" type="text/x-jquery-tmpl">
+<template id="profilePictureAndPasswordDialogTemplate">
+	<![CDATA[			
         <div id="profilePictureDialogView" title="${title}">
-            <div id="profilePictureContent">
-                {{tmpl(changeProfilePictureSection) "#changeProfilePictureTemplate_tmpl"}}
+            <div id="profilePictureContent">       
+                {{tmpl(changeProfilePictureSection) "changeProfilePictureTemplate"}}
             </div>
             {{if info.canChangePassword}}
                 <div id="changePassword">
-                    {{tmpl(changePasswordSection) "#changePasswordTemplate_tmpl"}}
-				</div>
+                    {{tmpl(changePasswordSection) "changePasswordTemplate"}}
+				</div>				
             {{/if}}
 		</div>
-</script>
+	]]>	
+</template>
 
-<script id="changeProfilePictureTemplate_tmpl" type="text/x-jquery-tmpl">
+<template id="changeProfilePictureTemplate">
+	<![CDATA[			
         <div class="changeProfileSectionTitle">Photo</div>
         <img id="profilePhoto" src="${userProfileImageUrl}" />
         <div id="changeProfileRightWrapper">
@@ -21,14 +24,17 @@
         </div>
         <div class="newLine"></div>
         <div id="profilePictureError"></div>
-</script>
+	]]>
+</template>
 
-<script id="changePasswordTemplate_tmpl" type="text/x-jquery-tmpl">
+<template id="changePasswordTemplate">
+	<![CDATA[			
         <div class="changeProfileSectionTitle">Password</div>
         <div id="passwordDialogContent">
-            {{tmpl(currentPasswordInput) "#input_tmpl"}}
-            {{tmpl(newPasswordInput1) "#input_tmpl"}}
-            {{tmpl(newPasswordInput2) "#input_tmpl"}}
+            {{tmpl(currentPasswordInput) "input"}}
+            {{tmpl(newPasswordInput1) "input"}}
+            {{tmpl(newPasswordInput2) "input"}}
             <div id='passwordMismatchError'>${mismatchMessage}</div>
 	</div>
-</script>
+	]]>
+</template>

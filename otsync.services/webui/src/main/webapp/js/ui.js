@@ -785,6 +785,7 @@ var ui = new function(){
 
 	 this.Authenticate = function()
 	{
+		//TODO: figure out login
         parent.webaccess.showLoginContainer(true);
 	};
 
