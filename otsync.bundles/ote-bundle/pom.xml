@@ -17,6 +17,9 @@
 
         <app.properties.version>16.0.0</app.properties.version>
         <services.app.properties.version>16.0.1</services.app.properties.version>
+        <bundle.base>${project.build.directory}/${project.artifactId}-${project.version}</bundle.base>
+        <bundle.zip>${bundle.base}.zip</bundle.zip>
+        <bundle.otag>${bundle.base}.otag</bundle.otag>
     </properties>
 
 	<build>
@@ -230,6 +233,26 @@
                             <descriptors>
                                 <descriptor>assembly/assembly.xml</descriptor>
                             </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Rename the .zip  to .otag for deployment to Gateway -->
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <id>rename-file</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>rename</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>${bundle.zip}</sourceFile>
+                            <destinationFile>${bundle.otag}</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
