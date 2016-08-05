@@ -240,6 +240,8 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Rename the .zip  to .otag and copy it into the deployer module -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -251,7 +253,7 @@
 
                         <configuration>
                             <target>
-                                <copy file="${bundle.zip}" tofile="${bundle.output}" />
+                                <copy file="${bundle.zip}" overwrite="false" tofile="${bundle.output}" />
                             </target>
                         </configuration>
                         <goals>
@@ -260,26 +262,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Rename the .zip  to .otag and copy it into the deployer module -->
-            <!--<plugin>-->
-                <!--<groupId>com.coderplus.maven.plugins</groupId>-->
-                <!--<artifactId>copy-rename-maven-plugin</artifactId>-->
-                <!--<version>1.0.1</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>rename-file</id>-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>copy</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<sourceFile>${bundle.zip}</sourceFile>-->
-                            <!--<destinationFile>${bundle.output}</destinationFile>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
 
             <!-- Skip the install and deploy here, we don't want to do anything with the zip we produce -->
             <plugin>
