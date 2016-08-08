@@ -69,6 +69,11 @@ angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'
                 return $navigationService.reloadPage();
             };
 
+            function isImageType(filename) {
+                var extension = (filename || '').split('.').pop();
+                return ['jpg', 'jpeg' , 'gif', 'png'].indexOf(extension.toLowerCase()) > -1;
+            }
+
             return {
 
                 openNode: function (node, rootNode, menuItem) {
@@ -99,12 +104,17 @@ angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'
                                 }
                             });
                         } else {
-                            dataForComponent = {id: nodeToOpen.getID()};
 
-                            $appworksService.openFromAppworks('dcs-component', dataForComponent, true);
+                            dataForComponent = {id: nodeToOpen.getID()};
 
                             if (menuItem) {
                                 menuItem.setRefresh(true);
+                            }
+
+                            if (isImageType(nodeToOpen.toString())) {
+                                return $fileResource.downloadAndStore(nodeToOpen, true);
+                            } else {
+                                return $appworksService.openFromAppworks('dcs-component', dataForComponent, true);
                             }
                         }
                     });
