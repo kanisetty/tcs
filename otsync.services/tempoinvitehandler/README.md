@@ -48,7 +48,7 @@ We want external users to be able to login via the Gateway (mobile client, etc.)
 From the main view
 - select the `Access Roles` section via the left nav
 - in the `Access Roles` view locate the AppWorks Gateway role, usually named `Access to OTAG` or similar, and use the `Actions` link
-- on the `Actions` context menu select `View Acces Role Details`
+- on the `Actions` context menu select `View Access Role Details`
 - in the `View Access Role Details` view click `Add`, find your external users partition, check the check box and use the `Add Selected Items to Access Role` button
 - use the `Close Dialog` button to return to the `Access Role Details` view
 - be sure to hit the `Save` button in this view else your changes will not be persisted
@@ -57,7 +57,7 @@ From the main view
 
  We probably do not want our external users to have access to all apps so will want to make use of the AppWorks Gateways audience features. We can restrict the audience on a per-app basis using OTDS user ids, groups and partitions.  In general we should do this for all available apps to ensure we have the correct level of access.
 
- #### Configuring access per app
+#### Configuring access per app
 
  - in the Gateway administration UI go to the `Apps` page via the left nav
  - for a given app tile use the cog button to view the apps settings
