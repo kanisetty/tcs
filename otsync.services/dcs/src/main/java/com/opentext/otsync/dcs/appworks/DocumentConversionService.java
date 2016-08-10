@@ -30,7 +30,7 @@ public class DocumentConversionService implements AWServiceContextHandler {
         serviceClient = new ServiceClient();
         settingsClient = new SettingsClient();
         try {
-            EIMConnectorClient csConnector = EIMConnectorHelper.getDefaultClient();
+            EIMConnectorClient csConnector = EIMConnectorHelper.getCurrentClient();
             // setup our AW service components
             setupComponents(csConnector);
 

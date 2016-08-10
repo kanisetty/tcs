@@ -4,7 +4,6 @@ import com.opentext.otag.sdk.client.v3.ServiceClient;
 import com.opentext.otag.sdk.client.v3.SettingsClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient.ConnectionResult;
-import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
 import com.opentext.otag.sdk.types.v3.api.SDKResponse;
@@ -12,13 +11,8 @@ import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
 import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
 import com.opentext.otag.sdk.util.StringUtil;
-import com.opentext.otag.service.context.components.AWComponentContext;
-import com.opentext.tempo.external.invites.api.ServiceNotReadyException;
-import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
+import com.opentext.otsync.otag.EIMConnectorHelper;
 import com.opentext.tempo.external.invites.appworks.settings.SettingsBuilder;
-import com.opentext.tempo.external.invites.handler.TempoInviteHandler;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +38,7 @@ public class TempoInviteHandlerService implements AWServiceContextHandler {
         settingsClient = new SettingsClient();
 
         try {
-            csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
+            csConnector = EIMConnectorHelper.getCurrentClient();
             ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 EIMConnector csConnection = connectionResult.getConnector();

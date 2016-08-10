@@ -10,6 +10,7 @@ import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
 import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
 import com.opentext.otag.service.context.components.AWComponentContext;
+import com.opentext.otsync.otag.EIMConnectorHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -31,7 +32,7 @@ public class SharesService implements AWServiceContextHandler {
         serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
+            EIMConnectorClient csConnector = EIMConnectorHelper.getCurrentClient();
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
