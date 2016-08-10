@@ -5,7 +5,6 @@ import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.tempo.external.invites.InviteHandlerConstants;
-import com.opentext.tempo.external.invites.api.OtagInviteServlet;
 import com.opentext.tempo.external.invites.otds.domain.OtdsUser;
 import com.opentext.tempo.external.invites.otds.domain.PasswordResetObject;
 import com.opentext.tempo.external.invites.web.RestClient;
@@ -27,6 +26,8 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
         OtdsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OtdsServiceImpl.class);
+
+    private static final String OTDS_URL = "otds.url";
     private static final GenericType<OtdsUser> OTDS_USER_TYPE = new GenericType<OtdsUser>() {};
 
     private String otdsUrl;
@@ -35,6 +36,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     private String password;
 
     private RestClient otdsClient;
+    private SettingsClient settingsClient;
 
     public OtdsServiceImpl() {
         // handle settings updates
@@ -56,7 +58,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     public void onStart(String s) {
         LOG.info("OtdsServiceImpl#onStart");
         // attempt to resolve our settings now it is safe to instantiate SDK clients
-        SettingsClient settingsClient = new SettingsClient();
+        settingsClient = new SettingsClient();
 
         // init otds url
         getOtdsUrl();
@@ -111,12 +113,20 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     }
 
     private String getOtdsUrl() {
+        final String errMsg = "Cannot find otds.url setting - not ready?";
+
         if (otdsUrl == null) {
-            otdsUrl = OtagInviteServlet.getSettingValue("otds.url");
+            try {
+                otdsUrl = settingsClient.getSettingAsString(OTDS_URL);
+            } catch (APIException e) {
+                LOG.error("SDK Call Failed: Failed to get OTDS URL setting - {}", e.getCallInfo());
+                throw new WebApplicationException(errMsg, 503);
+            }
         }
-        if (otdsUrl == null) {
-            throw new WebApplicationException("Cannot find otds.url setting - not ready?", 503);
-        }
+
+        if (otdsUrl == null)
+            throw new WebApplicationException(errMsg, 503);
+
         return otdsUrl;
     }
 

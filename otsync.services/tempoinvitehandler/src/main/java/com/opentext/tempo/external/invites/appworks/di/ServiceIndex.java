@@ -51,11 +51,13 @@ public class ServiceIndex {
      * we store some of the SDK clients in here as our main service class is a
      * context listener so knows when its safe to create them.
      *
+     * @param throwOnFail should an Exception be thrown if we fail to locate the service
+     *
      * @return the AppWorks service instance
      */
-    public static TempoInviteHandlerService tempoInviteHandlerService() {
+    public static TempoInviteHandlerService tempoInviteHandlerService(boolean throwOnFail) {
         TempoInviteHandlerService component = getComponent(TempoInviteHandlerService.class);
-        if (component == null || !component.isReady())
+        if ((component == null || !component.isReady()) && throwOnFail)
             throw new ServiceNotReadyException("The invite handlers AppWorks service is yet to start");
         return component;
     }

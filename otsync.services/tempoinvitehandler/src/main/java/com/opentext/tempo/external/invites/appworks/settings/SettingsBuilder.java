@@ -4,12 +4,15 @@ import com.opentext.otag.sdk.client.v3.SettingsClient;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otag.sdk.types.v3.settings.Setting;
 import com.opentext.otag.sdk.types.v3.settings.SettingType;
+import com.opentext.otag.sdk.types.v3.settings.Settings;
 import com.opentext.tempo.external.invites.InviteHandlerConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.opentext.otag.sdk.util.StringUtil.isNullOrEmpty;
 
 /**
  * Creates the AppWorks managed settings for the service if they don't
@@ -43,11 +46,22 @@ public class SettingsBuilder {
     }
 
     private boolean doesSettingExist(String key) {
+        if (isNullOrEmpty(key))
+            throw new IllegalArgumentException(
+                    "Cannot determine if a setting exists with a null/empty key");
+
         try {
-            return settingsClient.getSetting(key) != null;
+            // get the settings for this app
+            Settings settings = settingsClient.getSettings();
+            for (Setting setting : settings.getSettings()) {
+                if (setting.getKey().equals(key))
+                    return true;
+            }
         } catch (APIException e) {
-            return false;
+            LOG.warn("SDK Call Failed; We cannot determine if '{}' setting exists yet", key);
         }
+
+        return false;
     }
 
     private List<Setting> getSettings() {
