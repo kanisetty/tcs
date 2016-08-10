@@ -42,7 +42,7 @@ angular.module('Node', [])
             };
 
             this.getDataSize = function(){
-                return _nodeData.dataSize;
+                return _nodeData.dataSize || 0;
             };
 
             this.getIconURL = function(){
