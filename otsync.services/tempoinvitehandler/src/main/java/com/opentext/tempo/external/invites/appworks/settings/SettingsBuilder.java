@@ -86,7 +86,7 @@ public class SettingsBuilder {
 
     private Setting emailFrom() {
         return buildSetting(InviteHandlerConstants.EMAIL_FROM, "Email From Address", "inviteHandler@opentext.com",
-                "The \"from\" address to use when sending invite emails", 4);
+                "The \"from\" address to use when sending invite emails", SettingType.string, 4);
     }
 
     private Setting otdsPartition() {
