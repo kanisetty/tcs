@@ -71,7 +71,7 @@ public class SettingsBuilder {
 
     private Setting dbUsername() {
         return buildSetting(InviteHandlerConstants.USER_NAME, "Database User Name", "tempoInviteHandler",
-                "The user name for the invite handler database", 1);
+                "The user name for the invite handler database", SettingType.string, 1);
     }
 
     private Setting dbPassword() {
@@ -81,7 +81,7 @@ public class SettingsBuilder {
 
     private Setting dbConnectionString() {
         return buildSetting(InviteHandlerConstants.JDBC_URL, "Database (JDBC) Connection String", "",
-                "The connection string for the database", 3);
+                "The connection string for the database", SettingType.string, 3);
     }
 
     private Setting emailFrom() {
@@ -91,20 +91,21 @@ public class SettingsBuilder {
 
     private Setting otdsPartition() {
         return buildSetting(InviteHandlerConstants.OTDS_PARTITION, "OTDS External Users Partition", "otag",
-                "The OTDS User Partition where invited users will be managed", 5);
+                "The OTDS User Partition where invited users will be managed", SettingType.string, 5);
     }
 
     private Setting otdsPartitionAdminName() {
         return buildSetting(InviteHandlerConstants.OTDS_PARTITION_ADMIN_USER,
                 "OTDS Partition Administrator", "otadmin@otds.admin",
-                "The Partition Administrator for the OTDS User Partition where invited users will be managed", 6);
+                "The Partition Administrator for the OTDS User Partition where invited users will be managed",
+                SettingType.string, 6);
     }
 
     private Setting otdsPartitionAdminPassword() {
         return buildSetting(InviteHandlerConstants.OTDS_PARTITION_ADMIN_PASSWORD,
                 "OTDS Partition Administrator Password", "",
                 "The Partition Administrator password for the OTDS User Partition where invited users will be managed",
-                7);
+                SettingType.password, 7);
     }
 
     private Setting buildSetting(String key, String displayName, String value,
