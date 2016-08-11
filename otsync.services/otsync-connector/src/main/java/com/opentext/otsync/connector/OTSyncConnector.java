@@ -333,8 +333,12 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
     }
 
     private boolean isAuthRegistered() {
-        AuthRegistrationHandler authRegistrationHandler =
-                getComponent(AuthRegistrationHandler.class);
+        AuthRegistrationHandler authRegistrationHandler = null;
+        try {
+            authRegistrationHandler = getComponent(AuthRegistrationHandler.class);
+        } catch (Exception e) {
+            LOG.warn("AuthRegistrationHandler not found in AW Component Context, auth is not registered");
+        }
         return authRegistrationHandler != null && authRegistrationHandler.isAuthRegistered();
     }
 

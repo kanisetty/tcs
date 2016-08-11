@@ -7,6 +7,7 @@ import com.opentext.otag.sdk.client.v3.TrustedProviderClient;
 import com.opentext.otag.sdk.types.v3.TrustedProvider;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.api.HttpClient;
+import com.opentext.otsync.otag.EIMConnectorHelper;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
 import org.apache.commons.logging.Log;
@@ -53,7 +54,7 @@ public class CSExternalUserAPI implements ExternalUserAPI {
 
     private final DefaultHttpClient httpClient;
     private final ObjectMapper mapper = new ObjectMapper();
-    private final ObjectReader reader = mapper.reader(new TypeReference<Map<String, Object>>(){});
+    private final ObjectReader reader = mapper.readerFor(new TypeReference<Map<String, Object>>(){});
 
     public CSExternalUserAPI(DefaultHttpClient client) {
         httpClient = client;
@@ -104,7 +105,7 @@ public class CSExternalUserAPI implements ExternalUserAPI {
     private ExternalUserAPIResult sendInfo(Map<String, Object> info, String subtype, CSForwardHeaders headers) {
         try {
             TrustedProviderClient client = new TrustedProviderClient();
-            TrustedProvider provider = client.getOrCreate("ContentServer");
+            TrustedProvider provider = client.getOrCreate(EIMConnectorHelper.CS_CONNECTOR_NAME); // TODO REVISIT, WE NEED A COMMON TRUSTED SERVER NAME
             if (provider == null) {
                 throw new IllegalStateException("ContentServer provider not defined; " +
                         "can't perform external user functions.");

@@ -600,7 +600,7 @@ public final class TempoInviteHandler implements AWComponent {
                     JsonNode node = objectMapper.readTree(new StringReader(json));
                     String resourceId = node.get("ResourceID").asText();
 
-                    return isNullOrEmpty(resourceId);
+                    return !isNullOrEmpty(resourceId);
                 }
             } catch (Exception e) {
                 LOG.error("Cannot determine CS resource id via func otdsintegration.getresourceid, " +

@@ -23,6 +23,8 @@ public class InvitationsResource {
 
     private final static Logger LOG = LoggerFactory.getLogger(InvitationsResource.class);
 
+    // TODO We need to expose an endpoint that can create a user in OTDS in the correct partition
+
     /**
      * Invite an external user using a trusted provider client.
      *

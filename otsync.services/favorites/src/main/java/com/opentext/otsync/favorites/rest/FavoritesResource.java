@@ -1,7 +1,7 @@
 package com.opentext.otsync.favorites.rest;
 
-import com.opentext.otag.service.context.components.AWComponentContext;
 import com.opentext.otsync.api.CSRequest;
+import com.opentext.otsync.otag.AWComponentRegistry;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,7 +28,7 @@ public class FavoritesResource {
     @GET
     public StreamingOutput getMyFavorites(@Context HttpServletRequest request) {
 
-        return new CSRequest(getCsUrl(), "otag.favoritesGet", new ArrayList<>(0),  new CSForwardHeaders(request));
+        return new CSRequest(getCsUrl(), "otag.favoritesGet", new ArrayList<>(0), new CSForwardHeaders(request));
     }
 
     @POST
@@ -67,12 +67,7 @@ public class FavoritesResource {
      */
     private String getCsUrl() {
         if (favoritesService == null)
-            favoritesService = AWComponentContext.getComponent(FavoritesService.class);
-
-        if (favoritesService == null) {
-            LOG.error("Unable to resolve FavoritesService");
-            throw new WebApplicationException(Response.Status.FORBIDDEN);
-        }
+            favoritesService = AWComponentRegistry.getComponent(FavoritesService.class, "Favorites");
 
         String csUrl = favoritesService.getCsConnection();
 

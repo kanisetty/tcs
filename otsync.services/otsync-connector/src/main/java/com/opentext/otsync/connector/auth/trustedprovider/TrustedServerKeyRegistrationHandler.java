@@ -6,6 +6,7 @@ import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.types.v3.TrustedProvider;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otag.service.context.components.AWComponentContext;
+import com.opentext.otag.service.context.error.AWComponentNotFoundException;
 import com.opentext.otsync.connector.OTSyncConnector;
 import com.opentext.otsync.connector.OTSyncConnectorConstants;
 import com.opentext.otsync.connector.auth.registration.AuthRegistrationHandler;
@@ -58,12 +59,16 @@ public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingCha
     }
 
     public void updateProviderKey(String updatedKey) {
-        OTSyncConnector connector = AWComponentContext.getComponent(OTSyncConnector.class);
-        if (connector != null) {
-            connector.registerTrustedProviderKey(connector.getTrustedProviderName(), updatedKey);
-        } else {
-            LOG.warn("Failed to force provider key update as we could not resolve the OTSyncConnector");
+        OTSyncConnector connector;
+        try {
+            connector = AWComponentContext.getComponent(OTSyncConnector.class);
+        } catch (AWComponentNotFoundException e) {
+            LOG.warn("Failed to force provider key update as we could not resolve " +
+                    "the OTSyncConnector in the AW Component Context");
+            return;
         }
+
+        connector.registerTrustedProviderKey(connector.getTrustedProviderName(), updatedKey);
     }
 
     private void restartTrustedKeyThread() {
@@ -110,14 +115,21 @@ public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingCha
 
         public RegisterKeyThread(TrustedProviderClient providerClient) {
             super("Register Trusted Provider Key Thread");
-            connector = AWComponentContext.getComponent(OTSyncConnector.class);
-            authRegistrationHandler = AWComponentContext.getComponent(AuthRegistrationHandler.class);
+            // we expect these components to be pre-seeded fail-fast if not
+            try {
+                connector = AWComponentContext.getComponent(OTSyncConnector.class);
+                authRegistrationHandler = AWComponentContext.getComponent(AuthRegistrationHandler.class);
+            } catch (AWComponentNotFoundException e) {
+                throw new RuntimeException("We failed to locate te OTSyncConnector " +
+                        "and/or AuthRegistrationHandler in the AW component context, the " +
+                        "service has not initialised correctly");
+            }
 
             if (connector == null)
                 throw new IllegalStateException("Unable to resolve connector via the AWComponentContext");
 
             String errMessage = "Failed to retrieve/create Trusted Provider Key";
-            TrustedProvider provider = null;
+            TrustedProvider provider;
             try {
                 provider = providerClient.getOrCreate(connector.getTrustedProviderName());
             } catch (APIException e) {
@@ -137,22 +149,26 @@ public class TrustedServerKeyRegistrationHandler extends AbstractMultiSettingCha
         public void run() {
             LOG.info("Started Trusted Server Key registration Thread");
 
-            while (keepRunning) {
-                if (authRegistered()) {
-                    LOG.info("Detected CS Auth Handler has been registered attempted to contact " +
-                            "Content Server with Trusted provider key");
-                    if (connector.registerTrustedProviderKey(trustedServerName, trustedServerKey)) {
-                        keepRunning = false;
-                        LOG.info("Registered Trusted Provider key with Content Server");
+            try {
+                while (keepRunning) {
+                    if (authRegistered()) {
+                        LOG.info("Detected CS Auth Handler has been registered attempted to contact " +
+                                "Content Server with Trusted provider key");
+                        if (connector.registerTrustedProviderKey(trustedServerName, trustedServerKey)) {
+                            keepRunning = false;
+                            LOG.info("Registered Trusted Provider key with Content Server");
+                        } else {
+                            LOG.info("Attempted registration of Trusted Provider key failed, sleeping ...");
+                            sleep();
+                        }
                     } else {
-                        LOG.info("Attempted registration of Trusted Provider key failed, sleeping ...");
+                        LOG.info("OTSyncAuthHandler is yet to be registered so we cannot " +
+                                "get an LLCookie to register our Trusted Provider key, sleeping ... ");
                         sleep();
                     }
-                } else {
-                    LOG.info("OTSyncAuthHandler is yet to be registered so we cannot " +
-                            "get an LLCookie to register our Trusted Provider key, sleeping ... ");
-                    sleep();
                 }
+            } catch (Exception e) {
+                LOG.error("Exception encountered in RegisterKeyThread, exiting", e);
             }
         }
 

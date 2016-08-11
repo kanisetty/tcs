@@ -250,25 +250,10 @@ public final class OtagInviteServlet extends HttpServlet {
             SettingsClient client = handlerService.getSettingsClient();
             try {
                 if (client != null)
-                    return getSettingAsString(settingKey, client);
+                    return client.getSettingAsString(settingKey);
             } catch (APIException e) {
                 LOG.error("Failed to get setting {} from Gateway - {}", settingKey, e.getCallInfo());
             }
-        }
-
-        return null;
-    }
-
-    private static String getSettingAsString(String key, SettingsClient settingsClient) {
-        try {
-            Settings settings = settingsClient.getSettings();
-            for (Setting setting : settings.getSettings()) {
-                if (setting.getKey().equals(key) && SettingType.string.equals(setting.getType())) {
-                    return setting.getValue();
-                }
-            }
-        } catch (APIException e) {
-            LOG.warn("SDK Call Failed; We cannot determine if '{}' setting exists yet", key);
         }
 
         return null;

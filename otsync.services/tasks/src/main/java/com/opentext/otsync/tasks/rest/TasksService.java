@@ -9,6 +9,8 @@ import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
 import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
 import com.opentext.otag.service.context.components.AWComponentContext;
+import com.opentext.otag.service.context.error.AWComponentNotFoundException;
+import com.opentext.otsync.otag.AWComponentRegistry;
 import com.opentext.otsync.otag.EIMConnectorHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,14 +62,7 @@ public class TasksService implements AWServiceContextHandler {
     }
 
     public static String getCsUrl() {
-
-        TasksService tasksService = AWComponentContext.getComponent(TasksService.class);
-
-        if (tasksService == null) {
-            LOG.error("Unable to resolve TasksService");
-            throw new WebApplicationException(Response.Status.FORBIDDEN);
-        }
-
+        TasksService tasksService = AWComponentRegistry.getComponent(TasksService.class, "Tasks");
         String csUrl = tasksService.getCsConnection();
 
         if (csUrl == null || csUrl.isEmpty()) {
