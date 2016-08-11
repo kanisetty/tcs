@@ -6,6 +6,7 @@ import com.opentext.otag.service.context.components.AWComponent;
 import com.opentext.otsync.api.HttpClient;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.tempo.external.invites.api.OtagInviteServlet;
+import com.opentext.tempo.external.invites.api.ServiceNotReadyException;
 import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
 import com.opentext.tempo.external.invites.email.ExternalUserEmailClient;
 import com.opentext.tempo.external.invites.invitee.managment.CSExternalUserAPI;
@@ -531,6 +532,19 @@ public final class TempoInviteHandler implements AWComponent {
         generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetsuccess.xsl");
     }
 
+    /**
+     * Is the invite handler making use of OTDS (as opposed to CS) for user management?
+     *
+     * @return true if the external user API is OTDS based
+     */
+    public boolean isUsingOTDS() {
+        // force load of external user API
+        if (externalUserAPI == null)
+            getExternalUserAPI();
+
+        return externalUserAPI instanceof OtdsExternalUserAPI;
+    }
+
     private void generateHTMLOutput(ServletContext servletContext,
                                     HttpServletResponse response,
                                     XmlPackage xml,
@@ -589,7 +603,14 @@ public final class TempoInviteHandler implements AWComponent {
     }
 
     private boolean isCsUsingOtds() {
-        String csUrl = ServiceIndex.csUrl();
+        String csUrl;
+        try {
+            csUrl = ServiceIndex.csUrl();
+        } catch (Exception e) {
+            LOG.error("Unable to determin if we are using OTDS vs CS for user management as we " +
+                    "could not contact CS to ask it", e);
+            throw new ServiceNotReadyException("We were unable to resolve the CS URL yet");
+        }
 
         if (csUrl != null && !isNullOrEmpty(csUrl)) {
             ArrayList<NameValuePair> params = new ArrayList<>();

@@ -5,16 +5,22 @@ import com.opentext.otag.sdk.types.v3.TrustedProvider;
 import com.opentext.otag.sdk.types.v3.TrustedProviders;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.annotations.PrivateApi;
+import com.opentext.otsync.otag.AWComponentRegistry;
 import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
 import com.opentext.tempo.external.invites.handler.TempoInviteHandler;
 import com.opentext.tempo.external.invites.invitee.managment.ExternalUserAPIResult;
+import com.opentext.tempo.external.invites.otds.OtdsService;
+import com.opentext.tempo.external.invites.otds.OtdsServiceImpl;
+import com.opentext.tempo.external.invites.otds.domain.OtdsUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
-import javax.ws.rs.*;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("invitations")
@@ -23,7 +29,51 @@ public class InvitationsResource {
 
     private final static Logger LOG = LoggerFactory.getLogger(InvitationsResource.class);
 
-    // TODO We need to expose an endpoint that can create a user in OTDS in the correct partition
+    /**
+     * Create a user in the external user partition we have setup in OTDS.
+     *
+     * @param key      CS trusted provider key
+     * @param email    new user email
+     * @param password new user password
+     * @return the created OTDS user
+     */
+    @POST
+    @Path("create")
+    public Response createExternalUserInOtds(@FormParam("key") String key,
+                                             @FormParam("email") String email,
+                                             @FormParam("password") String password) {
+        try {
+            TempoInviteHandler handler = ServiceIndex.tempoInviteHandler();
+            if (!validateProviderAccess(key))
+                return Response.status(Response.Status.FORBIDDEN).build();
+
+            // create the user via OTDS, if we are not using OTDS then balk as
+            // CS should be handling non-OTDS user creation directly
+            if (!handler.isUsingOTDS())
+                throw new WebApplicationException("Cannot create new external user in OTDS " +
+                        "as this instance of the invite handler is not using OTDS for " +
+                        "user management", Response.Status.BAD_REQUEST);
+
+            OtdsService otdsService = AWComponentRegistry.getComponent(OtdsServiceImpl.class, "Tempo Invite Handler");
+
+            try {
+                // we don't supply the first and last name as they are setup when the external user
+                // confirms them after being sent the email
+                OtdsUser otdsUser = otdsService.createUser("", "", email, password);
+                return Response.ok(otdsUser).build();
+            } catch (Exception e) {
+                String errMsg = "We failed to create the new external user in OTDS";
+                LOG.error(errMsg, e);
+                throw new WebApplicationException(errMsg);
+            }
+        } catch (APIException e) {
+            LOG.error("Gateway API call failed - " + e.getCallInfo());
+            return Response.serverError().build();
+        } catch (ServiceNotReadyException e) {
+            LOG.error("Service was not able to service the request yet - {}", e.getMessage());
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+    }
 
     /**
      * Invite an external user using a trusted provider client.
@@ -54,23 +104,9 @@ public class InvitationsResource {
             // attempt to load the service ASAP to determine if the service is ready to handle
             // requests yet
             TempoInviteHandler handler = ServiceIndex.tempoInviteHandler();
-
-            // Check the sender's trusted provider key
-            TrustedProviderClient client = new TrustedProviderClient();
-            TrustedProvider provider = null;
-            TrustedProviders allProviders = client.getAllProviders();
-            // does the Gateway know the supplied key?
-            for (TrustedProvider trustedProvider : allProviders.getTrustedProviders()) {
-                if (key.equals(trustedProvider.getKey())) {
-                    provider = trustedProvider;
-                    break;
-                }
-            }
-
-            if (provider == null) {
-                LOG.warn("Someone POST-ed to invitations with an invalid provider key: {}", key);
+            if (!validateProviderAccess(key))
                 return Response.status(Response.Status.FORBIDDEN).build();
-            }
+
 
             ExternalUserAPIResult result = handler.handleSendInvitationAction(
                     servletContext, email, firstName, lastName, lang, folderName, folderDesc, extraInfo);
@@ -87,6 +123,28 @@ public class InvitationsResource {
         } catch (ServiceNotReadyException e) {
             LOG.error("Service was not able to service the request yet - {}", e.getMessage());
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+    }
+
+    private boolean validateProviderAccess(@FormParam("key") String key) {
+        try {
+            // Check the sender's trusted provider key
+            TrustedProviderClient client = new TrustedProviderClient();
+            TrustedProviders allProviders = client.getAllProviders();
+            // does the Gateway know the supplied key?
+            for (TrustedProvider trustedProvider : allProviders.getTrustedProviders()) {
+                if (key.equals(trustedProvider.getKey())) {
+                    return true;
+                }
+            }
+
+            if (LOG.isDebugEnabled())
+                LOG.debug("No provider found with supplied key");
+
+            return false;
+        } catch (Exception e) {
+            LOG.error("Failed to validate supplied trusted provider key", e);
+            return false;
         }
     }
 

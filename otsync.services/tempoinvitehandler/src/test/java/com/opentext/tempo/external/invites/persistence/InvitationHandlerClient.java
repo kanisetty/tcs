@@ -36,6 +36,23 @@ class InvitationHandlerClient {
                 .register(JacksonJsonProvider.class);
     }
 
+    public Response createExternalUserInOTDS(String trustedProviderKey,
+                                             String email,
+                                             String password) {
+        Form form = new Form();
+        form.param("key", trustedProviderKey);
+        form.param("email", email);
+        form.param("password", password);
+
+        String registerUrl = otagBaseUrl + REST_API_BASE + "/create";
+        WebTarget target = httpClient.target(UrlPathUtil.getBaseUrl(registerUrl))
+                .path(UrlPathUtil.getPath(registerUrl));
+
+        // POST x-www-form-urlencoded
+        return target.request()
+                .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+    }
+
     // POST - invite external user
     public Response inviteExternalUser(String trustedProviderKey,
                                         String email,
