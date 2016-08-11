@@ -1,5 +1,5 @@
-angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService', 'appworksService'])
-
+angular
+    .module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService', 'appworksService'])
     .factory('$nodeOpenService', [
         '$q',
         '$nodeService',
@@ -9,115 +9,135 @@ angular.module('nodeOpenService', ['nodeService', 'fileResource', 'cacheService'
         '$stateParams',
         '$navigationService',
         '$appworksService',
-        '$httpParamSerializerJQLike',
-        function ($q, $nodeService, $displayMessageService, $fileResource, $cacheService, $stateParams, $navigationService, $appworksService, $httpParamSerializerJQLike) {
+        '$sessionService',
+        $nodeOpenService
+    ]);
 
-            var _getNodeToOpen = function (node) {
-                var deferred = $q.defer();
+/**
+ *
+ * @param $q
+ * @param $nodeService
+ * @param $displayMessageService
+ * @param $fileResource
+ * @param $cacheService
+ * @param $stateParams
+ * @param $navigationService
+ * @param $appworksService
+ * @returns {{openNode: openNode}}
+ */
+function $nodeOpenService($q, $nodeService, $displayMessageService, $fileResource, $cacheService, $stateParams, $navigationService, $appworksService, $sessionService) {
 
-                if (node.getSubtype() == 1) {
-                    $nodeService.getNode(node.getOriginalID()).then(function (nodeSansIsStored) {
-                        $cacheService.setIsStored(nodeSansIsStored).then(function (nodeWithIsStored) {
-                            deferred.resolve(nodeWithIsStored);
-                        });
-                    });
-                } else {
-                    deferred.resolve(node);
-                }
+    return {
+        openNode: openNode
+    };
 
-                return deferred.promise;
-            };
+    function openNode(node, rootNode, menuItem) {
+        var dataForComponent = {};
 
-            var _getComponentForOpen = function (node) {
-                var deferred = $q.defer();
-                var found = false;
+        return getNodeToOpen(node).then(nodeDidLoad);
 
-                $appworksService.getComponentList().then(function (components) {
+        function nodeDidLoad(nodeToOpen) {
 
-                    components.forEach(function (component) {
-                        var viewTypes = _getViewTypesFromComponent(component);
+            if (!nodeToOpen.isDocument() && !nodeToOpen.isEmail()) {
+                getComponentForOpen(nodeToOpen).then(componentDidLoad);
+            } else {
 
-                        viewTypes.forEach(function (viewType) {
-                            if (node.getSubtype() == parseInt(viewType)) {
-                                found = true;
-                                deferred.resolve(component);
-                            }
-                        });
-                    });
+                dataForComponent = {id: nodeToOpen.getID()};
 
-                    if (!found) {
-                        deferred.resolve();
-                    }
-                });
+                // dont refresh the list whenever the view is loaded
+                //if (menuItem) {
+                //    menuItem.setRefresh(true);
+                //}
 
-                return deferred.promise;
-            };
-
-            var _getViewTypesFromComponent = function (component) {
-                var viewTypes = [];
-
-                if (component.properties != null && component.properties.view != null) {
-                    viewTypes = component.properties.view.split(",");
-                }
-
-                return viewTypes;
-            };
-
-            var _openContainer = function (id) {
-
-                $stateParams.id = id;
-                return $navigationService.reloadPage();
-            };
-
-            function isImageType(filename) {
-                var extension = (filename || '').split('.').pop();
-                return ['jpg', 'jpeg' , 'gif', 'png'].indexOf(extension.toLowerCase()) > -1;
-            }
-
-            return {
-
-                openNode: function (node, rootNode, menuItem) {
-                    var documentSubtype = 144;
-                    var emailSubtype = 749;
-                    var dataForComponent;
-
-                    return _getNodeToOpen(node).then(function (nodeToOpen) {
-
-                        if (nodeToOpen.getSubtype() != documentSubtype && nodeToOpen.getSubtype() != emailSubtype) {
-
-                            _getComponentForOpen(nodeToOpen).then(function (component) {
-
-                                if (angular.isObject(component)) {
-
-                                    dataForComponent = {id: nodeToOpen.getID(), parentID: rootNode.getID()};
-
-                                    if (component.name == "workflow-component") {
-                                        dataForComponent.action = 'view';
-                                    }
-
-                                    $appworksService.openFromAppworks(component.name, dataForComponent, true);
-
-                                } else if (nodeToOpen.isContainer() == true) {
-                                    _openContainer(nodeToOpen.getID());
-                                } else {
-                                    $displayMessageService.showErrorMessage("ERROR OPEN FAILED");
-                                }
-                            });
-                        } else {
-
-                            dataForComponent = {id: nodeToOpen.getID()};
-
-                            if (menuItem) {
-                                menuItem.setRefresh(true);
-                            }
-
-                            if (isImageType(nodeToOpen.toString())) {
-                                return $fileResource.downloadAndStore(nodeToOpen, true);
-                            } else {
-                                return $appworksService.openFromAppworks('dcs-component', dataForComponent, true);
-                            }
+                if (nodeToOpen.isImageType()) {
+                    $cacheService.isNodeInStorage(nodeToOpen).then(function (nodeIsCached) {
+                        if (nodeIsCached) {
+                            $cacheService.openNodeFromStorage(nodeToOpen);
+                        } else if ($sessionService.isOnline()) {
+                            $fileResource.downloadAndStore(nodeToOpen, true);
                         }
                     });
+                } else {
+                    return $appworksService.openFromAppworks('dcs-component', dataForComponent, true);
                 }
             }
-        }]);
+
+            function componentDidLoad(component) {
+                if (angular.isObject(component)) {
+
+                    dataForComponent = {
+                        id: nodeToOpen.getID(),
+                        parentID: rootNode.getID()
+                    };
+
+                    if (component.name == "workflow-component") {
+                        dataForComponent.action = 'view';
+                    }
+
+                    $appworksService.openFromAppworks(component.name, dataForComponent, true);
+
+                } else if (nodeToOpen.isContainer()) {
+                    openContainer(nodeToOpen.getID());
+                } else {
+                    $displayMessageService.showErrorMessage("ERROR OPEN FAILED");
+                }
+            }
+        }
+    }
+
+    function getNodeToOpen(node) {
+        var deferred = $q.defer();
+
+        if (node.isShortcut()) {
+            $nodeService.getNode(node.getOriginalID()).then(function (nodeSansIsStored) {
+                $cacheService.setIsStored(nodeSansIsStored).then(function (nodeWithIsStored) {
+                    deferred.resolve(nodeWithIsStored);
+                });
+            });
+        } else {
+            deferred.resolve(node);
+        }
+
+        return deferred.promise;
+    }
+
+    function openContainer(id) {
+        $stateParams.id = id;
+        return $navigationService.reloadPage();
+    }
+
+    function getViewTypesFromComponent(component) {
+        var viewTypes = [];
+
+        if (component.properties != null && component.properties.view != null) {
+            viewTypes = component.properties.view.split(",");
+        }
+
+        return viewTypes;
+    }
+
+    function getComponentForOpen(node) {
+        var deferred = $q.defer();
+        var found = false;
+
+        $appworksService.getComponentList().then(function (components) {
+
+            components.forEach(function (component) {
+                var viewTypes = getViewTypesFromComponent(component);
+
+                viewTypes.forEach(function (viewType) {
+                    if (node.getSubtype() == parseInt(viewType)) {
+                        found = true;
+                        deferred.resolve(component);
+                    }
+                });
+            });
+
+            if (!found) {
+                deferred.resolve();
+            }
+        });
+
+        return deferred.promise;
+    }
+}

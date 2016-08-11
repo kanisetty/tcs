@@ -44,8 +44,8 @@ angular.module('FavoritesBrowseStrategy', ['nodeBrowseDecoratingService', 'heade
                 var deferred = $q.defer();
                 var browseDecorators;
 
-                $favoritesService.getFavorites(isOnline).then(function (favorites) {
-                    if (isOnline) {
+                $favoritesService.getFavorites($sessionService.isOnline()).then(function (favorites) {
+                    if ($sessionService.isOnline()) {
                         _initializeHeader(favorites);
                     }
                     browseDecorators = $nodeBrowseDecoratingService.decorateNodeChildrenForBrowse(favorites);
@@ -59,7 +59,7 @@ angular.module('FavoritesBrowseStrategy', ['nodeBrowseDecoratingService', 'heade
             FavoritesBrowseStrategy.prototype.initializeHeader = function () {
                 var header = null;
 
-                if (isOnline) {
+                if ($sessionService.isOnline()) {
                     header = favdefaultHeader;
                 } else {
                     header = offlineFavHeader;
@@ -81,6 +81,10 @@ angular.module('FavoritesBrowseStrategy', ['nodeBrowseDecoratingService', 'heade
 
             FavoritesBrowseStrategy.prototype.getRootID = function () {
                 return null;
+            };
+
+            NodeBrowseStrategy.prototype.hasOfflineStrategy = function () {
+                return true;
             };
 
             return FavoritesBrowseStrategy;

@@ -1,114 +1,180 @@
-angular.module('browseController', ['browseService', 'ModalMenu', 'browseService','browseStrategyFactory'])
-    .controller('browseController', ['$scope', '$stateParams', '$displayMessageService','$ionicPlatform','ModalMenu', '$browseService', 'browseStrategyFactory',
-        '$sessionService', '$translate', '$navigationService',
-        function ($scope, $stateParams, $displayMessageService, $ionicPlatform, ModalMenu, $browseService, browseStrategyFactory, $sessionService, $translate,
-                  $navigationService) {
-            var initialized = false;
-
-            $scope.currentQuery = '';
-            $scope.lastExecutedQuery = '';
-            $scope.root = null;
-            $scope.browseDecorators = [];
-            $scope.moreCanBeLoaded = false;
-
-            $scope.onDeviceLoadInit = function(){
-
-                $ionicPlatform.ready(function() {
-
-                    $displayMessageService.showDisplayMessage('LOADING');
-                    $scope.initialize();
-                });
-            };
-
-            $scope.initialize = function () {
-                initialized = true;
-
-                $sessionService.init().then(function(){
-                    $translate.use($sessionService.getDefaultLanguage())
-                        .then(function(){
-                            var browseStrategy = browseStrategyFactory.getBrowseStrategy($sessionService.getAppName(), $stateParams);
-
-                            $browseService.setBrowseStrategy(browseStrategy);
-                            $browseService.initialize();
-
-                            $browseService.getRoot($stateParams).then(function (root) {
-                                $browseService.initializeHeader(root);
-                                $scope.root = root;
-                                $scope.getBrowseDecorators(root);
-                            })
-                        }).catch(function () {
-                            $displayMessageService.showErrorMessage('ERROR INITIALIZATION FAILED', 'ERROR');
-                        });
-                }).catch(function () {
-                    $displayMessageService.showErrorMessage('ERROR INITIALIZATION FAILED', 'ERROR');
-                });
-            };
-
-            $scope.clickBrowseDecorator = function (browseDecorator) {
-                $browseService.clickBrowseDecorator($scope.root, browseDecorator);
-            };
-
-            $scope.getBrowseDecorators = function(root, filter) {
-
-                if (root != undefined) {
-                    $browseService.getBrowseDecorators(root, filter).then(function (browseDecorators) {
-                        $scope.showBrowseDecorators(browseDecorators);
-                    });
-                } else {
-                    $scope.moreCanBeLoaded = false;
-                    $scope.$broadcast('scroll.infiniteScrollComplete');
-                }
-            };
-
-            $scope.longPressBrowseDecorator = function (browseDecorator) {
-                $browseService.longPressBrowseDecorator($scope, browseDecorator)
-            };
-
-            $scope.showBrowseDecorators = function(browseDecorators) {
-                $displayMessageService.hideMessage();
-                $scope.browseDecorators = $scope.browseDecorators.concat(browseDecorators);
-                $scope.moreCanBeLoaded = $browseService.canMoreBeLoaded();
-                $scope.$broadcast('scroll.infiniteScrollComplete');
-            };
-
-            $scope.$on('serverError', function handler(event, errorArgs) {
-                $displayMessageService.showToastMessage(errorArgs.errMsg);
-
-                if ($scope.menu != null)
-                    $scope.menu.hide();
-            });
+angular
+    .module('browseController', ['browseService', 'ModalMenu', 'browseService', 'browseStrategyFactory'])
+    .controller('browseController', [
+        '$scope',
+        '$stateParams',
+        '$displayMessageService',
+        '$ionicPlatform',
+        'ModalMenu',
+        '$browseService',
+        'browseStrategyFactory',
+        '$sessionService',
+        '$translate',
+        '$navigationService',
+        browseController
+    ]);
 
 
-            $scope.$on('$destroy', function() {
-                if ($scope.menu != null)
-                    $scope.menu.remove();
-            });
+/**
+ * TODO code smell -- too many args to this controller. needs to be broken down into parent/child controllers
+ * @param $scope
+ * @param $stateParams
+ * @param $displayMessageService
+ * @param $ionicPlatform
+ * @param ModalMenu
+ * @param $browseService
+ * @param browseStrategyFactory
+ * @param $sessionService
+ * @param $translate
+ * @param $navigationService
+ */
+function browseController($scope, $stateParams, $displayMessageService, $ionicPlatform, ModalMenu, $browseService, browseStrategyFactory, $sessionService, $translate, $navigationService) {
 
-            $scope.menuItemClicked = function(modalMenuItem){
-                $scope.menu.menuItemClicked(modalMenuItem).then(function(modalMenuItemResponse){
-                    if ($scope.menu != null)
-                        $scope.menu.hide();
+    $scope.currentQuery = '';
+    $scope.lastExecutedQuery = '';
+    $scope.root = null;
+    $scope.browseDecorators = [];
+    $scope.moreCanBeLoaded = false;
 
-                    if (modalMenuItem.hasModal() != null && modalMenuItem.hasModal() == true){
+    $scope.clickBrowseDecorator = clickBrowseDecorator;
+    $scope.doSearch = doSearch;
+    $scope.getBrowseDecorators = getBrowseDecorators;
+    $scope.initialize = initialize;
+    $scope.longPressBrowseDecorator = longPressBrowseDecorator;
+    $scope.menuItemClicked = menuItemClicked;
+    $scope.reloadPage = reloadPage;
+    $scope.showBrowseDecorators = showBrowseDecorators;
 
-                        var menu = new ModalMenu(modalMenuItemResponse, $displayMessageService.translate('OPTIONS'), $displayMessageService.translate('CANCEL'));
-                        menu.showModalMenu($scope);
+    $scope.onDeviceLoadInit = function () {
+        $ionicPlatform.ready(function () {
+            $displayMessageService.showDisplayMessage('LOADING');
+            $scope.initialize();
+            document.addEventListener('offline', function () {
+                hideOfflineUnavailableBrowseDecorators();
+                $scope.$apply();
+            }, false);
+            document.addEventListener('online', function () {
+                getRootForBrowse();
+                $scope.$apply();
+            }, false);
+        });
+    };
 
-                        $scope.menu = menu;
+    $scope.$on('serverError', function handler(event, errorArgs) {
+        if ($scope.menu != null) {
+            $scope.menu.hide();
+        }
+        $displayMessageService.showToastMessage(errorArgs.errMsg);
+    });
+
+    $scope.$on('$destroy', function () {
+        if ($scope.menu != null) {
+            $scope.menu.remove();
+        }
+    });
+
+    function getRootForBrowse() {
+        $browseService.getRoot($stateParams).then(function (root) {
+            $browseService.initializeHeader(root);
+            $scope.root = root;
+            $scope.getBrowseDecorators(root);
+        });
+    }
+
+    function initialize() {
+
+        // skip translation service initialization if we are currently offline
+        if ($sessionService.isOnline()) {
+            $sessionService.init().then(onInit).catch(onInitFail);
+        } else {
+            onInit();
+        }
+
+        function onInit() {
+            var appName = $sessionService.getAppName();
+            var browseStrategy = browseStrategyFactory.getBrowseStrategy(appName, $stateParams);
+
+            $browseService.setBrowseStrategy(browseStrategy);
+            $browseService.initialize();
+
+            // skip translation service initialization if strategy has offline strategy
+            if (!$sessionService.isOnline() && browseStrategy.hasOfflineStrategy()) {
+                getRootForBrowse();
+            } else {
+                $translate.use($sessionService.getDefaultLanguage()).then(getRootForBrowse).catch(
+                    function () {
+                        $displayMessageService.showErrorMessage('ERROR INITIALIZATION FAILED', 'ERROR');
                     }
-                })
-            };
+                );
+            }
+        }
 
-            $scope.reloadPage = function () {
-                $navigationService.reloadPage();
-            };
+        function onInitFail() {
+            $displayMessageService.showErrorMessage('ERROR INITIALIZATION FAILED', 'ERROR');
+        }
+    }
 
-            $scope.doSearch = function(root) {
+    function clickBrowseDecorator(browseDecorator) {
+        $browseService.clickBrowseDecorator($scope.root, browseDecorator);
+    }
 
-                $displayMessageService.showDisplayMessage('LOADING');
-                $browseService.initialize();
-                $scope.browseDecorators = [];
-                $scope.getBrowseDecorators(root, $scope.currentQuery);
-                $scope.lastExecutedQuery = $scope.currentQuery;
-            };
-        }]);
+    function getBrowseDecorators(root, filter) {
+        if (root != undefined) {
+            $browseService.getBrowseDecorators(root, filter).then(function (browseDecorators) {
+                $scope.showBrowseDecorators(browseDecorators);
+            });
+        } else {
+            $scope.moreCanBeLoaded = false;
+            $scope.$broadcast('scroll.infiniteScrollComplete');
+        }
+    }
+
+    function longPressBrowseDecorator(browseDecorator) {
+        $browseService.longPressBrowseDecorator($scope, browseDecorator)
+    }
+
+    function showBrowseDecorators(browseDecorators) {
+        $displayMessageService.hideMessage();
+        $scope.browseDecorators = $scope.browseDecorators.concat(browseDecorators);
+        $scope.moreCanBeLoaded = $browseService.canMoreBeLoaded();
+        $scope.$broadcast('scroll.infiniteScrollComplete');
+    }
+
+    function menuItemClicked(modalMenuItem) {
+        $scope.menu.menuItemClicked(modalMenuItem).then(function (modalMenuItemResponse) {
+            var menu;
+
+            if ($scope.menu != null) {
+                $scope.menu.hide();
+            }
+
+            if (modalMenuItem.hasModal() != null && modalMenuItem.hasModal() == true) {
+                menu = new ModalMenu(
+                    modalMenuItemResponse,
+                    $displayMessageService.translate('OPTIONS'),
+                    $displayMessageService.translate('CANCEL')
+                );
+                menu.showModalMenu($scope);
+                $scope.menu = menu;
+            }
+        })
+    }
+
+    function reloadPage() {
+        $navigationService.reloadPage();
+    }
+
+    function doSearch(root) {
+        $displayMessageService.showDisplayMessage('LOADING');
+        $browseService.initialize();
+        $scope.browseDecorators = [];
+        $scope.getBrowseDecorators(root, $scope.currentQuery);
+        $scope.lastExecutedQuery = $scope.currentQuery;
+    }
+
+    function hideOfflineUnavailableBrowseDecorators() {
+        $scope.browseDecorators = $scope.browseDecorators.filter(function (decorator) {
+            return decorator.decoratedObject.canViewOffline();
+        });
+    }
+}
