@@ -10,14 +10,12 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Objects;
 
-// TODO what can we realistically test via the public API, or is this just a
-// TODO tool for manual testing?
 class InvitationHandlerClient {
-    // public API
+
     private static final String SERVICE_BASE_PATH = "/tempoinvitehandler/api/v1/";
     private static final String REST_API_BASE = SERVICE_BASE_PATH + "invitations";
-    private static final String SERVLET_BASE = SERVICE_BASE_PATH + "register";
 
     private Client httpClient;
 
@@ -28,12 +26,15 @@ class InvitationHandlerClient {
     }
 
     public InvitationHandlerClient(String otagBaseUrl, Client httpClient) {
+        Objects.requireNonNull(otagBaseUrl, "Gateway base URL is required");
         this.otagBaseUrl = otagBaseUrl;
+
         if (httpClient != null) {
             this.httpClient = httpClient;
+        } else {
+            this.httpClient = ClientBuilder.newClient()
+                    .register(JacksonJsonProvider.class);
         }
-        this.httpClient = ClientBuilder.newClient()
-                .register(JacksonJsonProvider.class);
     }
 
     public Response createExternalUserInOTDS(String trustedProviderKey,
@@ -48,20 +49,19 @@ class InvitationHandlerClient {
         WebTarget target = httpClient.target(UrlPathUtil.getBaseUrl(registerUrl))
                 .path(UrlPathUtil.getPath(registerUrl));
 
-        // POST x-www-form-urlencoded
         return target.request()
                 .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
     }
 
-    // POST - invite external user
     public Response inviteExternalUser(String trustedProviderKey,
-                                        String email,
-                                        String firstName,
-                                        String lastName,
-                                        String folderName,
-                                        String folderDesc,
-                                        String extraInfo,
-                                        String lang) {
+                                       String email,
+                                       String firstName,
+                                       String lastName,
+                                       String folderName,
+                                       String folderDesc,
+                                       String extraInfo,
+                                       String lang) {
+        // invite a user that already exists in OTDS or CS
         Form form = new Form();
         form.param("key", trustedProviderKey);
         form.param("email", email);
