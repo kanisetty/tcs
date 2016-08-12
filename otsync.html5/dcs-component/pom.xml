@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.html5</artifactId>
-        <version>16.0.0</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>dcs-component</artifactId>
@@ -18,7 +18,7 @@
         <!-- General app.properties -->
         <app.properties.displayName>Document Conversion Component</app.properties.displayName>
         <app.properties.description>Document Conversion Component</app.properties.description>
-        <app.properties.version>16.0.0</app.properties.version>
+        <app.properties.version>16.0.1</app.properties.version>
         <app.properties.type>component</app.properties.type>
     </properties>
 

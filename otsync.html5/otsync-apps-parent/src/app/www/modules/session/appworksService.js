@@ -149,13 +149,18 @@ angular.module('appworksService', [])
                     var isNodeInCache = false;
                     var favorites = this.getFromCache(key);
 
+                    if (favorites) {
+                        favorites = JSON.parse(favorites);
+                    }
+
                     if (favorites instanceof Array) {
                         favorites.forEach(function (favorite) {
-                            if (favorite.getID() == node.getID() && favorite.getVersionNumber() == node.getVersionNumber()) {
+                            if (favorite.id === node.getID() && favorite.versionNum === node.getVersionNumber()) {
                                 isNodeInCache = true;
                             }
                         });
                     }
+                    return isNodeInCache;
                 },
 
                 closeCurrentComponent: function () {
