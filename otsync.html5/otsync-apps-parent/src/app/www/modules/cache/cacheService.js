@@ -17,11 +17,15 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
 
         addFavoritesToCache: function (favorites) {
             var deferred = $q.defer();
-            var serialized = favorites.map(function (favorite) {
-                return favorite.toJson();
-            });
+            var serialized;
 
-            $appworksService.addToCache(_favoritesKey, serialized, true);
+            if (favorites && favorites.length) {
+                serialized = favorites.map(function (favorite) {
+                    return favorite.toJson();
+                });
+                $appworksService.addToCache(_favoritesKey, JSON.stringify(serialized), true);
+            }
+
             deferred.resolve();
 
             return deferred.promise;
@@ -77,10 +81,15 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
         getFavoritesFromCache: function () {
             var deferred = $q.defer();
             var serialized = $appworksService.getFromCache(_favoritesKey);
+            var favorites;
 
-            var favorites = serialized.map(function (json) {
-                return Node.fromJson(json);
-            });
+            if (serialized) {
+                serialized = JSON.parse(serialized);
+
+                favorites = serialized.map(function (json) {
+                    return Node.fromJson(json);
+                });
+            }
 
             deferred.resolve(favorites);
 

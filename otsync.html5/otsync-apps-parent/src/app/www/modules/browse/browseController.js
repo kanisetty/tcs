@@ -11,6 +11,7 @@ angular
         '$sessionService',
         '$translate',
         '$navigationService',
+        '$q',
         browseController
     ]);
 
@@ -28,7 +29,7 @@ angular
  * @param $translate
  * @param $navigationService
  */
-function browseController($scope, $stateParams, $displayMessageService, $ionicPlatform, ModalMenu, $browseService, browseStrategyFactory, $sessionService, $translate, $navigationService) {
+function browseController($scope, $stateParams, $displayMessageService, $ionicPlatform, ModalMenu, $browseService, browseStrategyFactory, $sessionService, $translate, $navigationService, $q) {
 
     $scope.currentQuery = '';
     $scope.lastExecutedQuery = '';
@@ -74,11 +75,13 @@ function browseController($scope, $stateParams, $displayMessageService, $ionicPl
     });
 
     function getRootForBrowse() {
+        var deferred = $q.defer();
         $browseService.getRoot($stateParams).then(function (root) {
             $browseService.initializeHeader(root);
             $scope.root = root;
-            $scope.getBrowseDecorators(root);
+            $scope.getBrowseDecorators(root).then(deferred.resolve);
         });
+        return deferred.promise;
     }
 
     function initialize() {
@@ -99,7 +102,7 @@ function browseController($scope, $stateParams, $displayMessageService, $ionicPl
 
             // skip translation service initialization if strategy has offline strategy
             if (!$sessionService.isOnline() && browseStrategy.hasOfflineStrategy()) {
-                getRootForBrowse();
+                getRootForBrowse().then(hideOfflineUnavailableBrowseDecorators);
             } else {
                 $translate.use($sessionService.getDefaultLanguage()).then(getRootForBrowse).catch(
                     function () {
@@ -119,14 +122,17 @@ function browseController($scope, $stateParams, $displayMessageService, $ionicPl
     }
 
     function getBrowseDecorators(root, filter) {
+        var deferred = $q.defer();
         if (root != undefined) {
             $browseService.getBrowseDecorators(root, filter).then(function (browseDecorators) {
                 $scope.showBrowseDecorators(browseDecorators);
+                deferred.resolve(browseDecorators);
             });
         } else {
             $scope.moreCanBeLoaded = false;
             $scope.$broadcast('scroll.infiniteScrollComplete');
         }
+        return deferred.promise;
     }
 
     function longPressBrowseDecorator(browseDecorator) {
