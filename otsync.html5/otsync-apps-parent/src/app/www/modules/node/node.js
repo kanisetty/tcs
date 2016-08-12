@@ -1,6 +1,6 @@
-angular.module('Node', [])
+angular.module('Node', ['Sharing'])
 
-    .factory('Node', ['$sessionService', function ($sessionService) {
+    .factory('Node', ['$sessionService', 'Sharing', function ($sessionService, Sharing) {
 
         var CATEGORY_TYPE = 131;
         var ACTIVE_VIEW_TYPE = 30309;
@@ -148,6 +148,10 @@ angular.module('Node', [])
                 return _name.toLowerCase();
             };
 
+            this.toJson = function () {
+                return _nodeData;
+            };
+
             this.isImageType = function () {
                 // checking filename. admittedly not the best check
                 // TODO does content server return content type in the metadata?
@@ -163,6 +167,11 @@ angular.module('Node', [])
             this.getFileNameForOnDeviceStorage = function () {
                 return this.getID() + "_" + this.getVersionNumber() + "_" + this.getName();
             };
+        };
+
+        Node.fromJson = function (nodeData) {
+            var sharing = new Sharing(nodeData);
+            return new Node(nodeData, sharing);
         };
 
         return Node;

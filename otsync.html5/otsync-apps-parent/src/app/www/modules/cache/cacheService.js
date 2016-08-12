@@ -1,13 +1,15 @@
 angular
-    .module('cacheService', ['appworksService'])
+    .module('cacheService', ['appworksService', 'Node', 'Sharing'])
     .factory('$cacheService', [
         '$q',
         '$appworksService',
         '$displayMessageService',
+        'Node',
+        'Sharing',
         $cacheService
     ]);
 
-function $cacheService($q, $appworksService, $displayMessageService) {
+function $cacheService($q, $appworksService, $displayMessageService, Node) {
 
     var _favoritesKey = "OTSync_Favorites";
 
@@ -15,9 +17,11 @@ function $cacheService($q, $appworksService, $displayMessageService) {
 
         addFavoritesToCache: function (favorites) {
             var deferred = $q.defer();
+            var serialized = favorites.map(function (favorite) {
+                return favorite.toJson();
+            });
 
-            $appworksService.addToCache(_favoritesKey, favorites, true);
-
+            $appworksService.addToCache(_favoritesKey, serialized, true);
             deferred.resolve();
 
             return deferred.promise;
@@ -72,10 +76,13 @@ function $cacheService($q, $appworksService, $displayMessageService) {
 
         getFavoritesFromCache: function () {
             var deferred = $q.defer();
+            var serialized = $appworksService.getFromCache(_favoritesKey);
 
-            $appworksService.getFromCache(_favoritesKey);
+            var favorites = serialized.map(function (json) {
+                return Node.fromJson(json);
+            });
 
-            deferred.resolve();
+            deferred.resolve(favorites);
 
             return deferred.promise;
         },
