@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync-apps-parent</artifactId>
-        <version>16.0.0</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>feeds-app</artifactId>
@@ -16,9 +16,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- General app.properties -->
-        <app.properties.displayName>Feeds App</app.properties.displayName>
+        <app.properties.displayName>Feeds</app.properties.displayName>
         <app.properties.description>Feeds App</app.properties.description>
-        <app.properties.version>16.0.0</app.properties.version>
+        <app.properties.version>16.0.1</app.properties.version>
         <app.properties.type>app</app.properties.type>
     </properties>
 

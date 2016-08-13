@@ -6,19 +6,19 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.html5</artifactId>
-        <version>16.0.0</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>assignments-app</artifactId>
-	<name>Assignments App</name>
+	<name>Assignments</name>
 
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- General app.properties -->
-        <app.properties.displayName>Assignments App</app.properties.displayName>
+        <app.properties.displayName>Assignments</app.properties.displayName>
         <app.properties.description>Assignments App</app.properties.description>
-        <app.properties.version>16.0.0</app.properties.version>
+        <app.properties.version>16.0.1</app.properties.version>
         <app.properties.type>app</app.properties.type>
     </properties>
     

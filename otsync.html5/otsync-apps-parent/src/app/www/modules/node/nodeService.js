@@ -39,9 +39,11 @@ angular.module('nodeService', ['Node', 'Request', 'Sharing', 'nodeResource'])
                 addCacheDataToNodeChildren: function (nodeChildren) {
                     var promises = [];
 
-                    nodeChildren.forEach(function (node) {
-                        promises.push($cacheService.setIsStored(node));
-                    });
+                    if (nodeChildren && nodeChildren instanceof Array) {
+                        nodeChildren.forEach(function (node) {
+                            promises.push($cacheService.setIsStored(node));
+                        });
+                    }
 
                     return $q.all(promises);
                 },

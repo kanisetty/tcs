@@ -225,6 +225,13 @@ var populateForm = function (data, options, schema, div) {
 
 var onDeviceReady = function () {
     loadingDialog.show();
+    // set back button to close component
+    new Appworks.AWHeaderBar().setHeader({
+        backButtonVisible: true,
+        callback: function () {
+            closeMe();
+        }
+    });
     initialize();
 };
 

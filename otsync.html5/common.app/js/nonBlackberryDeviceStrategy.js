@@ -2,13 +2,12 @@ var NonBlackBerryStrategy = function () {
     var _defaultLanguage = 'en';
 
     this.close = function () {
-        var successFn = function () {
-        };
-        var errorFn = function (error) {
-            window.history.back();
-        };
+        // close the current component
+        this.execRequest('AWComponent', 'close').then(null, error);
 
-        cordova.exec(successFn, errorFn, 'AWComponent', 'close');
+        function error() {
+            window.history.back();
+        }
     };
 
 
@@ -56,6 +55,7 @@ var NonBlackBerryStrategy = function () {
             appworksType = "app";
         }
 
+        // open component
         component.open(success, err, [destComponentName, $.param(data), appworksType]);
 
         function success() {
