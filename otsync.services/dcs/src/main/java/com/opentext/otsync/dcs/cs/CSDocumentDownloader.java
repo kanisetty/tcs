@@ -2,7 +2,9 @@ package com.opentext.otsync.dcs.cs;
 
 import com.opentext.otsync.api.CSRequest;
 import com.opentext.otsync.dcs.appworks.ServiceIndex;
+import com.opentext.otsync.otag.components.HttpClientService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.LLCookie;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,7 +14,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
@@ -46,15 +48,19 @@ public class CSDocumentDownloader {
         params.add(new BasicNameValuePair("objAction", "download"));
         params.add(new BasicNameValuePair("viewType", "1"));
 
-        DefaultHttpClient httpClient = new DefaultHttpClient();
+        CloseableHttpClient httpClient = HttpClientService.getService().getHttpClient();
         HttpPost request = new HttpPost(ServiceIndex.getCSUrlProvider().getContentServerUrl());
         request.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
         try {
             headers.addTo(request);
-            headers.getLLCookie().addLLCookieToRequest(httpClient, request);
-
-            HttpResponse response = httpClient.execute(request);
+            HttpResponse response;
+            LLCookie llCookie = headers.getLLCookie();
+            if (llCookie != null) {
+                response = httpClient.execute(request, llCookie.getContextWithLLCookie(request));
+            } else {
+                response = httpClient.execute(request);
+            }
 
             if (response.getHeaders("Warning").length > 0) {
                 throw new IOException(response.getHeaders("Warning")[0].toString());

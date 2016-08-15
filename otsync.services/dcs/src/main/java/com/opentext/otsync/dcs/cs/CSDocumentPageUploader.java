@@ -7,7 +7,9 @@ import com.opentext.otsync.api.CSRequest;
 import com.opentext.otsync.api.FixedInputStreamBody;
 import com.opentext.otsync.dcs.appworks.ContentServerURLProvider;
 import com.opentext.otsync.dcs.appworks.ServiceIndex;
+import com.opentext.otsync.otag.components.HttpClientService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.LLCookie;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
@@ -18,7 +20,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import javax.ws.rs.WebApplicationException;
@@ -69,7 +71,7 @@ public class CSDocumentPageUploader {
         HttpPost request = null;
 
         try (InputStream in = new FileInputStream(file)) {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
+            CloseableHttpClient httpClient = HttpClientService.getService().getHttpClient();
 
             ContentBody filePart = new FixedInputStreamBody(in, "otag-dcs.png", size);
             MultipartEntity entity = new MultipartEntity();
@@ -84,11 +86,16 @@ public class CSDocumentPageUploader {
             request.setEntity(entity);
 
             headers.addTo(request);
-            headers.getLLCookie().addLLCookieToRequest(httpClient, request);
+            LLCookie llCookie = headers.getLLCookie();
 
             if (LOG.isDebugEnabled())
                 LOG.debug("Posting CS request -func:otag.renderedpagepost");
-            HttpResponse response = httpClient.execute(request);
+            HttpResponse response;
+            if (llCookie != null) {
+                response = httpClient.execute(request, llCookie.getContextWithLLCookie(request));
+            } else {
+                response = httpClient.execute(request);
+            }
 
             final StatusLine statusLine = response.getStatusLine();
 

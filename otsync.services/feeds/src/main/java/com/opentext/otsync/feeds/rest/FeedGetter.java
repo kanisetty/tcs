@@ -3,11 +3,10 @@ package com.opentext.otsync.feeds.rest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.opentext.otsync.otag.components.HttpClientService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.otsync.rest.util.LLCookie;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -15,13 +14,8 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
@@ -30,10 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@WebListener // ensure the container finds our shutdown method
-public class FeedGetter implements ServletContextListener {
-
-    private static final Log LOG = LogFactory.getLog(FeedGetter.class);
+public class FeedGetter {
 
     private static final String MENTIONS = "isMentioned";
     private static final String FOLLOWING = "isFollowedUsers";
@@ -47,19 +38,6 @@ public class FeedGetter implements ServletContextListener {
     private static final String CONTENT_TYPE = "content";
 
     private static final ObjectReader nodeReader = new ObjectMapper().readerFor(JsonNode.class);
-    private static final CloseableHttpClient httpClient;
-
-    static {
-        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-        // Increase max total connection to 200
-        cm.setMaxTotal(200);
-        // Increase default max connection per route to 20
-        cm.setDefaultMaxPerRoute(20);
-
-        httpClient = HttpClients.custom()
-                .setConnectionManager(cm)
-                .build();
-    }
 
     private FeedsResource.Bookmark before;
     private FeedsResource.Bookmark after;
@@ -70,9 +48,6 @@ public class FeedGetter implements ServletContextListener {
     private Integer conversationID = null;
     private FeedItem.Provider provider = null;
     private boolean isRecursive = false;
-
-    // required for ServletContextListener implementation
-    public FeedGetter() {}
 
     public FeedGetter(FeedsResource.Bookmark before, FeedsResource.Bookmark after, int count, CSForwardHeaders headers) {
         this.before = before;
@@ -167,8 +142,13 @@ public class FeedGetter implements ServletContextListener {
             headers.addTo(request);
             LLCookie llCookie = headers.getLLCookie();
 
-            HttpResponse response = httpClient.execute(request,
-                    llCookie.getContextWithLLCookie(request));
+            CloseableHttpClient httpClient = HttpClientService.getService().getHttpClient();
+            HttpResponse response;
+            if (llCookie != null) {
+                response = httpClient.execute(request, llCookie.getContextWithLLCookie(request));
+            } else {
+                response = httpClient.execute(request);
+            }
 
             final StatusLine status = response.getStatusLine();
 
@@ -201,23 +181,6 @@ public class FeedGetter implements ServletContextListener {
         } catch (IOException e) {
             FeedsResource.log.error(e);
             throw new WebApplicationException(e, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        LOG.info("FeedGetter started");
-    }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-        // shut down our HTTP client
-        try {
-            LOG.info("Shutting down HTTP client");
-            if (httpClient != null)
-                httpClient.close();
-        } catch (IOException e) {
-            LOG.error("Failed to close our HTTP client successfully", e);
         }
     }
 

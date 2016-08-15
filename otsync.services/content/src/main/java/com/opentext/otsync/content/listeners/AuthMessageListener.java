@@ -2,6 +2,7 @@ package com.opentext.otsync.content.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opentext.otsync.otag.components.HttpClientService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.http.HTTPRequestManager;
@@ -11,6 +12,7 @@ import com.opentext.otsync.content.util.ReturnHeaders;
 import com.opentext.otsync.content.ws.ServletConfig;
 import com.opentext.otsync.content.ws.message.MessageConverter;
 import com.opentext.otsync.content.ws.server.ClientTypeSet;
+import com.opentext.otsync.rest.util.LLCookie;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
@@ -18,7 +20,9 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -201,15 +205,19 @@ public class AuthMessageListener implements SynchronousMessageListener {
         }
 
         HttpResponse response;
-        DefaultHttpClient httpClient = new DefaultHttpClient();
+        CloseableHttpClient httpClient = HttpClientService.getService().getHttpClient();
 
         try {
             HttpPost request = new HttpPost(ServletConfig.getContentServerUrl());
             headers.addTo(request);
-            headers.getLLCookie().addLLCookieToRequest(httpClient, request);
-
             request.setEntity(new UrlEncodedFormEntity(params));
-            response = httpClient.execute(request);
+            LLCookie llCookie = headers.getLLCookie();
+            if (llCookie != null) {
+                HttpClientContext contextWithLLCookie = llCookie.getContextWithLLCookie(request);
+                response = httpClient.execute(request, contextWithLLCookie);
+            } else {
+                response = httpClient.execute(request);
+            }
         } catch (IOException e) {
             log.error(e);
             throw e;

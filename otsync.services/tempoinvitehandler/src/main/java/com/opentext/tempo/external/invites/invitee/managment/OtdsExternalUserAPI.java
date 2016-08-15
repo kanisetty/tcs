@@ -1,6 +1,7 @@
 package com.opentext.tempo.external.invites.invitee.managment;
 
 import com.opentext.otsync.otag.AWComponentRegistry;
+import com.opentext.otsync.otag.components.HttpClientService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.tempo.external.invites.otds.OtdsService;
 import com.opentext.tempo.external.invites.otds.OtdsServiceImpl;
@@ -17,7 +18,7 @@ public class OtdsExternalUserAPI implements ExternalUserAPI {
     private final CSExternalUserAPI csService;
 
     public OtdsExternalUserAPI() {
-        csService = new CSExternalUserAPI(new DefaultHttpClient());
+        csService = new CSExternalUserAPI(HttpClientService.getService().getHttpClient());
     }
 
     public ExternalUserAPIResult inviteeValidated(String email, String password, String firstName,

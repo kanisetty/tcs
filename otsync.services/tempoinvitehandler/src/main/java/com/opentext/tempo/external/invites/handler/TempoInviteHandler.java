@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opentext.otag.service.context.components.AWComponent;
 import com.opentext.otsync.api.HttpClient;
+import com.opentext.otsync.otag.components.HttpClientService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.tempo.external.invites.api.OtagInviteServlet;
 import com.opentext.tempo.external.invites.api.ServiceNotReadyException;
@@ -17,7 +18,6 @@ import com.opentext.tempo.external.invites.persistence.TempoInviteRepository;
 import com.opentext.tempo.external.invites.persistence.domain.NewInvitee;
 import com.opentext.tempo.external.invites.persistence.domain.PasswordReset;
 import org.apache.http.NameValuePair;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,7 +186,7 @@ public final class TempoInviteHandler implements AWComponent {
      * signup validation form. User is clicking on a link in an email they received
      * when they were invited to join. A valid token should exist representing the data for
      * the user (name, email, etc).
-     * </p><p>
+     * </p>
      * This handler will make sure the username and password entered are valid.
      * </p>
      */
@@ -596,7 +596,8 @@ public final class TempoInviteHandler implements AWComponent {
             externalUserAPI = new OtdsExternalUserAPI();
         } else {
             LOG.info("Using CS External User API");
-            externalUserAPI = new CSExternalUserAPI(new DefaultHttpClient());
+            externalUserAPI = new CSExternalUserAPI(
+                    HttpClientService.getService().getHttpClient());
         }
 
         return externalUserAPI;
