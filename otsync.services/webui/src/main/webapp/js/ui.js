@@ -37,8 +37,7 @@ var ui = new function(){
 
 	*/
 	this.LoadTemplateInEmptyElement = function( templateID, data, selectorToAppendTo ){
-
-		$( selectorToAppendTo ).empty().append(  $(templateID).tmpl( data ) );
+		$(selectorToAppendTo).empty().append($(templateID).tmpl(data));
 	};
 
 	/**
@@ -781,12 +780,28 @@ var ui = new function(){
 			itemIcon.addClass('processIndicator');
 
 		});
-	}
+	};
 
-	 this.Authenticate = function()
+	this.Authenticate = function()
 	{
-		//TODO: figure out login
-        parent.webaccess.showLoginContainer(true);
+		//TODO: gotta figure out login
+		//parent.webaccess.showLoginContainer(true);
+		var currentURL = window.location.href;
+
+		//old login stuff
+		if($.address.path()!== "/LOGIN"){
+			info.nexturl = $.address.value();
+		}
+
+		if(typeof info.nexturl === 'undefined' || info.nexturl.length < 1) {
+			info.nexturl = "/";
+		}
+
+		$.address.value(TAB.LOGIN);
+
+		$.when(startup.PrepareAuthWithLogin())
+			.pipe(ui.Redirect);
+
 	};
 
 	this.Redirect = function()

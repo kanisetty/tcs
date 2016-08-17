@@ -1,0 +1,89 @@
+<script id="copyFolderItem_tmpl" type="text/x-jquery-tmpl">
+	{{if SUBTYPE == CONST_SUBTYPE.FOLDER}}
+        {{if !ISSELF && !ISPARENT && !ISREADONLY}}
+            <li id="selectFolderID${DATAID}" class="browseable selectable dialogWordWrap">
+                <span class="iconForFolder"></span>
+                <div class="nameForFolder">
+                    <a href="#" onclick="return false;">${NAME}</a>
+                </div>
+                <div class="newLine"></div>
+                <ul></ul>
+            </li>
+        {{else}}
+            {{if ISPARENT}}
+                <li id="selectFolderID${DATAID}" class="isparent dialogWordWrap">
+                        <span class="iconForFolder"></span>
+                        <div class="nameForFolder">
+                            ${NAME}
+                        </div>
+                        <div class="newLine"></div>
+                        <ul></ul>
+                    </li>
+            {{else}}
+                {{if ISREADONLY && !ISSELF}}
+                    <li id="selectFolderID${DATAID}" class="readOnly dialogWordWrap">
+                        <span class="iconForFolder"></span>
+                        <div class="nameForFolder">
+                            ${NAME}
+                        </div>
+                        <div class="newLine"></div>
+                        <ul></ul>
+                    </li>
+                {{else}}
+                    <li class="noselect dialogWordWrap">
+                        <span class="iconForFolder"></span>
+                        <div class="nameForFolder">
+                            ${NAME}
+                        </div>
+                        <div class="newLine"></div>
+                    </li>
+                {{/if}}
+            {{/if}}
+        {{/if}}
+    {{/if}}
+</script>
+
+<script id="multiCopyItem_tmpl" type="text/x-jquery-tmpl">
+    {{if SUBTYPE == CONST_SUBTYPE.FOLDER}}
+        {{if !ISSELF && !ISPARENT && !ISREADONLY}}
+            <li id="selectFolderID${DATAID}" class="browseable selectable dialogWordWrap">
+                <span class="iconForFolder"></span>
+                <div class="nameForFolder">
+                    <a href="#" onclick="return false;">${NAME}</a>
+                </div>
+                <div class="newLine"></div>
+                <ul></ul>
+            </li>
+        {{else}}
+            {{if ISPARENT}}
+                <li id="selectFolderID${DATAID}" class="isparent dialogWordWrap">
+                    <span class="iconForFolder"></span>
+                    <div class="nameForFolder">
+                        ${NAME}
+                    </div>
+                    <div class="newLine"></div>
+                    <ul></ul>
+                </li>
+            {{else}}
+                {{if ISREADONLY && !ISSELF}}
+                    <li id="selectFolderID${DATAID}" class="readOnly dialogWordWrap">
+                        <span class="iconForFolder"></span>
+                        <div class="nameForFolder">
+                            ${NAME}
+                        </div>
+                        <div class="newLine"></div>
+                        <ul></ul>
+                    </li>
+                {{else}}
+                    <li class="noselect dialogWordWrap">
+                        <span class="iconForFolder"></span>
+                        <div class="nameForFolder">
+                            ${NAME}
+                        </div>
+                        <div class="newLine"></div>
+                    </li>
+                {{/if}}
+            {{/if}}
+        {{/if}}
+    {{/if}}
+</script>

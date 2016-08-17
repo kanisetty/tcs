@@ -1,16 +1,14 @@
-<template id="createNewFolder">
-	<![CDATA[
+<script id="createNewFolder_tmpl" type="text/x-jquery-tmpl">
 	<div id="newFolder">
         <div class="newFolderIconWrapper">
             <div class="itemIcon ${utils.FolderIcon(null)}"></div>
         </div>
         <div class="newFolderFormWrapper">
             <form id='createNewFolderForm'>
-                {{tmpl(newFolderInput) 'input'}}{{tmpl(newFolderCreateButton) 'button'}}{{tmpl(newFolderCancelButton) 'button'}}
+                {{tmpl(newFolderInput) "#input_tmpl"}}{{tmpl(newFolderCreateButton) "#button_tmpl"}}{{tmpl(newFolderCancelButton) "#button_tmpl"}}
                 <div id="newFolderError" class="errorText"> <b>${T('LABEL.Error')}</b>: ${T('LABEL.NewFolderError')}</div>
             </form>
         </div>
         <div class="newLine"></div>
 	</div>
-	]]>
-</template>
+</script>

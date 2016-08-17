@@ -1,27 +1,22 @@
-<template id="userNotificationConfigDialogTemplate">
-	<![CDATA[			
+<script id="userNotificationConfigDialogTemplate_tmpl" type="text/x-jquery-tmpl">
         <div id="userNotificationConfigDialogView">           
 			<div class="historyContent">
 				<div id="userNotificationConfigTabs">
 					<ul>
-						{{tmpl(userNotificationConfigTabList) 'userNotificationConfigTabHeaders'}}
+						{{tmpl(userNotificationConfigTabList) "#userNotificationConfigTabHeaders_tmpl"}}
 					</ul>				
-					{{tmpl(userNotificationConfigTabList) 'userNotificationConfigTabContent'}}
+					{{tmpl(userNotificationConfigTabList) "#userNotificationConfigTabContent_tmpl"}}
 				</div>					
 			</div>
 		</div>
-	]]>	
-</template>
+</script>
 
-<template id="userNotificationConfigTabHeaders">
-	<![CDATA[
+<script id="userNotificationConfigTabHeaders_tmpl" type="text/x-jquery-tmpl">
 		<li><a href="#tab${tabName}" class="tab${tabName}Header" >${tabText}</a></li>
 		 <li class="tabSeparator"></li>
-	]]>
-</template>
+</script>
 
-<template id="userNotificationConfigTabContent">
-	<![CDATA[
+<script id="userNotificationConfigTabContent_tmpl" type="text/x-jquery-tmpl">
 		<div id="tab${tabName}">
 		{{if tabName == "Notifications"}}
 			<div class="settingsHeading">${T('LABEL.EmailMe')}</div>
@@ -45,5 +40,4 @@
 			</div>
 		{{/if}}
 		</div>
-	]]>
-</template>
+</script>

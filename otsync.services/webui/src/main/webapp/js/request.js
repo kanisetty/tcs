@@ -139,6 +139,31 @@ var request = new function() {
 	};
 
 	/**
+	This function will authenticate the client with otsync using a username/password.
+
+	 @param {String} username				username
+	 @param {String} password				password
+
+	 @private
+	*/
+	var _Authenticate = function(username, password){
+
+		var type = 'auth';
+		var subtype = 'auth';
+		var requestID = type + subtype + "()";
+
+		var requestData = new _ObjectRequestAuthenticate(type, subtype);
+
+		requestData.username = username;
+		requestData.password = password;
+		requestData.auto = false;
+
+		var ajaxData = new request.ObjectFrontChannel(requestData);
+
+		return queue.AddSet(requestID, ajaxData);
+	};
+
+	/**
 	 * This function will authenticate the client with otsync using a token.
 	 *
 	 * @private
@@ -434,6 +459,26 @@ var request = new function() {
 		}
 		// Reject the promise, so that the remainder of the deferred chain executes properly.
 		return $.Deferred().reject(responseData);
+	};
+
+	/**
+	 This function will authenticate the client with otsync using a username/password.
+
+	 @param {String} username				username
+	 @param {String} password				password
+
+	 @public
+	 */
+	this.Authenticate = function(username, password){
+
+		return $.when(_Authenticate(username, password)).pipe(request.ValidateResponse)
+			.done(function(resultData){
+				_PopulateInfo(resultData);
+				response.Authenticate(true, resultData.info);
+			})
+			.fail(function(resultData){
+				response.Authenticate(false, resultData.info);
+			});
 	};
 
 	/**

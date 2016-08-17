@@ -1,0 +1,52 @@
+<script id="taskInfoTemplate_tmpl" type="text/x-jquery-tmpl">
+	<div id="taskCreation"></div>
+	<div id="tasks"></div>
+</script>
+
+<script id="task_tmpl" type="text/x-jquery-tmpl">
+	<div class="task">
+		<div class="taskNameWrapper">
+			<div class="taskName">${name}</div>
+			<div class="taskCancel">
+				{{if ( info.userID == createdBy ) }}
+					<a onclick="return false;" href="#"><span class="ui-icon ui-icon-close"></span></a>
+				{{/if}}
+			</div>
+		</div>
+		<div class="taskDetail">
+			<div class="taskAssigneeName">Assignee: {{if assignedToDisplayName === null }}${T('LABEL.NotAssigned')}{{else}}${assignedToDisplayName}{{/if}}</div>
+			<div class="taskStatus">
+				<select name="taskStatusMenu" class="taskStatusMenu" id="taskStatusMenu" {{if ( assignedTo != null && info.userID != assignedTo ) }} disabled="disabled" {{/if}}>
+					<option {{if status == "PENDING"}} selected="selected" {{/if}} value="PENDING">${T('LABEL.PendingTask')}</option>
+					<option {{if status == "ONHOLD"}} selected="selected" {{/if}} value="ONHOLD">${T('LABEL.OnHold')}</option>
+					<option {{if status == "INPROCESS"}} selected="selected" {{/if}} value="INPROCESS">${T('LABEL.InProcess')}</option>
+					<option {{if status == "ISSUE"}} selected="selected" {{/if}} value="ISSUE">${T('LABEL.Issue')}</option>
+					<option {{if status == "COMPLETED"}} selected="selected" {{/if}} value="COMPLETED">${T('LABEL.Completed')}</option>
+					<option {{if status == "CANCELLED"}} selected="selected" {{/if}} value="CANCELLED">${T('LABEL.Cancelled')}</option>
+				</select>
+			</div>
+			<div class="taskDueDate">${T('LABEL.Due')}: <span class="{{if dueDate != null && utils.IsPastDate(dueDate)}}pastDate{{/if}}">{{if dueDate === null}}${T('LABEL.None')}{{else}}${utils.DateStringToShortDate(dueDate,true)}{{/if}}</span></div>
+		</div>
+	</div>
+</script>
+
+<script id="emptyTaskList_tmpl" type="text/x-jquery-tmpl">
+	<div class="nothingToDisplay">${T('LABEL.TherAreNoTasksToDisplay')}</div>
+</script>
+
+<script id="createTask_tmpl" type="text/x-jquery-tmpl">
+	<div class="createTask">
+		<textarea name="name" id="taskNameInput" class="taskDescriptionInput" placeholder="${T('LABEL.TaskDescription')}" maxlength="248" />
+		<input name="assignedTo" id="taskAssignedToInput" class="taskAssigneeInput" placeholder="${T('LABEL.EnterAssigneeName')}"/>
+		<div class="taskCreateDueDate">
+			<a href="#" id="taskDueDateLink"><input type="hidden" name="dueDate" id="taskDueDateInput" /></a>
+			${T('LABEL.Due')}: <span id="taskDateSelected" class="taskDateSelected">${T('LABEL.None')}</span>
+		</div>
+		<input type="button" name="createTaskButton" id="createTaskButton" class="createTaskButton" value="${T('LABEL.CreateTask')}" />
+	</div>
+</script>
+
+<script id="tasksAccordionItem_tmpl" type="text/x-jquery-tmpl">
+	<h3>${T('LABEL.Tasks')}</h3>
+	<div id="taskInfo"></div>
+</script>

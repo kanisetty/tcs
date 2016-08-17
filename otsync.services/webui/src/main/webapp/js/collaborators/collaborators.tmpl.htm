@@ -1,11 +1,10 @@
-<template id="shareInfoTemplate">
-		<![CDATA[
+<script id="shareInfoTemplate_tmpl" type="text/x-jquery-tmpl">
 			<div id="shareInfoWrapper">
 				<div id="shareInfoInnerWrapper">				
 					{{if info.folderIsShareable && !info.isAdminModeRequested}}
 						<div id="shareInvitation">
 						<textarea name="inviteMessage" id="inviteMessageInputSidebar" class="inviteMessageInput" placeholder="${T('LABEL.EnterMessageToIncludeToNewCollaborators')}"/>
-						{{tmpl "shareTypeSelect-Box"}}
+						{{tmpl "#shareTypeSelect-Box_tmpl"}}
 						<input name="invitee" id="inviteeinput" class="shareInput" placeholder="${T('LABEL.EnterUserToShareWith')}"/><br />
 						</div>
 					{{/if}}
@@ -13,27 +12,21 @@
 				</div>
 				<div id="editAllCollaborators"></div>
 			</div>
-		]]>
-</template>
-<template id="shareInvitationMessageTemplate">
-		<![CDATA[
+</script>
+<script id="shareInvitationMessageTemplate_tmpl" type="text/x-jquery-tmpl">
 			<div id="shareInvitation" class="shareInvitationAll">
 				<textarea name="inviteMessage" id="inviteMessageInput" class="inviteMessageInput" placeholder="${T('LABEL.EnterMessageToIncludeToNewCollaborators')}"/>
 			</div>
-		]]>
-</template>
-<template id="shareInvitationTemplate">
-		<![CDATA[
+</script>
+<script id="shareInvitationTemplate_tmpl" type="text/x-jquery-tmpl">
 			{{if info.folderIsShareable}}
 				<div id="shareInvitation" class="shareInvitationAll">
-					{{tmpl "shareTypeSelect-Box"}}
+					{{tmpl "#shareTypeSelect-Box_tmpl"}}
 					<input name="invitee" id="inviteeinputEditCollaborators" class="shareInput" placeholder="${T('LABEL.EnterUserToShareWith')}"/>
 				</div>
 			{{/if}}	
-		]]>
-</template>
-<template id="collaborator">
-	<![CDATA[
+</script>
+<script id="collaborator_tmpl" type="text/x-jquery-tmpl">
 		{{if !dropDown.textRight && !MarkForAdd && CollaboratorIndex < 7}}
 			<div class="collaborator" username="${Name}">
 				<div class="shareUserImage"><img src="${ui.GetProfilePicUrl(UserID)}" class="{{if dropDown.classes}}${dropDown.classes}{{/if}}" title="${Name}"  alt="{{if IsExternalUser}} ${T('LABEL.ExternalUser')} {{/if}}"  /></div>
@@ -48,11 +41,9 @@
 				{{if info.folderIsShareable}}<div class="cancelShareIcon"><a href="#" onclick="return false;"></a></div>{{/if}}
 			</div>
 		{{/if}}
-	]]>
-</template>
+</script>
 
-<template id="editAllCollaboratorsTemplate">
-	<![CDATA[
+<script id="editAllCollaboratorsTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="editCollaborators">
 			<div id="editCollaboratorsObjectInfo"></div>
 			{{if !info.isAdminModeRequested}}
@@ -61,19 +52,15 @@
 			{{/if}}
 			<div id="allCollaborators"></div>
 		</div>
-	]]>
-</template>
-<template id="editAllCollaboratorsFolderTemplate">
-	<![CDATA[
+</script>
+<script id="editAllCollaboratorsFolderTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="editCollaboratorsFolderInfo">
 			<div id="objectInfo">Owner</div>
 			<div id="searchInfo">Search</div>
 		</div>
-	]]>
-</template>
+</script>
 
-<template id="objectInfoDetailsTemplate">
-	<![CDATA[
+<script id="objectInfoDetailsTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="objectInfoDetails">
 			<div class="userImage"><img src="${ui.GetProfilePicUrl(ownerID)}" title="${ownerName}" ></img></div>
 			<div class="objectInfoDetailsText">
@@ -89,10 +76,8 @@
 			<div id="folderNotifyCheckBox"></div>
 		</div>
 		{{/if}}
-	]]>
-</template>
-<template id="objectInfoDetailsDlgTemplate">
-	<![CDATA[
+</script>
+<script id="objectInfoDetailsDlgTemplate_tmpl" type="text/x-jquery-tmpl">
 		<div id="objectInfoDetails" class="dialogObjectInfoDetails">
 			<div class="userImage"><img src="${ui.GetProfilePicUrl(ownerID)}" title="${ownerName}" ></img></div>
 			<div class="objectOwnerName dialogObjectOwnerName">
@@ -108,10 +93,8 @@
 				</div>
 			{{/if}}
 		</div>
-	]]>
-</template>
-<template id="collaboratorAll">
-	<![CDATA[
+</script>
+<script id="collaboratorAll_tmpl" type="text/x-jquery-tmpl">
 		{{if !dropDown.textRight}}
 			<div class="collaborator all{{if LastPending}} lastPending{{/if}}" username="${Name}">
 				<div class="shareUserImage"><img src="${ui.GetProfilePicUrl(UserID)}" class="{{if dropDown.classes}}${dropDown.classes}{{/if}}" title="${Name}"  alt="{{if IsExternalUser}} ${T('LABEL.ExternalUser')} {{/if}}"  /></div>
@@ -133,7 +116,7 @@
 								<div class="restoreCollaboratorBtnRight" />
 							</div>
 						{{else}}
-							{{tmpl "shareTypeSelect-Box"}}
+							{{tmpl "#shareTypeSelect-Box_tmpl"}}
 							<div class="cancelCollaboratorIcon"><a href="#" onclick="return false;"></a></div>
 						{{/if}}
 					</div>
@@ -141,11 +124,9 @@
 			</div>
 		{{/if}}
 		
-	]]>
-</template>
+</script>
 
-<template id="shareTypeSelect-Box">
-	<![CDATA[
+<script id="shareTypeSelect-Box_tmpl" type="text/x-jquery-tmpl">
 	<div id=${SelectID} class="select-box" shareType="${ShareType}">
 			<div class="select-left">
 				<a href="#" onclick="return false;"><img id="select-boxSelectedImage" src={{if ShareType==SHARETYPE.READONLY}}"${info.repo}/img/read_drop.png"{{else}}"${info.repo}/img/read_write_drop.png"{{/if}}></img></a>
@@ -167,12 +148,9 @@
 			<div class="select-right"></div>
 			<div class="hideBorder"></div>
 		</div>
-	]]>
-</template>
+</script>
 
-<template id="collaboratorsAccordionItem">
-	<![CDATA[
+<script id="collaboratorsAccordionItem_tmpl" type="text/x-jquery-tmpl">
 		<h3>${T('LABEL.Collaborators')}</h3>
 		<div id="shareInfo"></div>
-	]]>
-</template>
+</script>

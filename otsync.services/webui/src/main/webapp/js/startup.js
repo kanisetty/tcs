@@ -99,6 +99,12 @@ var hashEventHandler = function(event){
 					Search.DoSearch();
 				break;
 
+				/******************************************** LOGIN TAB ***************************************/
+				case TAB.LOGIN:
+
+					defer = startup.LoadLoginTab(defer);
+					break;
+
 				/******************************************** SHARE TAB ***************************************/
 				//For the desktop client
 				//Share tab doesn�t exist so redirect to ADDSHARE FILE
@@ -227,6 +233,55 @@ var startup = new function (){
 		return defer;
     };
 
+	/************************************************   LoadLoginTab   *******************************************/
+	this.LoadLoginTab = function(defer){
+		if(info.currentTab !== TAB.LOGIN) {
+			var loginDialog={
+				usernameInput:
+				{
+					id:'loginName',
+					type:'text',
+					name:'loginName',
+					placeHolder: T('LABEL.UserName'),
+					textTop:T('LABEL.UserName'),
+					wrapperClasses: 'loginUserName'
+				},
+				passwordInput:
+				{
+					id:'loginPwd',
+					type:'password',
+					name:'loginPwd',
+					placeHolder: T('LABEL.Password'),
+					textTop:T('LABEL.Password'),
+					wrapperClasses: 'loginPassword'
+				},
+				button:
+				{
+					id:'loginButton',
+					name:'loginButton',
+					textRight:T('LABEL.SignIn'),
+					classes: 'loginButton'
+				}};
+
+			$('#topNavigator').empty();
+
+
+			var tmplItem = $('#page').tmplItem();
+			if( tmplItem.update ){
+
+				tmplItem.tmpl = $.template('loginTemplate_tmpl');
+				tmplItem.data = loginDialog;
+				tmplItem.update();
+			}else{
+				ui.LoadTemplateInEmptyElement('#loginTemplate_tmpl',loginDialog,'#tempo-main')
+			}
+			$('#loginName').focus();
+			info.currentTab = TAB.LOGIN;
+		}
+		return defer;
+
+	};
+
 	/************************************************   _LoadTemplates   *******************************************/
 	/**
 	This function initializes the HTML template strings into the templating system.
@@ -316,13 +371,17 @@ var startup = new function (){
 
 		var defer = $.Deferred();
 
-        if (typeof $.address.parameter('t') === "undefined") {
-            info.nexturl = $.address.value();
-        } else {
-            // the t parameter is used during a redirect from content server
-            // we do not want it to appear once in the URL so redirect to /
-            info.nexturl = "/";
-        }
+		if($.address.path()!== "/LOGIN") {
+			if(typeof $.address.parameter('t') === "undefined"){
+				info.nexturl = $.address.value();
+			}else{
+				// the t parameter is used during a redirect from content server
+				// we do not want it to appear once in the URL so redirect to /
+				info.nexturl = "/";
+			}
+		}else{
+			info.nexturl = "/";
+		}
 
 		if (info.userPrefUILang === ""){
 			info.userPrefUILang = "en-US";
@@ -337,14 +396,30 @@ var startup = new function (){
 
 	this.InitialAuth = function(){
 		$.when(request.AuthenticateWithToken())
-		.pipe(null,ui.Authenticate)
-		.done(startup.InitialGetSettings);
+			.pipe(null,startup.PrepareAuthWithLogin) // only call PrepareAuthWithLogin if the AuthenticateWithToken fails
+			.done(startup.InitialGetSettings);
+	};
+
+	this.PrepareAuthWithLogin = function(){
+		// The authDefer is used to prevent futher execution of the code until there is
+		// a successful authentication via the login page. This defer object is resolved
+		// by response.Authenticate.
+
+		var authDefer = $("#loginButton").data("defer")?$("#loginButton").data("defer"):$.Deferred();
+
+
+		startup.LoadLoginTab(null);
+
+		// storing the authDefer in the loginButton so that response.Authenticate can resolve it
+		$("#loginButton").data("defer",authDefer);
+
+		return authDefer.promise();
 	};
 
 	this.InitialGetSettings = function(){
 		$.when(UserNotificationConfig.GetUserNotificationConfig(info.userID))
 		.done(startup.InitialAuthPost);
-	}
+	};
 
 	this.InitialAuthPost = function(){
 		$('#tempo-main').empty();
