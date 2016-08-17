@@ -6,6 +6,8 @@ public interface OtdsService {
 
     OtdsUser createUser(String firstName, String lastName, String email, String password);
 
+    OtdsUser createExternalUser(String firstName, String lastName, String email, String password);
+
     OtdsUser updateUser(String firstName, String lastName, String email, String password);
 
     OtdsUser findUser(String userId);

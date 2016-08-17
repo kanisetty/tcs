@@ -26,11 +26,21 @@ public class OtdsUser {
     public OtdsUser() {
     }
 
-    public OtdsUser(String firstName, String lastName, String email, String partition, String password) {
+    public OtdsUser(String firstName, String lastName,
+                    String email, String partition, String password) {
         this.name = email;
         this.userPartitionID = partition;
         this.location = "ou=Root,ou=" + partition + ",ou=IdentityProviders,dc=identity,dc=opentext,dc=net";
-        setAttributes(firstName, lastName, email, password);
+        setAttributes(firstName, lastName, email, password, false);
+    }
+
+    public OtdsUser(String firstName, String lastName, String email,
+                    String partition, String password,
+                    boolean isExternal) {
+        this.name = email;
+        this.userPartitionID = partition;
+        this.location = "ou=Root,ou=" + partition + ",ou=IdentityProviders,dc=identity,dc=opentext,dc=net";
+        setAttributes(firstName, lastName, email, password, isExternal);
     }
 
     @Override
@@ -61,7 +71,7 @@ public class OtdsUser {
         return result;
     }
 
-    private void setAttributes(String firstName, String lastName, String email, String password) {
+    private void setAttributes(String firstName, String lastName, String email, String password, boolean isExternal) {
         List<OtdsAttribute> values = new ArrayList<>(10);
         addIfNotEmpty(values, newOtdsAttribute(FIRST_NAME_KEY, firstName));
         addIfNotEmpty(values, newOtdsAttribute(LAST_NAME_KEY, lastName));
@@ -69,6 +79,10 @@ public class OtdsUser {
         addIfNotEmpty(values, newOtdsAttribute("UserMustChangePasswordAtNextSignIn", FALSE));
         addIfNotEmpty(values, newOtdsAttribute("PasswordNeverExpires", TRUE));
         addIfNotEmpty(values, newOtdsAttribute("userPassword", password));
+
+        if (isExternal)
+            values.add(newOtdsAttribute("oTType", "ExternalUser"));
+
         this.values = values.toArray(new OtdsAttribute[values.size()]);
         customAttributes = new OtdsCustomAttribute[0];
     }

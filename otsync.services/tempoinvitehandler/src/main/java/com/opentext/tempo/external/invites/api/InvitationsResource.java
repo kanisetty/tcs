@@ -59,7 +59,7 @@ public class InvitationsResource {
             try {
                 // we don't supply the first and last name as they are setup when the external user
                 // confirms them after being sent the email
-                OtdsUser otdsUser = otdsService.createUser("", "", email, password);
+                OtdsUser otdsUser = otdsService.createExternalUser("", "", email, password);
                 return Response.ok(otdsUser).build();
             } catch (Exception e) {
                 String errMsg = "We failed to create the new external user in OTDS";

@@ -145,6 +145,12 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
         return getClient().post("/users/", user, OTDS_USER_TYPE);
     }
 
+    @Override
+    public OtdsUser createExternalUser(String firstName, String lastName, String email, String password) {
+        OtdsUser user = new OtdsUser(firstName, lastName, email, getPartition(), password, true /* isExternal */);
+        return getClient().post("/users/", user, OTDS_USER_TYPE);
+    }
+
     private String getPartition() {
         if (isNullOrEmpty(partition)) {
             throw new WebApplicationException(503);
