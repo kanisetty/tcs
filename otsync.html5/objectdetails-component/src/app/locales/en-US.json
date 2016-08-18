@@ -20,6 +20,22 @@
 		"Type:":"Type:",
 		"ITEMS":"items"
 	},
+	"nodeType" : {
+		"Folder": "Folder",
+		"Shortcut": "Shortcut",
+		"Category": "Category",
+		"Compound Document": "Compound Document",
+		"URL": "URL",
+		"Document": "Document",
+		"Projec": "Project",
+		"Task List": "Task List",
+		"Channel": "Channel",
+		"Collection": "Collection",
+		"Compound Email": "Compound Email",
+		"Email": "Email",
+		"Email Folder": "Email Folder",
+		"ActiveView": "ActiveView"
+	},
     "error" : {
       "Authentication failed":"Authentication Failed.",
       "NoViewerIsAvailableForThisTypeOfAssignment":"No viewer is available for this type of assignment",
