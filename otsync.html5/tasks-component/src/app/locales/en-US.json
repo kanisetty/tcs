@@ -29,6 +29,7 @@
 		"Name is required":"Name is required",
         "NoViewerIsAvailableForThisTypeOfAssignment":"No viewer is available for this type of assignment",
 		"Start Date is required":"Start Date is required",
-        "Unable to perform action" : "Unable to Perform Action"
+        "Unable to perform action" : "Unable to Perform Action",
+		"Due date must be after start": "Due date must be after Start date"
 	}
 }

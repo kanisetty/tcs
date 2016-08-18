@@ -2,7 +2,7 @@
 	<span class="feed-display-text-wrap">{{browseDecorator.getDecoratedObject().getCommentedOn()}}</span>
 </div>
 <div class="feed-display">
-	<span class="feed-display-text-wrap">{{browseDecorator.getDecoratedObject().getMessage()}}</span>
+	<span class="feed-display-text-wrap" ng-bind-html="browseDecorator.getDecoratedObject().getMessage()"></span>
 </div>
 <div class="feed-display" ng-show='browseDecorator.getDecoratedObject().getAttachmentName() != null'>
 	<img class="feed-attachment-image feed-image-container">

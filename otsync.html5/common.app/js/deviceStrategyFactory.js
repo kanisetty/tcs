@@ -1,17 +1,17 @@
-var DeviceStrategyFactory = function() {
+var DeviceStrategyFactory = function () {
     var _deviceStrategy = null;
 
-    try{
-        if (cordova.isBB()){
-            _deviceStrategy = new BlackBerryStrategy();
-        }else{
-            _deviceStrategy = new NonBlackBerryStrategy();
-        }
-    }catch(error){
+    if (isBlackberry()) {
+        _deviceStrategy = new BlackBerryStrategy();
+    } else {
         _deviceStrategy = new NonBlackBerryStrategy();
     }
 
-    this.getDeviceStrategy = function(){
+    this.getDeviceStrategy = function () {
         return _deviceStrategy;
     };
+
+    function isBlackberry() {
+        return cordova && (cordova.isBB instanceof Function) && cordova.isBB();
+    }
 };
