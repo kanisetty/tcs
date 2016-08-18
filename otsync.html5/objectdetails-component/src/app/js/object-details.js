@@ -213,7 +213,12 @@
         $("#node-type").text(formatType(node.mimetype));
 
         // Set size
-        $("#node-size").text(formatSize(node.dataSize));
+        if (node.isContainer) {
+            $("#node-size").text(node.childCount + ' ' + apputil.T("label.ITEMS"));
+        }
+        else {
+            $("#node-size").text(formatSize(node.dataSize));
+        }
     }
 
     /**

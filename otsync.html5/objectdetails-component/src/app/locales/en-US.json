@@ -17,7 +17,8 @@
 		"Properties":"Properties",
 		"Size:":"Size:",
 		"TB":"TB",
-		"Type:":"Type:"
+		"Type:":"Type:",
+		"ITEMS":"items"
 	},
     "error" : {
       "Authentication failed":"Authentication Failed.",
