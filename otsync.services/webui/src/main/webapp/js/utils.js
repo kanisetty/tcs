@@ -827,14 +827,7 @@ var utils = new function() {
 	};
 
 	this.GetBaseUrl = function() {
-		var currentUrl = document.location.toString();
-		var baseUrl = currentUrl;
-		var urlSplit;
-
-		if (currentUrl.indexOf('#') != -1) {
-			urlSplit = currentUrl.split('#');
-			baseUrl = urlSplit[0];
-		}
+		var baseUrl = location.protocol + '//' + location.hostname + (location.port ? ':' +location.port: '') + '/content/';
 
 		return baseUrl;
 	}

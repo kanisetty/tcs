@@ -34,7 +34,7 @@
 						</div>
 						<div id="disk"></div>
 						<ul>
-							{{tmpl(utils.MarkLast(topLinks)) "userActionLink"}}
+							{{tmpl(utils.MarkLast(topLinks)) "#userActionLink_tmpl"}}
 						</ul>
 					</li>
 					<li class="menuDivider"></li>
@@ -158,9 +158,9 @@
         <div class="newLine"></div>
         <div class="loginContent">
             <div id="loginInputs">
-                {{tmpl(usernameInput) "input"}}
-                {{tmpl(passwordInput) "input"}}
-                {{tmpl(button) "button"}}
+                {{tmpl(usernameInput) "#input_tmpl"}}
+                {{tmpl(passwordInput) "#input_tmpl"}}
+                {{tmpl(button) "#button_tmpl"}}
             </div>
             <div id="loginError" class="errorText "> <b>${T('LABEL.Error')}</b>: ${"Invalid User or Password"}</div>
         </div>

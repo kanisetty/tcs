@@ -4,11 +4,11 @@
 
 use strict;
 
-my $jsfileName = "js\\tempo.js";
-my @jsfiles = loadFileList('javascriptfiles.txt');
+my $jsfileName = "webapp\\js\\tempo.js";
+my @jsfiles = loadFileList('buildTools\\javascriptfiles.txt');
 
-my $cssfileName = "css\\tempo.css";
-my @cssfiles = loadFileList('cssfiles.txt');
+my $cssfileName = "webapp\\css\\tempo.css";
+my @cssfiles = loadFileList('buildTools\\cssfiles.txt');
 
 #used to count the js
 my $num = 1;
@@ -41,38 +41,6 @@ open (BUFF, '>', $cssfileName) or die "Unable to open $cssfileName";
 
 
 close (BUFF);
-
-	print "updating templates.js from templates.xml ...\n";
-
-	my $templateFileName = "js\\tempo.xml";
-	my @templatefiles = loadFileList('templatefiles.txt');
-
-	open (BUFF, '>', $templateFileName) or die "Unable to open $templateFileName";
-
-	print BUFF "<templates>";
-
-	for my $file(@templatefiles){
-		# trim some of the build info 
-		$file =~ s/\.\.\/src\///;
-		open (TPLFILE, $file) or die "Unable to open $file for read";
-		print "    Loading $file";
-		while (<TPLFILE>) {
-			print BUFF "$_";
-		}
-		
-		close (TPLFILE);
-	}
-
-	print BUFF "</templates>";
-
-	close (BUFF);
-	
-	print "\n";
-
-	my $commandLine = "java -jar xml2json.jar $templateFileName js\\templates.js";
-	
-	system $commandLine;
-
 
 
 

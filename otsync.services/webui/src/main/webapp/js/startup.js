@@ -302,7 +302,7 @@ var startup = new function (){
 
 		var tmplItem = $('#loginPage').tmplItem();
 
-		tmplItem.tmpl = $.template("page");
+		tmplItem.tmpl = $.template("#page_tmpl");
 		tmplItem.data = _GetPageVars();
 		if(tmplItem.update){
 		tmplItem.update();
