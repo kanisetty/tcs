@@ -249,15 +249,7 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
 
     private String getOtagUrl() {
         try {
-            String otagUrl = "";
-            OtagUrlUpdateHandler otagUrlHandler = getComponent(OtagUrlUpdateHandler.class);
-            if (otagUrlHandler != null)
-                otagUrl = otagUrlHandler.getOtagUrl();
-
-            if (otagUrl == null || otagUrl.isEmpty())
-                otagUrl = settingsClient.getSettingAsString("otag.url");
-
-            return otagUrl;
+            return settingsClient.getSettingAsString("otag.url");
         } catch (Exception e) {
             LOG.warn("Failed to resolve OtagUrlUpdateHandler", e);
         }
