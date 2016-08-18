@@ -15,20 +15,20 @@ $(document).ready(function () {
     var deviceStrategy = workflow.getDeviceStrategy();
 
     workflow.init = function () {
+        var _this = this;
         var action;
 
         clientOS = deviceStrategy.getClientOS();
 
-        if (this.initialized) {
-
+        if (_this.initialized) {
             return;
         }
 
         deviceStrategy.getGatewayURL()
-            .done(function(gatewayURL){
+            .done(function (gatewayURL) {
                 _gatewayURL = gatewayURL;
 
-                this.initialized = true;
+                _this.initialized = true;
 
                 $('#close-button').click(workflow.close);
 
@@ -41,12 +41,10 @@ $(document).ready(function () {
                     if (workflowData.groupStep) {
 
                         $('#step-accept-assignment-btn').click(function () {
-
                             workflow.acceptAssignment();
                         });
 
                         $('#step-not-accept-assignment-btn').click(function () {
-
                             workflow.close();
                         });
 
@@ -59,8 +57,7 @@ $(document).ready(function () {
                                 workflow.sendOn();
                             });
                             workflow.showStep();
-                        }
-                        catch (e) {
+                        } catch (e) {
                             alert(e);
                         }
                     }
@@ -78,18 +75,16 @@ $(document).ready(function () {
                     workflow.setNodeName(apputil.T("error.Unknown action provided by container"));
                 }
             })
-            .fail(function(error) {
+            .fail(function (error) {
                 alert(error);
             });
     };
 
     workflow.clear = function () {
-
         $('#workflow').empty();
     };
 
     workflow.setNodeName = function (nodeName) {
-
         $("#node-name").text(nodeName);
     };
 
@@ -98,7 +93,7 @@ $(document).ready(function () {
         if (isValidId(nodeID)) {
 
             $.when(workflow.runRequestWithAuth({
-                url: _gatewayURL  + "/workflow/v5/workflows/" + nodeID + "/subwork/" + workflowData.subwork + "/tasks/" + workflowData.step
+                url: _gatewayURL + "/workflow/v5/workflows/" + nodeID + "/subwork/" + workflowData.subwork + "/tasks/" + workflowData.step
 
                 + "?stepDoneUrl=" + encodeURIComponent(_gatewayURL + "/workflow-component/stepdone.jsp?os=" + clientOS)
                 + "&formDoneUrl=" + encodeURIComponent(_gatewayURL + "/workflow-component/formupdated.jsp?os=" + clientOS)
@@ -108,14 +103,11 @@ $(document).ready(function () {
                 // If it's a web form, we get a relative url back; go there.
                 // Otherwise, draw the page based on the data returned.
                 if (data.isSignatureStep) {
-
                     workflow.showSignatureRequired();
                 } else if (data.location != null) {
-
                     workflow.openWindow(_gatewayURL + data.location);
                     workflow.close();
                 } else {
-
                     workflow.renderStep(data);
                 }
             }).fail(function (error) {
@@ -127,7 +119,6 @@ $(document).ready(function () {
     workflow.showWorkflow = function () {
 
         if (isValidId(nodeID)) {
-
             $.when(workflow.runRequestWithAuth({
                 url: _gatewayURL + "/workflow/v5/workflows/" + nodeID
                 + "?nextUrl=" + encodeURIComponent(_gatewayURL + "/workflow-component/formsubmitted.jsp?os=" + clientOS)
@@ -137,14 +128,11 @@ $(document).ready(function () {
                 // If it's a web form, we get a relative url back; go there.
                 // Otherwise, draw the page based on the data returned.
                 if (data.isSignatureRequired) {
-
                     workflow.showSignatureRequired();
                 } else if (data.location != null) {
-
                     workflow.openWindow(_gatewayURL + data.location);
                     workflow.close();
                 } else {
-
                     workflowData.mapID = data.mapID;
                     workflow.renderStep(data);
                 }
@@ -170,12 +158,10 @@ $(document).ready(function () {
         $("#workflow-title").val(data.title);
 
         if (data.isTitleEditable == false) {
-
             $("#workflow-title").attr('disabled', 'disabled');
         }
 
         if (data.isDueDateEditable) {
-
             $('#datetimepicker-due-date').datetimepicker({
                 format: "yyyy-MM-dd HH:mm PP",
                 pick12HourFormat: true,
@@ -185,7 +171,6 @@ $(document).ready(function () {
         }
 
         if (data.instruction) {
-
             workflow.appendHTMLWithScriptTagsAsText($('#step-instructions'), data.instruction);
             $('#step-instructions').show();
             $('#step-instructions-label').show();
@@ -198,7 +183,6 @@ $(document).ready(function () {
             if (data.comments.length == 1) {
 
                 if (data.comments[0].comment !== null && data.comments[0].comment != '') {
-
                     $('#step-prev-comment-label').text(apputil.T("label.CommentOnPreviousStep", {
                         step: data.comments[0].name,
                         user: data.comments[0].user
@@ -225,7 +209,6 @@ $(document).ready(function () {
         }
 
         if (data.canSendForReview) {
-
             workflow.drawReviewForm();
 
             $('#send-for-review-btn').click(function () {
@@ -235,7 +218,6 @@ $(document).ready(function () {
         }
 
         if (data.canDelegate) {
-
             workflow.drawDelegateForm();
 
             $('#delegate-btn').click(function () {
@@ -249,8 +231,8 @@ $(document).ready(function () {
 
             $('#step-view-attachments-btn').click(function () {
                 var data = {
-                    nodeID : nodeID,
-                    title : apputil.T("label.Attachments")
+                    nodeID: nodeID,
+                    title: apputil.T("label.Attachments")
                 };
 
                 var destComponentName = 'ews-app';
@@ -402,7 +384,7 @@ $(document).ready(function () {
 
                         for (var i in data.users) {
                             options.push('<span data-attrid data-userID="' + data.users[i].userID + '">'
-                            + workflow.format.displayName(data.users[i].userName, data.users[i].firstName, data.users[i].lastName) + '</span>');
+                                + workflow.format.displayName(data.users[i].userName, data.users[i].firstName, data.users[i].lastName) + '</span>');
                         }
 
                         return process(options);
@@ -471,7 +453,7 @@ $(document).ready(function () {
 
                         for (var i in data.users) {
                             options.push('<span data-attrid data-userID="' + data.users[i].userID + '">'
-                            + workflow.format.displayName(data.users[i].userName, data.users[i].firstName, data.users[i].lastName) + '</span>');
+                                + workflow.format.displayName(data.users[i].userName, data.users[i].firstName, data.users[i].lastName) + '</span>');
                         }
 
                         return process(options);
@@ -516,12 +498,12 @@ $(document).ready(function () {
             var form = forms[i];
 
             group.append($('<button class="btn btn-block"/>').text(form.name)
-                    .addClass(form.isRequired ? "btn-warning" : "")
-                    .click(function (url) {
-                        return function () {
-                            workflow.openWindow(_gatewayURL + url);
-                        };
-                    }(form.url))
+                .addClass(form.isRequired ? "btn-warning" : "")
+                .click(function (url) {
+                    return function () {
+                        workflow.openWindow(_gatewayURL + url);
+                    };
+                }(form.url))
             );
         }
 
@@ -736,17 +718,16 @@ $(document).ready(function () {
                 var field = $('<div class="control-group' + (attr.isReadOnly ? ' read-only-attr' : '') + '"></div>');
 
                 field.append($('<div class="controls"><label class="checkbox">'
-                + '<input class="wf-attribute' + (attr.isRequired ? ' required-attr' : '') + '" type="checkbox" data-attrid="' + attr.id + '" data-type="Boolean" ' + ((attr.values[0]) ? 'checked="checked"' : '') + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/>'
-                + attr.name + ((attr.isRequired) ? '<strong class="text-error">*</strong>' : '')
-                + '</label></div>'));
+                    + '<input class="wf-attribute' + (attr.isRequired ? ' required-attr' : '') + '" type="checkbox" data-attrid="' + attr.id + '" data-type="Boolean" ' + ((attr.values[0]) ? 'checked="checked"' : '') + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/>'
+                    + attr.name + ((attr.isRequired) ? '<strong class="text-error">*</strong>' : '')
+                    + '</label></div>'));
 
                 $("#attributes").append(field);
 
             },
 
             set: function (item) {
-
-                return (item.val() == 'on') ? true : false;
+                return item.val() == 'on';
             }
         },
 
@@ -761,9 +742,9 @@ $(document).ready(function () {
                 for (var i = 0; i < attr.numRows; i++) {
 
                     html += '<div class="controls">'
-                    + '<div id="datetimepicker' + attr.id + '-' + i + '" class="datetimepicker-attr input-append date">'
-                    + '<input type="text" class="input-large wf-attribute' + (attr.isRequired ? ' required-attr' : '') + '" data-attrid="' + attr.id + '" data-attr-row="' + i + '" data-type="Date" value="' + ((attr.values[i] == null) ? '' : attr.values[i]) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/>'
-                    + '<span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span></div></div>';
+                        + '<div id="datetimepicker' + attr.id + '-' + i + '" class="datetimepicker-attr input-append date">'
+                        + '<input type="text" class="input-large wf-attribute' + (attr.isRequired ? ' required-attr' : '') + '" data-attrid="' + attr.id + '" data-attr-row="' + i + '" data-type="Date" value="' + ((attr.values[i] == null) ? '' : attr.values[i]) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/>'
+                        + '<span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span></div></div>';
                 }
 
                 field.append($(html));
@@ -833,8 +814,8 @@ $(document).ready(function () {
 
                         formattedDate = moment(attr.validValues[j], "YYYY-MM-DDTHH:mm:ssZ").format('YYYY-MM-DD');
                         input.append($('<option '
-                        + ((attr.validValues[j] == attr.values[i]) ? 'selected="selected"' : '')
-                        + ' value="' + attr.validValues[j] + '">' + formattedDate + '</option>'));
+                            + ((attr.validValues[j] == attr.values[i]) ? 'selected="selected"' : '')
+                            + ' value="' + attr.validValues[j] + '">' + formattedDate + '</option>'));
                     }
 
                     div.append(input);
@@ -856,13 +837,13 @@ $(document).ready(function () {
                 var field = $('<div class="control-group' + (attr.isReadOnly ? ' read-only-attr' : '') + '"></div>');
 
                 field.append($('<label class="control-label">'
-                + attr.name + ((attr.isRequired) ? '<strong class="text-error">*</strong>' : '')
-                + '</label>'));
+                    + attr.name + ((attr.isRequired) ? '<strong class="text-error">*</strong>' : '')
+                    + '</label>'));
 
                 for (var i = 0; i < attr.numRows; i++) {
 
                     field.append($('<div class="controls"><input class="wf-attribute' + (attr.isRequired ? ' required-attr' : '') + '" type="number" data-attrid="' + attr.id + '" data-attr-row="' + i + '" data-type="Integer"'
-                    + 'value="' + ((attr.values[i] == null) ? '' : attr.values[i]) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/></div>'));
+                        + 'value="' + ((attr.values[i] == null) ? '' : attr.values[i]) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/></div>'));
                 }
 
                 $("#attributes").append(field);
@@ -894,8 +875,8 @@ $(document).ready(function () {
                     for (var j in attr.validValues) {
 
                         input.append($('<option '
-                        + ((attr.validValues[j] == attr.values[0]) ? 'selected="selected"' : '')
-                        + ' value="' + attr.validValues[j] + '">' + attr.validValues[j] + '</option>'));
+                            + ((attr.validValues[j] == attr.values[0]) ? 'selected="selected"' : '')
+                            + ' value="' + attr.validValues[j] + '">' + attr.validValues[j] + '</option>'));
                     }
 
                     div.append(input);
@@ -920,13 +901,13 @@ $(document).ready(function () {
                 var field = $('<div class="control-group' + (attr.isReadOnly ? ' read-only-attr' : '') + '"></div>');
 
                 field.append($('<label class="control-label" for="attr' + attr.id + '">'
-                + attr.name + ((attr.isRequired) ? '<strong class="text-error">*</strong>' : '')
-                + '</label>'));
+                    + attr.name + ((attr.isRequired) ? '<strong class="text-error">*</strong>' : '')
+                    + '</label>'));
 
                 for (var i = 0; i < attr.numRows; i++) {
 
                     field.append($('<div class="controls"><input class="wf-attribute' + (attr.isRequired ? ' required-attr' : '') + '" type="number" step="any" data-attrid="' + attr.id + '" data-attr-row="' + i + '" data-type="Real"'
-                    + 'value="' + ((attr.values[i] == null) ? '' : attr.values[i]) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/></div>'));
+                        + 'value="' + ((attr.values[i] == null) ? '' : attr.values[i]) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/></div>'));
                 }
 
                 $("#attributes").append(field);
@@ -956,8 +937,8 @@ $(document).ready(function () {
                     for (var j in attr.validValues) {
 
                         input.append($('<option '
-                        + ((attr.validValues[j] == attr.values[0]) ? 'selected="selected"' : '')
-                        + ' value="' + attr.validValues[j] + '">' + attr.validValues[j] + '</option>'));
+                            + ((attr.validValues[j] == attr.values[0]) ? 'selected="selected"' : '')
+                            + ' value="' + attr.validValues[j] + '">' + attr.validValues[j] + '</option>'));
                     }
 
                     div.append(input);
@@ -986,7 +967,7 @@ $(document).ready(function () {
                 for (var i = 0; i < attr.numRows; i++) {
 
                     html += '<div class="controls"><input class="wf-attribute' + (attr.isRequired ? ' required-attr' : '') + '" type="text" data-attrid="' + attr.id + '" data-type="StringField"'
-                    + 'data-attr-row="' + i + '" value="' + ((attr.values[i] == null) ? '' : attr.values[i]) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/></div>';
+                        + 'data-attr-row="' + i + '" value="' + ((attr.values[i] == null) ? '' : attr.values[i]) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/></div>';
                 }
 
                 field.append($(html));
@@ -1007,14 +988,14 @@ $(document).ready(function () {
                 var field = $('<div class="control-group' + (attr.isReadOnly ? ' read-only-attr' : '') + '"></div>');
 
                 field.append($('<label class="control-label" for="attr' + attr.id + '">'
-                + attr.name + ((attr.isRequired) ? '<strong class="text-error">*</strong>' : '')
-                + '</label>'));
+                    + attr.name + ((attr.isRequired) ? '<strong class="text-error">*</strong>' : '')
+                    + '</label>'));
 
                 for (var i = 0; i < attr.numRows; i++) {
 
                     field.append($('<div class="controls"><textarea class="wf-attribute' + (attr.isRequired ? ' required-attr' : '') + '" rows="3" data-attrid="' + attr.id + '"data-attr-row="' + i + '" data-type="StringMultiLine" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '>'
-                    + ((attr.values[i] == null) ? '' : attr.values[i])
-                    + '</textarea></div>'));
+                        + ((attr.values[i] == null) ? '' : attr.values[i])
+                        + '</textarea></div>'));
                 }
 
                 $("#attributes").append(field);
@@ -1044,8 +1025,8 @@ $(document).ready(function () {
                     for (var j in attr.validValues) {
 
                         input.append($('<option '
-                        + ((attr.validValues[j] == attr.values[i]) ? 'selected="selected"' : '')
-                        + ' value="' + attr.validValues[j] + '">' + attr.validValues[j] + '</option>'));
+                            + ((attr.validValues[j] == attr.values[i]) ? 'selected="selected"' : '')
+                            + ' value="' + attr.validValues[j] + '">' + attr.validValues[j] + '</option>'));
                     }
 
                     div.append(input);
@@ -1068,16 +1049,16 @@ $(document).ready(function () {
                 var field = $('<div class="control-group' + (attr.isReadOnly ? ' read-only-attr' : '') + '"></div>');
 
                 field.append($('<label class="control-label" for="attr' + attr.id + '">'
-                + attr.name + ((attr.isRequired) ? '<strong class="text-error">*</strong>' : '')
-                + '</label>'));
+                    + attr.name + ((attr.isRequired) ? '<strong class="text-error">*</strong>' : '')
+                    + '</label>'));
 
                 for (var row = 0; row < attr.numRows; row++) {
 
                     field.append($('<div class="controls"><input class="wf-attribute' + (attr.isRequired ? ' required-attr' : '') + '" type="hidden" id="attr'
-                    + attr.id + '-' + row + '" data-attrid="' + attr.id + '" data-attr-row="' + row + '" data-type="User" data-dirty="false" '
-                    + 'value="' + ((attr.values[row] == null) ? '' : attr.values[row].userName) + '"/>'
-                    + '<input class="ajax-typeahead" type="text" id="attrTypeahead' + attr.id + '-' + row + '" data-attrid="' + attr.id + '"'
-                    + 'value="' + ((attr.values[row] == null) ? '' : attr.values[row].displayName) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/></div>'));
+                        + attr.id + '-' + row + '" data-attrid="' + attr.id + '" data-attr-row="' + row + '" data-type="User" data-dirty="false" '
+                        + 'value="' + ((attr.values[row] == null) ? '' : attr.values[row].userName) + '"/>'
+                        + '<input class="ajax-typeahead" type="text" id="attrTypeahead' + attr.id + '-' + row + '" data-attrid="' + attr.id + '"'
+                        + 'value="' + ((attr.values[row] == null) ? '' : attr.values[row].displayName) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/></div>'));
                 }
 
                 $("#attributes").append(field);
@@ -1118,7 +1099,7 @@ $(document).ready(function () {
                                     for (var i in data.users) {
 
                                         options.push('<span data-attrid="' + attrid + '-' + row + '" data-username="' + data.users[i].userName + '">'
-                                        + workflow.format.displayName(data.users[i].userName, data.users[i].firstName, data.users[i].lastName) + '</span>');
+                                            + workflow.format.displayName(data.users[i].userName, data.users[i].firstName, data.users[i].lastName) + '</span>');
                                     }
 
                                     return process(options);
@@ -1174,16 +1155,16 @@ $(document).ready(function () {
                 var field = $('<div class="control-group' + (attr.isReadOnly ? ' read-only-attr' : '') + '"></div>');
 
                 field.append($('<label class="control-label" for="attr' + attr.id + '">'
-                + attr.name + ((attr.isRequired) ? '<strong class="text-error">*</strong>' : '')
-                + '</label>'));
+                    + attr.name + ((attr.isRequired) ? '<strong class="text-error">*</strong>' : '')
+                    + '</label>'));
 
                 for (var row = 0; row < attr.numRows; row++) {
 
                     field.append($('<div class="controls"><input class="wf-attribute' + (attr.isRequired ? ' required-attr' : '') + '" type="hidden" id="attr'
-                    + attr.id + '-' + row + '" data-attrid="' + attr.id + '" data-attr-row="' + row + '" data-type="WebAttrNodeSelect"'
-                    + 'value="' + ((attr.values[row] == null) ? '' : attr.values[row].id) + '"/>'
-                    + '<input class="ajax-typeahead" type="text" id="attrTypeahead' + attr.id + '-' + row + '" data-attrid="' + attr.id + '" data-dirty="false" '
-                    + 'value="' + ((attr.values[row] == null) ? '' : attr.values[row].name) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/></div>'));
+                        + attr.id + '-' + row + '" data-attrid="' + attr.id + '" data-attr-row="' + row + '" data-type="WebAttrNodeSelect"'
+                        + 'value="' + ((attr.values[row] == null) ? '' : attr.values[row].id) + '"/>'
+                        + '<input class="ajax-typeahead" type="text" id="attrTypeahead' + attr.id + '-' + row + '" data-attrid="' + attr.id + '" data-dirty="false" '
+                        + 'value="' + ((attr.values[row] == null) ? '' : attr.values[row].name) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/></div>'));
                 }
 
                 $("#attributes").append(field);
@@ -1238,9 +1219,9 @@ $(document).ready(function () {
                                     for (var i in data.resultList) {
 
                                         options.push('<span data-attrid="' + attrid + '-' + row + '" data-nodeid="' + data.resultList[i].id + '" data-selected-display="' + data.resultList[i].name + '">'
-                                        + data.resultList[i].name
-                                        + ((data.resultList[i].parentName != null) ? ' (' + apputil.T('label.inParent', {parentName: data.resultList[i].parentName}) + ')' : '')
-                                        + '</span>');
+                                            + data.resultList[i].name
+                                            + ((data.resultList[i].parentName != null) ? ' (' + apputil.T('label.inParent', {parentName: data.resultList[i].parentName}) + ')' : '')
+                                            + '</span>');
                                     }
 
                                     return process(options);
@@ -1308,8 +1289,8 @@ $(document).ready(function () {
                     for (var j in attr.validValues) {
 
                         input.append($('<option '
-                        + ((attr.values[0] != null && attr.validValues[j].userName == attr.values[0].userName) ? 'selected="selected"' : '')
-                        + ' value="' + attr.validValues[j].userName + '">' + attr.validValues[j].displayName + '</option>'));
+                            + ((attr.values[0] != null && attr.validValues[j].userName == attr.values[0].userName) ? 'selected="selected"' : '')
+                            + ' value="' + attr.validValues[j].userName + '">' + attr.validValues[j].displayName + '</option>'));
                     }
 
                     div.append(input);
@@ -1338,7 +1319,7 @@ $(document).ready(function () {
                 for (var i = 0; i < attr.numRows; i++) {
 
                     html += '<div class="controls"><input class="wf-attribute' + (attr.isRequired ? ' required-attr' : '') + '" type="text" data-attrid="' + attr.id + '" data-type="Other"'
-                    + 'data-attr-row="' + i + '" value="' + ((attr.values[i] == null) ? '' : attr.values[i]) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/></div>';
+                        + 'data-attr-row="' + i + '" value="' + ((attr.values[i] == null) ? '' : attr.values[i]) + '" ' + (attr.isReadOnly ? ' disabled="disabled"' : '') + '/></div>';
                 }
 
                 field.append($(html));
@@ -1370,8 +1351,8 @@ $(document).ready(function () {
                     for (var j in attr.validValues) {
 
                         input.append($('<option '
-                        + ((attr.validValues[j] == attr.values[i]) ? 'selected="selected"' : '')
-                        + ' value="' + attr.validValues[j] + '">' + attr.validValues[j] + '</option>'));
+                            + ((attr.validValues[j] == attr.values[i]) ? 'selected="selected"' : '')
+                            + ' value="' + attr.validValues[j] + '">' + attr.validValues[j] + '</option>'));
                     }
 
                     div.append(input);

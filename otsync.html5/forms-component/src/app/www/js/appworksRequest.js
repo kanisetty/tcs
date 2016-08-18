@@ -1,37 +1,36 @@
-
-var appworksRequest = function() {
+var appworksRequest = function () {
 
     return {
 
-        _addTicket: function(requestParams) {
+        _addTicket: function (requestParams) {
 
-         if(requestParams.headers)
-         requestParams.headers.OTCSTICKET = appSettings.otcsTicket;
-         else
-         requestParams.headers = {OTCSTICKET: appSettings.otcsTicket};
+            if (requestParams.headers)
+                requestParams.headers.OTCSTICKET = appSettings.otcsTicket;
+            else
+                requestParams.headers = {OTCSTICKET: appSettings.otcsTicket};
 
-         return requestParams
-         },
+            return requestParams
+        },
         _runRequestWithAuth: function (request) {
             var deferred = $.Deferred();
 
-            request().done(function(data) {
+            request().done(function (data) {
 
                 deferred.resolve(data);
 
             }).fail(function (error) {
-                if(error.status == 401) {
+                if (error.status == 401) {
                     //try to reauth once
 
-                    cordovaRequest.authenticate().done(function(data) {
+                    cordovaRequest.authenticate().done(function (data) {
 
-                        request().done(function(data) {
+                        request().done(function (data) {
                             deferred.resolve(data);
-                        }).fail(function() {
+                        }).fail(function () {
                             deferred.reject(data);
                         });
 
-                    }).fail(function(error) {
+                    }).fail(function (error) {
                         deferred.reject(error);
                     });
                 }
@@ -45,7 +44,7 @@ var appworksRequest = function() {
 
         sendRequest: function (requestParams) {
 
-            var request = _.partial(this._sendRequest,requestParams, this);
+            var request = _.partial(this._sendRequest, requestParams, this);
 
             return this._runRequestWithAuth(request);
 
@@ -59,7 +58,7 @@ var appworksRequest = function() {
             requestParams.type = requestParams.method;
             requestParams.queryParams = requestParams.params;
 
-            $.ajax(requestParams).done(function(response){
+            $.ajax(requestParams).done(function (response) {
                 if (response.ok != undefined && response.ok == false) {
                     if (response.auth == false) {
                         error.status = 401;
@@ -71,7 +70,7 @@ var appworksRequest = function() {
                 } else {
                     deferred.resolve(response);
                 }
-            }).fail(function(error){
+            }).fail(function (error) {
                 if (error.status == 0) {
                     error.message = 'ERROR UNABLE TO PERFORM ACTION';
                 }
@@ -86,19 +85,17 @@ var appworksRequest = function() {
             var deferred = $.Deferred();
             try {
 
-                var options = {destinationType: Camera.DestinationType.DATA_URL}
-                var camera = new Appworks.AWCamera(function(data) {
-                    console.log(data);
+                var options = {destinationType: Camera.DestinationType.DATA_URL};
+                var camera = new Appworks.AWCamera(function (data) {
                     deferred.resolve(data);
-                }, function(error) {
-                    console.log(error)
+                }, function (error) {
                     deferred.reject(error);
                 });
 
-                if(func == 'gallery') {
+                if (func === 'gallery') {
                     camera.openGallery(options);
                 }
-                else if(func == 'camera'){
+                else if (func === 'camera') {
                     camera.takePicture(options);
                 }
 

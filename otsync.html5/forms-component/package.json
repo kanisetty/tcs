@@ -1,6 +1,6 @@
 {
   "name": "otsync-forms",
-  "version": "16.0.0",
+  "version": "16.0.1",
   "description": "Handles viewing/updating content server objects using the content server forms api",
   "dependencies": {},
   "devDependencies": {

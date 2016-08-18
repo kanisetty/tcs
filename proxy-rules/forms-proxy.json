@@ -1,0 +1,1 @@
+{"rules":[{"id":"3670","name":"Content Server Forms","whitelist":["(?i)^(otcsapi/v1)(/.*|$)"],"urlRules":[{"match":"(?i)^(otcsapi/v1)/?(.*|$)","replace":"http://ji-cs.appworks.dev/OTCS/livelink.exe/api/v1/$2","sort":0,"continue":false}],"outgoingRules":[],"enabled":true,"sort":1}]}

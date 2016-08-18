@@ -1,13 +1,13 @@
-var NonBlackBerryStrategy = function(){
+var NonBlackBerryStrategy = function () {
     var _defaultLanguage = 'en';
 
-    this.close = function(){
-        var successFn = function() {};
-        var errorFn = function(error) {
-            window.history.back();
-        };
+    this.close = function () {
+        // close the current component
+        this.execRequest('AWComponent', 'close').then(null, error);
 
-        cordova.exec(successFn, errorFn, 'AWComponent', 'close');
+        function error() {
+            window.history.back();
+        }
     };
 
 
@@ -30,44 +30,54 @@ var NonBlackBerryStrategy = function(){
         return dfd.promise();
     };
 
-    this.getClientOS = function(){
+    this.getClientOS = function () {
         return window.clientInformation.platform;
     };
 
-    this.getDefaultLanguage = function(){
-
+    this.getDefaultLanguage = function () {
         return this.execRequest("AWGlobalization", "getPreferredLanguage");
     };
 
-    this.getGatewayURL = function(){
-
-        return this.execRequest("AWAuth", "gateway");
+    this.getGatewayURL = function () {
+        var deferred = $.Deferred();
+        var auth = new Appworks.Auth(function (authResponse) {
+            deferred.resolve(authResponse.authData.gatewayUrl);
+        });
+        auth.authenticate();
+        return deferred.promise();
     };
 
-    this.openFromAppworks = function(destComponentName, data, refreshOnReturn, isComponent){
+    this.openFromAppworks = function (destComponentName, data, refreshOnReturn, isComponent) {
         var appworksType = "component";
+        var component = new Appworks.AWComponent();
 
-        if (!isComponent)
+        if (!isComponent) {
             appworksType = "app";
+        }
 
-        this.execRequest("AWComponent", "open", [destComponentName, $.param(data), appworksType])
-            .done(function(){
-                if (refreshOnReturn)
-                    location.reload();
-            })
-            .fail(function(error) {
-                alert(apputil.T("error.NoViewerIsAvailableForThisTypeOfAssignment"));
-            });
+        // open component
+        component.open(success, err, [destComponentName, $.param(data), appworksType]);
+
+        function success() {
+            if (refreshOnReturn) {
+                location.reload();
+            }
+        }
+
+        function err() {
+            alert(apputil.T("error.NoViewerIsAvailableForThisTypeOfAssignment"));
+        }
     };
 
-    this.openWindow = function(url){
-        window.open(url, '_system', 'location=no');
+    this.openWindow = function (url) {
+        var webview = new Appworks.AWWebView();
+        webview.open(url, '_blank', 'EnableViewPortScale=yes,location=no');
     };
 
-    this.processQueryParameters = function(query){
+    this.processQueryParameters = function (query) {
         var params = {};
 
-        if ( typeof(query) === 'string'){
+        if (typeof(query) === 'string') {
             var pairs = query.split("&");
             var len = pairs.length;
             var idx, pair, key;
@@ -77,7 +87,7 @@ var NonBlackBerryStrategy = function(){
                 pair = pairs[idx].split("=");
                 key = pair[0];
 
-                switch(typeof params[key]) {
+                switch (typeof params[key]) {
                     // Key has not been found, create entry
                     case "undefined":
                         params[key] = pair[1];
@@ -96,39 +106,51 @@ var NonBlackBerryStrategy = function(){
         return params;
     };
 
-    this.reauth = function(){
-        return this.execRequest('AWAuth', 'authenticate');
+    this.reauth = function () {
+        return this.authenticate(true);
     };
 
-    this.runRequestWithAuth = function(requestData){
+    this.authenticate = function (force) {
+        var deferred = $.Deferred();
+        var auth = new Appworks.Auth(deferred.resolve, deferred.reject);
+        auth.authenticate(force);
+        return deferred.promise();
+    };
+
+    this.runRequestWithAuth = function (requestData) {
         var _this = this;
         var deferred = $.Deferred();
 
-        $.ajax(requestData).then(
-            function(data){
-                deferred.resolve(data);
-            },
-            function(jqXHR){
-                // fail: if it's an auth problem, re-auth and try again
-                if(jqXHR.status == 401){
-                    _this.reauth()
-                        .done(function(){
-                            $.ajax(requestData).then(
-                                function(data){
-                                    deferred.resolve(data);
-                                },
-                                function(error){
-                                    deferred.reject(error);
-                                });
-                        })
-                        .fail(function(error){
-                            deferred.reject(error);
-                        });
-                }else{
-                    deferred.reject(jqXHR.status + " " + jqXHR.statusText);
-                }
-            });
+        this.authenticate().then(runRequestWithCredentials);
 
         return deferred.promise();
+
+        // helper methods
+
+        function runRequest(authHeader) {
+            requestData.headers = authHeader;
+            $.ajax(requestData).then(onSuccess, onErr);
+        }
+
+        function runRequestWithCredentials(authResponse) {
+            runRequest(authResponse.authData.authorizationHeader);
+        }
+
+        function onSuccess(data, status, xhr) {
+            if (xhr.status === 401) {
+               _this.reauth().then(runRequestWithCredentials);
+            } else {
+                deferred.resolve(data);
+            }
+        }
+
+        function onErr(err, status, xhr) {
+            if (xhr.status === 401) {
+                _this.reauth().then(runRequestWithCredentials);
+            } else {
+                deferred.reject(err.status + ' ' + err.statusText);
+            }
+        }
+
     };
 };

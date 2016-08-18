@@ -28,11 +28,13 @@
     var deviceStrategyFactory = new DeviceStrategyFactory();
     var deviceStrategy = deviceStrategyFactory.getDeviceStrategy();
 
-    var App = function () {
+    var App = function (isApp) {
         // Haven't initialized yet
         this.initialized = false;
+        // default to 'component' type
+        this.isApp = !!isApp;
 
-        this.getDeviceStrategy = function(){
+        this.getDeviceStrategy = function () {
 
             return deviceStrategy;
         };
@@ -55,6 +57,16 @@
         var _this = this;
 
         var onDeviceReady = function () {
+
+            // set back button to close component, only viable for 'component' types
+            if (!_this.isApp) {
+                new Appworks.AWHeaderBar().setHeader({
+                    backButtonVisible: true,
+                    callback: function () {
+                        _this.close();
+                    }
+                });
+            }
 
             deviceStrategy.getDefaultLanguage()
                 .done(function (lang) {
@@ -108,7 +120,7 @@
      * @param href    A specific URL to parse (Default: window.location.hash).
      * @return        String representing the URL hash.
      */
-    App.prototype.getHash = function(href) {
+    App.prototype.getHash = function (href) {
         var hash = (href || window.location.hash).split("#");
         return (hash.length > 1 ? hash[1] : "");
     };
@@ -121,30 +133,27 @@
      * @return    Object of key:value pairs of parameters.
      */
     App.prototype.getParameters = function () {
-        var query = window.location.search.toString().substring(1);
-        
-        var params = deviceStrategy.processQueryParameters(query);
-
-        return params;
+        var query = window.location.search.toString().substring(1).split('data=').pop();
+        return deviceStrategy.processQueryParameters(query);
     };
 
-    App.prototype.runRequestWithAuth = function(data) {
+    App.prototype.runRequestWithAuth = function (data) {
         data.cache = false;
 
         return deviceStrategy.runRequestWithAuth(data);
     };
 
-    App.prototype.close = function() {
+    App.prototype.close = function () {
 
-        return deviceStrategy.close();
+        return deviceStrategy.close(this.isApp);
     };
 
-    App.prototype.openWindow = function(url) {
+    App.prototype.openWindow = function (url) {
 
         return deviceStrategy.openWindow(url);
     };
-	
-	App.prototype.openFromAppworks = function(destComponentName, data, refreshOnReturn, isComponent) {
+
+    App.prototype.openFromAppworks = function (destComponentName, data, refreshOnReturn, isComponent) {
 
         return deviceStrategy.openFromAppworks(destComponentName, data, refreshOnReturn, isComponent);
     };
@@ -226,20 +235,20 @@
          * @return             String that best represents the user.
          */
         displayName: function (username, firstName, lastName) {
-            var displayName = "";
+            var displayName = '';
 
             // Include the first name, if available
-            if (firstName !== null && firstName !== "") {
+            if (firstName) {
                 displayName += firstName;
             }
 
             // Include the last name, if available
-            if (lastName !== null && lastName !== "") {
-                displayName += " " + lastName;
+            if (lastName && lastName !== 'N/A') {
+                displayName += ' ' + lastName;
             }
 
             // Show a combination of first/last name, otherwise username
-            return displayName.trim() || username;
+            return (displayName || username || '').trim();
         },
         /**
          * ### App.prototype.format.number
@@ -260,21 +269,20 @@
 
 }).call(this);
 
-var apputil = new function(){
+var apputil = new function () {
     /**
 
      This function will return an HTML decoded string
 
-     @param	{String} value
+     @param    {String} value
      @return {String} The HTML decoded string
      */
-    this.htmlDecode = function(value){
+    this.htmlDecode = function (value) {
 
         // if < or > is present in the value, encode them first before passing to $.html()
         var patt = /[<>]/i;
-        if(patt.test(value))
-        {
-            value = value.replace("<","&lt;").replace(">","&gt;");
+        if (patt.test(value)) {
+            value = value.replace("<", "&lt;").replace(">", "&gt;");
         }
         var r = $('<div/>').html(value).text();
         return r;
@@ -289,8 +297,8 @@ var apputil = new function(){
 
      @return {String} The translated string
      */
-    this.T = function( key, data ){
-        return  $.t( key, data );
+    this.T = function (key, data) {
+        return $.t(key, data);
     }
 };
 

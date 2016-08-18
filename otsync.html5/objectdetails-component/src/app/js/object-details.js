@@ -32,14 +32,15 @@
      * Application initialization.
      */
     ObjDetails.init = function () {
+        var _this = this;
         // Only trigger the initialization once
-        if (this.initialized) {
+        if (_this.initialized) {
             return;
         }
 
         deviceStrategy.getGatewayURL()
             .done(function(gatewayURL){
-                this.initialized = true;
+                _this.initialized = true;
 
                 _gatewayURL = gatewayURL;
 
@@ -226,7 +227,7 @@
     function setCategoryTab (categories) {
         var $cats = $("#categories"), $catData,
             cat, catIdx,catLen = categories.length,
-            att, attIdx, attLen, attData, val;
+            att, attIdx, attLen, attData, val, attrChildren, childIndex, currentChild, currentVal;
 
         if (catLen <= 0) {
             $cats.html(apputil.T('label.NoCategoriesDefined'));
@@ -258,21 +259,81 @@
                 attData.push(att.name);
                 attData.push("</div>");
 
-                attData.push("<div class='span6'>");
+                attrChildren = att.attrDef.Children;
                 val = att.value;
 
-                // Check for different formats
-                if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(val)) {
-                    // Date type
-                    val = ObjDetails.format.date(val);
-                } else if (typeof val === "string") {
-                    // String
-                    val = val.replace(/\r?\n/g, "<br>");
-                }
-                attData.push(val);
-                attData.push("</div>");
+                if (attrChildren) {
+                    if (val instanceof Array) {
+                        for (var i = 0; i < val.length; i += 1) {
+                            for (childIndex = 0; childIndex < attrChildren.length; childIndex += 1) {
+                                currentChild = attrChildren[childIndex];
+                                currentVal = val[i][currentChild.ID].Values.pop();
 
-                attData.push("</div>");
+                                attData.push("</div>");
+                                attData.push('<div class="row-fluid">');
+
+                                attData.push("<div class='span6 grid-heading'>");
+                                attData.push(currentChild.DisplayName);
+                                attData.push(': ');
+                                attData.push('</div>');
+
+                                attData.push("<div class='span6'>");
+                                if (new RegExp(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/).test(currentVal)) {
+                                    currentVal = ObjDetails.format.date(currentVal);
+                                } else if (typeof currentVal === 'string') {
+                                    currentVal = currentVal.replace(/\r?\n/g, '<br>');
+                                } else if (currentVal === null || currentVal === undefined) {
+                                    currentVal = 'None';
+                                }
+                                attData.push(currentVal);
+
+                                attData.push("</div>");
+                                attData.push("</div>");
+                            }
+                        }
+                    } else {
+                        for (childIndex = 0; childIndex < attrChildren.length; childIndex += 1) {
+                            currentChild = attrChildren[childIndex];
+                            currentVal = val[currentChild.ID].Values.pop();
+
+                            attData.push("</div>");
+                            attData.push('<div class="row-fluid">');
+
+                            attData.push("<div class='span6 grid-heading'>");
+                            attData.push(currentChild.DisplayName);
+                            attData.push(': ');
+                            attData.push('</div>');
+
+                            attData.push("<div class='span6'>");
+                            if (new RegExp(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/).test(currentVal)) {
+                                currentVal = ObjDetails.format.date(currentVal);
+                            } else if (typeof currentVal === 'string') {
+                                currentVal = currentVal.replace(/\r?\n/g, '<br>');
+                            } else if (currentVal === null || currentVal === undefined) {
+                                currentVal = 'None';
+                            }
+                            attData.push(currentVal);
+
+                            attData.push("</div>");
+                            attData.push("</div>");
+                        }
+                    }
+
+                } else {
+                    attData.push("<div class='span6'>");
+
+                    if (new RegExp(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/).test(val)) {
+                        val = ObjDetails.format.date(val);
+                    } else if (typeof val === 'string') {
+                        val = val.replace(/\r?\n/g, '<br>');
+                    } else if (val === null || val === undefined) {
+                        val = 'No value provided';
+                    }
+                    attData.push(val);
+
+                    attData.push("</div>");
+                    attData.push("</div>");
+                }
             }
             $(attData.join("")).appendTo($catData);
         }
