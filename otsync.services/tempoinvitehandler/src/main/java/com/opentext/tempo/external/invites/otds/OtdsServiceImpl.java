@@ -206,7 +206,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
 
     @Override
     public void updatePassword(String userId, String existingPassword, String newPassword) {
-        getClient().post("/users/" + otdsUrlEncode(userId) + "/password/", new PasswordResetObject(newPassword));
+        getClient().put("/users/" + otdsUrlEncode(userId) + "/password/", new PasswordResetObject(newPassword));
     }
 
     @Override
