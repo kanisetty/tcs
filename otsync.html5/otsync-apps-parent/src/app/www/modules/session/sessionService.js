@@ -1,6 +1,6 @@
 angular.module('sessionService', ['appworksService', 'requestService', 'Request'])
     .factory('$sessionService', ['$q', '$appworksService', '$requestService', 'Request',
-        function($q, $appworksService, $requestService, Request){
+        function ($q, $appworksService, $requestService, Request) {
             var _contentServerAPIPath = '/otcsapi';
             var _appName = '';
             var _gatewayURL = '';
@@ -20,22 +20,22 @@ angular.module('sessionService', ['appworksService', 'requestService', 'Request'
                             _defaultLanguage = defaultLanguage;
 
                             $appworksService.getGatewayURL().then(function (gatewayURL) {
-                                _gatewayURL = gatewayURL;
+                                    _gatewayURL = gatewayURL;
 
-                                self.getProperties().then(function (systemProperties) {
-                                    _systemProperties = systemProperties;
+                                    self.getProperties().then(function (systemProperties) {
+                                        _systemProperties = systemProperties;
 
-                                    deferred.resolve();
-                                }).catch(function (error) {
-                                    deferred.reject(error);
-                                });
-                            })
+                                        deferred.resolve();
+                                    }).catch(function (error) {
+                                        deferred.reject(error);
+                                    });
+                                })
                                 .catch(function (error) {
                                     deferred.reject(error);
                                 });
                         }).catch(function (error) {
-                            deferred.reject(error);
-                        });
+                        deferred.reject(error);
+                    });
 
                     return deferred.promise;
                 },
@@ -75,7 +75,7 @@ angular.module('sessionService', ['appworksService', 'requestService', 'Request'
                     return $appworksService.getOTCSTICKET();
                 },
 
-                getProperties: function(){
+                getProperties: function () {
 
                     var requestParams = {
                         method: 'GET',
@@ -92,7 +92,7 @@ angular.module('sessionService', ['appworksService', 'requestService', 'Request'
                     return _systemProperties[rootName];
                 },
 
-                getUserID: function(){
+                getUserID: function () {
                     return _systemProperties.UserID
                 },
 
@@ -105,11 +105,10 @@ angular.module('sessionService', ['appworksService', 'requestService', 'Request'
                 },
 
                 runRequest: function (request) {
-
                     return $requestService.runRequestWithAuth(request);
                 },
 
-                setAppName: function(appName){
+                setAppName: function (appName) {
                     _appName = appName;
                 }
             }

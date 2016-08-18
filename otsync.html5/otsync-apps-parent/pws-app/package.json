@@ -1,6 +1,6 @@
 {
   "name": "pws-app",
-  "version": "16.0.0",
+  "version": "16.0.1",
   "devDependencies": {
     "bower": "^1.6.5",
     "grunt": "^0.4.5",

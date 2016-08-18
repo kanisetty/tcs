@@ -11,7 +11,7 @@ angular.module('FeedItem', ['userDisplayService'])
 			var _inReplyToSeqNum = _feedItemData.inReplyToSeqNo;
 			var _lastName = _feedItemData.lastName;
 			var _name = _feedItemData.name;
-            var _username = _feedItemData.username;
+            var _username = _feedItemData.username || _feedItemData.userName || _feedItemData.displayName;
 
 			this.getAttachmentID = function(){
 				return _feedItemData.attachmentID;

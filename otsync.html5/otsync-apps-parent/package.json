@@ -1,6 +1,6 @@
 {
   "name": "otsync-apps-parent",
-  "version": "16.0.0",
+  "version": "16.0.1",
   "dependencies": {
   },
   "devDependencies": {

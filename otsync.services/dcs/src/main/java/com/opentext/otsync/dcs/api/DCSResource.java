@@ -1,5 +1,6 @@
 package com.opentext.otsync.dcs.api;
 
+import com.opentext.otsync.dcs.cs.node.Node;
 import com.opentext.otsync.dcs.cs.node.NodeFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,8 +24,12 @@ public class DCSResource {
                                      @Context HttpServletRequest request) {
 
         try {
-            int count = nodeFactory.getOrCreateNode(nodeID)
-                    .getTotalPages(nodeFactory.createCSNodeResource(nodeID, request));
+            Node node = nodeFactory.getOrCreateNode(nodeID);
+            if (node == null)
+                throw new WebApplicationException("No node was found for id " + nodeID, Response.Status.NOT_FOUND);
+
+            int count = node.getTotalPages(nodeFactory.createCSNodeResource(nodeID, request));
+
             return Response.ok(count).build();
         } catch (Exception e) {
             log.error("Get page count error for " + nodeID, e);
@@ -41,8 +46,11 @@ public class DCSResource {
                                            @PathParam("page") int page,
                                            @Context HttpServletRequest request) {
         try {
-            return nodeFactory.getOrCreateNode(nodeID)
-                    .getPage(page, nodeFactory.createCSNodeResource(nodeID, request));
+            Node node = nodeFactory.getOrCreateNode(nodeID);
+            if (node == null)
+                throw new WebApplicationException("No node was found for id " + nodeID, Response.Status.NOT_FOUND);
+
+            return node.getPage(page, nodeFactory.createCSNodeResource(nodeID, request));
         } catch (Exception e) {
             log.error("Get page" + page + " error for " + nodeID, e);
             if (e instanceof WebApplicationException)
