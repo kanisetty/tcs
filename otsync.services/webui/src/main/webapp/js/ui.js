@@ -644,10 +644,12 @@ var ui = new function(){
 				$('#contentmain').prepend('<div id="processInfo"></div>');
 			}
 
-			var dom =  $("#processInfo_tmpl").template({messageID: msgID, text: text, percent: percent} );
-			$('#processInfo').append(dom);
+			var processData = {messageID: msgID, text: text, percent: percent};
+			var processTemplateInstance = $('#processInfo_tmpl').tmpl(processData);
+			$('#processInfo').append(processTemplateInstance);
+
 			_messageCount++;
-			return dom;
+			return processTemplateInstance;
 		}
 		/**
 		 * clear the error message or message
