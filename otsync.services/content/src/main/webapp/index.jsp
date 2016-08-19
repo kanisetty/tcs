@@ -192,6 +192,7 @@
             browseUserName: '${otd:toJSString(param.browseUserName,1000)}'
         }
     </script>
+    <script src="${otd:toHTMLString(repo)}/js/jquery.js"></script>
     <script src="${otd:toHTMLString(repo)}/js/tempo.js"></script>
     <script src="${otd:toHTMLString(repo)}/locales/${lang}.js"></script>
 </head>

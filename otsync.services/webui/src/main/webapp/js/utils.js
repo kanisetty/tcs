@@ -238,11 +238,10 @@ var utils = new function() {
 	@public
 	*/
 	this.DefaultValue = function(actualValue, defaultValue) {
+        var returnValue = actualValue;
 
 		if ( actualValue === null || actualValue === undefined ){
 			returnValue = defaultValue;
-		}else{
-			returnValue = actualValue;
 		}
 
 		return returnValue;
@@ -618,8 +617,8 @@ var utils = new function() {
 	@public
 	*/
 	this.StringToDate = function(dateStr) {
-
 		var d;
+        var lastChar;
 
 		// Only process the string if we are dealing with an expected format.
 		if (dateStr.match(/^\d{4}-\d{2}-\d{2}(\s|T)\d{2}:\d{2}:\d{2}Z?$/) !== null) {
