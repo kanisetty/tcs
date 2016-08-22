@@ -137,7 +137,7 @@ public class AuthMessageListener implements SynchronousMessageListener {
 
         HttpClient httpClient = new DefaultHttpClient();
         try {
-            URL requestURL = new URL(requestScheme, requestServer, requestPort, "/admin/auth");
+            URL requestURL = new URL(requestScheme, requestServer, requestPort, "/v3/admin/auth");
             HttpPost request = new HttpPost(requestURL.toString());
 
             headers.addTo(request);

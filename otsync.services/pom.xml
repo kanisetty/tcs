@@ -37,6 +37,21 @@
         <appworks.platform.version>16.0.1-SNAPSHOT</appworks.platform.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>otnexus</id>
+            <name>OpenText Nexus</name>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <url>${nexus.base.url}/content/repositories/releases/</url>
+        </repository>
+    </repositories>
+
     <build>
         <pluginManagement>
             <plugins>
