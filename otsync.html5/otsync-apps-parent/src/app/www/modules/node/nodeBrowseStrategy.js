@@ -1,113 +1,146 @@
-angular.module('NodeBrowseStrategy', ['nodeService', 'nodeBrowseDecoratingService', 'NodeHeader', 'headerService', 'nodeMenuService', 'Menu',
-        'WorkflowAttachmentFolderHeader'])
-    .factory('NodeBrowseStrategy', ['$q', '$sessionService', '$nodeService', '$nodeBrowseDecoratingService', 'NodeHeader', '$headerService',
-        '$nodeMenuService', 'Menu', 'WorkflowAttachmentFolderHeader',
-        function ($q, $sessionService, $nodeService, $nodeBrowseDecoratingService, NodeHeader, $headerService, $nodeMenuService, Menu,
-                  WorkflowAttachmentFolderHeader) {
-            var _rootNodeID;
-            var _workflowAttachmentFolderSubtype = 154;
+angular
+    .module('NodeBrowseStrategy', [
+        'nodeService',
+        'nodeBrowseDecoratingService',
+        'NodeHeader',
+        'headerService',
+        'nodeMenuService',
+        'Menu',
+        'WorkflowAttachmentFolderHeader'
+    ])
+    .factory('NodeBrowseStrategy', [
+        '$q',
+        '$sessionService',
+        '$nodeService',
+        '$nodeBrowseDecoratingService',
+        'NodeHeader',
+        '$headerService',
+        '$nodeMenuService',
+        'Menu',
+        'WorkflowAttachmentFolderHeader',
+        '$collaboratorsResource',
+        nodeBrowseStrategy
+    ]);
 
-            var NodeBrowseStrategy = function (rootName) {
-                this.rootName = rootName;
-            };
+function nodeBrowseStrategy($q, $sessionService, $nodeService, $nodeBrowseDecoratingService, NodeHeader, $headerService, $nodeMenuService, Menu, WorkflowAttachmentFolderHeader, $collaboratorsResource) {
+    var _rootNodeID;
+    var _workflowAttachmentFolderSubtype = 154;
 
-            NodeBrowseStrategy.prototype.initialize = function () {
-                $nodeService.initialize();
-            };
+    var NodeBrowseStrategy = function (rootName) {
+        this.rootName = rootName;
+    };
 
-            NodeBrowseStrategy.prototype.canMoreBeLoaded = function () {
-                return $nodeService.canMoreNodesBeLoaded();
-            };
+    NodeBrowseStrategy.prototype.initialize = function () {
+        $nodeService.initialize();
+    };
 
-            NodeBrowseStrategy.prototype.clickBrowseDecorator = function (root, browseDecorator) {
-                var menu = new Menu();
-                menu.menuItemClicked($nodeMenuService.getOpenMenuItem("", root, browseDecorator.getDecoratedObject()));
-            };
+    NodeBrowseStrategy.prototype.canMoreBeLoaded = function () {
+        return $nodeService.canMoreNodesBeLoaded();
+    };
 
-            NodeBrowseStrategy.prototype.getBrowseDecorators = function (root, filter) {
-                var deferred = $q.defer();
-                var browseDecorators;
+    NodeBrowseStrategy.prototype.clickBrowseDecorator = function (root, browseDecorator) {
+        var menu = new Menu();
+        menu.menuItemClicked($nodeMenuService.getOpenMenuItem("", root, browseDecorator.getDecoratedObject()));
+    };
 
-                $nodeService.getNodeChildren(root.getID(), filter).then(function (nodeChildren) {
-                    browseDecorators = $nodeBrowseDecoratingService.decorateNodeChildrenForBrowse(nodeChildren);
-                    deferred.resolve(browseDecorators);
+    NodeBrowseStrategy.prototype.getBrowseDecorators = function (root, filter) {
+        var deferred = $q.defer();
+        var browseDecorators;
+
+        $nodeService.getNodeChildren(root.getID(), filter).then(function (nodeChildren) {
+            browseDecorators = $nodeBrowseDecoratingService.decorateNodeChildrenForBrowse(nodeChildren);
+            deferred.resolve(browseDecorators);
+        });
+
+        return deferred.promise;
+    };
+
+    NodeBrowseStrategy.prototype.initializeHeader = function (root) {
+        var header;
+        var addPerms = 0x00004;
+
+        if (root.getSubtype() == _workflowAttachmentFolderSubtype) {
+            header = new WorkflowAttachmentFolderHeader(root);
+        } else {
+            header = new NodeHeader(root.getName(), (root.getPermissions() & addPerms) == addPerms);
+        }
+
+        $headerService.setHeader(header);
+    };
+
+    NodeBrowseStrategy.prototype.longPressBrowseDecorator = function (scope, browseDecorator) {
+        $q.when($sessionService.isOnline()).then(function (isOnline) {
+            if (isOnline != null && isOnline == false) {
+
+                //do nothing if offline, because all actions other then open are unavailable.
+            } else {
+                $nodeMenuService.createMenu(scope, browseDecorator.getDecoratedObject());
+            }
+        });
+    };
+
+    NodeBrowseStrategy.prototype.getRoot = function (stateParams) {
+        var deferred = $q.defer();
+        var rootID = stateParams.id;
+
+        if (rootID == null || rootID.length == 0) {
+
+            $q.when(this.getRootID(stateParams)).then(function (id) {
+                $nodeService.getNode(id).then(function (root) {
+
+                    deferred.resolve(root);
                 });
+            })
+        } else {
 
-                return deferred.promise;
-            };
+            $nodeService.getNode(rootID).then(function (root) {
 
-            NodeBrowseStrategy.prototype.initializeHeader = function (root) {
-                var header;
-                var addPerms = 0x00004;
+                deferred.resolve(root);
+            });
+        }
 
-                if (root.getSubtype() == _workflowAttachmentFolderSubtype) {
-                    header = new WorkflowAttachmentFolderHeader(root);
-                } else {
-                    header = new NodeHeader(root.getName(), (root.getPermissions() & addPerms) == addPerms);
-                }
+        return deferred.promise
+    };
 
-                $headerService.setHeader(header);
-            };
+    NodeBrowseStrategy.prototype.getRootID = function (stateParams) {
+        var rootName = this.rootName;
+        var deferred = $q.defer();
 
-            NodeBrowseStrategy.prototype.longPressBrowseDecorator = function (scope, browseDecorator) {
-                $q.when($sessionService.isOnline()).then(function (isOnline) {
-                    if (isOnline != null && isOnline == false) {
+        if (stateParams == null || stateParams.id == null || stateParams.id.length == 0) {
 
-                        //do nothing if offline, because all actions other then open are unavailable.
-                    } else {
-                        $nodeMenuService.createMenu(scope, browseDecorator.getDecoratedObject());
-                    }
-                });
-            };
+            _rootNodeID = $nodeService.getNodeFromQueryString();
 
-            NodeBrowseStrategy.prototype.getRoot = function (stateParams) {
-                var deferred = $q.defer();
-                var rootID = stateParams.id;
+            if (_rootNodeID != null) {
 
-                if (rootID == null || rootID.length == 0) {
+                deferred.resolve(_rootNodeID);
+            } else {
 
-                    $q.when(this.getRootID(stateParams)).then(function (id) {
-                        $nodeService.getNode(id).then(function (root) {
+                deferred.resolve($sessionService.getRootID(rootName));
+            }
+        } else {
+            deferred.resolve(stateParams.id);
+        }
 
-                            deferred.resolve(root);
-                        });
-                    })
-                } else {
+        return deferred.promise
+    };
 
-                    $nodeService.getNode(rootID).then(function (root) {
+    NodeBrowseStrategy.prototype.hasOfflineStrategy = function () {
+        return false;
+    };
 
-                        deferred.resolve(root);
-                    });
-                }
+    NodeBrowseStrategy.prototype.getPendingShareRequests = function () {
+        var deferred = $q.defer();
+        if (this.rootName === 'tempoBoxRoot') {
+            deferred.promise = $collaboratorsResource.getPendingShareRequests();
+        } else {
+            deferred.resolve([]);
+        }
+        return deferred.promise;
+    };
 
-                return deferred.promise
-            };
+    NodeBrowseStrategy.prototype.processPendingShareRequest = function (share) {
+        // TODO use $collaboratorsResource to accept or decline
+    };
 
-            NodeBrowseStrategy.prototype.getRootID = function (stateParams) {
-                var rootName = this.rootName;
-                var deferred = $q.defer();
-
-                if (stateParams == null || stateParams.id == null || stateParams.id.length == 0) {
-
-                    _rootNodeID = $nodeService.getNodeFromQueryString();
-
-                    if (_rootNodeID != null) {
-
-                        deferred.resolve(_rootNodeID);
-                    } else {
-
-                        deferred.resolve($sessionService.getRootID(rootName));
-                    }
-                } else {
-                    deferred.resolve(stateParams.id);
-                }
-
-                return deferred.promise
-            };
-
-            NodeBrowseStrategy.prototype.hasOfflineStrategy = function () {
-                return false;
-            };
-
-            return NodeBrowseStrategy;
-        }]);
+    return NodeBrowseStrategy;
+}

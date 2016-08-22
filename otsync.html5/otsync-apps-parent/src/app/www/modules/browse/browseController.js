@@ -28,6 +28,7 @@ angular
  * @param $sessionService
  * @param $translate
  * @param $navigationService
+ * @param $q
  */
 function browseController($scope, $stateParams, $displayMessageService, $ionicPlatform, ModalMenu, $browseService, browseStrategyFactory, $sessionService, $translate, $navigationService, $q) {
 
@@ -109,6 +110,12 @@ function browseController($scope, $stateParams, $displayMessageService, $ionicPl
                         $displayMessageService.showErrorMessage('ERROR INITIALIZATION FAILED', 'ERROR');
                     }
                 );
+                // check for pending share requests and present the user the user with option to accept/decline
+                $browseService.getPendingShareRequests().then(function (shareRequests) {
+                   shareRequests.forEach(function (share) {
+                       // TODO accept or decline
+                   });
+                });
             }
         }
 
