@@ -141,9 +141,10 @@ var submitForm = function () {
                 closeMe();
             }
         ).fail(
-            function () {
+            function (res) {
+                var errorMsg = res.responseJSON && res.responseJSON.error;
                 loadingDialog.hide();
-                alert($.t('ERROR_CREATING_NODE'));
+                alert($.t('ERROR_CREATING_NODE') + '\n' + errorMsg);
             }
         );
     } else {
