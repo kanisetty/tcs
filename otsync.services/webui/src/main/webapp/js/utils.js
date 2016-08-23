@@ -785,23 +785,34 @@ var utils = new function() {
 
 	};
 
+	this.DeleteAppWorksSession = function(callbackFunction) {
+		$.ajax({
+			url: utils.GetRootUrl() + '/v3/admin/auth',
+			type: 'DELETE',
+			success: callbackFunction()
+		});
+	};
+
 	/**
 	This function will log the user out of the web UI
 	@public
 	*/
 	this.SessionLogout = function() {
-
-		if( info.isExternal != true )
-		{
-			_ContentServerLogout();
-		}
-
 		// A session cookie cannot be deleted, so just empty the value.
 		utils.DeleteCookie('OTSyncClientID');
 
 		//clear the queued request
 		queue.ClearCacheAll();
-		document.location = this.GetBaseUrl();
+
+		var redirectFunction = function(){
+			document.location = utils.GetBaseUrl();
+		};
+
+		var AppWorksLogout = function(){
+			utils.DeleteAppWorksSession(redirectFunction);
+		};
+
+		_ContentServerLogout(AppWorksLogout);
 	};
 
 	/**
@@ -810,25 +821,32 @@ var utils = new function() {
 	Note: this is to workaround the same origin policy
 	@private
 	*/
-	var _ContentServerLogout = function(){
-		var csLogoutRequestHandler = 'll.DoLogout';
-		var csLogoutURL = info.contentServerURL + '?func=' + csLogoutRequestHandler;
-		var ifrm = document.createElement('iframe');
-		ifrm.setAttribute('src',csLogoutURL);
-		ifrm.setAttribute('id', 'CSLogout');
-		ifrm.setAttribute('style', 'visibility:hidden;display:none');
-		document.body.appendChild(ifrm);
-		$('iframe#CSLogout').load(function(){
-			var self = $('#CSLogout');
-			self.parent().find('#CSLogout').remove();
-		});
-
+	var _ContentServerLogout = function(callback){
+		if( info.isExternal != true ) {
+			var csLogoutRequestHandler = '?func=ll.DoLogout&secureRequestToken=tempobox';
+			var csLogoutURL = info.contentServerURL + csLogoutRequestHandler;
+			var ifrm = document.createElement('iframe');
+			ifrm.setAttribute('src', csLogoutURL);
+			ifrm.setAttribute('id', 'CSLogout');
+			ifrm.setAttribute('style', 'visibility:hidden;display:none');
+			document.body.appendChild(ifrm);
+			$('iframe#CSLogout').load(function () {
+				var self = $('#CSLogout');
+				self.parent().find('#CSLogout').remove();
+				callback();
+			});
+		}
+		else {
+			callback();
+		}
 	};
 
-	this.GetBaseUrl = function() {
-		var baseUrl = location.protocol + '//' + location.hostname + (location.port ? ':' +location.port: '') + '/content/';
+	this.GetRootUrl = function() {
+		return location.protocol + '//' + location.hostname + (location.port ? ':' +location.port: '');
+	}
 
-		return baseUrl;
+	this.GetBaseUrl = function() {
+		return this.GetRootUrl() + '/content/';
 	}
 
 	this.GetBaseAPIVersion = function() {
