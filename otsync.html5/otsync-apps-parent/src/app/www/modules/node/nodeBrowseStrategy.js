@@ -138,8 +138,22 @@ function nodeBrowseStrategy($q, $sessionService, $nodeService, $nodeBrowseDecora
         return deferred.promise;
     };
 
-    NodeBrowseStrategy.prototype.processPendingShareRequest = function (share) {
-        // TODO use $collaboratorsResource to accept or decline
+    NodeBrowseStrategy.prototype.removeShare = function (share) {
+        var deferred = $q.defer();
+        var node = $nodeService.newNodeFromNodeData(share);
+        $collaboratorsResource.getCollaborators(node).then(function (collaborators) {
+            collaborators.forEach(function (collaborator) {
+                if (collaborator.getID() === share.userID) {
+                    deferred.promise = $collaboratorsResource.removeCollaborator(node, collaborator);
+                }
+            });
+        });
+        return deferred.promise;
+    };
+
+    NodeBrowseStrategy.prototype.confirmShare = function (share) {
+        var node = $nodeService.newNodeFromNodeData(share);
+        return $collaboratorsResource.acceptShareRequest(node, share.userID);
     };
 
     return NodeBrowseStrategy;

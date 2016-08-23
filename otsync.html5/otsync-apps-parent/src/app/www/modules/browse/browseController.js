@@ -113,7 +113,11 @@ function browseController($scope, $stateParams, $displayMessageService, $ionicPl
                 // check for pending share requests and present the user the user with option to accept/decline
                 $browseService.getPendingShareRequests().then(function (shareRequests) {
                    shareRequests.forEach(function (share) {
-                       // TODO accept or decline
+                       if (window.confirm('Do you accept this share request?')) {
+                           $browseService.confirmShare(share);
+                       } else {
+                           $browseService.removeShare(share);
+                       }
                    });
                 });
             }

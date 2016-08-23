@@ -123,11 +123,19 @@ function $collaboratorsResource($q, $sessionService, collaboratorFactory, $urlEn
         },
 
         getPendingShareRequest: getPendingShareRequests,
-        processPendingShareRequest: processPendingShareRequest
+        acceptShareRequest: acceptShareRequest
     };
 
-    function processPendingShareRequest(nodeId) {
+    function acceptShareRequest(node, collaboratorId) {
+        var requestParams = {
+            method: 'PUT',
+            url: $sessionService.getGatewayURL() + '/shares/v5/incoming/' + node.getID() + '/users/' + collaboratorId,
+            headers: {'Content-Type': 'application/json; charset=utf-8'}
+        };
 
+        var request = new Request(requestParams);
+
+        return $sessionService.runRequest(request);
     }
 
     function getPendingShareRequests() {

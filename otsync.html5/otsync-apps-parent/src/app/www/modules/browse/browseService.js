@@ -44,6 +44,14 @@ angular.module('browseService', [])
                 return _browseStrategy.getPendingShareRequests();
             },
 
+            confirmShare: function (share) {
+                return _browseStrategy.confirmShare(share);
+            },
+
+            removeShare: function (share) {
+                return _browseStrategy.removeShare(share);
+            },
+
             processPendingShareRequest: function (share) {
                 return _browseStrategy.processPendingShareRequest(share);
             }
