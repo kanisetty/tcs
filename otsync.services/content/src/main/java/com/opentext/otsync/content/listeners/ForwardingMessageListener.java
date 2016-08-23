@@ -31,11 +31,8 @@ public class ForwardingMessageListener implements SynchronousMessageListener {
             id = message.get(Message.ID_KEY_NAME).toString();
         }
 
-        String clientId = null;
-
-        if (message.containsKey(Message.CLIENT_ID_KEY_NAME)) {
-            clientId = message.get(Message.CLIENT_ID_KEY_NAME).toString();
-        }
+        Object clientIdObject = message.get(Message.CLIENT_ID_KEY_NAME);
+        String clientId = clientIdObject != null? clientIdObject.toString() : null;
 
         // If we have a stored response for this client and message id, return it
         // Note that if the request is in progress, the response may just be {"pending":"true"}
