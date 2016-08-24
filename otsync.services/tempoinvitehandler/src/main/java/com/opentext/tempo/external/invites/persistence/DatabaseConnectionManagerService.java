@@ -43,7 +43,6 @@ public class DatabaseConnectionManagerService
     private String jdbcUrl;
     private String jdbcDriver;
 
-
     public DatabaseConnectionManagerService() {
         jpaHelper = new EclipseLinkJpaHelper(INVITE_HANDLER_PU_NAME);
 

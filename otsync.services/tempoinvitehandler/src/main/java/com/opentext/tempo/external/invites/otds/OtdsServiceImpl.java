@@ -5,7 +5,6 @@ import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.tempo.external.invites.InviteHandlerConstants;
-import com.opentext.tempo.external.invites.api.OtagInviteServlet;
 import com.opentext.tempo.external.invites.otds.domain.OtdsUser;
 import com.opentext.tempo.external.invites.otds.domain.PasswordResetObject;
 import com.opentext.tempo.external.invites.web.RestClient;
@@ -27,6 +26,8 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
         OtdsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OtdsServiceImpl.class);
+
+    private static final String OTDS_URL = "otds.url";
     private static final GenericType<OtdsUser> OTDS_USER_TYPE = new GenericType<OtdsUser>() {};
 
     private String otdsUrl;
@@ -35,6 +36,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     private String password;
 
     private RestClient otdsClient;
+    private SettingsClient settingsClient;
 
     public OtdsServiceImpl() {
         // handle settings updates
@@ -56,7 +58,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     public void onStart(String s) {
         LOG.info("OtdsServiceImpl#onStart");
         // attempt to resolve our settings now it is safe to instantiate SDK clients
-        SettingsClient settingsClient = new SettingsClient();
+        settingsClient = new SettingsClient();
 
         // init otds url
         getOtdsUrl();
@@ -89,7 +91,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
             otdsClient.close();
         }
         LOG.debug("Attempting to construct OTDS client URL: {} User: {} Password Specified: {}",
-                getOtdsUrl(), this.user, isNullOrEmpty(this.password)?"NO":"YES");
+                getOtdsUrl(), this.user, isNullOrEmpty(this.password) ? "NO" : "YES");
         if (isNullOrEmpty(getOtdsUrl()) || isNullOrEmpty(this.user) || isNullOrEmpty(this.password)) {
             throw new WebApplicationException("Cannot construct OTDS client", 503); // guess we're not ready
         }
@@ -111,12 +113,20 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     }
 
     private String getOtdsUrl() {
+        final String errMsg = "Cannot find otds.url setting - not ready?";
+
         if (otdsUrl == null) {
-            otdsUrl = OtagInviteServlet.getSettingValue("otds.url");
+            try {
+                otdsUrl = settingsClient.getSettingAsString(OTDS_URL);
+            } catch (APIException e) {
+                LOG.error("SDK Call Failed: Failed to get OTDS URL setting - {}", e.getCallInfo());
+                throw new WebApplicationException(errMsg, 503);
+            }
         }
-        if (otdsUrl == null) {
-            throw new WebApplicationException("Cannot find otds.url setting - not ready?", 503);
-        }
+
+        if (otdsUrl == null)
+            throw new WebApplicationException(errMsg, 503);
+
         return otdsUrl;
     }
 
@@ -132,6 +142,12 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     @Override
     public OtdsUser createUser(String firstName, String lastName, String email, String password) {
         OtdsUser user = new OtdsUser(firstName, lastName, email, getPartition(), password);
+        return getClient().post("/users/", user, OTDS_USER_TYPE);
+    }
+
+    @Override
+    public OtdsUser createExternalUser(String firstName, String lastName, String email, String password) {
+        OtdsUser user = new OtdsUser(firstName, lastName, email, getPartition(), password, true /* isExternal */);
         return getClient().post("/users/", user, OTDS_USER_TYPE);
     }
 
@@ -165,8 +181,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     public OtdsUser findUser(String userId) {
         try {
             return getUser(userId);
-        }
-        catch (WebApplicationException e) {
+        } catch (WebApplicationException e) {
             if (e.getResponse().getStatus() == 404) {
                 return null;
             }
@@ -191,7 +206,7 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
 
     @Override
     public void updatePassword(String userId, String existingPassword, String newPassword) {
-        getClient().post("/users/" + otdsUrlEncode(userId) + "/password/", new PasswordResetObject(newPassword));
+        getClient().put("/users/" + otdsUrlEncode(userId) + "/password/", new PasswordResetObject(newPassword));
     }
 
     @Override

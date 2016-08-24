@@ -1,4 +1,4 @@
-package com.opentext.otsync.dcs;
+package com.opentext.otsync.dcs.cs;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,19 +14,33 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * Instances of this class are responsible for managing the interaction between
+ * this service and a particular Content Server node. It provides download
+ * and upload functionality as well as means to make the required HTTP calls
+ * to Content Server.
+ */
 public class CSNodeResource {
-    public final String nodeID;
-    public static final Log log = LogFactory.getLog(CSNodeResource.class);
 
-    private CSRequestBuilderFactory csRequestBuilderFactory;
-    private CSDocumentDownloader csDocumentDownloader;
-    private CSDocumentPageUploader csDocumentPageUploader;
+    public static final Log LOG = LogFactory.getLog(CSNodeResource.class);
 
-    public CSNodeResource(String nodeID, CSRequestBuilderFactory csRequestBuilderFactory, CSDocumentDownloader csDocumentDownload, CSDocumentPageUploader csDocumentPageUploader) {
+    private final String nodeID;
+    private final CSRequestBuilderFactory csRequestBuilderFactory;
+    private final CSDocumentDownloader csDocumentDownloader;
+    private final CSDocumentPageUploader csDocumentPageUploader;
+
+    public CSNodeResource(String nodeID,
+                          CSRequestBuilderFactory csRequestBuilderFactory,
+                          CSDocumentDownloader csDocumentDownload,
+                          CSDocumentPageUploader csDocumentPageUploader) {
         this.nodeID = nodeID;
         this.csRequestBuilderFactory = csRequestBuilderFactory;
         this.csDocumentDownloader = csDocumentDownload;
         this.csDocumentPageUploader = csDocumentPageUploader;
+    }
+
+    public String getNodeID() {
+        return nodeID;
     }
 
     public int getPagesCount() {
@@ -38,7 +52,7 @@ public class CSNodeResource {
             JsonNode json = execute(csRequest);
             count = json.get("numPages").asInt();
         } catch (IOException e) {
-            log.warn("Couldn't get pages count from cs.", e);
+            LOG.warn("Couldn't get pages count from cs.", e);
         }
 
         return count;
@@ -74,7 +88,7 @@ public class CSNodeResource {
             JsonNode json = execute(csRequest);
             version = json.get("versionNum").asInt();
         } catch (Exception e) {
-            log.warn("Couldn't get pages count from cs.", e);
+            LOG.warn("Couldn't get pages count from cs.", e);
         }
 
         return version;
@@ -89,7 +103,7 @@ public class CSNodeResource {
         try {
             csRequest.write(streamPipe);
         } catch (Exception e) {
-            log.warn("Couldn't get pages count from cs.", e);
+            LOG.warn("Couldn't get pages count from cs.", e);
             return null;
         }
 
@@ -114,7 +128,7 @@ public class CSNodeResource {
     private JsonNode execute(CSRequest csRequest) throws IOException, WebApplicationException {
         ByteArrayOutputStream bObj = new ByteArrayOutputStream();
         csRequest.write(bObj);
-        ObjectReader reader = new ObjectMapper().reader(JsonNode.class);
+        ObjectReader reader = new ObjectMapper().readerFor(JsonNode.class);
 
         return reader.readValue(bObj.toByteArray());
     }

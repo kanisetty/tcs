@@ -3,7 +3,10 @@ package com.opentext.tempo.external.invites.otds;
 import com.opentext.tempo.external.invites.otds.domain.OtdsUser;
 
 public interface OtdsService {
+
     OtdsUser createUser(String firstName, String lastName, String email, String password);
+
+    OtdsUser createExternalUser(String firstName, String lastName, String email, String password);
 
     OtdsUser updateUser(String firstName, String lastName, String email, String password);
 

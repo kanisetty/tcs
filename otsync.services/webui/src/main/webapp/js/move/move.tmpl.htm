@@ -1,36 +1,36 @@
 <script id="moveFolderItem_tmpl" type="text/x-jquery-tmpl">
-		{{if SUBTYPE == CONST_SUBTYPE.FOLDER}}
-			{{if !ISSELF && !ISPARENT}}
-				<li id="selectFolderID${DATAID}" class="browseable selectable dialogWordWrap">
+	{{if SUBTYPE == CONST_SUBTYPE.FOLDER}}
+		{{if !ISSELF && !ISPARENT}}
+			<li id="selectFolderID${DATAID}" class="browseable selectable dialogWordWrap">
+				<span class="iconForFolder"></span>
+				<div class="nameForFolder">
+					<a href="#" onclick="return false;">${NAME}</a>
+				</div>
+				<div class="newLine"></div>
+				<ul></ul>
+			</li>
+		{{else}}
+			{{if !ISPARENT}}
+				<li class="noselect dialogWordWrap">
 					<span class="iconForFolder"></span>
 					<div class="nameForFolder">
-						<a href="#" onclick="return false;">${NAME}</a>
+						${NAME}
+					</div>
+					<div class="newLine"></div>
+				</li>
+			{{else}}
+				<li id="selectFolderID${DATAID}" class="isparent dialogWordWrap">
+					<span class="iconForFolder"></span>
+					<div class="nameForFolder">
+						${NAME}
 					</div>
 					<div class="newLine"></div>
 					<ul></ul>
 				</li>
-			{{else}}
-				{{if !ISPARENT}}
-					<li class="noselect dialogWordWrap">
-						<span class="iconForFolder"></span>
-						<div class="nameForFolder">
-							${NAME}
-						</div>
-						<div class="newLine"></div>
-					</li>
-				{{else}}
-					<li id="selectFolderID${DATAID}" class="isparent dialogWordWrap">
-						<span class="iconForFolder"></span>
-						<div class="nameForFolder">
-							${NAME}
-						</div>
-						<div class="newLine"></div>
-						<ul></ul>
-					</li>
-									
-				{{/if}}
+
 			{{/if}}
-		{{/if}}	
+		{{/if}}
+	{{/if}}
 </script>
 <!--
  multimove and multicopy use the same templates. 

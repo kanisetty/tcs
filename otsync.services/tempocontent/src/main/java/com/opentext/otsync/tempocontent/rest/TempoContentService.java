@@ -2,7 +2,6 @@ package com.opentext.otsync.tempocontent.rest;
 
 import com.opentext.otag.sdk.client.v3.ServiceClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
-import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
 import com.opentext.otag.sdk.types.v3.api.SDKResponse;
@@ -10,6 +9,9 @@ import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
 import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
 import com.opentext.otag.service.context.components.AWComponentContext;
+import com.opentext.otag.service.context.error.AWComponentNotFoundException;
+import com.opentext.otsync.otag.AWComponentRegistry;
+import com.opentext.otsync.otag.EIMConnectorHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -30,7 +32,7 @@ public class TempoContentService implements AWServiceContextHandler {
         serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
+            EIMConnectorClient csConnector = EIMConnectorHelper.getCurrentClient();
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
@@ -59,14 +61,6 @@ public class TempoContentService implements AWServiceContextHandler {
         return (csConnection != null) ? csConnection.getConnectionUrl() : null;
     }
 
-    public static TempoContentService getService() {
-        TempoContentService tempoContentService = AWComponentContext.getComponent(TempoContentService.class);
-        if (tempoContentService == null)
-            throw new RuntimeException("Unable to resolve Tempo Content Service");
-
-        return tempoContentService;
-    }
-
     /**
      * Provide centralised public access to the connection URL we obtain from the
      * Content Server 16 connector.
@@ -75,13 +69,9 @@ public class TempoContentService implements AWServiceContextHandler {
      * @throws WebApplicationException 403, if we haven't managed to get a connection URL
      */
     public static String getCsUrl() {
+        TempoContentService tempoContentService = AWComponentRegistry.getComponent(
+                TempoContentService.class, "Tempo Content");
 
-        TempoContentService tempoContentService = AWComponentContext.getComponent(TempoContentService.class);
-
-        if (tempoContentService == null) {
-            LOG.error("Unable to resolve Tempo Content Service, unable to get Content Server connection");
-            throw new WebApplicationException(Response.Status.FORBIDDEN);
-        }
         String csUrl = tempoContentService.getCsConnection();
 
         if (csUrl == null || csUrl.isEmpty()) {

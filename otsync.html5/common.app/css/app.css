@@ -75,7 +75,6 @@ label.control-label strong.text-error {
 }
 
 #comments {
-    padding: 0 10px;
     overflow: scroll;
 }
 

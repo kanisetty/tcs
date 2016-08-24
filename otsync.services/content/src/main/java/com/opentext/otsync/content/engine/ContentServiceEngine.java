@@ -24,6 +24,8 @@ import org.apache.commons.logging.LogFactory;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 
 /**
@@ -148,7 +150,9 @@ public class ContentServiceEngine {
             if (ServletUtil.isFrontChannelRequest(request)) {
                 frontChannel.handle(request);
             } else if (ServletUtil.isBackChannelRequest(request)) {
-                backChannel.handle(request, response);
+                throw new WebApplicationException(
+                        "Notification BackChannel access has been removed from the Content Service",
+                        Response.Status.BAD_REQUEST);
             } else if (ServletUtil.isContentChannelRequest(request)) {
                 contentChannel.handle(request, response);
             }

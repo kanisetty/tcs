@@ -1,9 +1,16 @@
-package com.opentext.otsync.dcs;
+package com.opentext.otsync.dcs.cs.node;
+
+import com.opentext.otsync.dcs.cs.CSNodeResource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.ws.rs.core.StreamingOutput;
 
 public class Node {
-    private NodePagesGenerator nodePagesGenerator;
+
+    private static final Log LOG = LogFactory.getLog(Node.class);
+
+    private final NodePagesGenerator nodePagesGenerator;
 
     public Node() {
         this.nodePagesGenerator = new NodePagesGenerator();
@@ -22,6 +29,8 @@ public class Node {
     public synchronized StreamingOutput getPage(int page, CSNodeResource csNodeResource) throws Exception {
         StreamingOutput streamOutput = csNodeResource.getPage(page);
         if (streamOutput == null) {
+            if (LOG.isDebugEnabled())
+                LOG.debug("Page " + page + " was not found for csNodeResource, generating page");
             nodePagesGenerator.generatePage(csNodeResource, page);
             streamOutput = csNodeResource.getPage(page);
         }

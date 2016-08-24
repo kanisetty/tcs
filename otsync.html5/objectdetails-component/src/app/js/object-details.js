@@ -21,6 +21,22 @@
     var objectData = ObjDetails.getParameters();
     var nodeID = objectData.id;
     var _gatewayURL = null;
+    var nodeTypes = {
+        '0': 'Folder',
+        '1': 'Shortcut',
+        '131': 'Category',
+        '136': 'Compound Document',
+        '40': 'URL',
+        '144': 'Document',
+        '202': 'Project',
+        '204': 'Task List',
+        '207': 'Channel',
+        '298': 'Collection',
+        '557': 'Compound Email',
+        '749': 'Email',
+        '751': 'Email Folder',
+        '30309': 'ActiveView'
+    };
 
     /**
      * ## Initialization
@@ -211,10 +227,15 @@
         $("#node-modified").text(ObjDetails.format.date(node.displayModifyDate?node.displayModifyDate:node.modifyDate));
 
         // Set Type
-        $("#node-type").text(formatType(node.mimetype));
+        $("#node-type").text(formatType(node.subtype));
 
         // Set size
-        $("#node-size").text(formatSize(node.dataSize));
+        if (node.isContainer) {
+            $("#node-size").text(node.childCount + ' ' + apputil.T("label.ITEMS"));
+        }
+        else {
+            $("#node-size").text(formatSize(node.dataSize));
+        }
     }
 
     /**
@@ -446,13 +467,16 @@
      * @return           String representing a human-readable type.
      */
     function formatType (theType) {
-        // An object of all possible types
-        var types = {
-            "application/pdf": "PDF"
-        };
+        var typeName = nodeTypes['' + theType];
 
-        // Default if the value is not found
-        return types[theType] || apputil.T("Document");
+        if (typeName === undefined) {
+            typeName = "";
+        }
+        else {
+            typeName = apputil.T(typeName);
+        }
+
+        return typeName;
     }
 
     /**

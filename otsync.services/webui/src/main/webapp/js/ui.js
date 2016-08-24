@@ -37,8 +37,7 @@ var ui = new function(){
 
 	*/
 	this.LoadTemplateInEmptyElement = function( templateID, data, selectorToAppendTo ){
-
-		$( selectorToAppendTo ).empty().append(  $(templateID).tmpl( data ) );
+		$(selectorToAppendTo).empty().append($(templateID).tmpl(data));
 	};
 
 	/**
@@ -645,10 +644,12 @@ var ui = new function(){
 				$('#contentmain').prepend('<div id="processInfo"></div>');
 			}
 
-			var dom =  $("#processInfo_tmpl").template({messageID: msgID, text: text, percent: percent} );
-			$('#processInfo').append(dom);
+			var processData = {messageID: msgID, text: text, percent: percent};
+			var processTemplateInstance = $('#processInfo_tmpl').tmpl(processData);
+			$('#processInfo').append(processTemplateInstance);
+
 			_messageCount++;
-			return dom;
+			return processTemplateInstance;
 		}
 		/**
 		 * clear the error message or message
@@ -781,11 +782,28 @@ var ui = new function(){
 			itemIcon.addClass('processIndicator');
 
 		});
-	}
+	};
 
-	 this.Authenticate = function()
+	this.Authenticate = function()
 	{
-        parent.webaccess.showLoginContainer(true);
+		//TODO: gotta figure out login
+		//parent.webaccess.showLoginContainer(true);
+		var currentURL = window.location.href;
+
+		//old login stuff
+		if($.address.path()!== "/LOGIN"){
+			info.nexturl = $.address.value();
+		}
+
+		if(typeof info.nexturl === 'undefined' || info.nexturl.length < 1) {
+			info.nexturl = "/";
+		}
+
+		$.address.value(TAB.LOGIN);
+
+		$.when(startup.PrepareAuthWithLogin())
+			.pipe(ui.Redirect);
+
 	};
 
 	this.Redirect = function()

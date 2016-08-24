@@ -2,19 +2,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
-                             
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.opentext.otsync</groupId>
     <artifactId>otsync.bundles</artifactId>
     <packaging>pom</packaging>
-    <version>16.0.0</version>
+    <version>16.0.1</version>
 
     <name>OTSync Bundles</name>
 
     <modules>
         <module>tempo-bundle</module>
         <module>ote-bundle</module>
+        <module>bundle-deployer</module>
     </modules>
 
     <properties>
@@ -23,7 +24,7 @@
         <main.basedir>${project.basedir}</main.basedir>
 
         <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
-        <appworks.platform.version>16</appworks.platform.version>
+        <appworks.platform.version>16.0.1</appworks.platform.version>
     </properties>
 
     <build>

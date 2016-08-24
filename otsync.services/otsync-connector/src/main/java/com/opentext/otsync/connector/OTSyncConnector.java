@@ -4,11 +4,10 @@ import com.opentext.otag.sdk.client.v3.ServiceClient;
 import com.opentext.otag.sdk.client.v3.SettingsClient;
 import com.opentext.otag.sdk.client.v3.TrustedProviderClient;
 import com.opentext.otag.sdk.connector.EIMConnectorService;
-import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
+import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.handlers.AuthRequestHandler;
-import com.opentext.otag.sdk.provided.OtagUrlUpdateHandler;
 import com.opentext.otag.sdk.types.v3.TrustedProvider;
 import com.opentext.otag.sdk.types.v3.api.SDKResponse;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
@@ -22,6 +21,7 @@ import com.opentext.otag.sdk.util.ForwardHeaders;
 import com.opentext.otsync.connector.auth.OTSyncAuthHandler;
 import com.opentext.otsync.connector.auth.registration.AuthRegistrationHandler;
 import com.opentext.otsync.connector.auth.trustedprovider.TrustedServerKeyRegistrationHandler;
+import com.opentext.otsync.otag.EIMConnectorHelper;
 import com.opentext.otsync.rest.util.LLCookie;
 import jersey.repackaged.com.google.common.collect.Sets;
 import org.apache.commons.logging.Log;
@@ -36,9 +36,13 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
+import static com.opentext.otag.sdk.util.StringUtil.isNullOrEmpty;
 import static com.opentext.otag.service.context.components.AWComponentContext.getComponent;
 
 /**
@@ -142,12 +146,12 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
 
     @Override
     public String getConnectorName() {
-        return "OTSync";
+        return EIMConnectorHelper.CS_CONNECTOR_NAME;
     }
 
     @Override
     public String getConnectorVersion() {
-        return "16.0.1";
+        return EIMConnectorHelper.CS_CONNECTOR_VERSION;
     }
 
     @Override
@@ -191,7 +195,13 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
                 // Also use the configured otag url for this server to set up communications
                 // from the otsync notifier, and redirects for Tempo Box
                 String otagUrl = getOtagUrl();
-                params.add(new BasicNameValuePair("engine", otagUrl + '/'));
+                if (isNullOrEmpty(otagUrl)) {
+                    throw new RuntimeException("Unable to resolve OTAG URL setting, and cannot therefore tell the " +
+                            "otsync module about its value. OTSync services may not work if this is the case");
+                } else {
+                    params.add(new BasicNameValuePair("engine", otagUrl));
+                }
+
                 params.add(new BasicNameValuePair("destination_uri", otagUrl));
 
                 HttpPost request = new HttpPost(csUrl);
@@ -248,15 +258,7 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
 
     private String getOtagUrl() {
         try {
-            String otagUrl = "";
-            OtagUrlUpdateHandler otagUrlHandler = getComponent(OtagUrlUpdateHandler.class);
-            if (otagUrlHandler != null)
-                otagUrl = otagUrlHandler.getOtagUrl();
-
-            if (otagUrl == null || otagUrl.isEmpty())
-                otagUrl = settingsClient.getSettingAsString("otag.url");
-
-            return otagUrl;
+            return settingsClient.getSettingAsString("otag.url");
         } catch (Exception e) {
             LOG.warn("Failed to resolve OtagUrlUpdateHandler", e);
         }
@@ -272,13 +274,17 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
     @Override
     public void onUpdateConnector(EIMConnector eimConnector) {
         LOG.info("EIM Connector Update Received, publishing updated key to CS");
-        // kick of the key registration thread again as someone updated the connector in the Gateway
-        TrustedServerKeyRegistrationHandler providerKeyHandler = getComponent(TrustedServerKeyRegistrationHandler.class);
-        if (providerKeyHandler != null) {
-            providerKeyHandler.updateProviderKey(eimConnector.getProviderKey());
-        } else {
-            LOG.warn("Could not respond to EIM connector update as we could not resolve the " +
-                    "TrustedServerKeyRegistrationHandler component");
+        try {
+            // kick of the key registration thread again as someone updated the connector in the Gateway
+            TrustedServerKeyRegistrationHandler providerKeyHandler = getComponent(TrustedServerKeyRegistrationHandler.class);
+            if (providerKeyHandler != null) {
+                providerKeyHandler.updateProviderKey(eimConnector.getProviderKey());
+            } else {
+                LOG.warn("Could not respond to EIM connector update as we could not resolve the " +
+                        "TrustedServerKeyRegistrationHandler component");
+            }
+        } catch (Exception e) {
+            LOG.error("We failed to update the EIMConnector - OTSyncConnector", e);
         }
     }
 
@@ -332,8 +338,12 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
     }
 
     private boolean isAuthRegistered() {
-        AuthRegistrationHandler authRegistrationHandler =
-                getComponent(AuthRegistrationHandler.class);
+        AuthRegistrationHandler authRegistrationHandler = null;
+        try {
+            authRegistrationHandler = getComponent(AuthRegistrationHandler.class);
+        } catch (Exception e) {
+            LOG.warn("AuthRegistrationHandler not found in AW Component Context, auth is not registered");
+        }
         return authRegistrationHandler != null && authRegistrationHandler.isAuthRegistered();
     }
 

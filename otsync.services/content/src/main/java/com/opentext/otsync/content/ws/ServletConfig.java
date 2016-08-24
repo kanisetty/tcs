@@ -56,16 +56,8 @@ public class ServletConfig {
     }
 
     public static String getContentServerDirectUrl() throws APIException {
-        final SettingsClient settingsClient = getSettingsClient();
-        String url = null;
 
-        if (settingsClient != null)
-            url = settingsClient.getSetting(ContentServiceConstants.DIRECT_URL).getValue();
-
-        if (url == null || url.isEmpty()) {
-            url = getContentServerUrl();
-        }
-        return url;
+        return ContentServerService.getCsUrl();
     }
 
     private static SettingsClient getSettingsClient() {

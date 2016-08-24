@@ -8,6 +8,7 @@ import com.opentext.otag.sdk.types.v3.auth.AuthHandler;
 import com.opentext.otag.sdk.types.v3.auth.RegisterAuthHandlersRequest;
 import com.opentext.otag.sdk.types.v3.settings.Setting;
 import com.opentext.otag.service.context.components.AWComponentContext;
+import com.opentext.otag.service.context.error.AWComponentNotFoundException;
 import com.opentext.otsync.connector.auth.OTSyncAuthHandler;
 import com.opentext.otsync.connector.OTSyncConnectorConstants;
 import org.apache.commons.logging.Log;
@@ -37,7 +38,11 @@ public class RegisterAuthProviderThread extends Thread {
         this.registrationHandler = registrationHandler;
         this.identityServiceClient = identityServiceClient;
 
-        csAuthHandler = AWComponentContext.getComponent(OTSyncAuthHandler.class);
+        try {
+            csAuthHandler = AWComponentContext.getComponent(OTSyncAuthHandler.class);
+        } catch (AWComponentNotFoundException e) {
+            throw new RuntimeException("Failed to create RegisterAuthProviderThread", e);
+        }
     }
 
     @Override

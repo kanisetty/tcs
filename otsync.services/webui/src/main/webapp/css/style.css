@@ -125,6 +125,7 @@ a:link {
     width: 100%;
     min-width: 1024px;
     float: left;
+    margin-top: 48px;
 }
 
 #leftColumnWrapper {
@@ -1661,6 +1662,59 @@ input[type="text"]:focus, input[type="radio"]:focus, input[type="password"]:focu
 #emptyFolderMessage, #noSharedFoldersMessage {
     margin-top: 10px;
     font-size: 13px;
+}
+
+#loginPage{
+    background-image: url('../img/signin_cloudpattern.png');
+    border:1px solid #cccccc;
+    width:1113px;
+    height:594px;
+    margin:0 auto;
+}
+#loginPage #productLogo{
+    background-image: url('../img/signin_logo.png');
+    background-repeat: no-repeat;
+    width:500px;
+    height:80px;
+    margin:50px 70px 10px;
+}
+#loginPage .loginUserName{
+    float:left;
+
+    font-weight:bold;
+    font-size:12px;
+}
+#loginInputs{
+    padding-left:170px;
+}
+#loginPage .loginPassword{
+    float:left;
+    font-weight:bold;
+    font-size:12px;
+}
+#loginPage .loginSubmitButton{
+    padding-top:15px;
+}
+#loginPage #loginInputs input{
+
+    border-radius: 5px 5px 5px 5px;
+    font: 11px Arial,Helvetica,sans-serif;
+    height: 20px;
+    margin-right: 10px;
+    margin-top: 8px;
+    width: 200px;
+}
+#loginPage #loginInputs button
+{
+    background-color: #9D9D9D;
+    border: 2px none;
+    border-radius: 5px 5px 5px 5px;
+    color: #000000;
+    cursor: pointer;
+    font: bold 11px Arial,Helvetica,sans-serif;
+    height: 27px;
+    padding: 5px 18px;
+    margin-top:25px;
 }
 
 /************ select widget ********************/

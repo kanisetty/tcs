@@ -10,6 +10,9 @@ import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
 import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
 import com.opentext.otag.service.context.components.AWComponentContext;
+import com.opentext.otag.service.context.error.AWComponentNotFoundException;
+import com.opentext.otsync.otag.AWComponentRegistry;
+import com.opentext.otsync.otag.EIMConnectorHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -31,7 +34,7 @@ public class SharesService implements AWServiceContextHandler {
         serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
+            EIMConnectorClient csConnector = EIMConnectorHelper.getCurrentClient();
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
@@ -60,14 +63,6 @@ public class SharesService implements AWServiceContextHandler {
         return (csConnection != null) ? csConnection.getConnectionUrl() : null;
     }
 
-    public static SharesService getService() {
-        SharesService sharesService = AWComponentContext.getComponent(SharesService.class);
-        if (sharesService == null)
-            throw new RuntimeException("Unable to resolve SharesService");
-
-        return sharesService;
-    }
-
     /**
      * Provide centralised public access to the connection URL we obtain from the
      * OTSync 16 connector.
@@ -76,13 +71,7 @@ public class SharesService implements AWServiceContextHandler {
      * @throws WebApplicationException 403, if we haven't managed to get a connection URL
      */
     public static String getCsUrl() {
-
-        SharesService sharesService = AWComponentContext.getComponent(SharesService.class);
-
-        if (sharesService == null) {
-            LOG.error("Unable to resolve SharesService, unable to get Content Server connection");
-            throw new WebApplicationException(Response.Status.FORBIDDEN);
-        }
+        SharesService sharesService = AWComponentRegistry.getComponent(SharesService.class, "Shares");
         String csUrl = sharesService.getCsConnection();
 
         if (csUrl == null || csUrl.isEmpty()) {

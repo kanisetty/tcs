@@ -1,0 +1,14 @@
+../src/js/templates.xml
+../src/js/addfolder/addfolder.templates.xml
+../src/js/browse/browse.templates.xml
+../src/js/collaborators/collaborators.templates.xml
+../src/js/copy/copy.templates.xml
+../src/js/move/move.templates.xml
+../src/js/profile/profile.templates.xml
+../src/js/userNotificationConfig/userNotificationConfig.templates.xml
+../src/js/rename/rename.templates.xml
+../src/js/search/search.templates.xml
+../src/js/share/share.templates.xml
+../src/js/upload/upload.templates.xml
+../src/js/tasks/tasks.templates.xml
+../src/js/folderDescription/folderDescription.templates.xml

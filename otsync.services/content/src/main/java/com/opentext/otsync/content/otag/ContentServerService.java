@@ -16,6 +16,7 @@ import com.opentext.otag.sdk.connector.EIMConnectorClient.ConnectionResult;
 import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
+import com.opentext.otsync.otag.EIMConnectorHelper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,7 +71,7 @@ public class ContentServerService implements AWServiceContextHandler {
             LOG.info("Starting Content Server ContentService ...");
 
             try {
-                csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
+                csConnector = EIMConnectorHelper.getCurrentClient();
                 ConnectionResult connectionResult = csConnector.connect();
                 if (!connectionResult.isSuccess()) {
                     String errMsg = "Failed connection result =" + connectionResult.getMessage();

@@ -75,7 +75,7 @@ var Tasks = new function(){
 		
 		Tasks.GetUsers();
 		
-		taskInfoTmplVar = {};
+		var taskInfoTmplVar = {};
 		ui.LoadTemplateInEmptyElement("#taskInfoTemplate_tmpl", taskInfoTmplVar, "#taskInfo");		
 		if((Tasks.tasksList).length > 0 ){
 			ui.LoadTemplateInEmptyElement("#task_tmpl",Tasks.tasksList,"#tasks");

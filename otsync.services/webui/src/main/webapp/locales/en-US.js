@@ -51,7 +51,7 @@ $.extend( true, info.userPrefDictionary, {
 		"CopyItem":"Copy __sourceName__",
 		"CopyFolderInOtsync":"Retain a copy of your folder",
 		"CopyInOtsync":"Retain a copy of your file",
-		"CopyrightOpenText":"Copyright &copy; 2015 OpenText Corporation",
+		"CopyrightOpenText":"Copyright &copy 2016 Open Text. All Rights Reserved.",
 		"CurrentPassword":"Current Password",
 		"Create": "Create",
 		"Created": "Created",

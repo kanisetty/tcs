@@ -2,6 +2,9 @@ package com.opentext.tempo.external.invites.api;
 
 import com.opentext.otag.sdk.client.v3.SettingsClient;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
+import com.opentext.otag.sdk.types.v3.settings.Setting;
+import com.opentext.otag.sdk.types.v3.settings.SettingType;
+import com.opentext.otag.sdk.types.v3.settings.Settings;
 import com.opentext.tempo.external.invites.TempoInviteHandlerService;
 import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
 import com.opentext.tempo.external.invites.handler.BrandingStrings;
@@ -234,16 +237,25 @@ public final class OtagInviteServlet extends HttpServlet {
     }
 
     public static String getSettingValue(String settingKey) {
-        TempoInviteHandlerService handlerService = ServiceIndex.tempoInviteHandlerService();
+        TempoInviteHandlerService handlerService = null;
+        try {
+            handlerService = ServiceIndex.tempoInviteHandlerService(false);
+        } catch (Exception e) {
+            if (LOG.isDebugEnabled())
+                LOG.debug("We failed to get the AppWorks service instance, " +
+                        "it may not have started yet");
+        }
+
         if (handlerService != null) {
             SettingsClient client = handlerService.getSettingsClient();
             try {
                 if (client != null)
                     return client.getSettingAsString(settingKey);
             } catch (APIException e) {
-                LOG.error("Failed to get setting {} from Gateway - {}", settingKey ,e.getCallInfo());
+                LOG.error("Failed to get setting {} from Gateway - {}", settingKey, e.getCallInfo());
             }
         }
+
         return null;
     }
 

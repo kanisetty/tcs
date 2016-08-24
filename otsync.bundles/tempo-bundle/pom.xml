@@ -1,25 +1,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.bundles</artifactId>
-        <version>16.0.0</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>tempo-bundle</artifactId>
-	<name>Tempo Bundle</name>
+    <name>Tempo Bundle</name>
 
-	<properties>
+    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <app.properties.version>16.0.0</app.properties.version>
+        <services.app.properties.version>16.0.1</services.app.properties.version>
+
+        <artifact.name>${project.artifactId}-${project.version}</artifact.name>
+        <bundle.zip>${project.build.directory}/${artifact.name}.zip</bundle.zip>
+        <!-- dump to our sibling as we cannot disable the general deploy plugin for this module and
+        deploy the specific .otag files -->
+        <bundle.output>../bundle-deployer/target/${artifact.name}.otag</bundle.output>
     </properties>
 
-	<build>
-		<plugins>
+    <build>
+        <plugins>
             <!-- Clear down the local front end dependencies and  node/npm install -->
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
@@ -50,7 +57,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>content</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -66,7 +73,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>dcs</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -82,7 +89,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>favorites</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -98,7 +105,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>shares</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -122,7 +129,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>tempocontent</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -138,7 +145,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>tempoinvitehandler</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -146,7 +153,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>otsync-connector</artifactId>
-                                    <version>${app.properties.version}</version>
+                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -177,8 +184,50 @@
                     </execution>
                 </executions>
             </plugin>
-		</plugins>
-	</build>
+
+            <!-- Rename the .zip  to .otag and copy it into the deployer module -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>copy-and-rename-bundle</id>
+                        <phase>package</phase>
+
+                        <configuration>
+                            <target>
+                                <copy file="${bundle.zip}" overwrite="false" tofile="${bundle.output}" />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Skip the install and deploy here, we don't want to do anything with the zip we produce -->
+            <plugin>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>default-install</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
     <dependencies>
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>

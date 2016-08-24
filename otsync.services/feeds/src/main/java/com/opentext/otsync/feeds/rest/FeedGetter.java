@@ -3,7 +3,9 @@ package com.opentext.otsync.feeds.rest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.opentext.otsync.otag.components.HttpClientService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.LLCookie;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -11,7 +13,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import javax.servlet.http.HttpServletResponse;
@@ -35,8 +37,7 @@ public class FeedGetter {
     private static final String STATUS_TYPE = "status";
     private static final String CONTENT_TYPE = "content";
 
-    private static final ObjectReader nodeReader = new ObjectMapper().reader(JsonNode.class);
-    private static final DefaultHttpClient httpClient = new DefaultHttpClient();
+    private static final ObjectReader nodeReader = new ObjectMapper().readerFor(JsonNode.class);
 
     private FeedsResource.Bookmark before;
     private FeedsResource.Bookmark after;
@@ -139,9 +140,15 @@ public class FeedGetter {
             HttpPost request = new HttpPost(FeedsService.getCsUrl());
             request.setEntity(new UrlEncodedFormEntity(params));
             headers.addTo(request);
-            headers.getLLCookie().addLLCookieToRequest(httpClient, request);
+            LLCookie llCookie = headers.getLLCookie();
 
-            HttpResponse response = httpClient.execute(request);
+            CloseableHttpClient httpClient = HttpClientService.getService().getHttpClient();
+            HttpResponse response;
+            if (llCookie != null) {
+                response = httpClient.execute(request, llCookie.getContextWithLLCookie(request));
+            } else {
+                response = httpClient.execute(request);
+            }
 
             final StatusLine status = response.getStatusLine();
 
@@ -176,4 +183,5 @@ public class FeedGetter {
             throw new WebApplicationException(e, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
+
 }

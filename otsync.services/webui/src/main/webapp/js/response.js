@@ -23,24 +23,35 @@ SearchUser
 var response = new function () {
 
 	/**
-	This function will process the response from a successful Authenticate request.
+	 This function will process the response from a successful Authenticate request.
 
-	@param {Boolean} status					indicates if the authentication was successful or not
-	@param {Object} responseInfo			
-    @paramFeature {String} errMsg			error message to be returned to user
-	@paramFeature {String} exceptionCode	string code to determine why response failed
+	 @param {Boolean} status					indicates if the authentication was successful or not
+	 @param {Object} responseInfo
+	 @paramFeature {String} errMsg			error message to be returned to user
+	 @paramFeature {String} exceptionCode	string code to determine why response failed
 
-	@public
-	*/
+	 @public
+	 */
 	this.Authenticate = function(status, responseInfo){
 
 		if (status===true){
+			var buttonDefer = $("#loginButton").data("defer");
 			user.init();
+
+			if ( typeof buttonDefer != 'undefined' ){
+				buttonDefer.resolve();
+			}
 		}else{
-		
+
 			if( typeof responseInfo != 'undefined' )
 			{
 				alert( responseInfo.errMsg );
+
+				if ( responseInfo.exceptionCode=='passwordExpired' ) {
+
+					//TODO: redirect to password change page
+					//that works for reg/external users
+				}
 			}
 		}
 	};

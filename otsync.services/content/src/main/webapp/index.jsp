@@ -160,13 +160,13 @@
     </title>
     <link type="text/css" rel="stylesheet" href="${otd:toHTMLString(repo)}/css/tempo.css"/>
     <link rel="shortcut icon" type="image/ico" href="${otd:toHTMLString(repo)}/img/favicon.ico">
-    <script src="/webaccess/js/otag.js"></script>
+    <!--<script src="/webaccess/js/otag.js"></script>-->
     <script>
 
-        if (top == self) {
+        /*if (top == self) {
             //page is not available to access directly
             window.location.replace("/webaccess/#tab=content");
-        }
+        }*/
 
         info = {
             repo: '${otd:toJSString(repo,256)}',
@@ -192,6 +192,7 @@
             browseUserName: '${otd:toJSString(param.browseUserName,1000)}'
         }
     </script>
+    <script src="${otd:toHTMLString(repo)}/js/jquery.js"></script>
     <script src="${otd:toHTMLString(repo)}/js/tempo.js"></script>
     <script src="${otd:toHTMLString(repo)}/locales/${lang}.js"></script>
 </head>

@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opentext.otag.service.context.components.AWComponent;
 import com.opentext.otsync.api.HttpClient;
+import com.opentext.otsync.otag.components.HttpClientService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.tempo.external.invites.api.OtagInviteServlet;
+import com.opentext.tempo.external.invites.api.ServiceNotReadyException;
 import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
 import com.opentext.tempo.external.invites.email.ExternalUserEmailClient;
 import com.opentext.tempo.external.invites.invitee.managment.CSExternalUserAPI;
@@ -16,7 +18,6 @@ import com.opentext.tempo.external.invites.persistence.TempoInviteRepository;
 import com.opentext.tempo.external.invites.persistence.domain.NewInvitee;
 import com.opentext.tempo.external.invites.persistence.domain.PasswordReset;
 import org.apache.http.NameValuePair;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -185,7 +186,7 @@ public final class TempoInviteHandler implements AWComponent {
      * signup validation form. User is clicking on a link in an email they received
      * when they were invited to join. A valid token should exist representing the data for
      * the user (name, email, etc).
-     * </p><p>
+     * </p>
      * This handler will make sure the username and password entered are valid.
      * </p>
      */
@@ -531,6 +532,19 @@ public final class TempoInviteHandler implements AWComponent {
         generateHTMLOutput(servletContext, response, xml, langFolder + "/passwordresetsuccess.xsl");
     }
 
+    /**
+     * Is the invite handler making use of OTDS (as opposed to CS) for user management?
+     *
+     * @return true if the external user API is OTDS based
+     */
+    public boolean isUsingOTDS() {
+        // force load of external user API
+        if (externalUserAPI == null)
+            getExternalUserAPI();
+
+        return externalUserAPI instanceof OtdsExternalUserAPI;
+    }
+
     private void generateHTMLOutput(ServletContext servletContext,
                                     HttpServletResponse response,
                                     XmlPackage xml,
@@ -582,14 +596,22 @@ public final class TempoInviteHandler implements AWComponent {
             externalUserAPI = new OtdsExternalUserAPI();
         } else {
             LOG.info("Using CS External User API");
-            externalUserAPI = new CSExternalUserAPI(new DefaultHttpClient());
+            externalUserAPI = new CSExternalUserAPI(
+                    HttpClientService.getService().getHttpClient());
         }
 
         return externalUserAPI;
     }
 
     private boolean isCsUsingOtds() {
-        String csUrl = ServiceIndex.csUrl();
+        String csUrl;
+        try {
+            csUrl = ServiceIndex.csUrl();
+        } catch (Exception e) {
+            LOG.error("Unable to determin if we are using OTDS vs CS for user management as we " +
+                    "could not contact CS to ask it", e);
+            throw new ServiceNotReadyException("We were unable to resolve the CS URL yet");
+        }
 
         if (csUrl != null && !isNullOrEmpty(csUrl)) {
             ArrayList<NameValuePair> params = new ArrayList<>();
@@ -600,7 +622,7 @@ public final class TempoInviteHandler implements AWComponent {
                     JsonNode node = objectMapper.readTree(new StringReader(json));
                     String resourceId = node.get("ResourceID").asText();
 
-                    return isNullOrEmpty(resourceId);
+                    return !isNullOrEmpty(resourceId);
                 }
             } catch (Exception e) {
                 LOG.error("Cannot determine CS resource id via func otdsintegration.getresourceid, " +

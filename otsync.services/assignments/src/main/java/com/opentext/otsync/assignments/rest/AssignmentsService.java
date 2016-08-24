@@ -10,6 +10,9 @@ import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
 import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
 import com.opentext.otag.service.context.components.AWComponentContext;
+import com.opentext.otag.service.context.error.AWComponentNotFoundException;
+import com.opentext.otsync.otag.AWComponentRegistry;
+import com.opentext.otsync.otag.EIMConnectorHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -30,7 +33,7 @@ public class AssignmentsService implements AWServiceContextHandler {
         serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
+            EIMConnectorClient csConnector = EIMConnectorHelper.getCurrentClient();
             EIMConnectorClient.ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
@@ -61,16 +64,15 @@ public class AssignmentsService implements AWServiceContextHandler {
     }
 
     public static String getCsUrl() {
-        AssignmentsService assignmentsService = AWComponentContext.getComponent(AssignmentsService.class);
-
-        if (assignmentsService != null) {
-            String csConnection = assignmentsService.getCsConnection();
-            if (csConnection != null)
-                return csConnection;
-        }
+        AssignmentsService assignmentsService = AWComponentRegistry.getComponent(
+                AssignmentsService.class, "Assignments");
+        String csConnection = assignmentsService.getCsConnection();
+        if (csConnection != null)
+            return csConnection;
 
         LOG.error("Unable to service assignments request, unable to get CS connection URL");
         throw new WebApplicationException(Response.Status.FORBIDDEN);
+
     }
 
     private void failBuild(String errMsg) {

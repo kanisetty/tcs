@@ -4,12 +4,15 @@ import com.opentext.otag.sdk.client.v3.SettingsClient;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otag.sdk.types.v3.settings.Setting;
 import com.opentext.otag.sdk.types.v3.settings.SettingType;
+import com.opentext.otag.sdk.types.v3.settings.Settings;
 import com.opentext.tempo.external.invites.InviteHandlerConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.opentext.otag.sdk.util.StringUtil.isNullOrEmpty;
 
 /**
  * Creates the AppWorks managed settings for the service if they don't
@@ -26,7 +29,7 @@ public class SettingsBuilder {
     }
 
     public void initServiceSettings() {
-        getSettings().stream().forEach(setting -> {
+        getSettings().forEach(setting -> {
             String settingKey = setting.getKey();
             try {
                 if (!doesSettingExist(settingKey)) {
@@ -43,11 +46,22 @@ public class SettingsBuilder {
     }
 
     private boolean doesSettingExist(String key) {
+        if (isNullOrEmpty(key))
+            throw new IllegalArgumentException(
+                    "Cannot determine if a setting exists with a null/empty key");
+
         try {
-            return settingsClient.getSetting(key) != null;
+            // get the settings for this app
+            Settings settings = settingsClient.getSettings();
+            for (Setting setting : settings.getSettings()) {
+                if (setting.getKey().equals(key))
+                    return true;
+            }
         } catch (APIException e) {
-            return false;
+            LOG.warn("SDK Call Failed; We cannot determine if '{}' setting exists yet", key);
         }
+
+        return false;
     }
 
     private List<Setting> getSettings() {
@@ -57,7 +71,7 @@ public class SettingsBuilder {
 
     private Setting dbUsername() {
         return buildSetting(InviteHandlerConstants.USER_NAME, "Database User Name", "tempoInviteHandler",
-                "The user name for the invite handler database", 1);
+                "The user name for the invite handler database", SettingType.string, 1);
     }
 
     private Setting dbPassword() {
@@ -67,30 +81,31 @@ public class SettingsBuilder {
 
     private Setting dbConnectionString() {
         return buildSetting(InviteHandlerConstants.JDBC_URL, "Database (JDBC) Connection String", "",
-                "The connection string for the database", 3);
+                "The connection string for the database", SettingType.string, 3);
     }
 
     private Setting emailFrom() {
         return buildSetting(InviteHandlerConstants.EMAIL_FROM, "Email From Address", "inviteHandler@opentext.com",
-                "The \"from\" address to use when sending invite emails", 4);
+                "The \"from\" address to use when sending invite emails", SettingType.string, 4);
     }
 
     private Setting otdsPartition() {
         return buildSetting(InviteHandlerConstants.OTDS_PARTITION, "OTDS External Users Partition", "otag",
-                "The OTDS User Partition where invited users will be managed", 5);
+                "The OTDS User Partition where invited users will be managed", SettingType.string, 5);
     }
 
     private Setting otdsPartitionAdminName() {
         return buildSetting(InviteHandlerConstants.OTDS_PARTITION_ADMIN_USER,
                 "OTDS Partition Administrator", "otadmin@otds.admin",
-                "The Partition Administrator for the OTDS User Partition where invited users will be managed", 6);
+                "The Partition Administrator for the OTDS User Partition where invited users will be managed",
+                SettingType.string, 6);
     }
 
     private Setting otdsPartitionAdminPassword() {
         return buildSetting(InviteHandlerConstants.OTDS_PARTITION_ADMIN_PASSWORD,
                 "OTDS Partition Administrator Password", "",
                 "The Partition Administrator password for the OTDS User Partition where invited users will be managed",
-                7);
+                SettingType.password, 7);
     }
 
     private Setting buildSetting(String key, String displayName, String value,

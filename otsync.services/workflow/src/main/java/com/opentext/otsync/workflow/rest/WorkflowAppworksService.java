@@ -3,7 +3,6 @@ package com.opentext.otsync.workflow.rest;
 import com.opentext.otag.sdk.client.v3.ServiceClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient;
 import com.opentext.otag.sdk.connector.EIMConnectorClient.ConnectionResult;
-import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
 import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
 import com.opentext.otag.sdk.types.v3.api.SDKResponse;
@@ -11,6 +10,9 @@ import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
 import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
 import com.opentext.otag.service.context.components.AWComponentContext;
+import com.opentext.otag.service.context.error.AWComponentNotFoundException;
+import com.opentext.otsync.otag.AWComponentRegistry;
+import com.opentext.otsync.otag.EIMConnectorHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -31,7 +33,7 @@ public class WorkflowAppworksService implements AWServiceContextHandler {
         serviceClient = new ServiceClient();
 
         try {
-            EIMConnectorClient csConnector = new EIMConnectorClientImpl("OTSync", "16.0.1");
+            EIMConnectorClient csConnector = EIMConnectorHelper.getCurrentClient();
             ConnectionResult connectionResult = csConnector.connect();
             if (connectionResult.isSuccess()) {
                 csConnection = connectionResult.getConnector();
@@ -67,14 +69,11 @@ public class WorkflowAppworksService implements AWServiceContextHandler {
      * @throws WebApplicationException 403 if we cannot resolve the connector URL
      */
     public static String getCsUrl() {
-
-        WorkflowAppworksService workflowService = AWComponentContext.getComponent(WorkflowAppworksService.class);
-
-        if (workflowService != null) {
-            String csConnection = workflowService.getCsConnection();
-            if (csConnection != null)
-                return csConnection;
-        }
+        WorkflowAppworksService workflowService = AWComponentRegistry.getComponent(
+                WorkflowAppworksService.class, "Workflow");
+        String csConnection = workflowService.getCsConnection();
+        if (csConnection != null)
+            return csConnection;
 
         LOG.error("Unable to resolve Content Server connection, all requests will be rejected");
         throw new WebApplicationException(Response.Status.FORBIDDEN);

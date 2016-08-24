@@ -60,6 +60,25 @@ var AddEvents = function(defer) {
             }
             });
 
+		bodyTag.delegate('#loginButton', 'click', function(e){
+			return _Login();
+		});
+
+		bodyTag.delegate('#loginInputs', 'keydown', function(e){
+			if(e.keyCode === 13){
+				return _Login();
+			}
+		});
+
+		var _Login = function(){
+			var loginName = $('#loginName').val();
+
+			if(loginName){
+				request.Authenticate(loginName, $('#loginPwd').val());
+			}
+			return false;
+		};
+
 		bodyTag.delegate('.aboutLink', 'click', function(e){
 			$('#apiVersion').text(info.version.api);
 			$("#aboutDialogView").dialog("open");

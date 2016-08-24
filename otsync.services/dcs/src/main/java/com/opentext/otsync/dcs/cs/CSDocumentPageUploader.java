@@ -1,10 +1,17 @@
-package com.opentext.otsync.dcs;
+package com.opentext.otsync.dcs.cs;
 
 import com.opentext.otag.sdk.client.v3.TrustedProviderClient;
 import com.opentext.otag.sdk.types.v3.TrustedProvider;
+import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.api.CSRequest;
 import com.opentext.otsync.api.FixedInputStreamBody;
+import com.opentext.otsync.dcs.appworks.ContentServerURLProvider;
+import com.opentext.otsync.dcs.appworks.ServiceIndex;
+import com.opentext.otsync.otag.components.HttpClientService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.LLCookie;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -13,37 +20,46 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CSDocumentPageUploader {
 
+    private static final Log LOG = LogFactory.getLog(CSDocumentPageUploader.class);
+
     private String nodeID;
     private CSForwardHeaders headers;
-    private String csUrl;
+
     private TrustedProviderClient trustedProviderClient;
+    private volatile ContentServerURLProvider urlProvider;
 
     public CSDocumentPageUploader(String nodeID, CSForwardHeaders csForwardHeaders) {
         this.nodeID = nodeID;
         this.headers = csForwardHeaders;
-        csUrl = DocumentConversionService.getCsUrl();
         trustedProviderClient = new TrustedProviderClient();
     }
 
     public void upload(Integer pageNumber, String file) throws Exception {
-        TrustedProvider provider = trustedProviderClient.getOrCreate("ContentServer");
+        if (LOG.isDebugEnabled())
+            LOG.debug("uploading page " + pageNumber + " of file " + file);
+
+        TrustedProvider provider = null;
+        try {
+            provider = trustedProviderClient.getOrCreate("OTSync");
+        } catch (APIException e) {
+            LOG.error("Failed to create CS trusted provider via SDK - " + e.getCallInfo(), e);
+        }
 
         if (provider == null)
-            throw new IOException("Unable to get ContentServer Provider");
+            throw new RuntimeException("Unable to get ContentServer Provider");
 
         List<NameValuePair> params = new ArrayList<>(5);
         params.add(new BasicNameValuePair(CSRequest.FUNC_PARAM_NAME, "otag.renderedpagepost"));
@@ -55,10 +71,9 @@ public class CSDocumentPageUploader {
         HttpPost request = null;
 
         try (InputStream in = new FileInputStream(file)) {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
+            CloseableHttpClient httpClient = HttpClientService.getService().getHttpClient();
 
             ContentBody filePart = new FixedInputStreamBody(in, "otag-dcs.png", size);
-
             MultipartEntity entity = new MultipartEntity();
 
             for (NameValuePair param : params) {
@@ -67,18 +82,26 @@ public class CSDocumentPageUploader {
 
             entity.addPart("file", filePart);
 
-            request = new HttpPost(csUrl);
+            request = new HttpPost(getCsUrl());
             request.setEntity(entity);
 
             headers.addTo(request);
-            headers.getLLCookie().addLLCookieToRequest(httpClient, request);
+            LLCookie llCookie = headers.getLLCookie();
 
-            HttpResponse response = httpClient.execute(request);
+            if (LOG.isDebugEnabled())
+                LOG.debug("Posting CS request -func:otag.renderedpagepost");
+            HttpResponse response;
+            if (llCookie != null) {
+                response = httpClient.execute(request, llCookie.getContextWithLLCookie(request));
+            } else {
+                response = httpClient.execute(request);
+            }
 
             final StatusLine statusLine = response.getStatusLine();
 
-            if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
-
+            int respStatusCode = statusLine.getStatusCode();
+            if (respStatusCode != HttpStatus.SC_OK) {
+                LOG.error("Upload failed, received status code - " + respStatusCode);
                 throw new WebApplicationException(Response.status(new Response.StatusType() {
                     public int getStatusCode() {
                         return statusLine.getStatusCode();
@@ -93,9 +116,18 @@ public class CSDocumentPageUploader {
                     }
                 }).build());
             }
+            if (LOG.isDebugEnabled())
+                LOG.debug("Upload completed successfully");
         } catch (Exception e) {
             if (request != null) request.abort();
             throw e;
         }
     }
+
+    private String getCsUrl() {
+        if (urlProvider == null)
+            urlProvider = ServiceIndex.getCSUrlProvider();
+        return urlProvider.getContentServerUrl();
+    }
+
 }

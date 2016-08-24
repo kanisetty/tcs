@@ -7,7 +7,9 @@ import com.opentext.otag.sdk.client.v3.TrustedProviderClient;
 import com.opentext.otag.sdk.types.v3.TrustedProvider;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.api.HttpClient;
+import com.opentext.otsync.otag.EIMConnectorHelper;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.LLCookie;
 import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,6 +17,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -51,11 +54,11 @@ public class CSExternalUserAPI implements ExternalUserAPI {
     private final static String OK_KEY_NAME = "ok";
     private final static String ERROR_MSG_KEY_NAME = "errMsg";
 
-    private final DefaultHttpClient httpClient;
+    private final CloseableHttpClient httpClient;
     private final ObjectMapper mapper = new ObjectMapper();
-    private final ObjectReader reader = mapper.reader(new TypeReference<Map<String, Object>>(){});
+    private final ObjectReader reader = mapper.readerFor(new TypeReference<Map<String, Object>>(){});
 
-    public CSExternalUserAPI(DefaultHttpClient client) {
+    public CSExternalUserAPI(CloseableHttpClient client) {
         httpClient = client;
     }
 
@@ -104,7 +107,7 @@ public class CSExternalUserAPI implements ExternalUserAPI {
     private ExternalUserAPIResult sendInfo(Map<String, Object> info, String subtype, CSForwardHeaders headers) {
         try {
             TrustedProviderClient client = new TrustedProviderClient();
-            TrustedProvider provider = client.getOrCreate("ContentServer");
+            TrustedProvider provider = client.getOrCreate(EIMConnectorHelper.CS_CONNECTOR_NAME); // TODO REVISIT, WE NEED A COMMON TRUSTED SERVER NAME
             if (provider == null) {
                 throw new IllegalStateException("ContentServer provider not defined; " +
                         "can't perform external user functions.");
@@ -147,11 +150,15 @@ public class CSExternalUserAPI implements ExternalUserAPI {
         HttpPost request = new HttpPost(ServiceIndex.csUrl());
         request.setEntity(new UrlEncodedFormEntity(postParams));
         headers.addTo(request);
-        headers.getLLCookie().addLLCookieToRequest(httpClient, request);
+        LLCookie llCookie = headers.getLLCookie();
+        HttpResponse response;
+        if (llCookie != null) {
+            response = httpClient.execute(request, llCookie.getContextWithLLCookie(request));
+        } else {
+            response = httpClient.execute(request);
+        }
 
-        HttpResponse response = httpClient.execute(request);
         String jsonResult = EntityUtils.toString(response.getEntity());
-
         return reader.readValue(jsonResult);
     }
 
