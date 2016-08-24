@@ -21,12 +21,16 @@ angular.module('nodeService', ['Node', 'Request', 'Sharing', 'nodeResource'])
                     _moreNodesCanBeLoaded = false;
                 } else {
                     nodeChildrenData.forEach(function (nodeData) {
-                        var sharing = new Sharing(nodeData);
-                        nodeChildren.push(new Node(nodeData, sharing));
+                        nodeChildren.push(_newNodeFromNodeData(nodeData));
                     });
                 }
 
                 return nodeChildren;
+            };
+
+            var _newNodeFromNodeData = function (nodeData) {
+                var sharing = new Sharing(nodeData);
+                return new Node(nodeData, sharing);
             };
 
             return {
@@ -50,6 +54,10 @@ angular.module('nodeService', ['Node', 'Request', 'Sharing', 'nodeResource'])
 
                 canMoreNodesBeLoaded: function () {
                     return _moreNodesCanBeLoaded;
+                },
+
+                newNodeFromNodeData: function (nodeData) {
+                    return _newNodeFromNodeData(nodeData);
                 },
 
                 getNode: function (nodeId) {

@@ -25,6 +25,10 @@ angular.module('Collaborator', ['userDisplayService'])
                 return _displayName;
             };
 
+            this.getID = function () {
+                return _collaboratorID;
+            };
+
             this.setDisplayName = function(displayName){
                 _displayName = displayName;
             };

@@ -28,6 +28,8 @@ angular
  * @param $sessionService
  * @param $translate
  * @param $navigationService
+ * @param $q
+ * @param $timeout
  */
 function browseController($scope, $stateParams, $displayMessageService, $ionicPlatform, ModalMenu, $browseService, browseStrategyFactory, $sessionService, $translate, $navigationService, $q) {
 
@@ -114,6 +116,23 @@ function browseController($scope, $stateParams, $displayMessageService, $ionicPl
                         );
                     }
                 );
+                // check for pending share requests and present the user the user with option to accept/decline
+                $browseService.getPendingShareRequests().then(function (shareRequests) {
+                    // this function is recursive
+                    // any time a share is accepted or rejected, we wil refresh the page and
+                    // process the next share in the shares array
+                    var share = (shareRequests.shares || [])[0];
+                    if (share) {
+                        var confirmationText = '' +
+                            share.user_name + ' has shared the folder "' + share.name + '" with you. ' +
+                            'Would you like to accept it?';
+                        if (window.confirm(confirmationText)) {
+                            $browseService.acceptShare(share).then(reloadPage);
+                        } else {
+                            $browseService.rejectShare(share).then(reloadPage);
+                        }
+                    }
+                });
             }
         }
 

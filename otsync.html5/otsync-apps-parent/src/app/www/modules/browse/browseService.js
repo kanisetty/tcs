@@ -38,6 +38,22 @@ angular.module('browseService', [])
 
             setBrowseStrategy: function (strategy) {
                 _browseStrategy = strategy;
+            },
+
+            getPendingShareRequests: function () {
+                return _browseStrategy.getPendingShareRequests();
+            },
+
+            acceptShare: function (share) {
+                return _browseStrategy.acceptShare(share);
+            },
+
+            rejectShare: function (share) {
+                return _browseStrategy.rejectShare(share);
+            },
+
+            processPendingShareRequest: function (share) {
+                return _browseStrategy.processPendingShareRequest(share);
             }
         }
     });
