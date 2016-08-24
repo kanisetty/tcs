@@ -107,6 +107,11 @@ function browseController($scope, $stateParams, $displayMessageService, $ionicPl
                 $translate.use($sessionService.getDefaultLanguage()).then(getRootForBrowse).catch(
                     function () {
                         $displayMessageService.showErrorMessage('ERROR INITIALIZATION FAILED', 'ERROR');
+                        $translate.use(appSettings.getDefaultLanguage()).then(getRootForBrowse).catch(
+                            function () {
+                                $displayMessageService.showErrorMessage('ERROR INITIALIZATION FAILED', 'ERROR');
+                            }
+                        );
                     }
                 );
             }

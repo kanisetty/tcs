@@ -4,10 +4,10 @@ var appSettings = new function() {
     var _csUrl = '<your_csurl>';
     var _username = '<your_username>';
     var _password = '<your_password>';
-    var _defaultLanguage = 'en_US';
+    var _defaultLanguage = 'en';
     var _appName = "ews";
 
-	
+
     /**
      * Within the return are all of the public functions that can be accessed outside this object. Note: if you run into this error: 'No 'Access-Control-Allow-Origin' header is
      * present on the requested resource.' while debugging in the browser please install the chrome plugin for this and allow xdomain requests. There is no way at present to get around

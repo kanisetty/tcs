@@ -678,8 +678,12 @@ $(document).ready(function () {
     };
 
     function onRequestFail(error) {
-
-        workflow.setNodeName(apputil.T(error.errMsg));
+        if (typeof error === 'string') {
+            workflow.setNodeName(apputil.T(error));
+            alert(error);
+        } else {
+            workflow.setNodeName(apputil.T(error.errMsg));
+        }
         workflow.clear();
     }
 
