@@ -7,76 +7,76 @@
  */
 
 /* jshint forin:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true,
-    strict:true, undef:true, unused:true, curly:true, browser:true,
-    jquery: true */
+ strict:true, undef:true, unused:true, curly:true, browser:true,
+ jquery: true */
 /* global App */
 (function () {
-	// Keep JavaScript definitions strict
-	"use strict";
-  
-	// Create the application
-	var UrlView = new App();
-	var urlData = UrlView.getParameters();
-	var deviceStrategy = UrlView.getDeviceStrategy();
-	var id = urlData.id;
+    // Keep JavaScript definitions strict
+    "use strict";
 
-	/**
-	* ## Initialization
-	* Set up initial events and load data.
-	*/
+    // Create the application
+    var UrlView = new App();
+    var urlData = UrlView.getParameters();
+    var deviceStrategy = UrlView.getDeviceStrategy();
+    var id = urlData.id;
 
-	/**
-	* ### UrlView.init
-	*
-	* Application initialization.
-	*/
-	UrlView.init = function () {
-	// Only trigger the initialization once
-	if (this.initialized) {
-	  return;
-	}
-	this.initialized = true;
+    /**
+     * ## Initialization
+     * Set up initial events and load data.
+     */
 
-	if(isValidId(id)){
-		doRedirect();
-	}
-	};
+    /**
+     * ### UrlView.init
+     *
+     * Application initialization.
+     */
+    UrlView.init = function () {
+        // Only trigger the initialization once
+        if (this.initialized) {
+            return;
+        }
+        this.initialized = true;
 
-	function doRedirect() {
-		$.when(UrlView.runRequestWithAuth({
-			url: deviceStrategy.getGatewayURL() + '/content/v5/nodes/' + id,
-			cache: false
-		}))
-		.done(function(data){
-			if(data.ok){
-				var url = data.contents[0].URLLink;
-				// Open the link in a new browser, and close this app
-				UrlView.openWindow(url);
-				UrlView.close();
-			}
-			else {
-				error(apputil.T('error.Could not get link') + data.errMsg);
-			}
-		})
-		.fail(function(data){
-			error(apputil.T('error.Could not get link') + data.status + ": " + data.statusText);
-		});
-	}
+        if (isValidId(id)) {
+            doRedirect();
+        }
+    };
 
-	function isValidId(nodeId) {
-		var isInvalid = (isNaN(nodeId) || nodeId === '');
+    function doRedirect() {
+        $.when(UrlView.runRequestWithAuth({
+            url: deviceStrategy.getGatewayURL() + '/content/v5/nodes/' + id,
+            cache: false
+        }))
+            .done(function (data) {
+                if (data.ok) {
+                    var url = data.contents[0].URLLink;
+                    // Open the link in a new browser, and close this app
+                    UrlView.openWindow(url);
+                    UrlView.close();
+                }
+                else {
+                    error(apputil.T('error.Could not get link') + data.errMsg);
+                }
+            })
+            .fail(function (data) {
+                error(apputil.T('error.Could not get link') + data.status + ": " + data.statusText);
+            });
+    }
 
-		if (isInvalid) {
-			error(apputil.T('error.Missing nodeID'));
-		}
+    function isValidId(nodeId) {
+        var isInvalid = (isNaN(nodeId) || nodeId === '');
 
-		return !isInvalid;
-	}
+        if (isInvalid) {
+            error(apputil.T('error.Missing nodeID'));
+        }
 
-	function error(msg) {
-		$('#node-name').text(msg);
-	}
+        return !isInvalid;
+    }
 
-	// start the application
-	UrlView.start();
+    function error(msg) {
+        $('#node-name').text(msg);
+    }
+
+    // start the application
+    UrlView.start();
 }).call(this);

@@ -114,7 +114,7 @@ function $collaboratorsResource($q, $sessionService, collaboratorFactory, $urlEn
             var requestParams = {
                 method: 'DELETE',
                 url: $sessionService.getGatewayURL() + '/shares/v5/outgoing/' + node.getID() + '/users/' + collaborator.getCollaboratorName(),
-                headers: {'Content-Type': 'application/json; charset=utf-8'}
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             };
 
             var request = new Request(requestParams);
@@ -122,15 +122,30 @@ function $collaboratorsResource($q, $sessionService, collaboratorFactory, $urlEn
             return $sessionService.runRequest(request);
         },
 
-        getPendingShareRequest: getPendingShareRequests,
-        acceptShareRequest: acceptShareRequest
+        getPendingShareRequests: getPendingShareRequests,
+        acceptShareRequest: acceptShareRequest,
+        rejectShareRequest: rejectShareRequest
     };
 
-    function acceptShareRequest(node, collaboratorId) {
+    function acceptShareRequest(nodeId) {
         var requestParams = {
             method: 'PUT',
-            url: $sessionService.getGatewayURL() + '/shares/v5/incoming/' + node.getID() + '/users/' + collaboratorId,
-            headers: {'Content-Type': 'application/json; charset=utf-8'}
+            url: $sessionService.getGatewayURL() + '/shares/v5/incoming/' + nodeId,
+            data: $urlEncode({accepted: true}),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        };
+
+        var request = new Request(requestParams);
+
+        return $sessionService.runRequest(request);
+    }
+
+    function rejectShareRequest(nodeId) {
+        var requestParams = {
+            method: 'PUT',
+            url: $sessionService.getGatewayURL() + '/shares/v5/incoming/' + nodeId,
+            data: $urlEncode({rejected: true}),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         };
 
         var request = new Request(requestParams);
@@ -139,8 +154,14 @@ function $collaboratorsResource($q, $sessionService, collaboratorFactory, $urlEn
     }
 
     function getPendingShareRequests() {
-        var deferred = $q.defer();
-        deferred.resolve([]);
-        return deferred.promise;
+        var requestParams = {
+            method: 'GET',
+            url: $sessionService.getGatewayURL() + '/shares/v5/incoming/',
+            headers: {'Content-Type': 'application/json; charset=utf-8'}
+        };
+
+        var request = new Request(requestParams);
+
+        return $sessionService.runRequest(request);
     }
 }

@@ -138,22 +138,14 @@ function nodeBrowseStrategy($q, $sessionService, $nodeService, $nodeBrowseDecora
         return deferred.promise;
     };
 
-    NodeBrowseStrategy.prototype.removeShare = function (share) {
-        var deferred = $q.defer();
-        var node = $nodeService.newNodeFromNodeData(share);
-        $collaboratorsResource.getCollaborators(node).then(function (collaborators) {
-            collaborators.forEach(function (collaborator) {
-                if (collaborator.getID() === share.userID) {
-                    deferred.promise = $collaboratorsResource.removeCollaborator(node, collaborator);
-                }
-            });
-        });
-        return deferred.promise;
+    NodeBrowseStrategy.prototype.rejectShare = function (share) {
+        var nodeId = share.id;
+        return $collaboratorsResource.rejectShareRequest(nodeId);
     };
 
-    NodeBrowseStrategy.prototype.confirmShare = function (share) {
-        var node = $nodeService.newNodeFromNodeData(share);
-        return $collaboratorsResource.acceptShareRequest(node, share.userID);
+    NodeBrowseStrategy.prototype.acceptShare = function (share) {
+        var nodeId = share.id;
+        return $collaboratorsResource.acceptShareRequest(nodeId);
     };
 
     return NodeBrowseStrategy;
