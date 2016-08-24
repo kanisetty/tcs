@@ -4,7 +4,7 @@ var appSettings = new function() {
     var _csUrl = '<your_csurl>';
     var _username = '<your_username>';
     var _password = '<your_password>';
-    var _defaultLanguage = 'en_US';
+    var _defaultLanguage = 'en';
     var _appName = 'tempo';
 
 
