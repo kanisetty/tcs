@@ -102,7 +102,7 @@
       <dependency>
           <groupId>com.opentext.otsync</groupId>
           <artifactId>webui</artifactId>
-          <version>${appworks.service.version}</version>
+          <version>16.1.0</version>
           <type>zip</type>
       </dependency>
 
