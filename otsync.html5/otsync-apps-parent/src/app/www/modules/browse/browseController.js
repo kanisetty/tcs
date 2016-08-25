@@ -122,15 +122,22 @@ function browseController($scope, $stateParams, $displayMessageService, $ionicPl
                     // any time a share is accepted or rejected, we wil refresh the page and
                     // process the next share in the shares array
                     var share = (shareRequests.shares || [])[0];
+                    var title, text;
                     if (share) {
-                        var confirmationText = '' +
+                        title = 'Share Request';
+                        text = '' +
                             share.user_name + ' has shared the folder "' + share.name + '" with you. ' +
                             'Would you like to accept it?';
-                        if (window.confirm(confirmationText)) {
-                            $browseService.acceptShare(share).then(reloadPage);
-                        } else {
-                            $browseService.rejectShare(share).then(reloadPage);
-                        }
+
+                        $displayMessageService.createConfirmationPopup(text, title).then(
+                            function (accepted) {
+                                if (accepted) {
+                                    $browseService.acceptShare(share).then(reloadPage);
+                                } else {
+                                    $browseService.rejectShare(share).then(reloadPage);
+                                }
+                            }
+                        );
                     }
                 });
             }

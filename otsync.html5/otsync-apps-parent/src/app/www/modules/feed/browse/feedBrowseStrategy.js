@@ -72,5 +72,14 @@ angular.module('FeedBrowseStrategy', ['feedResource', 'feedBrowseDecoratingServi
 				return null;
 			};
 
+			FeedBrowseStrategy.prototype.getPendingShareRequests = promiseNoop;
+			FeedBrowseStrategy.prototype.rejectShare = promiseNoop;
+			FeedBrowseStrategy.prototype.acceptShare = promiseNoop;
+
             return FeedBrowseStrategy;
+
+            function promiseNoop() {
+                var deferred = $q.defer();
+                return deferred.promise;
+            }
         }]);
