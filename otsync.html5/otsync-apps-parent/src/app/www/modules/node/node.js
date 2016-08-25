@@ -96,6 +96,10 @@ angular.module('Node', ['Sharing'])
                 return _nodeData.versionNum;
             };
 
+            this.getParentID = function () {
+                return _nodeData.parentID;
+            };
+
             this.isStored = function () {
                 return _isStored;
             };

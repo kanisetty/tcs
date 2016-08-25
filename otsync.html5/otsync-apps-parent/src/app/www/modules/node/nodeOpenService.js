@@ -67,7 +67,7 @@ function $nodeOpenService($q, $nodeService, $displayMessageService, $fileResourc
 
                     dataForComponent = {
                         id: nodeToOpen.getID(),
-                        parentID: rootNode.getID()
+                        parentID: nodeToOpen.getParentID()
                     };
 
                     if (component.name == "workflow-component") {
