@@ -11,12 +11,15 @@
 
     <artifactId>tempo-bundle</artifactId>
     <name>Tempo Bundle</name>
+    <version>16.1.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <app.properties.version>16.0.0</app.properties.version>
+        <app.properties.version>16.0.1</app.properties.version>
         <services.app.properties.version>16.0.1</services.app.properties.version>
+
+        <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
 
         <artifact.name>${project.artifactId}-${project.version}</artifact.name>
         <bundle.zip>${project.build.directory}/${artifact.name}.zip</bundle.zip>
@@ -24,6 +27,21 @@
         deploy the specific .otag files -->
         <bundle.output>../bundle-deployer/target/${artifact.name}.otag</bundle.output>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>otnexus</id>
+            <name>OpenText Nexus</name>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <url>${nexus.base.url}/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>

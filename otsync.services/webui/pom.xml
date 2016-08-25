@@ -10,8 +10,9 @@
     </parent>
 
     <artifactId>webui</artifactId>
-	  <name>Web UI</name>
+    <name>Web UI</name>
     <description>The TempoBox Web UI.</description>
+    <version>16.1.0</version>
 
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

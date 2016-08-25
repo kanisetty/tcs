@@ -35,12 +35,20 @@ var response = new function () {
 	this.Authenticate = function(status, responseInfo){
 
 		if (status===true){
+			window.location.reload();
+			/*
+			// TEMPO-6645
+			// To avoid a problem with promise resolution and loading tabs post-Authentication
+			// we are now simply refreshing the app
+			// TODO: refactor the authentication handling logic to avoid this reload and duplicate server requests
+
 			var buttonDefer = $("#loginButton").data("defer");
 			user.init();
 
 			if ( typeof buttonDefer != 'undefined' ){
 				buttonDefer.resolve();
 			}
+			 */
 		}else{
 
 			if( typeof responseInfo != 'undefined' )

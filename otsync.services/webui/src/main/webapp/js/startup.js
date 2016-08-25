@@ -64,7 +64,6 @@ var hashEventHandler = function(event){
 		var path = $.address.path();
 		var pathParams = path.split('/');
 		var action =  $.address.parameter('action');
-		var loadDialog = $.address.parameter('loadDialog');
 		var id = parseInt($.address.parameter('id'),10);
 
 		if (isNaN(id) || id === 0){
@@ -73,10 +72,6 @@ var hashEventHandler = function(event){
 
 		if (typeof action === 'string'){
 			action = action.toUpperCase();
-		}
-
-		if (typeof loadDialog === 'string'){
-			loadDialog = loadDialog.toUpperCase();
 		}
 
 		// the path always includes an initial / so we want to shift off the first item
@@ -172,21 +167,6 @@ var hashEventHandler = function(event){
 
 				break;
 			}; // end of view (tab) switch
-
-			switch(loadDialog){
-
-				case 'SETTINGS':
-					UserNotificationConfig.userNotificationConfigDialog();
-				break;
-				case 'SHAREREQUESTS':
-					Share.seeAllShareRequestsDialog.dialog('open');
-				break;
-				case 'ABOUT':
-					$('#apiVersion').text(info.version.api);
-					$("#aboutDialogView").dialog("open");
-					return false;
-				break;
-			};
 	};
 
 
@@ -298,7 +278,7 @@ var startup = new function (){
 		return deferred.promise();
 	};
 
-  this.loadFrame = function (){
+  	this.loadFrame = function (){
 
 		var tmplItem = $('#loginPage').tmplItem();
 
@@ -316,7 +296,7 @@ var startup = new function (){
     var pageVars = { topLinks: [] };
 
 		utils.recursiveReplace('$contentServerURL$', info.contentServerURL, info.navigationItems);
-    $.each(info.navigationItems, function(index, value) {
+    	$.each(info.navigationItems, function(index, value) {
 			pageVars.topLinks.push({
 					id: value.id,
 					classes: value.classes,
@@ -459,5 +439,4 @@ $(document).ready( function() {
 	var defer = $.when();
 	defer.pipe(startup.InitialAuthPre);
 	defer.pipe(startup.InitialAuth);
-	Share.GetPendingShareRequestSummary();
 });
