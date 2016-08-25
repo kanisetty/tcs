@@ -71,7 +71,7 @@ var NonBlackBerryStrategy = function () {
 
     this.openWindow = function (url) {
         var webview = new Appworks.AWWebView();
-        webview.open(url, '_blank', 'EnableViewPortScale=yes,location=no');
+        return webview.open(url, '_blank', 'EnableViewPortScale=yes,location=no');
     };
 
     this.processQueryParameters = function (query) {

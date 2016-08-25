@@ -32,35 +32,41 @@
      */
     UrlView.init = function () {
         // Only trigger the initialization once
-        if (this.initialized) {
-            return;
-        }
-        this.initialized = true;
-
-        if (isValidId(id)) {
+        if (!this.initialized && isValidId(id)) {
+            this.initialized = true;
             doRedirect();
         }
     };
 
     function doRedirect() {
-        $.when(UrlView.runRequestWithAuth({
-            url: deviceStrategy.getGatewayURL() + '/content/v5/nodes/' + id,
-            cache: false
-        }))
-            .done(function (data) {
-                if (data.ok) {
-                    var url = data.contents[0].URLLink;
-                    // Open the link in a new browser, and close this app
-                    UrlView.openWindow(url);
-                    UrlView.close();
+        deviceStrategy.getGatewayURL().then(function (gatewayUrl) {
+            $.when(
+                UrlView.runRequestWithAuth({
+                    url: gatewayUrl + '/content/v5/nodes/' + id,
+                    cache: false
+                })
+            ).done(
+                function (data) {
+                    if (data.ok) {
+                        var url = data.contents[0].URLLink;
+                        // Open the link in a new browser, and close this app when the webview is dimissed
+                        var ref = UrlView.openWindow(url);
+
+                        ref.addEventListener('exit', function () {
+                            UrlView.close();
+                        });
+                    }
+                    else {
+                        error(apputil.T('error.Could not get link') + data.errMsg);
+                    }
                 }
-                else {
-                    error(apputil.T('error.Could not get link') + data.errMsg);
+            ).fail(
+                function (data) {
+                    error(apputil.T('error.Could not get link') + data.status + ": " + data.statusText);
                 }
-            })
-            .fail(function (data) {
-                error(apputil.T('error.Could not get link') + data.status + ": " + data.statusText);
-            });
+            );
+        });
+
     }
 
     function isValidId(nodeId) {
@@ -79,4 +85,5 @@
 
     // start the application
     UrlView.start();
+
 }).call(this);
