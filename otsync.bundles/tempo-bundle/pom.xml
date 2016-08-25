@@ -15,7 +15,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <app.properties.version>16.0.0</app.properties.version>
+        <app.properties.version>16.0.1</app.properties.version>
         <services.app.properties.version>16.0.1</services.app.properties.version>
 
         <artifact.name>${project.artifactId}-${project.version}</artifact.name>
