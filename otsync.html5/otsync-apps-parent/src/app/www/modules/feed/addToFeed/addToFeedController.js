@@ -1,40 +1,52 @@
-angular.module('addToFeedController', [])
-    .controller('addToFeedController', ['$scope', '$stateParams', '$ionicHistory', '$displayMessageService',
-        function ($scope, $stateParams, $ionicHistory, $displayMessageService) {
-			$scope.messagePlaceholder = $displayMessageService.translate("ADD FEED STATUS");
-            $scope.showCancel = true;
-			$scope.feedMessage = {message:''};
-			$scope.file = null;
-			$scope.addToFeedStrategy = $stateParams.addToFeedStrategy;
+angular
+    .module('addToFeedController', [])
+    .controller('addToFeedController', [
+        '$scope',
+        '$stateParams',
+        '$ionicHistory',
+        '$displayMessageService',
+        addToFeedController
+    ]);
 
-            $scope.clearFeedMessage = function(){
-                $scope.feedMessage = {message:''};
-            };
+function addToFeedController($scope, $stateParams, $ionicHistory, $displayMessageService) {
+    $scope.messagePlaceholder = $displayMessageService.translate("ADD FEED STATUS");
+    $scope.showCancel = true;
+    $scope.feedMessage = {message: ''};
+    $scope.file = null;
+    $scope.addToFeedStrategy = $stateParams.addToFeedStrategy;
 
-            $scope.doPost = function(){
-				$displayMessageService.showDisplayMessage('LOADING');
-				$scope.addToFeedStrategy.doPost($scope.file, $scope.feedMessage.message, $stateParams.additionalParams);
-            };
+    $scope.clearFeedMessage = function () {
+        $scope.feedMessage = {message: ''};
+    };
 
-			$scope.getFile = function(){
-				$scope.addToFeedStrategy.getFile($scope);
-			};
+    $scope.doPost = function () {
+        $displayMessageService.showDisplayMessage('LOADING');
+        $scope.addToFeedStrategy.doPost(
+            $scope.file,
+            $scope.feedMessage.message,
+            $stateParams.additionalParams
+        );
+    };
 
-            $scope.goBack = function(){
-                $ionicHistory.goBack();
-            };
+    $scope.getFile = function () {
+        $scope.addToFeedStrategy.getFile($scope);
+    };
 
-			$scope.menuItemClicked = function(modalMenuItem){
-				$scope.addToFeedStrategy.selectFile($scope, modalMenuItem).then(function(file){
-					$scope.file = file;
-				});
-			};
+    $scope.goBack = function () {
+        $ionicHistory.goBack();
+    };
 
-			$scope.removeFile = function(){
-				$scope.file = null;
-			};
+    $scope.menuItemClicked = function (modalMenuItem) {
+        $scope.addToFeedStrategy.selectFile($scope, modalMenuItem).then(function (file) {
+            $scope.file = file;
+        });
+    };
 
-			$scope.$on('serverError', function handler(event, errorArgs) {
-                $displayMessageService.showToastMessage(errorArgs.errMsg);
-            });
-        }]);
+    $scope.removeFile = function () {
+        $scope.file = null;
+    };
+
+    $scope.$on('serverError', function handler(event, errorArgs) {
+        $displayMessageService.showToastMessage(errorArgs.errMsg);
+    });
+}

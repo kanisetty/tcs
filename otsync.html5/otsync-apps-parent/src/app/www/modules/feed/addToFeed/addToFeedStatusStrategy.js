@@ -1,60 +1,76 @@
-angular.module('AddToFeedStatusStrategy', ['feedResource', 'ModalMenu', 'fileMenuService'])
-    .factory('AddToFeedStatusStrategy', ['$q', '$feedResource', '$ionicHistory', '$displayMessageService', 'ModalMenu', '$fileMenuService',
-        function($q, $feedResource, $ionicHistory, $displayMessageService, ModalMenu, $fileMenuService) {
-            var AddToFeedStatusStrategy = function(){
-                this.type = 'status';
-            };
+angular
+    .module('AddToFeedStatusStrategy', ['feedResource', 'ModalMenu', 'fileMenuService'])
+    .factory('AddToFeedStatusStrategy', [
+        '$q',
+        '$feedResource',
+        '$ionicHistory',
+        '$displayMessageService',
+        'ModalMenu',
+        '$fileMenuService',
+        AddToFeedStatusStrategy
+    ]);
 
-            AddToFeedStatusStrategy.prototype.doPost = function(file, message){
-                var deferred = $q.defer();
+function AddToFeedStatusStrategy($q, $feedResource, $ionicHistory, $displayMessageService, ModalMenu, $fileMenuService) {
 
-                if (file == null){
-                    $feedResource.addFeedStatus(message).then(function(){
-                        $ionicHistory.goBack();
-                        deferred.resolve();
-                    }, function () {
-                        $displayMessageService.showToastMessage("STATUS WAS NOT ADDED SUCCESSFULLY");
-                        deferred.reject();
-                    });
-                } else {
-                    $feedResource.addFeedStatusWithAttachment(file, message).then(function(){
-                        $ionicHistory.goBack();
-                        deferred.resolve();
-                    }, function () {
-                        $displayMessageService.showToastMessage("STATUS WAS NOT ADDED SUCCESSFULLY");
-                        deferred.reject();
-                    });
-                }
+    var AddToFeedStatusStrategy = function () {
+        this.type = 'status';
+    };
 
-                return deferred.promise;
-            };
+    AddToFeedStatusStrategy.prototype.doPost = function (file, message) {
+        var deferred = $q.defer();
 
-            AddToFeedStatusStrategy.prototype.getFile = function(scope){
-                var shouldRefresh = false;
+        if (file == null) {
+            $feedResource.addFeedStatus(message).then(function (res) {
+                $ionicHistory.goBack();
+                deferred.resolve(res);
+            }, function (res) {
+                var errorMsg = (res && res.hash && res.hash.error) || 'STATUS WAS NOT ADDED SUCCESSFULLY';
+                $displayMessageService.showToastMessage(errorMsg);
+                deferred.reject(res);
+            });
+        } else {
+            $feedResource.addFeedStatusWithAttachment(file, message).then(function (res) {
+                $ionicHistory.goBack();
+                deferred.resolve(res);
+            }, function (res) {
+                var errorMsg = (res && res.hash && res.hash.error) || 'STATUS WAS NOT ADDED SUCCESSFULLY';
+                $displayMessageService.showToastMessage(errorMsg);
+                deferred.reject(res);
+            });
+        }
 
-                var menu = new ModalMenu($fileMenuService.getFileMenuItemsReturnsFile(shouldRefresh), $displayMessageService.translate('OPTIONS'),
-                    $displayMessageService.translate('CANCEL'));
-                menu.showModalMenu(scope);
+        return deferred.promise;
+    };
 
-                scope.menu = menu;
-            };
+    AddToFeedStatusStrategy.prototype.getFile = function (scope) {
+        var shouldRefresh = false;
 
-            AddToFeedStatusStrategy.prototype.getType = function(){
-                return type;
-            };
+        var menu = new ModalMenu(
+            $fileMenuService.getFileMenuItemsReturnsFile(shouldRefresh),
+            $displayMessageService.translate('OPTIONS'),
+            $displayMessageService.translate('CANCEL')
+        );
+        menu.showModalMenu(scope);
 
-            AddToFeedStatusStrategy.prototype.selectFile = function(scope, modalMenuItem){
-                var deferred = $q.defer();
+        scope.menu = menu;
+    };
 
-                scope.menu.menuItemClicked(modalMenuItem).then(function(file){
-                    if (scope.menu != null)
-                        scope.menu.hide();
+    AddToFeedStatusStrategy.prototype.getType = function () {
+        return type;
+    };
 
-                    deferred.resolve(file);
-                });
+    AddToFeedStatusStrategy.prototype.selectFile = function (scope, modalMenuItem) {
+        var deferred = $q.defer();
 
-                return deferred.promise
-            };
+        scope.menu.menuItemClicked(modalMenuItem).then(function (file) {
+            if (scope.menu != null)
+                scope.menu.hide();
 
-            return AddToFeedStatusStrategy;
-        }]);
+            deferred.resolve(file);
+        });
+
+        return deferred.promise
+    };
+
+    return AddToFeedStatusStrategy;
+}
