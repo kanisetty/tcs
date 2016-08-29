@@ -184,12 +184,10 @@ angular.module('appworksService', [])
                 storeFile: function (downloadURL, fileName, options, share) {
                     var deferred = $q.defer();
                     var storage = new Appworks.SecureStorage(success, failure);
+                    var sharedStorage = new Appworks.AWFileTransfer(success, failure);
 
                     if (share) {
-                        this.getSharedDocumentUrl().then(function (url) {
-                            fileName = url + '/' + fileName;
-                            store();
-                        });
+                        storeShared();
                     } else {
                         store();
                     }
@@ -206,6 +204,10 @@ angular.module('appworksService', [])
                             $displayMessageService.showErrorMessage(errorMsg);
                         }
                         deferred.reject(error);
+                    }
+
+                    function storeShared() {
+                        sharedStorage.download(encodeURI(downloadURL), encodeURIComponent(fileName), null, true);
                     }
 
                     function store() {
