@@ -129,12 +129,16 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
             if (!node.isContainer() && node.isDocument()) {
                 if ((permissions & PermSeeContents) == PermSeeContents) {
                     modalMenuItems.push(this.getOpenMenuItem($displayMessageService.translate('OPEN'), root, node));
-                    // TODO JI Aug 2, 2016 -
-                    // currently download seems to be pointless, because we cant view files we have downloaded.
-                    // removing for initial OTE release. I am opting for Open In functionality instead, as seen
-                    // in method below
-                    //modalMenuItems.push($fileMenuService.getDownloadFileMenuItem(node));
-                    modalMenuItems.push($fileMenuService.getOpenInFileMenuItem(node));
+                    /**
+                     * TODO JI Aug 2, 2016
+                     * currently download seems to be pointless, because we cant view files we have downloaded -
+                     * removing for initial OTE release. I am opting for Open In functionality instead, as seen
+                     * in method below. NOTE: open in is IOS only for now.
+                     */
+                    if (!$appworksService.deviceIsAndroid()) {
+                        modalMenuItems.push($fileMenuService.getOpenInFileMenuItem(node));
+                    }
+                    // modalMenuItems.push($fileMenuService.getDownloadFileMenuItem(node));
                 }
                 if ((permissions & PermModify) == PermModify && (node.getReservedByUserName() == null || (node.getReservedByUserName() != null &&
                     node.getReservedByUserName().toUpperCase() == username.toUpperCase()))) {

@@ -215,6 +215,16 @@ angular.module('appworksService', [])
                     }
 
                     return deferred.promise;
+                },
+
+                deviceIsIos: function () {
+                    var device = new Appworks.AWDevice();
+                    return device.platform === 'iOS';
+                },
+
+                deviceIsAndroid: function () {
+                    var device = new Appworks.AWDevice();
+                    return device.platform === 'Android';
                 }
             }
         }
