@@ -84,6 +84,14 @@
                                 }
                             });
 
+                            $('[localize-placeholder]').each(function () {
+                                var placeholder = $(this).attr('localize-placeholder');
+                                if (placeholder) {
+                                    key = placeholder.replace(/\./g, '');
+                                    $(this).attr('placeholder', apputil.T('label.' + key));
+                                }
+                            });
+
                             // Hide the loading overlay
                             _this.hideLoading();
 
