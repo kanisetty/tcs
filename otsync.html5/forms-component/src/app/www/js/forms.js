@@ -25,7 +25,7 @@ var initialize = function () {
                 if (isFile(appSettings.nodeType)) {
                     request.getFile(appSettings.fileSource).done(
                         function (data) {
-                            appSettings.FileData = data;
+                            appSettings.FileData = data || {};
                             getForms();
                         }
                     ).fail(
@@ -62,6 +62,7 @@ var getSettings = function () {
         appSettings.parentID = queryParams.id;
         appSettings.nodeType = queryParams.type;
         appSettings.fileSource = queryParams.fileSource;
+        appSettings.FileData = {};
 
         if (appSettings.parentID == undefined || appSettings.nodeType == undefined || (isFile(appSettings.nodeType) && appSettings.fileSource == null)) {
             throw new Error("Invalid Arguments");
