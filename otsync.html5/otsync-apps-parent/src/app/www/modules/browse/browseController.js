@@ -108,12 +108,8 @@ function browseController($scope, $stateParams, $displayMessageService, $ionicPl
             } else {
                 $translate.use($sessionService.getDefaultLanguage()).then(getRootForBrowse).catch(
                     function () {
-                        $displayMessageService.showErrorMessage('ERROR INITIALIZATION FAILED', 'ERROR');
-                        $translate.use(appSettings.getDefaultLanguage()).then(getRootForBrowse).catch(
-                            function () {
-                                $displayMessageService.showErrorMessage('ERROR INITIALIZATION FAILED', 'ERROR');
-                            }
-                        );
+                        $translate.use(appSettings.getDefaultLanguage()).then(getRootForBrowse).catch(onInitFail);
+                        onInitFail();
                     }
                 );
                 // check for pending share requests and present the user the user with option to accept/decline
@@ -144,7 +140,7 @@ function browseController($scope, $stateParams, $displayMessageService, $ionicPl
         }
 
         function onInitFail() {
-            $displayMessageService.showErrorMessage('ERROR INITIALIZATION FAILED', 'ERROR');
+            console.error($displayMessageService.translate('ERROR INITIALIZATION FAILED', 'ERROR'));
         }
     }
 
