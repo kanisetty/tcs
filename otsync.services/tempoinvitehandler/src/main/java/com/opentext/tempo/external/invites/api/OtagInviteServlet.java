@@ -2,9 +2,6 @@ package com.opentext.tempo.external.invites.api;
 
 import com.opentext.otag.sdk.client.v3.SettingsClient;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
-import com.opentext.otag.sdk.types.v3.settings.Setting;
-import com.opentext.otag.sdk.types.v3.settings.SettingType;
-import com.opentext.otag.sdk.types.v3.settings.Settings;
 import com.opentext.tempo.external.invites.TempoInviteHandlerService;
 import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
 import com.opentext.tempo.external.invites.handler.BrandingStrings;
@@ -23,10 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Properties;
 
 public final class OtagInviteServlet extends HttpServlet {
 
@@ -145,34 +140,21 @@ public final class OtagInviteServlet extends HttpServlet {
     // TODO this needs to be refactored from something static into something useful
     public static void setupCommonSetting(XmlPackage xml) {
         try {
-            Properties properties = readSharedTempoClientProps(
-                    System.getProperty("catalina.base") + "/conf/tempo.clients.properties");
-
             String otagUrl = getOtagUrl();
 
-            String webappUrl = otagUrl + "/webaccess";
+            String webappUrl = otagUrl + "/content";
             String updatePageUrl = otagUrl + "/content/update.jsp";
 
             Element settings = xml.addElement(xml.getRoot(), "settings");
             settings.setAttribute("tempowebappurl", webappUrl);
             settings.setAttribute("tempobbappurl", updatePageUrl);
-            settings.setAttribute("tempoiosappurl", properties.getProperty("IOSClient"));
+            settings.setAttribute("tempoiosappurl", updatePageUrl);
             settings.setAttribute("tempopcdesktopurl", updatePageUrl);
             settings.setAttribute("tempoandroidurl", updatePageUrl);
             settings.setAttribute("tempologinurl", updatePageUrl);
             settings.setAttribute("tempourl", otagUrl);
         } catch (Exception ignored) {
         }
-    }
-
-    private static Properties readSharedTempoClientProps(String clientsFile) throws IOException {
-        Properties properties = new Properties();
-        try (FileInputStream fileInput = new FileInputStream(clientsFile)) {
-            properties.load(fileInput);
-        } catch (Exception e) {
-            LOG.warn("Exception encountered loading client properties", e);
-        }
-        return properties;
     }
 
     private static XmlPackage generateXmlPackage(String contextPath) throws ParserConfigurationException {

@@ -53,13 +53,6 @@
 				<td style="width:612px;border-style:none;border-width:0px;margin:0px;padding:0px;">&#160;</td>
 			</tr>
 			<tr>
-				<td style="width:612px;font-family:Helvetica, Arial, Sans-Serif;font-size:12px;color:#000000;margin:0px;padding-left:18px;padding-right:36px;border-style:none;border-width:0px;"><b>BlackBerry:</b></td>
-			</tr>
-			<tr>
-				<td style="width:612px;font-family:Helvetica, Arial, Sans-Serif;font-size:12px;color:#000000;margin:0px;padding-left:18px;padding-right:36px;border-style:none;border-width:0px;">
-				<b><a><xsl:attribute name="href"><xsl:value-of select="/tempoinvite/settings/@tempobbappurl"/></xsl:attribute><xsl:value-of select="/tempoinvite/settings/@tempobbappurl"/></a></b> from your BlackBerry web browser</td>
-			</tr>
-			<tr>
 				<td style="width:612px;font-family:Helvetica, Arial, Sans-Serif;font-size:12px;color:#000000;margin:0px;padding-left:18px;padding-right:36px;border-style:none;border-width:0px;"><b>Android:</b></td>
 			</tr>
 			<tr>
