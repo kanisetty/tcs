@@ -135,9 +135,7 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
                      * removing for initial OTE release. I am opting for Open In functionality instead, as seen
                      * in method below. NOTE: open in is IOS only for now.
                      */
-                    if (!$appworksService.deviceIsAndroid()) {
-                        modalMenuItems.push($fileMenuService.getOpenInFileMenuItem(node));
-                    }
+                    modalMenuItems.push($fileMenuService.getOpenInFileMenuItem(node));
                     // modalMenuItems.push($fileMenuService.getDownloadFileMenuItem(node));
                 }
                 if ((permissions & PermModify) == PermModify && (node.getReservedByUserName() == null || (node.getReservedByUserName() != null &&
