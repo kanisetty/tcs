@@ -7,6 +7,7 @@ angular.module('feedItemDetailController', ['Header', 'headerService', 'nodeOpen
             $scope.showCancel = false;
             $scope.feedMessage = {message: ''};
             $scope.showFollowing = false;
+            $scope.keyboardVisibility = false;
 
             $scope.initialize = function () {
                 var goBack = false;
@@ -22,11 +23,6 @@ angular.module('feedItemDetailController', ['Header', 'headerService', 'nodeOpen
                 if ($sessionService.getUsername() != $scope.feedItem.getUsername()) {
                     $scope.showFollowing = true;
                 }
-
-                // hide the profile information and button bar when the keyboard is visible
-                // to make it easier for the user to see what they are typing
-                window.addEventListener('native.keyboardshow', keyboardShowHandler);
-                window.addEventListener('native.keyboardhide', keyboardHideHandler);
             };
 
             $scope.clearFeedMessage = function () {
@@ -134,6 +130,13 @@ angular.module('feedItemDetailController', ['Header', 'headerService', 'nodeOpen
                 $displayMessageService.showToastMessage(errorArgs.errMsg);
             });
 
+            $scope.keyboardIsVisible = function (value) {
+                if (angular.isDefined(value)) {
+                    $scope.keyboardVisibility = value;
+                }
+                return $scope.keyboardVisibility;
+            };
+
             var _getViewLikesMessage = function () {
                 return $displayMessageService.translate("VIEW LIKES") + ' (' + $scope.feedItem.getLikeCount() + ')';
             };
@@ -141,14 +144,4 @@ angular.module('feedItemDetailController', ['Header', 'headerService', 'nodeOpen
             var _getViewThreadMessage = function () {
                 return $displayMessageService.translate("VIEW THREAD") + ' (' + $scope.feedItem.getCommentCount() + ')';
             };
-
-            function keyboardShowHandler() {
-                $scope.keyboardIsVisible = true;
-                $scope.$apply();
-            }
-
-            function keyboardHideHandler() {
-                $scope.keyboardIsVisible = false;
-                $scope.$apply();
-            }
         }]);

@@ -1,6 +1,6 @@
 <ion-view ng-controller="feedItemDetailController" ng-init="initialize()">
 	<ion-content class="has-header">
-		<div class="feed-item-detail-profile" ng-hide="keyboardIsVisible">
+		<div class="feed-item-detail-profile" ng-hide="keyboardIsVisible()">
 			<div class="feed-item-detail-profile-image-container">
 				<img class="feed-item-detail-profile-image" ng-src="{{feedItem.getIconURL()}}">
 			</div>

@@ -1,6 +1,8 @@
 <div class="item item-input">
 	<i class="placeholder-icon"></i>
-	<input type="text" placeholder='{{messagePlaceholder}}' ng-model="feedMessage.message">
+	<input type="text" placeholder='{{messagePlaceholder}}' ng-model="feedMessage.message"
+		   ng-focus="keyboardIsVisible(true)"
+		   ng-blur="keyboardIsVisible(false)">
 	<button class="button button-small button-icon ion-android-close search-icon" ng-click="clearFeedMessage()"></button>
 </div>
 <div class="button-bar">
