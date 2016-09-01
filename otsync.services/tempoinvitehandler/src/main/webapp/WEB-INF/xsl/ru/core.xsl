@@ -46,7 +46,7 @@
 	<xsl:template name="body-ft">
 		<div id="ft">
 			<div class="footertext">
-				<p>&#169; Корпорация Open Text, 2015 г. Все права защищены.</p>
+				<p>&#169; Корпорация Open Text, 2016 г. Все права защищены.</p>
 			</div>
 		</div>
 	</xsl:template>	
