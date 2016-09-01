@@ -110,7 +110,7 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
             var deferred = $q.defer();
             var storageManager = new Appworks.SecureStorage(fileExistsAtPath, deferred.reject);
 
-            storageManager.fileExistsAtPath(node.getFileNameForOnDeviceStorage());
+            storageManager.fileExistsAtPath(encodeURIComponent(node.getFileNameForOnDeviceStorage()));
 
             return deferred.promise;
 

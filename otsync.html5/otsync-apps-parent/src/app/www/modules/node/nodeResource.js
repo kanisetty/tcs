@@ -1,132 +1,146 @@
-angular.module('nodeResource', ['urlEncodingService', 'browseService', 'Request'])
-    .factory('$nodeResource', ['$sessionService', '$urlEncode', '$browseService', '$stateParams', '$q', 'Request',
-        function ($sessionService, $urlEncode, $browseService, $stateParams, $q, Request) {
+angular
+    .module('nodeResource', [
+        'urlEncodingService',
+        'browseService',
+        'Request'
+    ])
+    .factory('$nodeResource', [
+        '$sessionService',
+        '$urlEncode',
+        '$browseService',
+        '$stateParams',
+        '$q',
+        'Request',
+        $nodeResource
+    ]);
 
-			return {
+function $nodeResource($sessionService, $urlEncode, $browseService, $stateParams, $q, Request) {
 
-				addFolder: function (root, name) {
+    return {
 
-					var requestParams = {
-						method: 'POST',
-						url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + root.getID() + '/children',
-						headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-						data: $urlEncode({name: name})
-					};
+        addFolder: function (root, name) {
 
-					var request = new Request(requestParams);
+            var requestParams = {
+                method: 'POST',
+                url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + root.getID() + '/children',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                data: $urlEncode({name: name})
+            };
 
-					return $sessionService.runRequest(request);
-				},
+            var request = new Request(requestParams);
 
-				copyNode: function (node) {
+            return $sessionService.runRequest(request);
+        },
 
-					return $q.when($browseService.getRootID($stateParams)).then(function(destNodeId) {
+        copyNode: function (node) {
 
-						var requestParams = {
-							method: 'POST',
-							url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + destNodeId + '/children',
-							headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-							data: $urlEncode({
-								copyFrom: node.getID(),
-								name: node.getName()
-							})
-						};
+            return $q.when($browseService.getRootID($stateParams)).then(function (destNodeId) {
 
-						var request = new Request(requestParams);
+                var requestParams = {
+                	method: 'POST',
+                	url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + destNodeId + '/children',
+                	headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                	data: $urlEncode({
+                		copyFrom: node.getID(),
+                		name: node.getName()
+                	})
+                };
 
-						return $sessionService.runRequest(request);
-					});
-				},
+                var request = new Request(requestParams);
 
-				deleteNode: function (node) {
+                return $sessionService.runRequest(request);
+            });
+        },
 
-					var requestParams = {
-						method: 'DELETE',
-						url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + node.getID(),
-						headers: {'Content-Type': 'application/json; charset=utf-8'}
-					};
+        deleteNode: function (node) {
 
-					var request = new Request(requestParams);
+            var requestParams = {
+                method: 'DELETE',
+                url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + node.getID(),
+                headers: {'Content-Type': 'application/json; charset=utf-8'}
+            };
 
-					return $sessionService.runRequest(request);
+            var request = new Request(requestParams);
 
-				},
+            return $sessionService.runRequest(request);
 
-				getNode: function (nodeId) {
+        },
 
-					var requestParams = {
-						method: 'GET',
-						url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + nodeId,
-						headers: {'Content-Type': 'application/json; charset=utf-8'}
-					};
+        getNode: function (nodeId) {
 
-					var request = new Request(requestParams);
+            var requestParams = {
+                method: 'GET',
+                url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + nodeId,
+                headers: {'Content-Type': 'application/json; charset=utf-8'}
+            };
 
-					return $sessionService.runRequest(request);
-				},
+            var request = new Request(requestParams);
 
-				getNodeChildren: function(nodeId, filter, pageSize, pageNumber){
+            return $sessionService.runRequest(request);
+        },
 
-					var requestParams = {
-						method: 'GET',
-						url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + nodeId + '/children',
-						headers: {'Content-Type': 'application/json; charset=utf-8'},
-						params: {pageNumber:pageNumber, pageSize:pageSize, type: $sessionService.getClientType()}
-					};
+        getNodeChildren: function (nodeId, filter, pageSize, pageNumber) {
 
-					if ( filter != null && filter.length > 0 ){
-						requestParams.params.filter = filter;
-					}
+            var requestParams = {
+                method: 'GET',
+                url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + nodeId + '/children',
+                headers: {'Content-Type': 'application/json; charset=utf-8'},
+                params: {pageNumber: pageNumber, pageSize: pageSize, type: $sessionService.getClientType()}
+            };
 
-					$urlEncode(requestParams.params);
+            if (filter != null && filter.length > 0) {
+                requestParams.params.filter = filter;
+            }
 
-					var request = new Request(requestParams);
+            $urlEncode(requestParams.params);
 
-					return $sessionService.runRequest(request);
-				},
+            var request = new Request(requestParams);
 
-				moveNode: function (node) {
-					return $q.when($browseService.getRootID($stateParams)).then(function(destNodeId) {
+            return $sessionService.runRequest(request);
+        },
 
-						var requestParams = {
-							method: 'PUT',
-							url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + node.getID(),
-							headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-							params: {parentID: destNodeId, name: node.getName()}
-						};
+        moveNode: function (node) {
+            return $q.when($browseService.getRootID($stateParams)).then(function (destNodeId) {
 
-						var request = new Request(requestParams);
+                var requestParams = {
+                    method: 'PUT',
+                    url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + node.getID(),
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    params: {parentID: destNodeId, name: node.getName()}
+                };
 
-						return $sessionService.runRequest(request);
-					});
-				},
+                var request = new Request(requestParams);
 
-				reserveNode: function (node) {
+                return $sessionService.runRequest(request);
+            });
+        },
 
-					var requestParams = {
-						method: 'PUT',
-						url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + node.getID(),
-						headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-						params: {reserve: true}
-					};
+        reserveNode: function (node) {
 
-					var request = new Request(requestParams);
+            var requestParams = {
+                method: 'PUT',
+                url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + node.getID(),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                params: {reserve: true}
+            };
 
-					return $sessionService.runRequest(request);
-				},
+            var request = new Request(requestParams);
 
-				unreserveNode: function (node) {
+            return $sessionService.runRequest(request);
+        },
 
-					var requestParams = {
-						method: 'PUT',
-						url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + node.getID(),
-						headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-						params: {reserve: false}
-					};
+        unreserveNode: function (node) {
 
-					var request = new Request(requestParams);
+            var requestParams = {
+                method: 'PUT',
+                url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + node.getID(),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                params: {reserve: false}
+            };
 
-					return $sessionService.runRequest(request);
-				}
-			};
-    	}]);
+            var request = new Request(requestParams);
+
+            return $sessionService.runRequest(request);
+        }
+    };
+}

@@ -1,6 +1,6 @@
 <ion-view ng-controller="feedItemDetailController" ng-init="initialize()">
 	<ion-content class="has-header">
-		<div class="feed-item-detail-profile">
+		<div class="feed-item-detail-profile" ng-hide="keyboardIsVisible">
 			<div class="feed-item-detail-profile-image-container">
 				<img class="feed-item-detail-profile-image" ng-src="{{feedItem.getIconURL()}}">
 			</div>
@@ -10,7 +10,7 @@
 				<span class="feed-item-detail-text feed-display-light-grey">{{feedItem.getLocation()}}</span>
 			</div>
 		</div>
-		<div class="feed-item-detail-like-container button-bar">
+		<div class="feed-item-detail-like-container button-bar" ng-hide="keyboardIsVisible">
 			<a class="button button-stable button-outline button-large" ng-show="feedItem.isLiked() != true" ng-click="toggleIsLiked(feedItem)">{{"LIKE" | translate}}</a>
 			<a class="button button-stable button-outline button-large" ng-show="feedItem.isLiked() == true" ng-click="toggleIsLiked(feedItem)">{{"UNLIKE" | translate}}</a>
 			<a class="button button-stable button-outline button-large" ng-show="showFollowing && feedItem.isFollowing() != true" ng-click="toggleIsFollowing(feedItem)">{{"FOLLOW" | translate}}</a>
