@@ -39,11 +39,11 @@ $.extend(Collaborators, new function(){
 		};
 		
 		return vars;
-	}
+	};
 	
 	this.InitializeCollaboratorsDialogs = function() {
 		_InitializeEditAllCollaboratorsDialog();
-	}
+	};
 		
 	var	_InitializeEditAllCollaboratorsDialog = function(){
 	
@@ -78,6 +78,7 @@ $.extend(Collaborators, new function(){
 				}
 			],//end buttons
 			open: function(dialogEvent, dialogUI) {
+				var shareInfoTmplVar;
 				var currentUserIsOwner = $('#objectInfoName').tmplItem().data.isOwner;
 				
 				if( info.folderIsShareable ){
@@ -85,7 +86,7 @@ $.extend(Collaborators, new function(){
 				}
 				else{
 					shareInfoTmplVar = {};
-				};
+				}
 				
 				var dialogTitle = $('#objectInfoName').tmplItem().data.name;
 				// commented out older version of dialog title that allowed html but is not supported from jQueryUI 1.10 and up.
@@ -113,30 +114,6 @@ $.extend(Collaborators, new function(){
 					SelectBox('dropdownShareTypeEditAll', true);
 					$('#inviteeinputEditCollaborators').focus();
 				}
-					
-				//Workaround for modal dialog bug http://bugs.jqueryui.com/ticket/3123
-				// Commenting out the workaround logic as the bug seems to  be fixed
-				/*
-				$('body').append('<div id="modalOverlay" class="ui-widget-overlay" style="width:'+$(document).width()+'px; height:'+ $(document).height() + 'px; z-index:' + ($('.editAllCollaboratorsDialog')[0].style.zIndex -1)+' "></div>');
-				$('.editAllCollaboratorsDialog').bind( "keydown.ui-dialog", function(event) {
-					if (event.keyCode !== $.ui.keyCode.TAB) {
-					  return;
-					}
-				
-					var tabbables = $(":tabbable", this),
-					  first = tabbables.filter(":first"),
-					  last = tabbables.filter(":last");
-				
-					if (event.target === last[0] && !event.shiftKey) {
-					  first.focus(1);
-					  return false;
-					} else if (event.target === first[0] && event.shiftKey) {
-					  last.focus(1);
-					  return false;
-					}
-				});
-				*/
-				//End of Workaround
 			},
 			close: function(dialogEvent, dialogUI) {
 				Collaborators.cancelAllUnsaved();
