@@ -1,0 +1,30 @@
+{
+  "label": {
+    "Attachments": "Allegati",
+    "Attributes": "Attributi",
+    "Comment": "Commento",
+    "CommentOnPreviousStep": "Commento su fase precedente (__fase__) da__utente__",
+    "CommentOnStep": "Commento su fase __fase__ da __utente__",
+    "Due Date": "Data completamento",
+    "inParent": "in __parentName__",
+    "Initiate as": "Inizia come...",
+    "Instructions": "Istruzioni",
+    "OK": "OK",
+    "Previous Comments": "Commenti precedenti",
+    "Send On": "Manda avanti",
+    "Signature Required": "Firma obbligatoria",
+    "SignatureExplanation": "Questa azione deve essere completata in un browser Web perché è richiesta una firma elettronica.",
+    "Success! The workflow has been initiated": "Operazione riuscita! Il flusso di lavoro è stato iniziato.",
+    "Success! The workflow has been sent on": "Operazione riuscita! Il flusso di lavoro è stato inviato.",
+    "Success! The form has been updated": "Operazione riuscita! Il modulo è stato aggiornato.",
+    "View attachments": "Visualizza/aggiungi allegati",
+    "View comments on previous steps": "Visualizza commenti su fasi precedenti",
+    "View forms": "Visualizza moduli"
+  },
+  "error": {
+    "Error": "Errore: __stato__ __testo__",
+    "Error: Invalid workflow ID": "Errore: ID flusso di lavoro non valido.",
+    "Problem closing app": "Problema durante la chiusura dell'applicazione: ",
+    "Unknown action provided by container": "Azione sconosciuta fornita da contenitore"
+  }
+}

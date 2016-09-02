@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Workflow</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css"/>
+    <link rel="stylesheet" href="css/app.css"/>
+    <link rel="stylesheet" href="css/workflow-attachments.css"/>
+
+    <script src="cordova.js"></script>
+    <script src="appworks.js"></script>
+
+    <script src="js/vendor/jquery-2.0.0.min.js"></script>
+    <script src="js/vendor/moment.min.js"></script>
+    <script src="js/vendor/json2.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/vendor/bootstrap-datetimepicker.min.js"></script>
+    <script src="js/vendor/jquery.jsperanto.js"></script>
+    <script src="js/deviceStrategyFactory.js"></script>
+    <script src="js/blackberryDeviceStrategy.js"></script>
+    <script src="js/nonBlackberryDeviceStrategy.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/workflow-attachments.js"></script>
+</head>
+<body>
+
+<header class="otag-header control-group">
+    <h4 id="node-name" class="node-name"></h4>
+</header>
+
+<div class="container text-center">
+    <div class="btn-group">
+        <button class="btn" id="refresh">Refresh</button>
+        <button class="btn">Add Attachment</button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="list-group" id="attachments-list"></div>
+</div>
+
+</body>
+</html>

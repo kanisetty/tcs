@@ -22,6 +22,7 @@
         <module>tasks-component</module>
         <module>tempohelp-app</module>
         <module>url-component</module>
+        <module>workflow-attachments-component</module>
         <module>workflow-component</module>
     </modules>
 

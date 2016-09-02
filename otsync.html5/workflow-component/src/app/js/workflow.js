@@ -227,17 +227,18 @@ $(document).ready(function () {
         }
 
         if (data.attachments) {
-            var nodeID = data.attachments;
+            var containerId = data.attachments;
 
             $('#step-view-attachments-btn').click(function () {
+
                 var data = {
-                    nodeID: nodeID,
-                    title: apputil.T("label.Attachments")
+                    containerId: containerId,
+                    title: $('#workflow-title').val()
                 };
 
-                var destComponentName = 'ews-app';
+                var destComponentName = 'workflow-attachments-component';
 
-                workflow.openFromAppworks(destComponentName, data, false, false);
+                workflow.openFromAppworks(destComponentName, data, false, true);
             });
 
             if (data.attachmentInstructions != null) {

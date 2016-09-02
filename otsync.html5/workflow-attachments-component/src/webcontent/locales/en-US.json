@@ -1,0 +1,9 @@
+{
+	"label" : {
+		"Back":"Back",
+		"OK":"OK",
+		"Success! The form has been submitted":"Success! The form has been submitted.",
+		"Success! The form has been updated":"Success! The form has been updated.",
+		"Success! The workflow has been sent on":"Success! The workflow has been sent on."
+	}	
+}

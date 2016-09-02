@@ -1,0 +1,30 @@
+{
+  "label": {
+    "Attachments": "Adjunts",
+    "Attributes": "Atributs",
+    "Comment": "Comentari",
+    "CommentOnPreviousStep": "Comentari en el pas anterior (__step__) per __user__",
+    "CommentOnStep": "Comentari en el pas __step__ per __user__",
+    "Due Date": "Data de venciment",
+    "inParent": "en __parentName__",
+    "Initiate as": "Inicia com a...",
+    "Instructions": "Instruccions",
+    "OK": "D'acord",
+    "Previous Comments": "Comentaris anteriors",
+    "Send On": "Envia",
+    "Signature Required": "Signatura obligatòria",
+    "SignatureExplanation": "Aquesta acció s'ha de dur a terme en un navegador web perquè cal una signatura electrònica.",
+    "Success! The workflow has been initiated": "Correcte. El flux de treball s'ha iniciat.",
+    "Success! The workflow has been sent on": "Correcte. El flux de treball s'ha enviat.",
+    "Success! The form has been updated": "Correcte. El formulari s'ha actualitzat.",
+    "View attachments": "Mostra/afegeix adjunts",
+    "View comments on previous steps": "Mostra comentaris en els passos anteriors",
+    "View forms": "Mostra formularis"
+  },
+  "error": {
+    "Error": "Error: __status__ __text__",
+    "Error: Invalid workflow ID": "Error: ID de flux de treball no vàlid.",
+    "Problem closing app": "Problema en tancar l'aplicació: ",
+    "Unknown action provided by container": "Acció desconeguda facilitada pel contenidor"
+  }
+}
