@@ -24,14 +24,18 @@ $(document).ready(function () {
     });
 
     function initialize() {
-        setTitle();
+        var auth = new Appworks.Auth(gotAuthResponse, failed);
 
-        _deviceStrategy.authenticate().then(function (authResponse) {
+        setTitle();
+        auth.authenticate();
+
+        function gotAuthResponse(res) {
             var config = {};
-            _gatewayUrl = authResponse.authData.gatewayUrl;
-            _clientId = authResponse.authData.id;
-            if (authResponse.addtl) {
-                _csToken = authResponse.addtl['otsync-connector'].otcsticket;
+            console.log(res);
+            _gatewayUrl = res.authData.gatewayUrl;
+            _clientId = res.authData.authResponse.id;
+            if (res.authData.authResponse.addtl) {
+                _csToken = res.authData.authResponse.addtl['otsync-connector'].otcsticket;
             }
             config.token = _csToken;
             config.clientId = _clientId;
@@ -40,8 +44,7 @@ $(document).ready(function () {
                 _attachments = res.info.results.contents;
                 displayContainerContents(_attachments);
             }, failed);
-        });
-
+        }
     }
 
     function displayContainerContents(attachments) {
@@ -49,14 +52,32 @@ $(document).ready(function () {
         $('#attachments-list').html('');
         // populate list with attachments
         attachments.forEach(function (attachment) {
-            var template = '' +
+            var template = $('' +
                 '<div>' +
                 '  <h4>' + attachment.NAME + '</h4>' +
                 '  <small>' + 'Created ' + moment(attachment.CREATEDATE).fromNow() + '</small>' +
-                '  <button class="btn btn-small">View &raquo;</button>' +
-                '</div>';
-            $('#attachments-list').append($(template));
+                '</div>'
+            );
+            var button = $('' +
+                '<button class="btn btn-small" type="button">View &raquo;</button>'
+            );
+
+            // create a closure for the click handler to get the right attachment
+            (function (attachment) {
+                button.on('click', function () {
+                    viewAttachmentFor(attachment.DATAID);
+                });
+            })(attachment);
+
+            // wrap in a div to break line
+            template.append($('<div></div>').append(button));
+
+            $('#attachments-list').append(template);
         });
+    }
+
+    function viewAttachmentFor(id) {
+        alert('node id: ' + id);
     }
 
     function failed(err) {
