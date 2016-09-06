@@ -51,29 +51,38 @@ $(document).ready(function () {
         // clear initial html
         $('#attachments-list').html('');
         // populate list with attachments
-        attachments.forEach(function (attachment) {
-            var template = $('' +
+        if (attachments.length) {
+            attachments.forEach(function (attachment) {
+                var template = $('' +
+                    '<div>' +
+                    '  <h4>' + attachment.NAME + '</h4>' +
+                    '  <small>' + 'Created ' + moment(attachment.CREATEDATE).fromNow() + '</small>' +
+                    '</div>'
+                );
+                var button = $('' +
+                    '<button class="btn btn-small" type="button">View &raquo;</button>'
+                );
+
+                // create a closure for the click handler to get the right attachment
+                (function (attachment) {
+                    button.on('click', function () {
+                        viewAttachmentFor(attachment.DATAID);
+                    });
+                })(attachment);
+
+                // wrap in a div to break line
+                template.append($('<div></div>').append(button));
+
+                $('#attachments-list').append(template);
+            });
+        } else {
+            $('#attachments-list').append($('' +
                 '<div>' +
-                '  <h4>' + attachment.NAME + '</h4>' +
-                '  <small>' + 'Created ' + moment(attachment.CREATEDATE).fromNow() + '</small>' +
+                '  <h4>No attachments</h4>' +
                 '</div>'
-            );
-            var button = $('' +
-                '<button class="btn btn-small" type="button">View &raquo;</button>'
-            );
+            ));
+        }
 
-            // create a closure for the click handler to get the right attachment
-            (function (attachment) {
-                button.on('click', function () {
-                    viewAttachmentFor(attachment.DATAID);
-                });
-            })(attachment);
-
-            // wrap in a div to break line
-            template.append($('<div></div>').append(button));
-
-            $('#attachments-list').append(template);
-        });
     }
 
     function viewAttachmentFor(id) {
