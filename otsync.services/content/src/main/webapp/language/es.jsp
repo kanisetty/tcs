@@ -6,17 +6,8 @@
 
 	 ot_tempo_installer = "Instalador de {0}";
 			
-	// BB
-	 bb_install_instruction = "Instale {0} en su BlackBerry haciendo clic en el siguiente enlace. Son compatibles los dispositivos con BlackBerry SO 5.0 y versión superior.";
-	 bb_install_instruction_2 = "Si se le pide sustituir la aplicación o los módulos durante una actualización, asegúrese de escoger \"sí\"";
-	 bb_install_instruction_3 = "Esta página solo muestra un enlace de descarga específico para la versión del SO de su dispositivo";
-	 bb_os_detected_pre = "BlackBerry SO";
-	 bb_os_detected_post = "detectado";
-	 bb_version_not_supported = ", su versión no es compatible.";
-	 bb_install_build = "Instalar";
-	
 	// Android
-	 and_install_instruction = "Instale {0} en su Android haciendo clic en el siguiente enlace. Son compatibles los dispositivos con Android SO 2.1 y versión superior.";
+	 and_install_instruction = "Instale {0} en su Android haciendo clic en el siguiente enlace. Son compatibles los dispositivos con Android SO 4.2 y versión superior.";
 	 and_install_instruction_2 = "Si se le pide sustituir la aplicación o los módulos durante una actualización, asegúrese de escoger \"sí\".";
 	 and_install_instruction_3 = "Esta página solo muestra un enlace de descarga específico para la versión del SO de su dispositivo";
 	 and_version_not_supported = ", su versión no es compatible.";
@@ -25,7 +16,7 @@
 	 and_os_detected_post =  "detectado";
 	
 	//iOS
-	 ios_install_instruction = "Instale {0} en su iOS haciendo clic en el siguiente enlace. Son compatibles los dispositivos con iOS 4.3 y versión superior.";
+	 ios_install_instruction = "Instale {0} en su iOS haciendo clic en el siguiente enlace. Son compatibles los dispositivos con iOS 8.0 y versión superior.";
 	 ios_install_instruction_2 = "Si se le pide sustituir la aplicación o los módulos durante una actualización, asegúrese de escoger \"sí\".";
 	 ios_install_instruction_3 = "Esta página solo muestra un enlace de descarga específico para la versión del SO de su dispositivo";
 	 ios_version_not_supported = ", su versión no es compatible.";
@@ -35,7 +26,6 @@
 		
 	//Download Text
 	 download = "BAJAR";
-	 bb_downloadText = "BAJAR versión para Blackberry";
 	 and_downloadText = "BAJAR versión para Android";
 	 ios_downloadText = "BAJAR versión para iOS";
 	 mac_downloadText = "BAJAR versión para MAC";

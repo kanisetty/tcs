@@ -6,17 +6,8 @@
 
 	 ot_tempo_installer = "{0} インストーラー";
 			
-	// BB
-	 bb_install_instruction = "以下のリンクをクリックして、ご使用の BlackBerry に {0} をインストールしてください。BlackBerry OS 5.0 以上のデバイスがサポートされています。";
-	 bb_install_instruction_2 = "アップグレード中、アプリケーションまたはモジュールを置き換えるように求められた場合は、必ず [はい] を選択してください。";
-	 bb_install_instruction_3 = "このページには、ご使用デバイスの OS バージョン専用のダウンロード リンクが 1 つだけ表示されます。";
-	 bb_os_detected_pre = "BlackBerry OS";
-	 bb_os_detected_post = "削除されました";
-	 bb_version_not_supported = "、ご使用のバージョンは、サポートされていません。";
-	 bb_install_build = "インストール";
-	
 	// Android
-	 and_install_instruction = "以下のリンクをクリックして、ご使用の Android に {0} をインストールしてください。Android OS 2.1 以上のデバイスがサポートされています。";
+	 and_install_instruction = "以下のリンクをクリックして、ご使用の Android に {0} をインストールしてください。Android OS 4.2 以上のデバイスがサポートされています。";
 	 and_install_instruction_2 = "アップグレード中、アプリケーションまたはモジュールを置き換えるように求められた場合は、必ず [はい] を選択してください。";
 	 and_install_instruction_3 = "このページには、ご使用デバイスの OS バージョン専用のダウンロード リンクが 1 つだけ表示されます。";
 	 and_version_not_supported = "、ご使用のバージョンは、サポートされていません。";
@@ -25,7 +16,7 @@
 	 and_os_detected_post =  "削除されました";
 	
 	//iOS
-	 ios_install_instruction = "以下のリンクをクリックして、ご使用の iOS に {0} をインストールしてください。iOS 4.3 以上のデバイスがサポートされています。";
+	 ios_install_instruction = "以下のリンクをクリックして、ご使用の iOS に {0} をインストールしてください。iOS 8.0 以上のデバイスがサポートされています。";
 	 ios_install_instruction_2 = "アップグレード中、アプリケーションまたはモジュールを置き換えるように求められた場合は、必ず [はい] を選択してください。";
 	 ios_install_instruction_3 = "このページには、ご使用デバイスの OS バージョン専用のダウンロード リンクが 1 つだけ表示されます。";
 	 ios_version_not_supported = "、ご使用のバージョンは、サポートされていません。";
@@ -35,7 +26,6 @@
 		
 	//Download Text
 	 download = "ダウンロード";
-	 bb_downloadText = "Blackberry バージョンのダウンロード";
 	 and_downloadText = "Android バージョンのダウンロード";
 	 ios_downloadText = "iOS バージョンのダウンロード";
 	 mac_downloadText = "Mac バージョンのダウンロード";

@@ -121,12 +121,12 @@ public class ClientTypeSet {
         String bitness = (String) message.getOrDefault(Message.CLIENT_BITNESS_KEY_NAME, "");
         String lang = (String) message.getOrDefault(Message.CLIENT_LANGUAGE_KEY_NAME, "");
 
-        String clientKey = os.toLowerCase();
-        if (os.equalsIgnoreCase(WIN_CLIENT_KEY)){
-            clientKey += bitness;
-        }
+        return getInstallerLink(os, bitness, lang);
+    }
 
-        ClientType client = _clientInstallers.get(clientKey);
+    public String getInstallerLink(String os, String bitness, String lang) {
+
+       ClientType client = getClient(os, bitness);
 
         if (client != null && !client.getLink(lang).isEmpty()){
             return client.getLink(lang);
@@ -134,6 +134,25 @@ public class ClientTypeSet {
 
         return null;
     }
+
+    public ClientType getClient(String os, String bitness) {
+        String clientKey = os.toLowerCase();
+        if (os.equalsIgnoreCase(WIN_CLIENT_KEY)){
+            clientKey += bitness;
+        }
+
+        return _clientInstallers.get(clientKey);
+    }
+
+    /**
+     * Get access to the client installer list
+     *
+     * @return          - map of all client installers
+     */
+    public Map<String, ClientType> getAllInstallerLinks(){
+        return _clientInstallers;
+    }
+
     /**
      * Get the reported client info and determine whether the client meets the minimum requirements
      * Whether accepted or rejected, include the latest client info

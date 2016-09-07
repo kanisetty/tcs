@@ -6,17 +6,8 @@
 
 	String ot_tempo_installer = "{0} Installer";
 			
-	// BB
-	String bb_install_instruction = "Install {0} on your BlackBerry by clicking on the link below. Devices with BlackBerry OS 5.0 and higher are supported";
-	String bb_install_instruction_2 = "If asked to replace the application or modules during an upgrade, ensure you choose \"yes\"";
-	String bb_install_instruction_3 = "This page only displays one download link specific to your device's OS version";
-	String bb_os_detected_pre = "BlackBerry OS";
-	String bb_os_detected_post = "detected";
-	String bb_version_not_supported = ", your version is not supported.";
-	String bb_install_build = "Install";
-	
 	// Android
-	String and_install_instruction = "Install {0} on your Android by clicking on the link below. Devices with Android OS 2.1 and higher are supported";
+	String and_install_instruction = "Install {0} on your Android by clicking on the link below. Devices with Android OS 4.2 and higher are supported";
 	String and_install_instruction_2 = "If asked to replace the application or modules during an upgrade, ensure you choose \"yes\".";
 	String and_install_instruction_3 = "This page only displays one download link specific to your device's OS version";
 	String and_version_not_supported = ", your version is not supported.";
@@ -25,7 +16,7 @@
 	String and_os_detected_post =  "detected";
 	
 	//iOS
-	String ios_install_instruction = "Install {0} on your iOS by clicking on the link below. Devices with iOS 4.3 and higher are supported";
+	String ios_install_instruction = "Install {0} on your iOS by clicking on the link below. Devices with iOS 8.0 and higher are supported";
 	String ios_install_instruction_2 = "If asked to replace the application or modules during an upgrade, ensure you choose \"yes\".";
 	String ios_install_instruction_3 = "This page only displays one download link specific to your device's OS version";
 	String ios_version_not_supported = ", your version is not supported.";
@@ -35,7 +26,6 @@
 		
 	//Download Text
 	String download = "DOWNLOAD";
-	String bb_downloadText = "DOWNLOAD Blackberry Version";
 	String and_downloadText = "DOWNLOAD Android Version";
 	String ios_downloadText = "DOWNLOAD iOS Version";
 	String mac_downloadText = "DOWNLOAD Mac Version";

@@ -5,18 +5,9 @@
 	 platform_not_supported = "Ihre Plattform wird nicht unterstützt.";
 
 	 ot_tempo_installer = "{0}-Installer";
-			
-	// BB
-	 bb_install_instruction = "Installieren Sie {0} auf Ihrem BlackBerry, indem Sie auf die folgende Verknüpfung klicken. Geräte mit BlackBerry OS 5.0 und höher werden unterstützt";
-	 bb_install_instruction_2 = "Wenn Sie während eines Upgrades aufgefordert werden, die Anwendung oder Module zu ersetzen, müssen Sie \"Ja\" wählen.";
-	 bb_install_instruction_3 = "Auf dieser Seite wird nur eine Download-Verknüpfung speziell für die OS-Version Ihres Geräts angezeigt";
-	 bb_os_detected_pre = "BlackBerry OS";
-	 bb_os_detected_post = "erkannt";
-	 bb_version_not_supported = ", Ihre Version wird nicht unterstützt.";
-	 bb_install_build = "Installieren";
-	
+
 	// Android
-	 and_install_instruction = "Installieren Sie {0} auf Ihrem Android-Gerät, indem Sie auf die folgende Verknüpfung klicken. Geräte mit Android OS 2.1 und höher werden unterstützt";
+	 and_install_instruction = "Installieren Sie {0} auf Ihrem Android-Gerät, indem Sie auf die folgende Verknüpfung klicken. Geräte mit Android OS 4.2 und höher werden unterstützt";
 	 and_install_instruction_2 = "Wenn Sie während eines Upgrades aufgefordert werden, die Anwendung oder Module zu ersetzen, müssen Sie \"Ja\" wählen.";
 	 and_install_instruction_3 = "Auf dieser Seite wird nur eine Download-Verknüpfung speziell für die OS-Version Ihres Geräts angezeigt";
 	 and_version_not_supported = ", Ihre Version wird nicht unterstützt.";
@@ -25,7 +16,7 @@
 	 and_os_detected_post =  "erkannt";
 	
 	//iOS
-	 ios_install_instruction = "Installieren Sie {0} auf Ihrem iOS durch Anklicken der folgenden Verknüpfung. Geräte mit iOS 4.3 und höher werden unterstützt";
+	 ios_install_instruction = "Installieren Sie {0} auf Ihrem iOS durch Anklicken der folgenden Verknüpfung. Geräte mit iOS 8.0 und höher werden unterstützt";
 	 ios_install_instruction_2 = "Wenn Sie während eines Upgrades aufgefordert werden, die Anwendung oder Module zu ersetzen, müssen Sie \"Ja\" wählen.";
 	 ios_install_instruction_3 = "Auf dieser Seite wird nur eine Download-Verknüpfung speziell für die OS-Version Ihres Geräts angezeigt";
 	 ios_version_not_supported = ", Ihre Version wird nicht unterstützt.";
@@ -35,7 +26,6 @@
 		
 	//Download Text
 	 download = "Herunterladen";
-	 bb_downloadText = "Blackberry-Version herunterladen";
 	 and_downloadText = "Android-Version herunterladen";
 	 ios_downloadText = "iOS-Version herunterladen";
 	 mac_downloadText = "Mac-Version herunterladen";

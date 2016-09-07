@@ -14,6 +14,7 @@
     <artifactId>content</artifactId>
     <packaging>war</packaging>
     <name>Content Service</name>
+    <version>16.0.2</version>
     <description>Content Server-backed APIs for document management and sharing</description>
 
     <properties>
@@ -110,7 +111,7 @@
         <dependency>
             <groupId>com.opentext.otsync</groupId>
             <artifactId>otsync-service-tools</artifactId>
-            <version>${project.version}</version>
+            <version>16.0.1</version>
         </dependency>
 
         <!-- Make sure these elderly gents don't drag our Servlet level down -->

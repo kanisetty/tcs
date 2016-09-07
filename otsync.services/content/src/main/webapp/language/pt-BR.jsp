@@ -6,17 +6,8 @@
 
 	 ot_tempo_installer = "Programa de instalação do {0}";
 			
-	// BB
-	 bb_install_instruction = "Instale o OpenText {0} em seu BlackBerry clicando no link abaixo. Dispositivos com o BlackBerry SO 5.0 e posterior são compatíveis";
-	 bb_install_instruction_2 = "Se for solicitado a substituir o aplicativo ou os módulos durante uma atualização, certifique-se de clicar em \"sim\"";
-	 bb_install_instruction_3 = "Esta página exibe somente um link de download específico para a versão do SO do seu dispositivo";
-	 bb_os_detected_pre = "BlackBerry SO";
-	 bb_os_detected_post = "detectado";
-	 bb_version_not_supported = ", sua versão é incompatível.";
-	 bb_install_build = "Instalar";
-	
 	// Android
-	 and_install_instruction = "Instale o OpenText {0} em seu Android clicando no link abaixo. Dispositivos com Android OS 2.1 e posterior são compatíveis";
+	 and_install_instruction = "Instale o OpenText {0} em seu Android clicando no link abaixo. Dispositivos com Android OS 4.2 e posterior são compatíveis";
 	 and_install_instruction_2 = "Se for solicitado a substituir o aplicativo ou os módulos durante uma atualização, certifique-se de clicar em \"sim\"";
 	 and_install_instruction_3 = "Esta página exibe somente um link de download específico para a versão do SO do seu dispositivo";
 	 and_version_not_supported = ", sua versão é incompatível.";
@@ -25,7 +16,7 @@
 	 and_os_detected_post =  "detectado";
 	
 	//iOS
-	 ios_install_instruction = "Instale o OpenText {0} em seu iOS clicando no link abaixo. Dispositivos com o iOS 4.3 e posterior são compatíveis";
+	 ios_install_instruction = "Instale o OpenText {0} em seu iOS clicando no link abaixo. Dispositivos com o iOS 8.0 e posterior são compatíveis";
 	 ios_install_instruction_2 = "Se for solicitado a substituir o aplicativo ou os módulos durante uma atualização, certifique-se de clicar em \"sim\"";
 	 ios_install_instruction_3 = "Esta página exibe somente um link de download específico para a versão do SO do seu dispositivo";
 	 ios_version_not_supported = ", sua versão é incompatível.";
@@ -35,7 +26,6 @@
 		
 	//Download Text
 	 download = "DOWNLOAD";
-	 bb_downloadText = "DOWNLOAD da versão para BlackBerry";
 	 and_downloadText = "DOWNLOAD da versão para Android";
 	 ios_downloadText = "DOWNLOAD da versão para iOS";
 	 mac_downloadText = "DOWNLOAD da versão para Mac";

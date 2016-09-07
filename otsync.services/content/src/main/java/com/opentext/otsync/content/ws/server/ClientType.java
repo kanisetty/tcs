@@ -67,6 +67,10 @@ public class ClientType {
         
         return defaultLink;
     }
+
+    public Map<String,String> getAllLinks(){
+        return clientLinks;
+    }
     
     /*
      * Return TRUE if version is greater than or equal to the specified minimum version for the client.

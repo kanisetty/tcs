@@ -2,18 +2,31 @@
 <%@ page import="java.util.regex.*" %>
 <%@ page import="com.opentext.otsync.content.ws.ServletConfig" %>
 <%@ page import="com.opentext.otsync.content.ws.server.ClientType" %>
+<%@ page import="com.opentext.otsync.content.ws.server.ClientTypeSet" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
         %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.io.*,java.util.Locale" %>
+<%@ page import="static com.opentext.otsync.content.ws.ServletConfig.*" %>
 
 <%--
 	If tempo is not enabled, redirect to a dummy page.
 --%>
 <%
-    if (!ServletConfig.isTempoBoxEnabled()) response.sendRedirect("notempobox.html");
+    if (!isTempoBoxEnabled()) {
+        response.sendRedirect("notempobox.html");
+    }
+%>
+
+<%
+    //Fixed Links for Android and iOS
+    String androidLink = "https://play.google.com/store/apps/details?id=com.opentext.m.tempo";
+    String iOSLink = "https://itunes.apple.com/ca/app/opentext-tempo/id781547141";
+
+    String minIOSVersion = "8_0";
+    String minAndroidVersion = "4.2";
 %>
 
 <%
@@ -71,7 +84,6 @@
 </c:choose>
 
 <%
-    ServletContext context = getServletContext();
     String userAgent = request.getHeader("User-Agent");
     String os = request.getParameter("os");
     String bit = request.getParameter("b");
@@ -154,47 +166,32 @@
                 if (matcher.find()) {
                     androidVersion = matcher.group(1);
                 }
-            } else if (userAgent.toUpperCase().contains("BLACKBERRY")) {
-                os = "BB";
-                bit = "";
-                /**
-                 http://www.useragentstring.com/_uas_BlackBerry_version_.php
-                 sample case 1: "BlackBerry9700/5.0.0.862 Profile/MIDP-2.1 Configuration/CLDC-1.1 VendorID/120";
-                 sample case 2: "Mozilla/5.0 (BlackBerry; U; BlackBerry 9850; en-US) AppleWebKit/534.11+ (KHTML, like Gecko) Version/7.0.0.115 Mobile Safari/534.11+";
-                 **/
-                String bbRegex = "(?:(?:BLACKBERRY\\w+)|(?:MOZILLA/[\\d\\.]+ .BLACKBERRY;.*?VERSION))/([\\d\\.]+)";
-                Pattern pattern = Pattern.compile(bbRegex);
-                Matcher matcher = pattern.matcher(userAgent.toUpperCase());
-                if (matcher.find()) {
-                    try {
-
-                        //Convert discovered version number for client comparison
-                        bbVersion = matcher.group(1);
-                        String[] bbVersionSplit = bbVersion.split("\\.");
-                        Integer bbVersionNumber = new Integer(bbVersionSplit[0]);
-
-                        if (bbVersionNumber == 5) {
-                            bbVersion = "5";
-                        } else if (bbVersionNumber >= 6) {
-                            bbVersion = "6";
-                        } else {
-                            osVersionNotSupported = true;
-                        }
-                    } catch (NumberFormatException ex) {
-                    }
-                }
             }
         }
     }
 
-    ClientType currentClient = ServletConfig.getClient(os, bbVersion, bit);
 
-    if (os == null || currentClient == null) {
-        osNotSupported = true;
-    } else if ("win".equalsIgnoreCase(os)) {
+    ClientTypeSet clientTypeSet = new ClientTypeSet();
 
-        ClientType client32 = ServletConfig.getClient("WIN", "", "32");
-        ClientType client64 = ServletConfig.getClient("WIN", "", "64");
+    if ("android".equalsIgnoreCase(os)) {
+        downloadText = and_downloadText;
+
+        if (androidVersion.compareTo("2.1") < 0) {
+            osVersionNotSupported = true;
+        }
+    }
+    else if ("ios".equalsIgnoreCase(os)) {
+        downloadText = ios_downloadText;
+
+        if (iOSVersion.compareTo("4_3") < 0) {
+            osVersionNotSupported = true;
+        }
+    }
+    else if ("win".equalsIgnoreCase(os)) {
+
+        ClientType client32 = clientTypeSet.getClient("win", "32");
+        ClientType client64 = clientTypeSet.getClient("win", "64");
+
         if (client32 == null || client64 == null) {
             osNotSupported = true;
         } else if (bit != null && "32".equals(bit)) {
@@ -216,36 +213,17 @@
             location = client32.getLink(language);
             altLocation = client64.getLink(language);
         }
-    } else if ("MacOS".equalsIgnoreCase(os)) {
-        version = currentClient.getCurrentVersion();
+    }
+    else if ("MacOS".equalsIgnoreCase(os)) {
+
+        ClientType clientMac = clientTypeSet.getClient("macOS", "");
+
+        version = clientMac.getCurrentVersion();
         downloadText = mac_downloadText;
-        location = currentClient.getLink(language);
-    } else if ("BB".equalsIgnoreCase(os)) {
-        downloadText = bb_downloadText;
-
-        if (!osVersionNotSupported) {
-            version = currentClient.getCurrentVersion();
-            ;
-            location = currentClient.getLink(language);
-        }
-    } else if ("android".equalsIgnoreCase(os)) {
-        downloadText = and_downloadText;
-
-        if (androidVersion.compareTo("2.1") >= 0) {
-            version = currentClient.getCurrentVersion();
-            location = currentClient.getLink(language);
-        } else {
-            osVersionNotSupported = true;
-        }
-    } else if ("ios".equalsIgnoreCase(os)) {
-        downloadText = ios_downloadText;
-
-        if (iOSVersion.compareTo("4_3") >= 0) {
-            version = currentClient.getCurrentVersion();
-            location = currentClient.getLink(language);
-        } else {
-            osVersionNotSupported = true;
-        }
+        location = clientMac.getLink(language);
+    }
+    else {
+        osNotSupported = true;
     }
 
 %>
@@ -253,65 +231,24 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Update <%=ServletConfig.getProductName() %> Client</title>
-    <link rel="stylesheet" type="text/css" href="update.css"></link>
-    <% if ("android".equalsIgnoreCase(os) || "BB".equalsIgnoreCase(os) || "ios".equalsIgnoreCase(os)) { %>
+    <title>Update <%=getProductName() %> Client</title>
+    <link rel="stylesheet" type="text/css" href="update.css" />
+
+    <% if ("android".equalsIgnoreCase(os) || "ios".equalsIgnoreCase(os)) { %>
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.css"/>
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.js"></script>
-
-    <script>
-        function downloadCheck() {
-            var downloadLink = document.getElementById('bbdownloadlink');
-
-            if (<%=!osVersionNotSupported %>) {
-                downloadLink.href = "<%=location%>";
-                $("#device").text("<%=bb_os_detected_pre %>" + version[0] + " <%=bb_os_detected_post %>");
-            }
-            else {
-                $("#device").text("<%=bb_os_detected_pre %><%=bb_version_not_supported %>");
-            }
-        }
-
-        window.onload = downloadCheck;
-    </script>
     <% } %>
 </head>
 <body>
 
 
-<% if ("BB".equalsIgnoreCase(os)) { %>
+<% if ("android".equalsIgnoreCase(os) && !osNotSupported) { %>
 <div data-role="page" data-theme="b">
-    <div data-role="header"><h1><%=MessageFormat.format(ot_tempo_installer, ServletConfig.getProductName())%>
+    <div data-role="header"><h1><%=MessageFormat.format(ot_tempo_installer, getProductName())%>
     </h1></div>
     <div data-role="content">
-        <p><%=MessageFormat.format(bb_install_instruction, ServletConfig.getProductName()) %>
-        </p>
-
-        <p><%=bb_install_instruction_2 %>
-        </p>
-
-        <p><%=bb_install_instruction_3 %>
-        </p>
-
-        <p class="version-info" id="device"></p>
-
-        <div data-role="controlgroup">
-            <a id="bbdownloadlink" href="<% out.print(location); %>" data-role="button"
-               rel="external"><%=bb_install_build %>
-            </a>
-        </div>
-
-    </div>
-    <!-- /content -->
-</div>
-<!-- /page -->
-<% } else if ("android".equalsIgnoreCase(os) && !osNotSupported) { %>
-<div data-role="page" data-theme="b">
-    <div data-role="header"><h1><%=MessageFormat.format(ot_tempo_installer, ServletConfig.getProductName())%>
-    </h1></div>
-    <div data-role="content">
-        <p><%=MessageFormat.format(and_install_instruction, ServletConfig.getProductName())%>
+        <p><%=MessageFormat.format(and_install_instruction, getProductName())%>
         </p>
 
         <p><%=and_install_instruction_2%>
@@ -325,7 +262,7 @@
             out.print(androidVersion); %> <%=and_os_detected_post%><% if (osVersionNotSupported) {%><%=and_version_not_supported %>
         </p><% }else{ %></p>
         <div data-role="controlgroup">
-            <a id="bbdownloadlink" href="<% out.print(location); %>" data-role="button"
+            <a id="androidDownloadLink" href="<% out.print(androidLink); %>" data-role="button"
                rel="external"><%=and_install_build %>
             </a>
         </div>
@@ -337,10 +274,10 @@
 <!-- /page -->
 <% } else if ("ios".equalsIgnoreCase(os) && !osNotSupported) { %>
 <div data-role="page" data-theme="b">
-    <div data-role="header"><h1><%=MessageFormat.format(ot_tempo_installer, ServletConfig.getProductName())%>
+    <div data-role="header"><h1><%=MessageFormat.format(ot_tempo_installer, getProductName())%>
     </h1></div>
     <div data-role="content">
-        <p><%=MessageFormat.format(ios_install_instruction, ServletConfig.getProductName())%>
+        <p><%=MessageFormat.format(ios_install_instruction, getProductName())%>
         </p>
 
         <p><%=ios_install_instruction_2%>
@@ -351,14 +288,18 @@
 
         <p class="version-info">
             <%=ios_os_detected_pre%><%
-            out.print(iOSVersion); %> <%=ios_os_detected_post%><% if (osVersionNotSupported) {%><%=ios_version_not_supported %>
-        </p><% }else{ %></p>
-        <div data-role="controlgroup">
-            <a id="bbdownloadlink" href="<% out.print(location); %>" data-role="button"
-               rel="external"><%=ios_install_build%>
-            </a>
-        </div>
-        <% } %>
+            out.print(iOSVersion); %> <%=ios_os_detected_post%>
+            <% if (osVersionNotSupported) {%>
+                <%=ios_version_not_supported %>
+                </p>
+            <% }else{ %>
+                </p>
+                <div data-role="controlgroup">
+                    <a id="iOSDownloadLink" href="<% out.print(iOSLink); %>" data-role="button"
+                       rel="external"><%=ios_install_build%>
+                    </a>
+                </div>
+            <% } %>
 
     </div>
     <!-- /content -->
@@ -366,11 +307,11 @@
 <!-- /page -->
 <% } else if ("win".equalsIgnoreCase(os) && !osNotSupported) { %>
 <div id="info">
-    <div id="title"><img src="images/Tempo_wordmark.png" alt="Tempo Title"></div>
+    <div id="title"><img src="images/tempo_wordmark.png" alt="Tempo Title"></div>
     <div>
         <h3><%=win_version%> <% out.print(version); %></h3>
 
-        <p><%=MessageFormat.format(win_reliable_etc, ServletConfig.getCompanyName())%>
+        <p><%=MessageFormat.format(win_reliable_etc, getCompanyName())%>
         </p>
     </div>
     <% if (showBoth) { %>
@@ -391,11 +332,11 @@
 </div>
 <%} else if ("MacOS".equalsIgnoreCase(os) && !osNotSupported) { %>
 <div id="info">
-    <div id="title"><img src="images/Tempo_wordmark.png" alt="Tempo Title"></div>
+    <div id="title"><img src="images/tempo_wordmark.png" alt="Tempo Title"></div>
     <div>
         <h3><%=win_version%> <% out.print(version); %></h3>
 
-        <p><%=MessageFormat.format(win_reliable_etc, ServletConfig.getCompanyName())%>
+        <p><%=MessageFormat.format(win_reliable_etc, getCompanyName())%>
         </p>
     </div>
     <div class="download-button">
@@ -405,7 +346,7 @@
 <% } else { %>
 <div data-role="page" data-theme="b">
     <div id="info">
-        <div id="title"><img src="images/Tempo_wordmark.png" alt="Tempo Title"></div>
+        <div id="title"><img src="images/tempo_wordmark.png" alt="Tempo Title"></div>
         <div data-role="content">
             <p><%=platform_not_supported%>
             </p>
