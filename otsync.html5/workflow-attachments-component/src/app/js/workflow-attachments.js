@@ -16,11 +16,14 @@ $(document).ready(function () {
     var _attachments;
 
     WorkflowAttachments.init = initialize;
-
-    document.addEventListener('deviceready', initialize);
+    WorkflowAttachments.start();
 
     $('#refresh').on('click', function () {
         initialize();
+    });
+
+    $('#add-attachment').on('click', function () {
+        addAttachmentFor(_containerId);
     });
 
     function initialize() {
@@ -86,7 +89,11 @@ $(document).ready(function () {
     }
 
     function viewAttachmentFor(id) {
-        alert('node id: ' + id);
+        WorkflowAttachments.openFromAppworks('dcs-component', {id: id}, true);
+    }
+
+    function addAttachmentFor(parentId) {
+        WorkflowAttachments.openFromAppworks('forms-component', {id: parentId}, true);
     }
 
     function failed(err) {
