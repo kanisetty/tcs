@@ -89,11 +89,16 @@ $(document).ready(function () {
     }
 
     function viewAttachmentFor(id) {
-        WorkflowAttachments.openFromAppworks('dcs-component', {id: id}, true);
+        WorkflowAttachments.openFromAppworks('dcs-component', {id: id}, false, true);
     }
 
     function addAttachmentFor(parentId) {
-        WorkflowAttachments.openFromAppworks('forms-component', {id: parentId}, true);
+        var data = {
+            id: parentId,
+            type: 144,
+            fileSource: 'gallery'
+        };
+        WorkflowAttachments.openFromAppworks('forms-component', data, false, true);
     }
 
     function failed(err) {
