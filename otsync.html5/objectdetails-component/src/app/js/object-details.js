@@ -348,7 +348,7 @@
                     } else if (typeof val === 'string') {
                         val = val.replace(/\r?\n/g, '<br>');
                     } else if (val === null || val === undefined) {
-                        val = 'No value provided';
+                        val = apputil.T('label.No value provided');
                     }
                     attData.push(val);
 
