@@ -26,7 +26,7 @@
         '1': 'Shortcut',
         '131': 'Category',
         '136': 'Compound Document',
-        '40': 'URL',
+        '140': 'Web Address',
         '144': 'Document',
         '202': 'Project',
         '204': 'Task List',
@@ -35,7 +35,9 @@
         '557': 'Compound Email',
         '749': 'Email',
         '751': 'Email Folder',
-        '30309': 'ActiveView'
+        '30309': 'ActiveView',
+        '899': 'Virtual Folder',
+        '128': 'Workflow Map'
     };
 
     /**
