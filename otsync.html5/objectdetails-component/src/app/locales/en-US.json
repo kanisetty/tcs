@@ -14,6 +14,7 @@
 		"MB":"MB",
 		"Modified:":"Modified:",
 		"NoCategoriesDefined":"No categories defined.",
+		"No value provided": "None",
 		"Properties":"Properties",
 		"Size:":"Size:",
 		"TB":"TB",
@@ -25,7 +26,7 @@
 		"Shortcut": "Shortcut",
 		"Category": "Category",
 		"Compound Document": "Compound Document",
-		"URL": "URL",
+		"Web Address": "Web Address",
 		"Document": "Document",
 		"Projec": "Project",
 		"Task List": "Task List",
@@ -34,7 +35,9 @@
 		"Compound Email": "Compound Email",
 		"Email": "Email",
 		"Email Folder": "Email Folder",
-		"ActiveView": "ActiveView"
+		"ActiveView": "ActiveView",
+        "Virtual Folder": "Virtual Folder",
+        "Workflow Map": "Workflow Map"
 	},
     "error" : {
       "Authentication failed":"Authentication Failed.",
