@@ -33,9 +33,12 @@
 </header>
 
 <div class="container text-center">
-    <div class="btn-group">
+    <div class="btn-group" id="hide-when-loading">
         <button class="btn" id="refresh">Refresh</button>
         <button class="btn" id="add-attachment">Add Attachment</button>
+    </div>
+    <div class="progress" id="show-when-loading" style="display: none;">
+        <div class="bar" style="width: 60%;"></div>
     </div>
 </div>
 

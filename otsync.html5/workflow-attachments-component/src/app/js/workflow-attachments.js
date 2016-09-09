@@ -23,7 +23,10 @@ $(document).ready(function () {
     });
 
     $('#add-attachment').on('click', function () {
-        addAttachmentFor(_containerId);
+        addAttachmentFor(_containerId).then(function () {
+            // refresh the list
+            initialize();
+        });
     });
 
     function initialize() {
@@ -93,12 +96,71 @@ $(document).ready(function () {
     }
 
     function addAttachmentFor(parentId) {
-        var data = {
-            id: parentId,
-            type: 144,
-            fileSource: 'gallery'
-        };
-        WorkflowAttachments.openFromAppworks('forms-component', data, false, true);
+        var deferred = $.Deferred();
+        getAttachmentFromGallery().then(function (blob) {
+            var formdata = new FormData();
+            var filename = 'Attachment-' + new Date().getTime().toString() + '.jpg';
+            formdata.append('func', 'otsync.otsyncrequest');
+            formdata.append('payload', JSON.stringify({
+                cstoken: _csToken,
+                type: 'content',
+                subtype: 'upload',
+                clientID: _clientId,
+                info: {
+                    parentID: parentId,
+                    name: filename
+                }
+            }));
+            formdata.append('versionFile', blob, filename);
+
+            var request = {
+                url: _gatewayUrl + '/content/ContentChannel',
+                method: 'POST',
+                data: formdata,
+                processData: false,
+                contentType: false
+            };
+
+            showLoadingProgress();
+
+            _deviceStrategy.runRequestWithAuth(request).then(successHandler, errorHandler);
+
+        });
+        return deferred.promise();
+
+        function successHandler(data) {
+            hideLoadingProgress();
+            deferred.resolve(data)
+        }
+
+        function errorHandler(err) {
+            hideLoadingProgress();
+            deferred.reject(err);
+        }
+    }
+
+    function showLoadingProgress() {
+        $('#hide-when-loading').hide();
+        $('#show-when-loading').show();
+    }
+
+    function hideLoadingProgress() {
+        $('#hide-when-loading').show();
+        $('#show-when-loading').hide();
+    }
+
+    function getAttachmentFromGallery() {
+        var deferred = $.Deferred();
+        var camera = new Appworks.AWCamera(onFileLoad, deferred.reject);
+        var cameraOptions = {destinationType: Camera.DestinationType.DATA_URL};
+
+        camera.openGallery(cameraOptions);
+
+        return deferred.promise();
+
+        function onFileLoad(dataUrl) {
+            deferred.resolve(b64toBlob(dataUrl, 'image/jpeg'));
+        }
     }
 
     function failed(err) {
@@ -163,5 +225,28 @@ $(document).ready(function () {
         };
 
         return _deviceStrategy.runRequestWithAuth(request);
+    }
+
+    function b64toBlob(b64Data, contentType, sliceSize) {
+        var byteCharacters = atob(b64Data);
+        var byteArrays = [];
+
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
+
+        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            var byteNumbers = new Array(slice.length);
+            for (var i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            var byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        return new Blob(byteArrays, {type: contentType});
     }
 });
