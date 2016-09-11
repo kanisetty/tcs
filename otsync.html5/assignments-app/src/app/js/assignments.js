@@ -37,6 +37,8 @@
         }
         this.initialized = true;
 
+        $("#btnRefresh").text(apputil.T("label.Refresh"));
+
         // Bind events for the application
         bindEvents();
 
@@ -69,6 +71,9 @@
 
                 // Open the assignment
                 openAssignment($(this).parents("li").data("assignment"));
+            })
+            .on("click", "#btnRefresh", function(event) {
+              getAssignments();
             });
     }
 

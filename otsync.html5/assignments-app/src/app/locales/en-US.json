@@ -13,7 +13,8 @@
 		"None":"None",
 		"OK":"OK",
 		"Priority":"Priority",
-		"Status":"Status"
+		"Status":"Status",
+	    "Refresh":"Refresh"
 	},
 	"priority" : {
 		"Low":"Low",

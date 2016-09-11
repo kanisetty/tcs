@@ -81,3 +81,8 @@ label.control-label strong.text-error {
 #instructions {
     overflow: scroll;
 }
+
+.assignment-buttons {
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
