@@ -37,8 +37,6 @@
         }
         this.initialized = true;
 
-        $("#btnRefresh").text(apputil.T("label.Refresh"));
-
         // Bind events for the application
         bindEvents();
 
