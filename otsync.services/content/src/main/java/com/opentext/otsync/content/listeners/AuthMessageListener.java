@@ -90,9 +90,9 @@ public class AuthMessageListener implements SynchronousMessageListener {
         Map<String, Object> clientData = new HashMap<>();
         params.put("clientData", clientData);
 
-        //If the client has passed in its ID, include it
-        if (message.containsKey(Message.CLIENT_ID_KEY_NAME)) {
-            clientData.put("clientId", message.getOrDefault(Message.CLIENT_ID_KEY_NAME, ""));
+        String clientID = (String)message.getOrDefault(Message.CLIENT_ID_KEY_NAME, "");
+        if (!"".equalsIgnoreCase(clientID) && !"null".equalsIgnoreCase(clientID)) {
+            clientData.put("clientId", clientID);
         }
 
         Map<String, Object> clientInfo = new HashMap<>();
@@ -103,6 +103,16 @@ public class AuthMessageListener implements SynchronousMessageListener {
         clientInfo.put("os", message.getOrDefault(Message.CLIENT_OS_KEY_NAME, ""));
         clientInfo.put("osVersion", message.getOrDefault(Message.CLIENT_OSVERSION_KEY_NAME, ""));
         clientInfo.put("bitness", message.getOrDefault(Message.CLIENT_BITNESS_KEY_NAME, ""));
+
+        String runtimeName = "Tempo Box " + message.getOrDefault(Message.CLIENT_TYPE_KEY_NAME, "");
+        clientInfo.put("runtime", runtimeName);
+
+        Map<String, Object> deviceInfo = new HashMap<>();
+        clientData.put("deviceInfo", deviceInfo);
+
+        String modelName =  "" + message.getOrDefault(Message.CLIENT_OS_KEY_NAME, "") + " " +
+            message.getOrDefault(Message.CLIENT_OSVERSION_KEY_NAME, "");
+        deviceInfo.put("model", modelName);
 
         ObjectMapper mapper = new ObjectMapper();
         String requestJSON = null;
