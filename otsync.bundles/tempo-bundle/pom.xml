@@ -11,7 +11,7 @@
 
     <artifactId>tempo-bundle</artifactId>
     <name>Tempo Bundle</name>
-    <version>16.1.0</version>
+    <version>16.0.3</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -75,7 +75,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>content</artifactId>
-                                    <version>16.0.2</version>
+                                    <version>16.0.3</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>

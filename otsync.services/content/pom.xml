@@ -14,7 +14,7 @@
     <artifactId>content</artifactId>
     <packaging>war</packaging>
     <name>Content Service</name>
-    <version>16.0.2</version>
+    <version>16.0.3</version>
     <description>Content Server-backed APIs for document management and sharing</description>
 
     <properties>
@@ -103,7 +103,7 @@
       <dependency>
           <groupId>com.opentext.otsync</groupId>
           <artifactId>webui</artifactId>
-          <version>16.1.0</version>
+          <version>16.0.3</version>
           <type>zip</type>
       </dependency>
 
