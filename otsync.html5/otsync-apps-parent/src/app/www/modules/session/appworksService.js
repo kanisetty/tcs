@@ -75,7 +75,7 @@ angular.module('appworksService', [])
 
                     var storage = new Appworks.SecureStorage(success, failure);
 
-                    storage.retrieve(encodeURIComponent(fileName));
+                    storage.retrieve(fileName);
 
                     return deferred.promise;
 
@@ -207,11 +207,11 @@ angular.module('appworksService', [])
                     }
 
                     function storeShared() {
-                        sharedStorage.download(encodeURI(downloadURL), encodeURIComponent(fileName), null, true);
+                        sharedStorage.download(downloadURL, fileName, null, true);
                     }
 
                     function store() {
-                        storage.store(encodeURI(downloadURL), encodeURIComponent(fileName));
+                        storage.store(downloadURL, fileName);
                     }
 
                     return deferred.promise;

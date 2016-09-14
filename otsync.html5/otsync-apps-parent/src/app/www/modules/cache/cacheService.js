@@ -44,7 +44,7 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
                         self.openNodeFromStorage(node)
                             .then(function (file) {
                                 if (file) {
-                                    window.open(encodeURI(file.nativeURL), '_blank', 'EnableViewPortScale=yes,location=no');
+                                    window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes,location=no');
                                     deferred.resolve();
                                     $displayMessageService.hideMessage();
                                 } else {
@@ -59,7 +59,8 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
                     } else if (openIn) {
                         if (file) {
                             var finder = new Appworks.Finder(deferred.resolve, deferred.reject);
-                            finder.openDirect(encodeURI(file.nativeURL));
+                            // remove file encoding from open in call
+                            finder.openDirect(file.nativeURL);
                             $displayMessageService.hideMessage();
                         } else {
                             deferred.reject();
@@ -110,7 +111,7 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
             var deferred = $q.defer();
             var storageManager = new Appworks.SecureStorage(fileExistsAtPath, deferred.reject);
 
-            storageManager.fileExistsAtPath(encodeURIComponent(node.getFileNameForOnDeviceStorage()));
+            storageManager.fileExistsAtPath(node.getFileNameForOnDeviceStorage());
 
             return deferred.promise;
 
@@ -126,7 +127,7 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
             $appworksService.getFile(fileName)
                 .then(function (file) {
                     if (file) {
-                        window.open(encodeURI(file.nativeURL), '_blank', 'EnableViewPortScale=yes,location=no');
+                        window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes,location=no');
                         deferred.resolve();
                     } else {
                         deferred.reject();
