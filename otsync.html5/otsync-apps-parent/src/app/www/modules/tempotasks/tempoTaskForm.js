@@ -15,7 +15,7 @@ angular.module('TempoTaskForm', ['collaboratorsResource', 'TempoTask', 'tempoTas
                     $collaboratorsResource.getCollaborators($stateParams.node).then(function(collaborators){
                         _collaborators = collaborators;
                         _collaborators.forEach(function(collaborator){
-                            _assigneeNameOptions.push(collaborator.getDisplayName());
+                            _assigneeNameOptions.push(collaborator.getCollaboratorName());
                             if(collaborator.getCollaboratorName() == $sessionService.getUsername())
                                 _currentCollaborator = collaborator;
                         });
