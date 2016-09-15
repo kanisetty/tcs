@@ -249,7 +249,7 @@ var startup = new function (){
 			var tmplItem = $('#page').tmplItem();
 			if( tmplItem.update ){
 
-				tmplItem.tmpl = $.template('loginTemplate_tmpl');
+				tmplItem.tmpl = $.template('#loginTemplate_tmpl');
 				tmplItem.data = loginDialog;
 				tmplItem.update();
 			}else{
