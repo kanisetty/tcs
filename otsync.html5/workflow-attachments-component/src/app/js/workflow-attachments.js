@@ -23,11 +23,104 @@ $(document).ready(function () {
     });
 
     $('#add-attachment').on('click', function () {
-        addAttachmentFor(_containerId).then(function () {
-            // refresh the list
-            initialize();
+        $('#invoke-add').addClass('hidden');
+        $('#attachment-cancel').removeClass('hidden');
+        $('#attachment-source').removeClass('hidden');
+    });
+
+    $('#camera').on('click', function () {
+        // take a photo
+        getAttachmentFromCamera().then(function (blob) {
+            $('#attachment-source').addClass('hidden');
+            $('#attachment-help-text').removeClass('hidden');
+            addAttachment(blob);
         });
     });
+
+    $('#gallery').on('click', function () {
+        // select a photo
+        getAttachmentFromGallery().then(function (blob) {
+            $('#attachment-source').addClass('hidden');
+            $('#attachment-help-text').removeClass('hidden');
+            addAttachment(blob);
+        });
+    });
+
+    $('#cancel').on('click', function () {
+        resetView();
+    });
+
+    function resetView() {
+        $('#invoke-add').removeClass('hidden');
+        $('#attachment-cancel').addClass('hidden');
+        $('#attachment-source').addClass('hidden');
+        $('#attachment-name').addClass('hidden');
+        $('#attachment-submit').addClass('hidden');
+        $('#attachment-help-text').addClass('hidden');
+        $('#submit').off();
+        $('#name').val('');
+    }
+
+    function addAttachment(blob) {
+        var formdata = new FormData();
+
+        $('#attachment-name').removeClass('hidden');
+        $('#attachment-submit').removeClass('hidden');
+        $('#attachment-cancel').removeClass('hidden');
+
+        $('#submit').on('click', function () {
+            // get filename from input field or default to a generic string
+            var filename = $('#name').val() || 'Attachment-' + new Date().getTime().toString() + '.jpg';
+            if (filename.indexOf('.jpg') === -1) {
+                filename += '.jpg';
+            }
+            formdata.append('versionFile', blob, filename);
+            submitAttachment(formdata, _containerId, filename).then(function () {
+                resetView();
+                // refresh the list
+                initialize();
+            });
+        });
+    }
+
+    function submitAttachment(formdata, parentId, filename) {
+        var deferred = $.Deferred();
+        formdata.append('func', 'otsync.otsyncrequest');
+        formdata.append('payload', JSON.stringify({
+            cstoken: _csToken,
+            type: 'content',
+            subtype: 'upload',
+            clientID: _clientId,
+            info: {
+                parentID: parentId,
+                name: filename
+            }
+        }));
+
+        var request = {
+            url: _gatewayUrl + '/content/ContentChannel',
+            method: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false
+        };
+
+        showLoadingProgress();
+
+        _deviceStrategy.runRequestWithAuth(request).then(successHandler, errorHandler);
+
+        return deferred.promise();
+
+        function successHandler(data) {
+            hideLoadingProgress();
+            deferred.resolve(data)
+        }
+
+        function errorHandler(err) {
+            hideLoadingProgress();
+            deferred.reject(err);
+        }
+    }
 
     function initialize() {
         var auth = new Appworks.Auth(gotAuthResponse, failed);
@@ -95,50 +188,6 @@ $(document).ready(function () {
         WorkflowAttachments.openFromAppworks('dcs-component', {id: id}, false, true);
     }
 
-    function addAttachmentFor(parentId) {
-        var deferred = $.Deferred();
-        getAttachmentFromGallery().then(function (blob) {
-            var formdata = new FormData();
-            var filename = 'Attachment-' + new Date().getTime().toString() + '.jpg';
-            formdata.append('func', 'otsync.otsyncrequest');
-            formdata.append('payload', JSON.stringify({
-                cstoken: _csToken,
-                type: 'content',
-                subtype: 'upload',
-                clientID: _clientId,
-                info: {
-                    parentID: parentId,
-                    name: filename
-                }
-            }));
-            formdata.append('versionFile', blob, filename);
-
-            var request = {
-                url: _gatewayUrl + '/content/ContentChannel',
-                method: 'POST',
-                data: formdata,
-                processData: false,
-                contentType: false
-            };
-
-            showLoadingProgress();
-
-            _deviceStrategy.runRequestWithAuth(request).then(successHandler, errorHandler);
-
-        });
-        return deferred.promise();
-
-        function successHandler(data) {
-            hideLoadingProgress();
-            deferred.resolve(data)
-        }
-
-        function errorHandler(err) {
-            hideLoadingProgress();
-            deferred.reject(err);
-        }
-    }
-
     function showLoadingProgress() {
         $('#hide-when-loading').hide();
         $('#show-when-loading').show();
@@ -163,12 +212,26 @@ $(document).ready(function () {
         }
     }
 
+    function getAttachmentFromCamera() {
+        var deferred = $.Deferred();
+        var camera = new Appworks.AWCamera(onFileLoad, deferred.reject);
+        var cameraOptions = {destinationType: Camera.DestinationType.DATA_URL};
+
+        camera.getPicture(cameraOptions);
+
+        return deferred.promise();
+
+        function onFileLoad(dataUrl) {
+            deferred.resolve(b64toBlob(dataUrl, 'image/jpeg'));
+        }
+    }
+
     function failed(err) {
         console.log(err);
     }
 
     function setTitle() {
-        $('#node-name').text('Attachments for ' + decodeURIComponent(_workflowTitle));
+        $('#node-name').text('Attachments for ' + decodeURIComponent(_workflowTitle).replace(/\+/g, ' '));
     }
 
     function getContainerContents(id, config) {
