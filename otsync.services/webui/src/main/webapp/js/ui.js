@@ -910,14 +910,14 @@ var ui = new function(){
 var TreeView = function(config){
 	var self = this;
 
-	var CONST_TREETMPL = {COPYFOLDERITEM: 'copyFolderItem', MOVEFOLDERITEM: 'moveFolderItem', MULTICOPY: '#multiCopyItem_tmpl', MULTIMOVE: 'multiMoveItem' };
+	var CONST_TREETMPL = {COPYFOLDERITEM: '#copyFolderItem_tmpl', MOVEFOLDERITEM: '#moveFolderItem_tmpl', MULTICOPY: '#multiCopyItem_tmpl', MULTIMOVE: '#multiMoveItem_tmpl' };
 
 	//default config parameters
 	var defaultConfig = {
 		wrapperID: 'treeViewWrapper',
 		wrapperTitle: '',
 		treeID: 'treeID',
-		treeTemplate: 'shareFolderItem',
+		treeTemplate: '#shareFolderItem_tmpl',
 		parent: 'body'
 		};
 
@@ -963,7 +963,7 @@ var TreeView = function(config){
 
 	/**
 	 * draw the tree view based on different templates
-	 * supported tempaltes: shareFolderItem, copyFolderItem
+	 * supported templates: shareFolderItem_tmpl, copyFolderItem_tmpl
 	 *
 	 * @param {Array}	data		the data back from the server, array of objects
 	 *
@@ -997,7 +997,7 @@ var TreeView = function(config){
 					}
 				}
 
-				items = $(config.treeTemplate).template( folderContents);
+				items = $(config.treeTemplate).tmpl( folderContents);
 				break;
 			case CONST_TREETMPL.MULTICOPY:
 				for(var i in folderContents)
@@ -1017,7 +1017,7 @@ var TreeView = function(config){
 						folderContents[i].ISPARENT = false;
 					}
 				}
-				items = $(CONST_TREETMPL.MULTICOPY).template( folderContents);
+				items = $(CONST_TREETMPL.MULTICOPY).tmpl( folderContents);
 
 				break;
 			case CONST_TREETMPL.MULTIMOVE:
@@ -1039,8 +1039,7 @@ var TreeView = function(config){
 					}
 				}
 				//multimove and multicopy use the same template
-				CONST_TREETMPL.MULTICOPY
-				items = $(CONST_TREETMPL.MULTICOPY).template( folderContents);
+				items = $(CONST_TREETMPL.MULTICOPY).tmpl( folderContents);
 				break;
 		}
 

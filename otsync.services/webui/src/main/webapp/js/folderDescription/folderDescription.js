@@ -1,6 +1,6 @@
 var FolderDescription = new function () {
     this.init = function (objectInfo) {
-        var template = objectInfo.ISREADONLY ? "readonlyDescriptionTemplate" : "editableDescriptionTemplate";
+        var template = objectInfo.ISREADONLY ? "#readonlyDescriptionTemplate_tmpl" : "#editableDescriptionTemplate_tmpl";
         ui.LoadTemplateInEmptyElement(template, objectInfo, "#folderDescriptionInfo");
 		//fix for ie's implementation of placeholders for textareas
 		clear_placeholder('folderDescriptionInput', T('LABEL.EnterFolderDescription'));
