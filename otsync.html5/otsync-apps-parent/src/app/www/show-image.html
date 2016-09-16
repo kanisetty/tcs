@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>image viewer</title>
+    <style>
+        #imageName {
+           position: fixed;
+           top: 0;
+           left: 0;
+           z-index: 2;
+		   height: 25px;
+		   padding-top: 5px;
+           width: 100%;
+           text-align: center;
+           background-color: #ffffff;
+           color: #000000;
+        }
+
+        #image {
+           display: block;
+		   position: absolute;
+		   left: 0;
+		   top: 25px;
+           z-index: 1;
+        }
+    </style>
+    <script>
+        function showImage(name, url) {
+            document.getElementById('imageName').innerHTML = name;
+            document.getElementById('image').setAttribute('src', url);
+        }
+    </script>
+</head>
+<body>
+<div id="imageName"></div>
+<img id="image"/>
+</body>
+</html>

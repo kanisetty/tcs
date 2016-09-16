@@ -120,14 +120,24 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
             }
         },
 
+        showImage: function(name, url) {
+            var win = window.open('show-image.html', '_blank', 'EnableViewPortScale=yes,location=no');
+            win.addEventListener( "loadstop", function() {
+                win.executeScript({
+                    code: "showImage('" + name + "', '" + url + "')"
+                });
+            });
+        },
+
         openNodeFromStorage: function (node) {
+            var self = this;
             var deferred = $q.defer();
             var fileName = node.getFileNameForOnDeviceStorage();
 
             $appworksService.getFile(fileName)
                 .then(function (file) {
                     if (file) {
-                        window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes,location=no');
+                        self.showImage(node.getName(), file.nativeURL);
                         deferred.resolve();
                     } else {
                         deferred.reject();
