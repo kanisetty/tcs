@@ -41,11 +41,17 @@ public class NodeFactory {
         if (softReference == null) {
             if (LOG.isDebugEnabled())
                 LOG.debug("Node " + nodeID + " was not found in cache, adding new Node");
-            softReference = new SoftReference<>(new Node());
-            nodesCache.put(nodeID, softReference);
+            softReference = addNodeReference(nodeID);
         } else {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Node " + nodeID + "was found in factory cache, returning");
+            if (softReference.get() == null) {
+                if (LOG.isDebugEnabled())
+                    LOG.debug("Cached Node reference to " + nodeID +
+                            "was GC'ed, replacing in cache as it has been requested again");
+                softReference = addNodeReference(nodeID);
+            } else {
+                if (LOG.isDebugEnabled())
+                    LOG.debug("Node " + nodeID + "was found in factory cache, returning");
+            }
         }
 
         return softReference.get();
@@ -58,4 +64,11 @@ public class NodeFactory {
 
         return new CSNodeResource(nodeID, requestFactory, docDownloader, docPageUploader);
     }
+
+    private SoftReference<Node> addNodeReference(String nodeID) {
+        SoftReference<Node> softReference = new SoftReference<>(new Node());
+        nodesCache.put(nodeID, softReference);
+        return softReference;
+    }
+
 }
