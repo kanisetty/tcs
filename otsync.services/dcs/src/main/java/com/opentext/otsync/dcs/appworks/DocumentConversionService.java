@@ -12,6 +12,7 @@ import com.opentext.otag.sdk.types.v3.sdk.EIMConnector;
 import com.opentext.otag.service.context.components.AWComponentContext;
 import com.opentext.otsync.dcs.cache.DocumentConversionFileCache;
 import com.opentext.otsync.otag.EIMConnectorHelper;
+import com.opentext.otsync.otag.components.HttpClientService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -68,7 +69,7 @@ public class DocumentConversionService implements AWServiceContextHandler {
     }
 
     private void failBuild(String errMsg) {
-        String reportFailureMsg = "Failed to report deployment outcome to the Gateway";
+        final String reportFailureMsg = "Failed to report deployment outcome to the Gateway";
         try {
             LOG.error(errMsg);
             SDKResponse sdkResponse = serviceClient.completeDeployment(new DeploymentResult(errMsg));
@@ -76,6 +77,7 @@ public class DocumentConversionService implements AWServiceContextHandler {
                 LOG.error(reportFailureMsg);
             }
         } catch (APIException e) {
+            LOG.error(reportFailureMsg);
             LOG.error(errMsg + " - " + e.getCallInfo());
         }
     }

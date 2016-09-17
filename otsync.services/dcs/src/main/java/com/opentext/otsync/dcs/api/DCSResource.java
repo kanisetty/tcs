@@ -1,6 +1,6 @@
 package com.opentext.otsync.dcs.api;
 
-import com.opentext.otsync.dcs.cs.node.Node;
+import com.opentext.otsync.dcs.cs.CSNodeResource;
 import com.opentext.otsync.dcs.cs.node.NodeFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,6 +12,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
+/**
+ * DCS API controller -
+ * This service will trigger a conversion process for a given node (and it pages) when
+ * asked about it if the node has not already been converted.
+ */
 @Path("nodes/{nodeID}")
 public class DCSResource {
 
@@ -24,18 +29,17 @@ public class DCSResource {
                                      @Context HttpServletRequest request) {
 
         try {
-            Node node = nodeFactory.getOrCreateNode(nodeID);
-            if (node == null)
-                throw new WebApplicationException("No node was found for id " + nodeID, Response.Status.NOT_FOUND);
-
-            int count = node.getTotalPages(nodeFactory.createCSNodeResource(nodeID, request));
+            CSNodeResource nodeResource = nodeFactory.createCSNodeResource(nodeID, request);
+            int count = nodeFactory.getOrCreateNode(nodeID)
+                    .getTotalPages(nodeResource);
 
             return Response.ok(count).build();
         } catch (Exception e) {
-            log.error("Get page count error for " + nodeID, e);
+            String errMsg = "Failed to get page count for node " + nodeID;
+            log.error(errMsg, e);
             if (e instanceof WebApplicationException)
                 throw (WebApplicationException) e;
-            throw new WebApplicationException(e);
+            throw new WebApplicationException(errMsg);
         }
     }
 
@@ -46,16 +50,16 @@ public class DCSResource {
                                            @PathParam("page") int page,
                                            @Context HttpServletRequest request) {
         try {
-            Node node = nodeFactory.getOrCreateNode(nodeID);
-            if (node == null)
-                throw new WebApplicationException("No node was found for id " + nodeID, Response.Status.NOT_FOUND);
-
-            return node.getPage(page, nodeFactory.createCSNodeResource(nodeID, request));
+            CSNodeResource nodeResource = nodeFactory.createCSNodeResource(nodeID, request);
+            return nodeFactory.getOrCreateNode(nodeID)
+                    .getPage(page, nodeResource);
         } catch (Exception e) {
-            log.error("Get page" + page + " error for " + nodeID, e);
+            String errMsg = "Failed to get page" + page + " for node " + nodeID;
+            log.error(errMsg, e);
             if (e instanceof WebApplicationException)
                 throw (WebApplicationException) e;
-            throw new WebApplicationException(e);
+            throw new WebApplicationException(errMsg);
         }
     }
+
 }

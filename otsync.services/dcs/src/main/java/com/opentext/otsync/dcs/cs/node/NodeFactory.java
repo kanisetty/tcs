@@ -1,5 +1,6 @@
 package com.opentext.otsync.dcs.cs.node;
 
+import com.opentext.otsync.dcs.appworks.SettingsService;
 import com.opentext.otsync.dcs.cs.CSDocumentDownloader;
 import com.opentext.otsync.dcs.cs.CSDocumentPageUploader;
 import com.opentext.otsync.dcs.cs.CSNodeResource;
@@ -20,8 +21,11 @@ public class NodeFactory {
     private static NodeFactory instance;
 
     /**
-     * Memory-sensitive node cache, {@link SoftReference}s are used as they
-     * wont be garbage collected until we are low on memory.
+     * We keep objects that represent CS nodes so we can lock concurrent operations on
+     * those nodes, as the conversion processes implemented in this service can be expensive
+     * and only need to be executed once (per version of the node).
+     *
+     * @see SettingsService#TMP_CLEANUP_TIMEOUT_KEY
      */
     private Map<String, SoftReference<Node>> nodesCache = new ConcurrentHashMap<>();
 
@@ -49,8 +53,8 @@ public class NodeFactory {
                             "was GC'ed, replacing in cache as it has been requested again");
                 softReference = addNodeReference(nodeID);
             } else {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Node " + nodeID + "was found in factory cache, returning");
+                if (LOG.isTraceEnabled())
+                    LOG.trace("Node " + nodeID + "was found in factory cache, returning");
             }
         }
 

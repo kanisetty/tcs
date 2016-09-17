@@ -6,10 +6,10 @@ import com.opentext.otsync.api.CSRequest;
 import com.opentext.otsync.otag.AWComponentRegistry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.pool.ConnPoolControl;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -50,7 +50,7 @@ public class HttpClientService implements AWServiceContextHandler {
         int maxTotal = 200;
         int maxPerRoute = 20;
 
-        buildClient(maxTotal, maxPerRoute, null);
+        buildClient(maxTotal, maxPerRoute, null, null);
     }
 
     public CloseableHttpClient getHttpClient() {
@@ -63,8 +63,19 @@ public class HttpClientService implements AWServiceContextHandler {
      * @param maxTotal    max total connections
      * @param maxPerRoute max connections per route
      */
-    public void configure(int maxTotal, int maxPerRoute) {
-        buildClient(maxTotal, maxPerRoute, null);
+    public void configure(Integer maxTotal, Integer maxPerRoute) {
+        buildClient(maxTotal, maxPerRoute, null, null);
+    }
+
+    /**
+     * Configure the http client embedded in this service.
+     *
+     * @param maxTotal       max total connections
+     * @param maxPerRoute    max connections per route
+     * @param requestTimeout connection timeout in seconds
+     */
+    public void configure(Integer maxTotal, Integer maxPerRoute, Integer requestTimeout) {
+        buildClient(maxTotal, maxPerRoute, null, requestTimeout);
     }
 
     /**
@@ -74,8 +85,20 @@ public class HttpClientService implements AWServiceContextHandler {
      * @param maxPerRoute max connections per route
      * @param ttlSeconds  time to live in seconds
      */
-    public void configure(int maxTotal, int maxPerRoute, Long ttlSeconds) {
-        buildClient(maxTotal, maxPerRoute, ttlSeconds);
+    public void configure(Integer maxTotal, Integer maxPerRoute, Long ttlSeconds) {
+        buildClient(maxTotal, maxPerRoute, ttlSeconds, null);
+    }
+
+    /**
+     * Configure the http client embedded in this service.
+     *
+     * @param maxTotal       max total connections
+     * @param maxPerRoute    max connections per route
+     * @param ttlSeconds     time to live in seconds
+     * @param requestTimeout connection timeout in seconds
+     */
+    public void configure(Integer maxTotal, Integer maxPerRoute, Long ttlSeconds, Integer requestTimeout) {
+        buildClient(maxTotal, maxPerRoute, ttlSeconds, requestTimeout);
     }
 
     @Override
@@ -90,7 +113,7 @@ public class HttpClientService implements AWServiceContextHandler {
         }
     }
 
-    private void buildClient(int maxTotal, int maxPerRoute, Long ttl) {
+    private void buildClient(Integer maxTotal, Integer maxPerRoute, Long ttl, Integer connectionTimeout) {
         synchronized (CLIENT_LOCK) {
             try {
                 if (httpClient != null)
@@ -107,12 +130,28 @@ public class HttpClientService implements AWServiceContextHandler {
             }
 
             // set max total connections
-            cm.setMaxTotal(maxTotal);
+            if (maxTotal != null)
+                cm.setMaxTotal(maxTotal);
             // set max connections per route
-            cm.setDefaultMaxPerRoute(maxPerRoute);
+            if (maxPerRoute != null)
+                cm.setDefaultMaxPerRoute(maxPerRoute);
+
+            RequestConfig requestConfig = RequestConfig.DEFAULT;
+
+            // we use the same timeout value for the initial connection, and time
+            // between connection inactivity
+            if (connectionTimeout != null) {
+                // we accept seconds, so need to convert
+                int millisVal = connectionTimeout * 1000;
+                requestConfig = RequestConfig.custom()
+                        .setConnectTimeout(millisVal)
+                        .setConnectionRequestTimeout(millisVal)
+                        .build();
+            }
 
             httpClient = HttpClients.custom()
                     .setConnectionManager(cm)
+                    .setDefaultRequestConfig(requestConfig)
                     .build();
         }
     }

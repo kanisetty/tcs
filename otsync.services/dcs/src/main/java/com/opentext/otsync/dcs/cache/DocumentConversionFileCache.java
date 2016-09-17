@@ -8,8 +8,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -84,16 +82,20 @@ public class DocumentConversionFileCache implements AWComponent {
     }
 
     /**
-     * Run the supplied runnable, locking the
+     * Run the supplied runnable, locking the path supplied.
      *
      * @param toSecure    path we will we working in during the action
      * @param cacheAction cache action
      * @throws Exception if the cache action function fails
      */
     public void runCacheActionSecurely(Path toSecure, Consumer<Path> cacheAction) throws Exception {
-        lock(toSecure);
-        cacheAction.accept(toSecure);
-        unlock(toSecure);
+        try {
+            lock(toSecure);
+            cacheAction.accept(toSecure);
+        } finally {
+            // always try to unlock the path
+            unlock(toSecure);
+        }
     }
 
     /**
@@ -148,27 +150,38 @@ public class DocumentConversionFileCache implements AWComponent {
     }
 
     private synchronized void cleanup() throws APIException {
-        Long tmpCleanupTimeout = settingsService.getCleanupTimeout();
-        long cutoff = System.currentTimeMillis() - tmpCleanupTimeout * 1000;
-        String cacheRootPath = getCacheRootPath();
+        try {
+            Long tmpCleanupTimeout = settingsService.getCleanupTimeout();
+            long cutoff = System.currentTimeMillis() - (tmpCleanupTimeout * 1000);
+            String cacheRootPath = getCacheRootPath();
 
-        // list the directories for each node under the root and examine its timestamp
-        File[] files = new File(cacheRootPath).listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (!isLocked(file) && FileUtils.isFileOlder(file, cutoff)) {
-                    try {
-                        if (file.isDirectory()) {
-                            FileUtils.deleteDirectory(file);
-                        } else {
-                            boolean wasDeleted = file.delete();
-                            if (!wasDeleted)
-                                LOG.warn("We failed to delete " + file.getAbsolutePath());
+            // list the directories for each node under the root and examine its timestamp
+            File[] files = new File(cacheRootPath).listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (!isLocked(file) && FileUtils.isFileOlder(file, cutoff)) {
+                        try {
+                            if (file.isDirectory()) {
+                                FileUtils.deleteDirectory(file);
+                            } else {
+                                boolean wasDeleted = file.delete();
+                                if (!wasDeleted)
+                                    LOG.warn("We failed to delete " + file.getAbsolutePath());
+                            }
+                        } catch (IOException e) {
+                            LOG.error("Delete file " + file.toPath() + " failed", e);
                         }
-                    } catch (IOException e) {
-                        LOG.error("Delete file " + file.toPath() + " failed", e);
                     }
                 }
+            } else {
+                LOG.warn("Invalid cache root path supplied, unable to list files");
+            }
+        } catch (Exception e) {
+            if (e instanceof APIException) {
+                LOG.error("Failed to determine cleanup timeout setting value, DCS file cache " +
+                        "cleanup failed" + ((APIException) e).getCallInfo(), e);
+            } else {
+                LOG.error("DCS file cache cleanup failed", e);
             }
         }
     }

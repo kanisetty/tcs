@@ -26,18 +26,23 @@ public class NodePagesGenerator {
     public void generatePagesCount(final CSNodeResource csNodeResource) throws Exception {
         final int version = csNodeResource.getLatestVersion();
         convertNode(csNodeResource, version, 1, 1, result -> {
+            String nodeID = csNodeResource.getNodeID();
             if (LOG.isDebugEnabled())
-                LOG.debug("Converting node " + csNodeResource.getNodeID() + "version " + version);
-
-            int totalPages = result.getTotalPages();
-            csNodeResource.setPagesCount(totalPages, version);
-            if (LOG.isDebugEnabled())
-                LOG.debug("Set page count for  node " + csNodeResource.getNodeID() + "to " + totalPages);
+                LOG.debug("Converting node " + nodeID + "version " + version);
 
             try {
-                uploadPages(csNodeResource, result.getPageFilesMap());
+                int totalPages = result.getTotalPages();
+                csNodeResource.setPagesCount(totalPages, version);
+                if (LOG.isDebugEnabled())
+                    LOG.debug("Set page count for  node " + nodeID + "to " + totalPages);
+
+                try {
+                    uploadPages(csNodeResource, result.getPageFilesMap());
+                } catch (Exception e) {
+                    LOG.error("Upload page" + 1 + " for " + nodeID + " failed", e);
+                }
             } catch (Exception e) {
-                LOG.warn("Upload page" + 1 + " for " + csNodeResource.getNodeID() + " failed", e);
+                LOG.error("We failed to set the page count for node " + nodeID, e);
             }
         });
     }
@@ -48,30 +53,44 @@ public class NodePagesGenerator {
                 result -> uploadPages(csNodeResource, result.getPageFilesMap()));
     }
 
-    private void convertNode(final CSNodeResource csNodeResource, final int version, final int fromPage,
-                             final int toPage, final ResultCollector resultCollector) throws Exception {
-        final DocConversionResult result = new DocConversionResult();
+    private void convertNode(final CSNodeResource csNodeResource,
+                             final int version,
+                             final int fromPage,
+                             final int toPage,
+                             final ResultCollector resultCollector) throws Exception {
+        String nodeID = csNodeResource.getNodeID();
+        final String conversionErr = "Failed to convert node %s contents";
 
-        // create a new folder for the node id in our file cache
-        DocumentConversionFileCache cacheService = ServiceIndex.getFileCacheService();
+        try {
+            final DocConversionResult result = new DocConversionResult();
 
-        // create a folder for this cs node resource to write our content into
-        Path nodeFolder = cacheService.createFolder(csNodeResource.getNodeID());
+            // create a new folder for the node id in our file cache
+            DocumentConversionFileCache cacheService = ServiceIndex.getFileCacheService();
 
-        // we wrap the conversion in a locking mechanism making sure no one writes to
-        // the node folder involved in the conversion
-        cacheService.runCacheActionSecurely(nodeFolder, outputPath -> {
-            try {
-                // read from the local disk or download to that location
-                File nodeFile = getOrDownloadDocFile(csNodeResource, version, outputPath);
-                // run conversion
-                docConversionEngineWrapper.convert(nodeFile, fromPage, toPage, outputPath, result);
-                // inject into result object
-                resultCollector.collect(result);
-            } catch (Exception e) {
-                LOG.warn("Failed to convert node contents into images", e);
-            }
-        });
+            // create a folder for this cs node resource to write our content into
+            Path nodeFolder = cacheService.createFolder(nodeID);
+
+            // we wrap the conversion in a locking mechanism making sure no one writes to
+            // the node folder involved in the conversion
+            cacheService.runCacheActionSecurely(nodeFolder, outputPath -> {
+                try {
+                    // read from the local disk or download to that location
+                    File nodeFile = getOrDownloadDocFile(csNodeResource, version, outputPath);
+                    // run conversion
+                    docConversionEngineWrapper.convert(nodeFile, fromPage, toPage, outputPath, result);
+                    // inject into result object
+                    resultCollector.collect(result);
+                } catch (Exception e) {
+                    // throw if we fail to convert the node
+                    throw new RuntimeException(String.format(conversionErr, nodeID), e);
+                }
+            });
+        } catch (Exception e) {
+            // if the consumer threw, rethrow, else report the error
+            if (e instanceof RuntimeException)
+                throw e;
+            throw new RuntimeException(String.format(conversionErr, nodeID), e);
+        }
     }
 
     private void uploadPages(CSNodeResource csNodeResource, Map<Integer, String> pageFilesMap) throws Exception {

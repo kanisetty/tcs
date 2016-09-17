@@ -24,7 +24,12 @@ public class CSNodeResource {
 
     public static final Log LOG = LogFactory.getLog(CSNodeResource.class);
 
+    /**
+     * The unique identifier of the node this resource is concerned with, this is the
+     * Content Server identifier for said document.
+     */
     private final String nodeID;
+
     private final CSRequestBuilderFactory csRequestBuilderFactory;
     private final CSDocumentDownloader csDocumentDownloader;
     private final CSDocumentPageUploader csDocumentPageUploader;
@@ -43,7 +48,15 @@ public class CSNodeResource {
         return nodeID;
     }
 
+    /**
+     * Ask the Content Server module if it know how many pages a specific node
+     * has. This would have been recorded if the node has been processed previously.
+     *
+     * @return number of pages
+     */
     public int getPagesCount() {
+        if (LOG.isTraceEnabled())
+            LOG.trace("otag.numpagesget: Retrieving page count from CS for node " + nodeID);
         CSRequest csRequest = createCsRequestBuilder().func("otag.numpagesget")
                 .para("nodeID", nodeID)
                 .build();
@@ -52,9 +65,11 @@ public class CSNodeResource {
             JsonNode json = execute(csRequest);
             count = json.get("numPages").asInt();
         } catch (IOException e) {
-            LOG.warn("Couldn't get pages count from cs.", e);
+            LOG.error("Couldn't get pages count from cs.", e);
         }
 
+        if (LOG.isTraceEnabled())
+            LOG.trace("otag.numpagesget: CS told us that node " + nodeID + " has " + count + " pages");
         return count;
     }
 
@@ -63,12 +78,21 @@ public class CSNodeResource {
     }
 
     public void setPagesCount(int count, int version) throws IOException {
+        String countString = String.valueOf(count);
+        String newVersionNum = Integer.toString(version);
+
+        if (LOG.isTraceEnabled())
+            LOG.trace("otag.numpagesset: Setting page count for node " + nodeID + " to " +
+                    countString + " new version of doc is " + newVersionNum);
+
         CSRequest csRequest = createCsRequestBuilder().func("otag.numpagesset")
                 .para("nodeID", nodeID)
-                .para("versionNum", Integer.toString(version))
-                .para("numPages", String.valueOf(count))
+                .para("versionNum", newVersionNum)
+                .para("numPages", countString)
                 .build();
         execute(csRequest);
+        if (LOG.isTraceEnabled())
+            LOG.trace("otag.numpageset: CS has set page count for node " + nodeID + " successfully");
     }
 
     public void downloadTo(File file) throws IOException {
@@ -80,33 +104,47 @@ public class CSNodeResource {
     }
 
     public int getLatestVersion() {
+        int version = 0;
+        if (LOG.isTraceEnabled())
+            LOG.trace("otag.renderversionnumget: Asking CS for the latest version of node " + nodeID);
+
         CSRequest csRequest = createCsRequestBuilder().func("otag.renderversionnumget")
                 .para("nodeID", nodeID)
                 .build();
-        int version = 0;
         try {
             JsonNode json = execute(csRequest);
             version = json.get("versionNum").asInt();
         } catch (Exception e) {
-            LOG.warn("Couldn't get pages count from cs.", e);
+            LOG.error("Couldn't get pages count from cs.", e);
         }
+
+        if (LOG.isTraceEnabled())
+            LOG.trace("otag.renderversionnumget: CS told us that the latest " +
+                    "version of node " + nodeID + " is " + version);
 
         return version;
     }
 
     public StreamingOutput getPage(int page) {
+        if (LOG.isTraceEnabled())
+            LOG.trace("otag.renderedpageget: Asking CS to get page " + page + " of node " + nodeID);
+
         CSRequest csRequest = createCsRequestBuilder().func("otag.renderedpageget")
                 .para("nodeID", nodeID)
                 .para("page", String.valueOf(page))
                 .build();
+
         StreamPipe streamPipe = new StreamPipe();
         try {
             csRequest.write(streamPipe);
         } catch (Exception e) {
-            LOG.warn("Couldn't get pages count from cs.", e);
+            LOG.error("Couldn't get pages count from cs.", e);
             return null;
         }
 
+        if (LOG.isTraceEnabled())
+            LOG.trace("otag.renderedpageget: Retrieved bytes for page " +
+                    page + " of node " + nodeID);
         return streamPipe;
     }
 
@@ -132,4 +170,5 @@ public class CSNodeResource {
 
         return reader.readValue(bObj.toByteArray());
     }
+
 }

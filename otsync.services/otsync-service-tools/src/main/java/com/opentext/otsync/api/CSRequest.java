@@ -58,7 +58,6 @@ public class CSRequest implements StreamingOutput {
 
     @Override
     public void write(OutputStream out) throws IOException, WebApplicationException {
-
         HttpPost request = null;
 
         try {

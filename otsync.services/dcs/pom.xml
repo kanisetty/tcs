@@ -14,7 +14,8 @@
     <artifactId>dcs</artifactId>
     <packaging>war</packaging>
     <name>Document Conversion Service</name>
-    <description>Provides rendered views of documents</description>
+    <description>Provides rendered views of documents. The service will break documents (nodes) up into
+        a series of images, uploading the results to Content Server.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

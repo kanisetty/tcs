@@ -12,6 +12,5 @@ public class CSRequestBuilderFactory {
 
     public CSRequestBuilder newBuilder() {
         return new CSRequestBuilder(forwardHeader);
-
     }
 }
