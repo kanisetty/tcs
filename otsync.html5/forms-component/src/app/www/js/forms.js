@@ -30,7 +30,7 @@ var initialize = function () {
                         }
                     ).fail(
                         function () {
-                            //no file chosen so go back to ews
+                            // no file chosen so go back to ews
                             closeMe();
                         }
                     );
@@ -38,9 +38,13 @@ var initialize = function () {
                 getForms();
 
             }).fail(
-                function () {
-                    alert($.t("ERROR_INVALID_ARGUMENTS"));
-                    closeMe();
+                function (res, statusText, err) {
+                    if (res && res.status === 401) {
+                        // we may have an external user. dont quit until we try to submit and it doesnt work
+                    } else {
+                        alert($.t("ERROR_INVALID_ARGUMENTS"));
+                        closeMe();
+                    }
                 }
             );
         });
@@ -204,12 +208,25 @@ var getForms = function () {
 
         }
     ).fail(
-        function () {
+        function (xhr, status, err) {
+            console.log(xhr);
+            console.log(status);
+            console.log(err);
+            if (status === 401) {
+                // TODO was it an external user?
+                // if so, show the plain form
+                showPlainForm();
+            } else {
+                alert($.t('ERROR_RENDERING_FROM'));
+            }
             loadingDialog.hide();
-            alert($.t('ERROR_RENDERING_FROM'));
         }
     );
+};
 
+var showPlainForm = function () {
+    // TODO
+    // display a bare bones form with name, description, and versioning fields
 };
 
 var closeMe = function () {
@@ -234,7 +251,10 @@ var onDeviceReady = function () {
             closeMe();
         }
     });
-    initialize();
+    alert('will init'); // TODO remove
+    setTimeout(function () { // TODO remove
+        initialize();
+    }, 5000);
 };
 
 var processQueryParameters = function (query) {
