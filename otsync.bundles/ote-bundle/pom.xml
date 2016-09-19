@@ -214,6 +214,14 @@
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>workflow-attachments-component</artifactId>
+                                    <version>${app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
                             </artifactItems>
                             <!-- other configurations here -->
                         </configuration>
