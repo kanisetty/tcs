@@ -1,13 +1,13 @@
 {
   "name": "otsync-forms",
   "dependencies": {
-    "alpaca": "https://github.com/jasonaibrahim/alpaca#*",
     "bootstrap3-typeahead": "~3.1.1",
     "i18next": "~1.10.2",
     "underscore": "~1.8.3",
-    "appworks-js": "*"
-  },
-  "resolutions": {
-    "bootstrap": "~3.1.1"
+    "appworks-js": "*",
+    "bootstrap": "^3.3.7",
+    "handlebars": "^4.0.5",
+    "moment": "^2.15.0",
+    "eonasdan-bootstrap-datetimepicker": "^4.17.42"
   }
 }

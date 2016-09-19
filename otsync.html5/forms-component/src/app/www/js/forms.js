@@ -6,11 +6,12 @@ var initialize = function () {
     request = appworksRequest();
     cordovaRequest = CordovaRequest();
 
-    cordovaRequest.getGatewayURL().done(function (url) {
+    cordovaRequest.authenticate().done(function (authResponse) {
 
         var opts = {fallbackLng: "en"};
 
-        appSettings.serverURL = url;
+        appSettings.serverURL = authResponse.authData.gatewayUrl;
+        appSettings.authResponse = authResponse;
 
         cordovaRequest.getDefaultLanguage().done(function (lng) {
             opts.lng = lng.value;
@@ -30,7 +31,7 @@ var initialize = function () {
                         }
                     ).fail(
                         function () {
-                            //no file chosen so go back to ews
+                            // no file chosen so go back to ews
                             closeMe();
                         }
                     );
@@ -38,9 +39,13 @@ var initialize = function () {
                 getForms();
 
             }).fail(
-                function () {
-                    alert($.t("ERROR_INVALID_ARGUMENTS"));
-                    closeMe();
+                function (res, statusText, err) {
+                    if (res && res.status === 401) {
+                        // we may have an external user. dont quit until we try to submit and it doesnt work
+                    } else {
+                        alert($.t("ERROR_INVALID_ARGUMENTS"));
+                        closeMe();
+                    }
                 }
             );
         });
@@ -204,12 +209,81 @@ var getForms = function () {
 
         }
     ).fail(
-        function () {
+        function (res) {
+            if (res.status === 401) {
+                showPlainForm();
+            } else {
+                alert($.t('ERROR_RENDERING_FROM'));
+            }
             loadingDialog.hide();
-            alert($.t('ERROR_RENDERING_FROM'));
         }
     );
+};
 
+var showPlainForm = function () {
+    var nameField = $('#plain-form').find('#plain-form-name');
+    var descriptionField = $('#plain-form').find('#plain-form-description');
+    var imgField = $('#plain-form').find('#plain-form-img');
+    var submit = $('#plain-form').find('#plain-form-submit');
+    var formData = new FormData();
+    var url = appSettings.serverURL + '/content/ContentChannel';
+    var csToken = appSettings.authResponse.authData.authResponse.addtl['otsync-connector'].otcsticket;
+    var clientId = appSettings.authResponse.authData.authResponse.id;
+    var name;
+
+    $('#plain-form').show();
+    submit.i18n();
+
+    if (typeof appSettings.FileData === 'string') {
+        imgField.attr('src', 'data:image/jpeg;base64,' + appSettings.FileData);
+    }
+
+    submit.off();
+    submit.on('click', function () {
+        if (!nameField.val()) {
+            alert($.t('REQUIRED_ATTRIBUTES_MISSING'));
+            nameField.css({borderColor: 'red'});
+        } else {
+            name = nameField.val();
+            if (!new RegExp(/\.jpg$/).test(name)) {
+                name += '.jpg';
+            }
+
+            formData.append('func', 'otsync.otsyncrequest');
+            formData.append('versionFile', b64toBlob(appSettings.FileData, 'image/jpeg'), name);
+            formData.append('payload', JSON.stringify({
+                cstoken: csToken,
+                type: 'content',
+                subtype: 'upload',
+                clientID: clientId,
+                info: {
+                    parentID: appSettings.parentID,
+                    name: name,
+                    description: descriptionField.val()
+                }
+            }));
+
+            var request = {
+                url: url,
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false
+            };
+
+            $.ajax(request).then(function (data) {
+                console.log(data);
+                closeMe();
+            }, function (err) {
+                alert($.t('ERROR_RENDERING_FROM'));
+                console.log(err);
+                closeMe();
+            });
+
+            loadingDialog.show();
+        }
+
+    });
 };
 
 var closeMe = function () {

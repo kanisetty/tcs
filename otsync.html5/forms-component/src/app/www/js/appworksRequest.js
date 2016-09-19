@@ -22,12 +22,12 @@ var appworksRequest = function () {
                 if (error.status == 401) {
                     //try to reauth once
 
-                    cordovaRequest.authenticate().done(function (data) {
+                    cordovaRequest.authenticate().done(function () {
 
-                        request().done(function (data) {
-                            deferred.resolve(data);
-                        }).fail(function () {
-                            deferred.reject(data);
+                        request().done(function (res) {
+                            deferred.resolve(res);
+                        }).fail(function (err) {
+                            deferred.reject(err);
                         });
 
                     }).fail(function (error) {
