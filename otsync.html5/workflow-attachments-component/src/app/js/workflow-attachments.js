@@ -217,7 +217,7 @@ $(document).ready(function () {
         var camera = new Appworks.AWCamera(onFileLoad, deferred.reject);
         var cameraOptions = {destinationType: Camera.DestinationType.DATA_URL};
 
-        camera.getPicture(cameraOptions);
+        camera.takePicture(cameraOptions);
 
         return deferred.promise();
 
