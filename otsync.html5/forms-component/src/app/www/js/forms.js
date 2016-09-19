@@ -6,11 +6,12 @@ var initialize = function () {
     request = appworksRequest();
     cordovaRequest = CordovaRequest();
 
-    cordovaRequest.getGatewayURL().done(function (url) {
+    cordovaRequest.authenticate().done(function (authResponse) {
 
         var opts = {fallbackLng: "en"};
 
-        appSettings.serverURL = url;
+        appSettings.serverURL = authResponse.authData.gatewayUrl;
+        appSettings.authResponse = authResponse;
 
         cordovaRequest.getDefaultLanguage().done(function (lng) {
             opts.lng = lng.value;
@@ -208,13 +209,8 @@ var getForms = function () {
 
         }
     ).fail(
-        function (xhr, status, err) {
-            console.log(xhr);
-            console.log(status);
-            console.log(err);
-            if (status === 401) {
-                // TODO was it an external user?
-                // if so, show the plain form
+        function (res) {
+            if (res.status === 401) {
                 showPlainForm();
             } else {
                 alert($.t('ERROR_RENDERING_FROM'));
@@ -225,8 +221,69 @@ var getForms = function () {
 };
 
 var showPlainForm = function () {
-    // TODO
-    // display a bare bones form with name, description, and versioning fields
+    var nameField = $('#plain-form').find('#plain-form-name');
+    var descriptionField = $('#plain-form').find('#plain-form-description');
+    var imgField = $('#plain-form').find('#plain-form-img');
+    var submit = $('#plain-form').find('#plain-form-submit');
+    var formData = new FormData();
+    var url = appSettings.serverURL + '/content/ContentChannel';
+    var csToken = appSettings.authResponse.authData.authResponse.addtl['otsync-connector'].otcsticket;
+    var clientId = appSettings.authResponse.authData.authResponse.id;
+    var name;
+
+    $('#plain-form').show();
+    submit.i18n();
+
+    if (typeof appSettings.FileData === 'string') {
+        imgField.attr('src', 'data:image/jpeg;base64,' + appSettings.FileData);
+    }
+
+    submit.off();
+    submit.on('click', function () {
+        if (!nameField.val()) {
+            alert($.t('REQUIRED_ATTRIBUTES_MISSING'));
+            nameField.css({borderColor: 'red'});
+        } else {
+            name = nameField.val();
+            if (!new RegExp(/\.jpg$/).test(name)) {
+                name += '.jpg';
+            }
+
+            formData.append('func', 'otsync.otsyncrequest');
+            formData.append('versionFile', b64toBlob(appSettings.FileData, 'image/jpeg'), name);
+            formData.append('payload', JSON.stringify({
+                cstoken: csToken,
+                type: 'content',
+                subtype: 'upload',
+                clientID: clientId,
+                info: {
+                    parentID: appSettings.parentID,
+                    name: name,
+                    description: descriptionField.val()
+                }
+            }));
+
+            var request = {
+                url: url,
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false
+            };
+
+            $.ajax(request).then(function (data) {
+                console.log(data);
+                closeMe();
+            }, function (err) {
+                alert($.t('ERROR_RENDERING_FROM'));
+                console.log(err);
+                closeMe();
+            });
+
+            loadingDialog.show();
+        }
+
+    });
 };
 
 var closeMe = function () {
@@ -251,10 +308,7 @@ var onDeviceReady = function () {
             closeMe();
         }
     });
-    alert('will init'); // TODO remove
-    setTimeout(function () { // TODO remove
-        initialize();
-    }, 5000);
+    initialize();
 };
 
 var processQueryParameters = function (query) {
