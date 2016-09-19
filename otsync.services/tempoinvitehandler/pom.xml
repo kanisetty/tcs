@@ -11,7 +11,7 @@
         <version>16.0.1</version>
     </parent>
 
-    <artifactId>tempoinvitehandler</artifactId>
+    <artifactId>tempoInviteHandler</artifactId>
     <packaging>war</packaging>
     <name>Tempo Invite Handler Service</name>
     <description>Allows external invitees to confirm their invites, update their external profiles (passwords),
