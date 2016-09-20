@@ -1,67 +1,63 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html>
 <head>
-    <title>Workflow</title>
-
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>Workflow Attachments</title>
 
-    <link rel="stylesheet" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css"/>
-    <link rel="stylesheet" href="css/app.css"/>
-    <link rel="stylesheet" href="css/workflow-attachments.css"/>
+    <link rel="manifest" href="manifest.json">
 
+    <!-- un-comment this code to enable service worker
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(() => console.log('service worker installed'))
+          .catch(err => console.log('Error', err));
+      }
+    </script>-->
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <script>
+        var _rollbarConfig = {
+            accessToken: "e14dee9bad664208b1de38b8b17f6ef4",
+            captureUncaught: true,
+            captureUnhandledRejections: true,
+            payload: {
+                environment: "production"
+            }
+        };
+        // Rollbar Snippet
+        !function(r){function e(t){if(o[t])return o[t].exports;var n=o[t]={exports:{},id:t,loaded:!1};return r[t].call(n.exports,n,n.exports,e),n.loaded=!0,n.exports}var o={};return e.m=r,e.c=o,e.p="",e(0)}([function(r,e,o){"use strict";var t=o(1).Rollbar,n=o(2);_rollbarConfig.rollbarJsUrl=_rollbarConfig.rollbarJsUrl||"https://d37gvrvc0wt4s1.cloudfront.net/js/v1.9/rollbar.min.js";var a=t.init(window,_rollbarConfig),i=n(a,_rollbarConfig);a.loadFull(window,document,!_rollbarConfig.async,_rollbarConfig,i)},function(r,e){"use strict";function o(r){return function(){try{return r.apply(this,arguments)}catch(e){try{console.error("[Rollbar]: Internal error",e)}catch(o){}}}}function t(r,e,o){window._rollbarWrappedError&&(o[4]||(o[4]=window._rollbarWrappedError),o[5]||(o[5]=window._rollbarWrappedError._rollbarContext),window._rollbarWrappedError=null),r.uncaughtError.apply(r,o),e&&e.apply(window,o)}function n(r){var e=function(){var e=Array.prototype.slice.call(arguments,0);t(r,r._rollbarOldOnError,e)};return e.belongsToShim=!0,e}function a(r){this.shimId=++c,this.notifier=null,this.parentShim=r,this._rollbarOldOnError=null}function i(r){var e=a;return o(function(){if(this.notifier)return this.notifier[r].apply(this.notifier,arguments);var o=this,t="scope"===r;t&&(o=new e(this));var n=Array.prototype.slice.call(arguments,0),a={shim:o,method:r,args:n,ts:new Date};return window._rollbarShimQueue.push(a),t?o:void 0})}function l(r,e){if(e.hasOwnProperty&&e.hasOwnProperty("addEventListener")){var o=e.addEventListener;e.addEventListener=function(e,t,n){o.call(this,e,r.wrap(t),n)};var t=e.removeEventListener;e.removeEventListener=function(r,e,o){t.call(this,r,e&&e._wrapped?e._wrapped:e,o)}}}var c=0;a.init=function(r,e){var t=e.globalAlias||"Rollbar";if("object"==typeof r[t])return r[t];r._rollbarShimQueue=[],r._rollbarWrappedError=null,e=e||{};var i=new a;return o(function(){if(i.configure(e),e.captureUncaught){i._rollbarOldOnError=r.onerror,r.onerror=n(i);var o,a,c="EventTarget,Window,Node,ApplicationCache,AudioTrackList,ChannelMergerNode,CryptoOperation,EventSource,FileReader,HTMLUnknownElement,IDBDatabase,IDBRequest,IDBTransaction,KeyOperation,MediaController,MessagePort,ModalWindow,Notification,SVGElementInstance,Screen,TextTrack,TextTrackCue,TextTrackList,WebSocket,WebSocketWorker,Worker,XMLHttpRequest,XMLHttpRequestEventTarget,XMLHttpRequestUpload".split(",");for(o=0;o<c.length;++o)a=c[o],r[a]&&r[a].prototype&&l(i,r[a].prototype)}return e.captureUnhandledRejections&&(i._unhandledRejectionHandler=function(r){var e=r.reason,o=r.promise,t=r.detail;!e&&t&&(e=t.reason,o=t.promise),i.unhandledRejection(e,o)},r.addEventListener("unhandledrejection",i._unhandledRejectionHandler)),r[t]=i,i})()},a.prototype.loadFull=function(r,e,t,n,a){var i=function(){var e;if(void 0===r._rollbarPayloadQueue){var o,t,n,i;for(e=new Error("rollbar.js did not load");o=r._rollbarShimQueue.shift();)for(n=o.args,i=0;i<n.length;++i)if(t=n[i],"function"==typeof t){t(e);break}}"function"==typeof a&&a(e)},l=!1,c=e.createElement("script"),d=e.getElementsByTagName("script")[0],p=d.parentNode;c.crossOrigin="",c.src=n.rollbarJsUrl,c.async=!t,c.onload=c.onreadystatechange=o(function(){if(!(l||this.readyState&&"loaded"!==this.readyState&&"complete"!==this.readyState)){c.onload=c.onreadystatechange=null;try{p.removeChild(c)}catch(r){}l=!0,i()}}),p.insertBefore(c,d)},a.prototype.wrap=function(r,e){try{var o;if(o="function"==typeof e?e:function(){return e||{}},"function"!=typeof r)return r;if(r._isWrap)return r;if(!r._wrapped){r._wrapped=function(){try{return r.apply(this,arguments)}catch(e){throw e._rollbarContext=o()||{},e._rollbarContext._wrappedSource=r.toString(),window._rollbarWrappedError=e,e}},r._wrapped._isWrap=!0;for(var t in r)r.hasOwnProperty(t)&&(r._wrapped[t]=r[t])}return r._wrapped}catch(n){return r}};for(var d="log,debug,info,warn,warning,error,critical,global,configure,scope,uncaughtError,unhandledRejection".split(","),p=0;p<d.length;++p)a.prototype[d[p]]=i(d[p]);r.exports={Rollbar:a,_rollbarWindowOnError:t}},function(r,e){"use strict";r.exports=function(r,e){return function(o){if(!o&&!window._rollbarInitialized){var t=window.RollbarNotifier,n=e||{},a=n.globalAlias||"Rollbar",i=window.Rollbar.init(n,r);i._processShimQueue(window._rollbarShimQueue||[]),window[a]=i,window._rollbarInitialized=!0,t.processPayloads()}}}}]);
+        // End Rollbar Snippet
+    </script>
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/angular-ui-router/release/angular-ui-router.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
     <script src="appworks.js"></script>
 
-    <script src="js/vendor/jquery-2.0.0.min.js"></script>
-    <script src="js/vendor/moment.min.js"></script>
-    <script src="js/vendor/json2.js"></script>
-    <script src="js/vendor/bootstrap.min.js"></script>
-    <script src="js/vendor/bootstrap-datetimepicker.min.js"></script>
-    <script src="js/vendor/jquery.jsperanto.js"></script>
-    <script src="js/deviceStrategyFactory.js"></script>
-    <script src="js/blackberryDeviceStrategy.js"></script>
-    <script src="js/nonBlackberryDeviceStrategy.js"></script>
-    <script src="js/app.js"></script>
+    <!-- your app's js -->
     <script src="js/workflow-attachments.js"></script>
+    <script src="js/controllers/app-controller.js"></script>
+    <script src="js/controllers/attachments-controller.js"></script>
+    <script src="js/controllers/attachments-addition-controller.js"></script>
+    <script src="js/providers/attachments-provider.js"></script>
+    <script src="js/providers/auth-service.js"></script>
 </head>
-<body>
+<body ng-app="WorkflowAttachments">
 
-<header class="otag-header control-group">
-    <h4 id="node-name" class="node-name"></h4>
-</header>
-
-<div class="container text-center">
-    <div id="hide-when-loading">
-        <div class="btn-group" id="invoke-add">
-            <button class="btn" id="add-attachment">Add Attachment</button>
-        </div>
-        <div class="btn-group hidden" id="attachment-source">
-            <button class="btn" id="camera">From Camera</button>
-            <button class="btn" id="gallery">From Gallery</button>
-        </div>
-        <div id="attachment-name" class="hidden">
-            <label for="name">Attachment Name</label>
-            <input type="text" class="form-control" id="name">
-        </div>
-        <div class="btn-group hidden" id="attachment-submit">
-            <button class="btn" id="submit">Submit</button>
-        </div>
-        <div class="hidden" id="attachment-cancel">
-            <small id="attachment-help-text" class="hidden">One attachment added</small>
-            <br>
-            <a href="javascript:" id="cancel">Cancel</a>
-        </div>
-    </div>
-    <div class="progress hidden" id="show-when-loading">
-        <div class="bar" style="width: 60%;"></div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="list-group" id="attachments-list"></div>
-</div>
+<ion-pane>
+    <ui-view></ui-view>
+</ion-pane>
 
 </body>
 </html>

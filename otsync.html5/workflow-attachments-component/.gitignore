@@ -1,30 +1,6 @@
-# Eclipse
-#.classpath
-#.project
-.settings/
+# Specifies intentionally untracked files to ignore when using Git
+# http://git-scm.com/docs/gitignore
 
-#Momentix/BB
-arm-p/
-arm/
-x86/
-
-# Intellij
-.idea/
-*.iml
-*.iws
-
-# Mac
-.DS_Store
-
-# Maven
-log/
-target/
-
-# Generated node modules, and our locally installed node and npm
 node_modules/
-npm/
-node/
-
-# Grunt distribution files
-dist/
-dependencies/
+platforms/
+plugins/
