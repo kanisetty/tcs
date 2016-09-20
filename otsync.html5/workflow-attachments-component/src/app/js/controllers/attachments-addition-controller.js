@@ -81,10 +81,8 @@ function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal
                 });
                 break;
             case 'ews':
-                // TODO show a modal to browse ews
-                break;
             case 'pws':
-                // TODO show a modal to browse pws
+                $scope.modal.show();
                 break;
             default:
                 break;
