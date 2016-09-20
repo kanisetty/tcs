@@ -4,7 +4,7 @@
             <ion-spinner></ion-spinner>
         </div>
         <label class="item item-input item-stacked-label">
-            <span class="input-label">Attachment Name</span>
+            <span class="input-label">Edit attachment name...</span>
             <input type="text" placeholder="Name" ng-model="newAttachment.name">
         </label>
         <div class="item item-image" ng-if="newAttachment.file">
@@ -16,7 +16,7 @@
     <button class="button button-clear" ui-sref="attachments">
         Cancel
     </button>
-    <button class="button button-clear" ng-click="saveAttachment()">
+    <button class="button button-clear" ng-click="saveAttachment()" ng-disabled="loading">
         Save
     </button>
 </ion-footer-bar>
