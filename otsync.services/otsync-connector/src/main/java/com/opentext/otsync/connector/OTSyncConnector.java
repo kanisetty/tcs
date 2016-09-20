@@ -116,7 +116,8 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
             registerSettingHandlers();
 
             EIMConnector eimConnector = new EIMConnector(getConnectorName(), getConnectorVersion(),
-                    getConnectionString(), getConnectionStringSettingKey(), getTrustedProviderKey());
+                    getConnectionString(), getConnectionStringSettingKey(),
+                    getTrustedProviderName(), getTrustedProviderKey());
 
             SDKResponse registerConnector = serviceClient.registerConnector(eimConnector);
             if (registerConnector.isSuccess()) {
