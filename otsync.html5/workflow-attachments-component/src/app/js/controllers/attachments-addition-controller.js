@@ -16,13 +16,6 @@ function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal
 
     showSelectionScreen($stateParams.source);
 
-    $ionicModal.fromTemplateUrl('views/attachment-picker-modal.html', {
-        scope: $scope,
-        animation: 'slide-in-up'
-    }).then(function (modal) {
-        $scope.modal = modal;
-    });
-
     $scope.closeModal = function () {
         $scope.modal.hide();
     };
@@ -82,7 +75,13 @@ function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal
                 break;
             case 'ews':
             case 'pws':
-                $scope.modal.show();
+                $ionicModal.fromTemplateUrl('views/attachment-picker-modal.html', {
+                    scope: $scope,
+                    animation: 'slide-in-up'
+                }).then(function (modal) {
+                    $scope.modal = modal;
+                    $scope.modal.show();
+                });
                 break;
             default:
                 break;
