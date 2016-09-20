@@ -18,6 +18,7 @@ function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal
 
     $scope.closeModal = function () {
         $scope.modal.hide();
+        $state.go('attachments');
     };
     // Cleanup the modal when we're done with it
     $scope.$on('$destroy', function () {
