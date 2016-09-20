@@ -13,8 +13,9 @@ function AttachmentsController(attachmentsProvider, $scope, $ionicModal, $ionicP
 
     // ensure cordova environment is loaded before trying to make cordova requests
     $ionicPlatform.ready(function () {
-        attachmentsProvider.getAttachments().then(function (attachments) {
-            self.attachments = attachments;
+        attachmentsProvider.getAttachments().then(function (res) {
+            $scope.attachments = res.info.results.contents || [];
+            $scope.loading = false;
         });
     });
 
@@ -24,6 +25,8 @@ function AttachmentsController(attachmentsProvider, $scope, $ionicModal, $ionicP
     }).then(function(modal) {
         $scope.modal = modal;
     });
+
+    $scope.loading = true;
 
     $scope.closeModal = function() {
         $scope.modal.hide();
@@ -51,6 +54,17 @@ function AttachmentsController(attachmentsProvider, $scope, $ionicModal, $ionicP
 
     $scope.addFromPersonalWorkspace = function addFromPersonalWorkspace() {
 
+    };
+
+    $scope.viewAttachment = function viewAttachment(attachmentId) {
+        var component = new Appworks.AWComponent();
+        var data = {id: attachmentId};
+        var success = function () {};
+        var err = function (err) {
+            console.log(err);
+        };
+
+        component.open(success, err, ['dcs-component', $.param(data), 'component']);
     };
 
 }

@@ -1,25 +1,32 @@
 angular
     .module('WorkflowAttachments')
     .service('AuthService', [
+        '$q',
         '$http',
         '$ionicPlatform',
         AuthService
     ]);
 
-function AuthService($http, $ionicPlatform) {
+function AuthService($q, $http, $ionicPlatform) {
     var _this = this;
-    var _authCredentials = {};
-    var _appData = {};
+    var _authCredentials = null;
+    var _appData = null;
 
     $ionicPlatform.ready(function () {
         _this.initialize();
     });
 
     this.initialize = function initialize() {
-        if (window.Appworks) {
-            new Appworks.Auth(onSuccess, onFail).authenticate();
-            getAppData();
+        var deferred = $q.defer();
+        // get component data from params
+        getAppData();
+        // use cached auth credentials
+        if (_authCredentials) {
+            deferred.resolve(_authCredentials);
+        } else if (window.Appworks) {
+            _this.authenticate().then(deferred.resolve, deferred.reject);
         }
+        return deferred.promise;
     };
 
     this.appData = function () {
@@ -40,11 +47,21 @@ function AuthService($http, $ionicPlatform) {
         }
     };
 
-    this.reauth = function () {
+    this.authenticate = function (force) {
         var deferred = $q.defer();
-        var auth = new Appworks.Auth(deferred.resolve, deferred.reject);
-        auth.authenticate(true);
+        var auth = new Appworks.Auth(function (res) {
+            onSuccess(res);
+            deferred.resolve(res);
+        }, function (err) {
+            onFail(err);
+            deferred.reject(err);
+        });
+        auth.authenticate(force);
         return deferred.promise;
+    };
+
+    this.reauth = function () {
+        return _this.authenticate(true);
     };
 
     function onSuccess(res) {
@@ -63,11 +80,11 @@ function AuthService($http, $ionicPlatform) {
 
     function processQueryParameters(query) {
         var params = {};
+        var idx, pairs, pair, key, len;
 
         if (typeof(query) === 'string') {
-            var pairs = query.split("&");
-            var len = pairs.length;
-            var idx, pair, key;
+            pairs = query.split("&");
+            len = pairs.length;
 
             // Iterate through each pair and build the array
             for (idx = 0; idx < len; idx += 1) {

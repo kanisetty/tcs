@@ -1,9 +1,15 @@
 <ion-content>
     <ion-list>
+        <div style="text-align: center; padding: 8px;" ng-if="loading">
+            <ion-spinner></ion-spinner>
+        </div>
+        <ion-item style="text-align: center" ng-if="attachments.length === 0">
+            No attachments to display
+        </ion-item>
         <ion-item class="item-button-right" ng-repeat="attachment in attachments">
             <h2>{{attachment.NAME}}</h2>
             <p>{{attachment.CREATEDATE | date}}</p>
-            <button class="button button-positive">
+            <button class="button button-positive" ng-click="viewAttachment(attachment.DATAID)">
                 View &raquo;
             </button>
         </ion-item>

@@ -1,12 +1,5 @@
 alert('will init');
 angular.module('WorkflowAttachments', ['ionic', 'ui.router'])
-
-    .run(function ($ionicPlatform, AuthService) {
-        $ionicPlatform.ready(function () {
-            AuthService.initialize();
-        });
-    })
-
     .config(function ($stateProvider, $urlRouterProvider) {
         $stateProvider
             .state('attachments', {
