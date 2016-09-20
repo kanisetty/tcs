@@ -408,7 +408,7 @@ button.ui-button .ui-button-text {
 
 .dropdown .dropDownMenu {
     /* Hide it off-screen. */
-    position: absolute;
+    position: relative;
     left: -4px;
     display: none;
     z-index: 1000;
