@@ -8,7 +8,45 @@ angular
     ]);
 
 function AttachmentsProvider($q, $rootScope, authService) {
-    var self = this;
+
+    this.addAttachment = function addAttachment(config) {
+        var deferred = $q.defer();
+        var formdata = new FormData();
+        formdata.append('versionFile', config.file, config.name);
+        formdata.append('func', 'otsync.otsyncrequest');
+        formdata.append('payload', JSON.stringify({
+            cstoken: authService.csToken(),
+            type: 'content',
+            subtype: 'upload',
+            clientID: authService.clientId(),
+            info: {
+                parentID: authService.appData().containerId,
+                name: name
+            }
+        }));
+
+        var request = {
+            url: authService.gatewayUrl() + '/content/ContentChannel',
+            method: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false
+        };
+
+        $.ajax(request).then(function (data) {
+            deferred.resolve(data);
+            $rootScope.$apply();
+        }, function (err) {
+            if (err.status === 401) {
+                // reauth and try again
+                authService.reauth().then(function () {
+                    addAttachment(config).then(deferred.resolve, deferred.reject);
+                });
+            }
+        });
+
+        return deferred.promise;
+    };
 
     this.getAttachments = function getAttachments() {
         var deferred = $q.defer();

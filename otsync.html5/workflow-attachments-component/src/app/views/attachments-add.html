@@ -1,11 +1,22 @@
 <ion-content>
-    Adding attachments has never been easier
+    <div class="list">
+        <div style="padding: 8px; text-align: center" ng-if="loading">
+            <ion-spinner></ion-spinner>
+        </div>
+        <label class="item item-input item-stacked-label">
+            <span class="input-label">Attachment Name</span>
+            <input type="text" placeholder="Name" ng-model="newAttachment.name">
+        </label>
+        <div class="item item-image" ng-if="newAttachment.file">
+            <img ng-src="{{'data:image/jpeg;base64,' + newAttachment.file}}">
+        </div>
+    </div>
 </ion-content>
 <ion-footer-bar class="bar-positive">
     <button class="button button-clear" ui-sref="attachments">
         Cancel
     </button>
-    <button class="button button-clear" ui-sref="attachments">
+    <button class="button button-clear" ng-click="saveAttachment()">
         Save
     </button>
 </ion-footer-bar>

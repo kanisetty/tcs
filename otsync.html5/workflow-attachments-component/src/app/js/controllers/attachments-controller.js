@@ -22,17 +22,17 @@ function AttachmentsController(attachmentsProvider, $scope, $ionicModal, $ionicP
     $ionicModal.fromTemplateUrl('views/add-attachment-modal.html', {
         scope: $scope,
         animation: 'slide-in-up'
-    }).then(function(modal) {
+    }).then(function (modal) {
         $scope.modal = modal;
     });
 
     $scope.loading = true;
 
-    $scope.closeModal = function() {
+    $scope.closeModal = function () {
         $scope.modal.hide();
     };
     // Cleanup the modal when we're done with it
-    $scope.$on('$destroy', function() {
+    $scope.$on('$destroy', function () {
         $scope.modal.remove();
     });
 
@@ -59,7 +59,8 @@ function AttachmentsController(attachmentsProvider, $scope, $ionicModal, $ionicP
     $scope.viewAttachment = function viewAttachment(attachmentId) {
         var component = new Appworks.AWComponent();
         var data = {id: attachmentId};
-        var success = function () {};
+        var success = function () {
+        };
         var err = function (err) {
             console.log(err);
         };
