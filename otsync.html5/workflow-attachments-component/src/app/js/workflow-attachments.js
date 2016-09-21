@@ -15,6 +15,17 @@ angular.module('WorkflowAttachments', ['ionic', 'ui.router'])
 
         $urlRouterProvider.otherwise('/attachments');
     })
+    .run(function ($ionicPlatform) {
+        $ionicPlatform.ready(function () {
+            // add back button to close component
+            new Appworks.AWHeaderBar().setHeader({
+                backButtonVisible: true,
+                callback: function () {
+                    cordova.exec(function () {}, function () {}, 'AWComponent', 'close', []);
+                }
+            });
+        });
+    })
     .run(function ($rootScope) {
         var query = window.location.search.toString().substring(1).split('data=').pop();
         $rootScope._appData = processQueryParameters(query);

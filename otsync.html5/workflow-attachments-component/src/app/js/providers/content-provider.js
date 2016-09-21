@@ -8,6 +8,7 @@ angular
     ]);
 
 function ContentProvider($q, authService, $http) {
+    var _this = this;
 
     this.getEWSRoot = function getEWSRoot() {
         var deferred = $q.defer();
@@ -15,7 +16,15 @@ function ContentProvider($q, authService, $http) {
             var url = authService.gatewayUrl() + '/content/v5/properties';
             $http.get(url).then(function (res) {
                 deferred.resolve(res.data.enterpriseWorkspaceRoot);
-            }, deferred.reject);
+            }, function (err) {
+                if (err.status === 401) {
+                    authService.reauth().then(function () {
+                        _this.getEWSRoot().then(deferred.resolve, deferred.reject);
+                    });
+                } else {
+                    deferred.reject(err);
+                }
+            });
         });
         return deferred.promise;
     };
@@ -26,7 +35,15 @@ function ContentProvider($q, authService, $http) {
             var url = authService.gatewayUrl() + '/content/v5/properties';
             $http.get(url).then(function (res) {
                 deferred.resolve(res.data.personalWorkspaceRoot);
-            }, deferred.reject);
+            }, function (err) {
+                if (err.status === 401) {
+                    authService.reauth().then(function () {
+                        _this.getPWSRoot().then(deferred.resolve, deferred.reject);
+                    });
+                } else {
+                    deferred.reject(err);
+                }
+            });
         });
         return deferred.promise;
     };
@@ -37,7 +54,15 @@ function ContentProvider($q, authService, $http) {
             var url = authService.gatewayUrl() + '/content/v5/nodes/' + parentId + '/children';
             $http.get(url).then(function (res) {
                 deferred.resolve(res.data.contents);
-            }, deferred.reject);
+            }, function (err) {
+                if (err.status === 401) {
+                    authService.reauth().then(function () {
+                        _this.getChildren(parentId).then(deferred.resolve, deferred.reject);
+                    });
+                } else {
+                    deferred.reject(err);
+                }
+            });
         });
         return deferred.promise;
     };
