@@ -1,8 +1,9 @@
 <ion-modal-view>
     <ion-header-bar>
-        <button class="button button-clear"
+        <button class="button button-positive button-clear"
                 ng-show="nodesVisited.length"
                 ng-click="loadNodesFromParent(nodesVisited.pop(), false)">
+            <i class="icon ion-ios-arrow-back"></i>
             Back
         </button>
         <h1 class="title">Select From Workspace</h1>
@@ -38,6 +39,6 @@
         </ion-list>
     </ion-content>
     <ion-footer-bar class="bar-positive">
-        <button class="button button-positive button-clear" ng-click="closeModal()">Cancel</button>
+        <button class="button button-clear" ng-click="closeModal()">Cancel</button>
     </ion-footer-bar>
 </ion-modal-view>
