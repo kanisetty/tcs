@@ -6,43 +6,28 @@ angular
         '$stateParams',
         '$ionicModal',
         'AttachmentsProvider',
+        'ContentProvider',
         '$q',
         AttachmentsAdditionController
     ]);
 
-function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal, attachmentsProvider, $q) {
+function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal, attachmentsProvider, csProvider, $q) {
 
     $scope.newAttachment = {};
+    $scope.nodes = [];
+    $scope.nodesVisited = [];
 
     showSelectionScreen($stateParams.source);
 
-    $scope.closeModal = function () {
-        $scope.modal.hide();
-        $state.go('attachments');
-    };
-    // Cleanup the modal when we're done with it
+    $scope.closeModal = closeModal;
+    $scope.goToRoot = goToRoot;
+    $scope.loadNodesFromParent = loadNodesFromParent;
+    $scope.saveAttachment = saveAttachment;
+    $scope.hideModal = hideModal;
+    // cleanup the modal when we're done with it
     $scope.$on('$destroy', function () {
         $scope.modal.remove();
     });
-    $scope.saveAttachment = function () {
-        var attachment = angular.copy($scope.newAttachment);
-        attachment = checkFile(attachment);
-        attachment = checkName(attachment);
-        $scope.loading = true;
-        attachmentsProvider.addAttachment(attachment).then(function () {
-            $state.go('attachments');
-        }, function (err) {
-            console.log(err);
-            $scope.loading = false;
-        });
-    };
-
-    function checkName(attachment) {
-        if (sourceIsUserGenerated() && attachment.name.indexOf('.jpg') === -1) {
-            attachment.name += '.jpg';
-        }
-        return attachment;
-    }
 
     function checkFile(attachment) {
         if (attachment.file) {
@@ -51,8 +36,109 @@ function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal
         return attachment;
     }
 
-    function sourceIsUserGenerated() {
-        return $stateParams.source === 'camera' || $stateParams.source === 'gallery';
+    function checkName(attachment) {
+        if (sourceIsUserGenerated() && attachment.name.indexOf('.jpg') === -1) {
+            attachment.name += '.jpg';
+        }
+        return attachment;
+    }
+
+    function closeModal() {
+        $scope.modal.hide();
+        $state.go('attachments');
+    }
+
+    function getAttachmentFromCamera() {
+        var deferred = $q.defer();
+        var camera = new Appworks.AWCamera(onFileLoad, deferred.reject);
+        var cameraOptions = {destinationType: Camera.DestinationType.DATA_URL};
+
+        camera.takePicture(cameraOptions);
+
+        return deferred.promise;
+
+        function onFileLoad(dataUrl) {
+            deferred.resolve(dataUrl);
+        }
+    }
+
+    function getAttachmentFromGallery() {
+        var deferred = $q.defer();
+        var camera = new Appworks.AWCamera(onFileLoad, deferred.reject);
+        var cameraOptions = {destinationType: Camera.DestinationType.DATA_URL};
+
+        camera.openGallery(cameraOptions);
+
+        return deferred.promise;
+
+        function onFileLoad(dataUrl) {
+            deferred.resolve(dataUrl);
+        }
+    }
+
+    function goToRoot() {
+        loadNodesFromParent($scope.rootNode);
+        $scope.visited = [];
+    }
+
+    function hideModal() {
+        $scope.modal.hide();
+    }
+
+    function initializeWorkspaceBrowse() {
+        var rootFetchFn;
+        $scope.loading = true;
+        if ($stateParams.source === 'ews') {
+            rootFetchFn = csProvider.getEWSRoot;
+        } else if ($stateParams.source === 'pws') {
+            rootFetchFn = csProvider.getPWSRoot;
+        }
+
+        if (rootFetchFn) {
+            rootFetchFn().then(function (rootId) {
+                $scope.rootNode = rootId;
+                $scope.currentRootNode = rootId;
+                loadNodesFromParent(rootId, false);
+            });
+        }
+    }
+
+    function loadNodesFromParent(rootId, addToVisited) {
+        $scope.loading = true;
+        // add current root node to visited array
+        if (addToVisited) {
+            $scope.nodesVisited.push($scope.currentRootNode);
+        }
+        // set new current root node to rootId passed in
+        $scope.currentRootNode = rootId;
+        // clear the list in the view
+        $scope.nodes = [];
+        // get the children for the given parent (root) id
+        csProvider.getChildren(rootId).then(function (children) {
+            $scope.nodes = children;
+            $scope.loading = false;
+        }, function (err) {
+            console.log(err);
+            $scope.loading = false;
+        });
+    }
+
+    function saveAttachment() {
+        var attachment = angular.copy($scope.newAttachment);
+        $scope.loading = true;
+        if (attachment.selectedAttachment) {
+            // TODO attachment selected from workspace flow
+        } else {
+            attachment = checkFile(attachment);
+            attachment = checkName(attachment);
+            attachmentsProvider.addAttachment(attachment).then(function () {
+                $state.go('attachments');
+            }, function (err) {
+                console.log(err);
+                $scope.loading = false;
+            });
+        }
+
     }
 
     function showSelectionScreen(source) {
@@ -82,6 +168,7 @@ function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal
                 }).then(function (modal) {
                     $scope.modal = modal;
                     $scope.modal.show();
+                    initializeWorkspaceBrowse();
                 });
                 break;
             default:
@@ -89,32 +176,8 @@ function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal
         }
     }
 
-    function getAttachmentFromGallery() {
-        var deferred = $q.defer();
-        var camera = new Appworks.AWCamera(onFileLoad, deferred.reject);
-        var cameraOptions = {destinationType: Camera.DestinationType.DATA_URL};
-
-        camera.openGallery(cameraOptions);
-
-        return deferred.promise;
-
-        function onFileLoad(dataUrl) {
-            deferred.resolve(dataUrl);
-        }
-    }
-
-    function getAttachmentFromCamera() {
-        var deferred = $q.defer();
-        var camera = new Appworks.AWCamera(onFileLoad, deferred.reject);
-        var cameraOptions = {destinationType: Camera.DestinationType.DATA_URL};
-
-        camera.takePicture(cameraOptions);
-
-        return deferred.promise;
-
-        function onFileLoad(dataUrl) {
-            deferred.resolve(dataUrl);
-        }
+    function sourceIsUserGenerated() {
+        return $stateParams.source === 'camera' || $stateParams.source === 'gallery';
     }
 
     function b64toBlob(b64Data, contentType, sliceSize) {

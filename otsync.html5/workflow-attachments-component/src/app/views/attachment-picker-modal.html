@@ -1,11 +1,43 @@
 <ion-modal-view>
     <ion-header-bar>
-        <button class="button button-positive button-clear" ng-click="closeModal()">Cancel</button>
+        <button class="button button-clear"
+                ng-show="nodesVisited.length"
+                ng-click="loadNodesFromParent(nodesVisited.pop(), false)">
+            Back
+        </button>
         <h1 class="title">Select From Workspace</h1>
+        <button class="button button-positive button-clear"
+                ng-show="newAttachment.selectedAttachment"
+                ng-click="hideModal()">
+            Save
+        </button>
     </ion-header-bar>
     <ion-content>
         <ion-list>
-            working on it!
+            <div style="text-align: center; padding: 8px;" ng-if="loading">
+                <ion-spinner></ion-spinner>
+            </div>
+            <ion-item ng-if="nodes.length === 0 && !loading" style="text-align: center;">
+                No Content to Display
+            </ion-item>
+            <div ng-repeat="node in nodes">
+                <a class="item item-icon-left item-icon-right"
+                   href="javascript:"
+                   ng-click="loadNodesFromParent(node.id, true)"
+                   ng-if="node.subtype === 0">
+                    <i class="icon ion-ios-folder"></i>
+                    {{node.name}}
+                    <i class="icon ion-ios-arrow-right"></i>
+                </a>
+                <ion-radio ng-if="node.subtype === 144"
+                           ng-model="newAttachment.selectedAttachment"
+                           ng-value="node">
+                    <h2 style="color: #0072aa">{{node.name}}</h2>
+                </ion-radio>
+            </div>
         </ion-list>
     </ion-content>
+    <ion-footer-bar class="bar-positive">
+        <button class="button button-positive button-clear" ng-click="closeModal()">Cancel</button>
+    </ion-footer-bar>
 </ion-modal-view>

@@ -3,12 +3,16 @@
         <div style="padding: 8px; text-align: center" ng-if="loading">
             <ion-spinner></ion-spinner>
         </div>
-        <label class="item item-input item-stacked-label">
+        <label class="item item-input item-stacked-label" ng-hide="newAttachment.selectedAttachment">
             <span class="input-label">Edit attachment name...</span>
             <input type="text" placeholder="Name" ng-model="newAttachment.name">
         </label>
         <div class="item item-image" ng-if="newAttachment.file">
             <img ng-src="{{'data:image/jpeg;base64,' + newAttachment.file}}">
+        </div>
+        <div class="item" ng-if="newAttachment.selectedAttachment">
+            <h3>Attachment Selected</h3>
+            <p>{{newAttachment.selectedAttachment.name}}</p>
         </div>
     </div>
 </ion-content>
