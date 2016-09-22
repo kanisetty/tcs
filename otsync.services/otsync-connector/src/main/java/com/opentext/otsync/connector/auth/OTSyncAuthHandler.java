@@ -34,8 +34,8 @@ public class OTSyncAuthHandler extends AbstractAuthRequestHandler {
 
     private static final Log LOG = LogFactory.getLog(OTSyncAuthHandler.class);
 
-    public static final String OTAG_AUTH_FUNC = "otag.auth";
-    public static final String GET_OTDS_RESOURCEID_FUNC = "otdsintegration.getresourceid";
+    private static final String OTAG_AUTH_FUNC = "otag.auth";
+    private static final String GET_OTDS_RESOURCEID_FUNC = "otdsintegration.getresourceid";
 
     private static final HttpClient client = new HttpClient();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
