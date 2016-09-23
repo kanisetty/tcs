@@ -72,6 +72,8 @@ function AttachmentsProvider($q, $rootScope, authService) {
                 });
             }
         });
+
+        return deferred.promise;
     };
 
     this.getAttachments = function getAttachments() {
