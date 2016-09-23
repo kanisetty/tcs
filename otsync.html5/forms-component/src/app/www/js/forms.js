@@ -221,69 +221,99 @@ var getForms = function () {
 };
 
 var showPlainForm = function () {
-    var nameField = $('#plain-form').find('#plain-form-name');
-    var descriptionField = $('#plain-form').find('#plain-form-description');
-    var imgField = $('#plain-form').find('#plain-form-img');
-    var submit = $('#plain-form').find('#plain-form-submit');
+    var form = $('#plain-form');
+    var nameField = form.find('#plain-form-name');
+    var descriptionField = form.find('#plain-form-description');
+    var descriptionGroup = form.find('#description-group');
+    var imgField = form.find('#plain-form-img');
+    var submit = form.find('#plain-form-submit');
     var formData = new FormData();
-    var url = appSettings.serverURL + '/content/ContentChannel';
+    var url = appSettings.serverURL;
     var csToken = appSettings.authResponse.authData.authResponse.addtl['otsync-connector'].otcsticket;
     var clientId = appSettings.authResponse.authData.authResponse.id;
-    var name;
+    var name, subtype, request;
 
-    $('#plain-form').show();
+    form.show();
+    imgField.show();
+    descriptionGroup.show();
     submit.i18n();
 
-    if (typeof appSettings.FileData === 'string') {
+    if (isFile(appSettings.nodeType)) {
         imgField.attr('src', 'data:image/jpeg;base64,' + appSettings.FileData);
+    } else {
+        imgField.hide();
+        descriptionGroup.hide();
     }
 
     submit.off();
     submit.on('click', function () {
-        if (!nameField.val()) {
-            alert($.t('REQUIRED_ATTRIBUTES_MISSING'));
-            nameField.css({borderColor: 'red'});
-        } else {
-            name = nameField.val();
-            if (!new RegExp(/\.jpg$/).test(name)) {
-                name += '.jpg';
-            }
 
-            formData.append('func', 'otsync.otsyncrequest');
-            formData.append('versionFile', b64toBlob(appSettings.FileData, 'image/jpeg'), name);
-            formData.append('payload', JSON.stringify({
-                cstoken: csToken,
-                type: 'content',
-                subtype: 'upload',
-                clientID: clientId,
-                info: {
-                    parentID: appSettings.parentID,
-                    name: name,
-                    description: descriptionField.val()
+        if (isFile(appSettings.nodeType)) {
+            url += '/content/ContentChannel';
+            subtype = 'upload';
+
+            if (!nameField.val()) {
+                alert($.t('REQUIRED_ATTRIBUTES_MISSING'));
+                nameField.css({borderColor: 'red'});
+            } else {
+
+                name = nameField.val();
+                if (!new RegExp(/\.jpg$/).test(name)) {
+                    name += '.jpg';
                 }
-            }));
 
-            var request = {
+                formData.append('versionFile', b64toBlob(appSettings.FileData, 'image/jpeg'), name);
+                formData.append('func', 'otsync.otsyncrequest');
+                formData.append('payload', JSON.stringify({
+                    cstoken: csToken,
+                    type: 'content',
+                    subtype: subtype,
+                    clientID: clientId,
+                    info: {
+                        parentID: appSettings.parentID,
+                        name: name,
+                        description: descriptionField.val()
+                    }
+                }));
+
+                request = {
+                    url: url,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false
+                };
+
+                sendPlainFormRequest(request);
+            }
+        } else {
+            url += '/content/v5/nodes/' + appSettings.parentID + '/children';
+            name = nameField.val();
+
+            request = {
                 url: url,
                 method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false
+                data: encodeURIComponent({name: name}),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             };
 
-            $.ajax(request).then(function (data) {
-                console.log(data);
-                closeMe();
-            }, function (err) {
-                alert($.t('ERROR_RENDERING_FROM'));
-                console.log(err);
-                closeMe();
-            });
+            sendPlainFormRequest(request);
 
-            loadingDialog.show();
         }
 
     });
+};
+
+var sendPlainFormRequest = function (request) {
+    $.ajax(request).then(function () {
+        closeMe();
+    }, function (err) {
+        alert($.t('ERROR_RENDERING_FROM'));
+        console.error(err);
+        closeMe();
+    });
+
+    loadingDialog.show();
 };
 
 var closeMe = function () {
