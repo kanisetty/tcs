@@ -293,7 +293,7 @@ var showPlainForm = function () {
             request = {
                 url: url,
                 method: 'POST',
-                data: encodeURIComponent({name: name}),
+                data: encodeObject({name: name}),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             };
 
@@ -429,6 +429,37 @@ function onSubmit() {
     setTimeout(function () {
         submitForm();
     });
+}
+
+function encodeObject(obj) {
+    if (obj !== null && typeof obj === 'object' && String(obj) !== '[object File]') {
+        var query = '', innerObj;
+        for (var name in obj) {
+            var value = obj[name];
+
+            if (value instanceof Array) {
+                for (var i = 0; i < value.length; ++i) {
+                    var keyName = (name + '[' + i + ']');
+                    innerObj = {};
+                    innerObj[keyName] = value[i];
+                    query += encodeObject(innerObj) + '&';
+                }
+            }
+            else if (value instanceof Object) {
+                for (var subName in value) {
+                    innerObj = {};
+                    innerObj[(name + '[' + subName + ']')] = value[subName];
+                    query += encodeObject(innerObj) + '&';
+                }
+            }
+            else if (value !== undefined && value !== null)
+                query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
+        }
+
+        return query.length ? query.substr(0, query.length - 1) : query;
+    } else {
+        return obj;
+    }
 }
 
 document.addEventListener("deviceready", onDeviceReady, false);

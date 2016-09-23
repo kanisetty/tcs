@@ -48,6 +48,32 @@ function AttachmentsProvider($q, $rootScope, authService) {
         return deferred.promise;
     };
 
+    this.copyNodeAsAttachment = function copyNodeAsAttachment(nodeToCopy) {
+        var deferred = $q.defer();
+
+        var request = {
+            method: 'POST',
+            url: authService.gatewayUrl() + '/content/v5/nodes/' + authService.appData().containerId + '/children',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            data: encodeObject({
+                copyFrom: nodeToCopy.id,
+                name: nodeToCopy.name
+            })
+        };
+
+        $.ajax(request).then(function (data) {
+            deferred.resolve(data);
+            $rootScope.$apply();
+        }, function (err) {
+            if (err.status === 401) {
+                // reauth and try again
+                authService.reauth().then(function () {
+                    addAttachment(config).then(deferred.resolve, deferred.reject);
+                });
+            }
+        });
+    };
+
     this.getAttachments = function getAttachments() {
         var deferred = $q.defer();
         authService.initialize().then(function () {
@@ -117,5 +143,36 @@ function AttachmentsProvider($q, $rootScope, authService) {
         });
         return deferred.promise;
     };
+
+    function encodeObject(obj) {
+        if (angular.isObject(obj) && String(data) !== '[object File]') {
+            var query = '', innerObj;
+            for (var name in obj) {
+                var value = obj[name];
+
+                if (value instanceof Array) {
+                    for (var i = 0; i < value.length; ++i) {
+                        var keyName = (name + '[' + i + ']');
+                        innerObj = {};
+                        innerObj[keyName] = value[i];
+                        query += encodeObject(innerObj) + '&';
+                    }
+                }
+                else if (value instanceof Object) {
+                    for (var subName in value) {
+                        innerObj = {};
+                        innerObj[(name + '[' + subName + ']')] = value[subName];
+                        query += encodeObject(innerObj) + '&';
+                    }
+                }
+                else if (value !== undefined && value !== null)
+                    query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
+            }
+
+            return query.length ? query.substr(0, query.length - 1) : query;
+        } else {
+            return obj;
+        }
+    }
 
 }

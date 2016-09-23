@@ -127,7 +127,12 @@ function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal
         var attachment = angular.copy($scope.newAttachment);
         $scope.loading = true;
         if (attachment.selectedAttachment) {
-            // TODO attachment selected from workspace flow
+            attachmentsProvider.copyNodeAsAttachment(attachment.selectedAttachment).then(function () {
+                $state.go('attachments');
+            }, function (err) {
+                console.log(err);
+                $scope.loading = false;
+            });
         } else {
             attachment = checkFile(attachment);
             attachment = checkName(attachment);
