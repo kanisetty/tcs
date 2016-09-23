@@ -145,7 +145,7 @@ function AttachmentsProvider($q, $rootScope, authService) {
     };
 
     function encodeObject(obj) {
-        if (angular.isObject(obj) && String(data) !== '[object File]') {
+        if (angular.isObject(obj) && String(obj) !== '[object File]') {
             var query = '', innerObj;
             for (var name in obj) {
                 var value = obj[name];
