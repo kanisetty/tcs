@@ -1,26 +1,45 @@
-<!DOCTYPE html>
-<!-- Need to add a redirect to launch the correct help based on device and locale-->
-<html lang="en">
-  <head>
-    <title>OpenText Everywhere Help</title>
+<html>
+<head>
+	<title>OpenText ECM Everywhere 16 Help</title>
 
-    <meta charset="utf-8">
+	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	
+	<!--Builder sources -->
+	<script src="othhUrlBuilder.js"></script>
+	<script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="appworks.js"></script>
+	
+	<!--Encryption sources, mandatory dependency -->
+	<script src="tripledes.js"></script>
+</head>
+<body onload="onDeviceReady()">
+   <script type="text/javascript">
+	document.addEventListener("deviceready", onDeviceReady, false); 
+	function onDeviceReady() { 
+		var othh = new OTHHUrlBuilder({urlRoot: 'http://docsapi.opentext.com/mapperpi'});        
+		var simpleLang= navigator.language.indexOf("-") != -1?navigator.language.substring(0,navigator.language.indexOf("-")):navigator.language;                                   
+		
+		url = othh.buildHelpUrl(simpleLang,"top-of-doc", {
+			product: 'mod',
+			version: 'v160100',
+			type: 'mhp',
+			module: 'mod-h-ugd'
+			});
+    
+		var awPage = new Appworks.AWPage(); 
+		awPage.setPageUrl(url); 
+ }
 
-  </head>
-  <body>
-    <script type="text/javascript">
-        var simpleLang= navigator.language.indexOf("-") != -1?navigator.language.substring(0,navigator.language.indexOf("-")):navigator.language;
-
-        if ( navigator.userAgent.match( /(iPhone|iPod|iPad)/ ) )
-           window.location="help/"+simpleLang+"/ios/index.htm";
+		
+		 if ( navigator.userAgent.match( /(iPhone|iPod|iPad)/ ) )
+           window.location.href=url;
         else if ( navigator.userAgent.match (/Android/) )
-           window.location="help/"+simpleLang+"/android/index.htm";
-        else if ( navigator.userAgent.match (/BB10/) )
-           window.location="help/"+simpleLang+"/blackberry10/index.htm";
-         else
+           window.location.href=url;
+        else
            alert("No help for the current type of device!");
+		   
+	</script>
 
-    </script>
-  </body>
+</body>
 </html>
