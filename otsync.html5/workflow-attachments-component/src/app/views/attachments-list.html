@@ -9,7 +9,9 @@
         <ion-item class="item-button-right" ng-repeat="attachment in attachments">
             <h2>{{attachment.NAME}}</h2>
             <p>{{attachment.CREATEDATE | date}}</p>
-            <button class="button button-positive" ng-click="viewAttachment(attachment.DATAID)">
+            <button class="button button-positive"
+                    ng-click="viewAttachment(attachment.DATAID)"
+                    ng-if="attachment.SUBTYPE === 144">
                 View &raquo;
             </button>
         </ion-item>

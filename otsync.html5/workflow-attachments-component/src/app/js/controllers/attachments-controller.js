@@ -33,27 +33,13 @@ function AttachmentsController(attachmentsProvider, $scope, $ionicModal, $ionicP
     };
     // Cleanup the modal when we're done with it
     $scope.$on('$destroy', function () {
-        $scope.modal.remove();
+        if ($scope.modal) {
+            $scope.modal.remove();
+        }
     });
 
     $scope.showAddAttachmentScreen = function showAddAttachmentScreen() {
         $scope.modal.show();
-    };
-
-    $scope.addFromCamera = function addFromCamera() {
-
-    };
-
-    $scope.addFromLibrary = function addFromLibrary() {
-
-    };
-
-    $scope.addFromEnterpriseWorkspace = function addFromEnterpriseWorkspace() {
-
-    };
-
-    $scope.addFromPersonalWorkspace = function addFromPersonalWorkspace() {
-
     };
 
     $scope.viewAttachment = function viewAttachment(attachmentId) {

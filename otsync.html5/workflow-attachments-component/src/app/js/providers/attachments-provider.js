@@ -9,6 +9,8 @@ angular
 
 function AttachmentsProvider($q, $rootScope, authService) {
 
+    var _attachments = null;
+
     this.addAttachment = function addAttachment(config) {
         var deferred = $q.defer();
         var formdata = new FormData();
@@ -76,6 +78,16 @@ function AttachmentsProvider($q, $rootScope, authService) {
         return deferred.promise;
     };
 
+    this.getCachedAttachments = function getCachedAttachments() {
+        var deferred = $q.defer();
+        if (_attachments) {
+            deferred.resolve(_attachments);
+        } else {
+            this.getAttachments().then(deferred.resolve, deferred.reject);
+        }
+        return deferred.promise;
+    };
+
     this.getAttachments = function getAttachments() {
         var deferred = $q.defer();
         authService.initialize().then(function () {
@@ -132,6 +144,7 @@ function AttachmentsProvider($q, $rootScope, authService) {
             };
 
             $.ajax(request).then(function (data) {
+                _attachments = data;
                 deferred.resolve(data);
                 $rootScope.$apply();
             }, function (err) {

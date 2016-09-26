@@ -16,8 +16,10 @@ function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal
     $scope.newAttachment = {};
     $scope.nodes = [];
     $scope.nodesVisited = [];
+    $scope.attachments = [];
 
     showSelectionScreen($stateParams.source);
+    loadAttachments();
 
     $scope.closeModal = closeModal;
     $scope.goToRoot = goToRoot;
@@ -26,7 +28,9 @@ function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal
     $scope.hideModal = hideModal;
     // cleanup the modal when we're done with it
     $scope.$on('$destroy', function () {
-        $scope.modal.remove();
+        if ($scope.modal) {
+            $scope.modal.remove();
+        }
     });
 
     function checkFile(attachment) {
@@ -40,12 +44,26 @@ function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal
         if (sourceIsUserGenerated() && attachment.name.indexOf('.jpg') === -1) {
             attachment.name += '.jpg';
         }
+        if (fileNameIsTaken(attachment.name)) {
+            // create a unique identifier if the filename is already taken
+            attachment.name = new Date().getTime().toString() + '-' + attachment.name;
+        }
         return attachment;
     }
 
     function closeModal() {
         $scope.modal.hide();
         $state.go('attachments');
+    }
+
+    function fileNameIsTaken(name) {
+        var isTaken = false;
+        $scope.attachments.forEach(function (node) {
+            if (node.NAME === name) {
+                isTaken = true;
+            }
+        });
+        return isTaken;
     }
 
     function getAttachmentFromCamera() {
@@ -206,6 +224,12 @@ function AttachmentsAdditionController($scope, $state, $stateParams, $ionicModal
         }
 
         return new Blob(byteArrays, {type: contentType});
+    }
+
+    function loadAttachments() {
+        attachmentsProvider.getCachedAttachments().then(function (res) {
+            $scope.attachments = res.info.results.contents || [];
+        });
     }
 
 }

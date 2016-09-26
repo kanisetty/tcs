@@ -30,7 +30,7 @@
                     {{node.name}}
                     <i class="icon ion-ios-arrow-right"></i>
                 </a>
-                <ion-radio ng-if="node.subtype === 144"
+                <ion-radio ng-if="node.subtype !== 0"
                            ng-model="newAttachment.selectedAttachment"
                            ng-value="node">
                     <h2 style="color: #0072aa">{{node.name}}</h2>
