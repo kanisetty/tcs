@@ -34,7 +34,7 @@ angular.module('Node', ['Sharing'])
          *
          */
         var OFFLINE_EXTENSION_WHITELIST = [
-            'jpg', 'jpeg', 'gif', 'png', 'xls', 'xlsx', 'pdf', 'ppt', 'pptx', 'doc', 'docx', 'rtf', 'key', 'numbers', 'pages', 'txt'
+            'jpg', 'jpeg', 'gif', 'png', 'xls', 'xlsx', 'pdf', 'ppt', 'pptx', 'doc', 'docx', 'rtf', 'txt'
         ];
 
         var IMAGE_EXTENSION_WHITELIST = [
