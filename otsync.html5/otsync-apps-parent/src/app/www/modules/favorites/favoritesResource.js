@@ -25,7 +25,7 @@ function $favoritesResource($sessionService, $q, Request, $cacheService, $nodeSe
             // make a request to add the item to favorites,
             // then download the item to the device for offline access only if it is openable in the inappbrowser
             return $sessionService.runRequest(request).then(function () {
-                if (node.isImageType()) {
+                if (node.isOfflineType()) {
                     $fileResource.downloadAndStore(node, false);
                 }
             });

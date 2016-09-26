@@ -28,6 +28,15 @@ angular.module('Node', ['Sharing'])
         var WORKFLOW_MAP_TYPE = 128;
         var WORKFLOW_STATUS_TYPE = 190;
         var XML_DTD_TYPE = 335;
+        /**
+         * ios webview supported file types based on apple technical document
+         * https://developer.apple.com/library/content/qa/qa1630/_index.html#//apple_ref/doc/uid/DTS40008749
+         *
+         */
+        var OFFLINE_EXTENSION_WHITELIST = [
+            'jpg', 'jpeg', 'gif', 'png', 'xls', 'xlsx', 'pdf', 'ppt', 'pptx', 'doc', 'docx', 'rtf', 'key', 'numbers', 'pages', 'txt'
+        ];
+
         var IMAGE_EXTENSION_WHITELIST = [
             'jpg', 'jpeg', 'gif', 'png'
         ];
@@ -156,16 +165,21 @@ angular.module('Node', ['Sharing'])
                 return _nodeData;
             };
 
-            this.isImageType = function () {
+            this.isOfflineType = function () {
                 // checking filename. admittedly not the best check
                 // TODO does content server return content type in the metadata?
                 // if so get the content type from that and return
+                var extension = (this.toString() || '').split('.').pop();
+                return OFFLINE_EXTENSION_WHITELIST.indexOf(extension.toLowerCase()) > -1;
+            };
+
+            this.isImageType = function () {
                 var extension = (this.toString() || '').split('.').pop();
                 return IMAGE_EXTENSION_WHITELIST.indexOf(extension.toLowerCase()) > -1;
             };
 
             this.canViewOffline = function () {
-                return this.isImageType();
+                return this.isOfflineType();
             };
 
             this.getFileNameForOnDeviceStorage = function () {

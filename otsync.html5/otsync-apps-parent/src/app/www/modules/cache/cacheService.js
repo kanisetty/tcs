@@ -110,8 +110,11 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
         isNodeInStorage: function (node) {
             var deferred = $q.defer();
             var storageManager = new Appworks.SecureStorage(fileExistsAtPath, deferred.reject);
+            var fileName = node.getFileNameForOnDeviceStorage();
+            // replace spaces with four underscores to avoid problems when trying to access in web view
+            fileName = fileName.replace(/ +/g, '____');
 
-            storageManager.fileExistsAtPath(node.getFileNameForOnDeviceStorage());
+            storageManager.fileExistsAtPath(fileName);
 
             return deferred.promise;
 
@@ -137,7 +140,13 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
             $appworksService.getFile(fileName)
                 .then(function (file) {
                     if (file) {
-                        self.showImage(node.getName(), file.nativeURL);
+                        // if its an image try to open in the show-image.html page to size the image proportionately
+                        if (node.isImageType()) {
+                            self.showImage(node.getName(), file.nativeURL);
+                        } else {
+                            // otherwise its a regular document, try to open in the web view
+                            window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes,location=no');
+                        }
                         deferred.resolve();
                     } else {
                         deferred.reject();

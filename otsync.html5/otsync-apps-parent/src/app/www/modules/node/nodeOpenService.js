@@ -49,11 +49,13 @@ function $nodeOpenService($q, $nodeService, $displayMessageService, $fileResourc
                 //    menuItem.setRefresh(true);
                 //}
 
-                if (nodeToOpen.isImageType()) {
+                if (nodeToOpen.isOfflineType()) {
                     $cacheService.isNodeInStorage(nodeToOpen).then(function (nodeIsCached) {
                         if (nodeIsCached) {
                             $cacheService.openNodeFromStorage(nodeToOpen);
                         } else if ($sessionService.isOnline()) {
+                            // store offline available file types when accessing so we can access if the device
+                            // later loses network connectivity
                             $fileResource.downloadAndStore(nodeToOpen, true);
                         }
                     });

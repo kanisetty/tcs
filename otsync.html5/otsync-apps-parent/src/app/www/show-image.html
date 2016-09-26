@@ -30,7 +30,7 @@
     <script>
         function showImage(name, url) {
             document.getElementById('imageName').innerHTML = name;
-            document.getElementById('image').setAttribute('src', url);
+            document.getElementById('image').setAttribute('src', encodeURI(url));
         }
     </script>
 </head>

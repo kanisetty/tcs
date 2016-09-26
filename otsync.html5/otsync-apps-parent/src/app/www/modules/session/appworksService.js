@@ -75,6 +75,8 @@ angular.module('appworksService', [])
 
                     var storage = new Appworks.SecureStorage(success, failure);
 
+                    // replace spaces with four underscores to avoid problems when trying to access in web view
+                    fileName = fileName.replace(/ +/g, '____');
                     storage.retrieve(fileName);
 
                     return deferred.promise;
@@ -207,10 +209,14 @@ angular.module('appworksService', [])
                     }
 
                     function storeShared() {
+                        // replace spaces with four underscores to avoid problems when trying to access in web view
+                        fileName = fileName.replace(/ +/g, '____');
                         sharedStorage.download(downloadURL, fileName, null, true);
                     }
 
                     function store() {
+                        // replace spaces with four underscores to avoid problems when trying to access in web view
+                        fileName = fileName.replace(/ +/g, '____');
                         storage.store(downloadURL, fileName);
                     }
 
