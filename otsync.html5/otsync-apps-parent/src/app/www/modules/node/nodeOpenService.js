@@ -52,11 +52,28 @@ function $nodeOpenService($q, $nodeService, $displayMessageService, $fileResourc
                 if (nodeToOpen.isOfflineType()) {
                     $cacheService.isNodeInStorage(nodeToOpen).then(function (nodeIsCached) {
                         if (nodeIsCached) {
-                            $cacheService.openNodeFromStorage(nodeToOpen);
+                            /**
+                             * we have the facility to open document types in the iOS webview, but not android
+                             * if we are on android we defer to DCS by default, but first we store a copy locally
+                             * so that if the device loses network connectivity we can later perform an Open In action
+                             */
+                            // we have the facility to open document types in the iOS webview, but not android
+                            // so if we are on android we defer to DCS by default
+                            if ($appworksService.deviceIsIos()) {
+                                $cacheService.openNodeFromStorage(nodeToOpen);
+                            } else {
+                                $appworksService.openFromAppworks('dcs-component', dataForComponent, true);
+                            }
+
                         } else if ($sessionService.isOnline()) {
                             // store offline available file types when accessing so we can access if the device
                             // later loses network connectivity
-                            $fileResource.downloadAndStore(nodeToOpen, true);
+                            if ($appworksService.deviceIsIos()) {
+                                $fileResource.downloadAndStore(nodeToOpen, true);
+                            } else {
+                                $fileResource.downloadAndStore(nodeToOpen, false);
+                                $appworksService.openFromAppworks('dcs-component', dataForComponent, true);
+                            }
                         } else {
                             // use OPEN IN functionality when device is offline
                             $cacheService.doOpenIn(nodeToOpen);
