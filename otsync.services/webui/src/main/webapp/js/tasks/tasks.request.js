@@ -251,7 +251,7 @@ $.extend(Tasks, new function(){
 	
 		if(!$.isEmptyObject(data)){
 		
-			ui.MessageController.ShowMessage(T('LABEL.ObjectDeleteConfirmation', {subType: T('LABEL.Task'), name: callbackData.Name}));
+			ui.MessageController.ShowMessage(T('LABEL.ObjectDeleteConfirmation', {subType: T('LABEL.Task'), name: callbackData.name}));
 			this.GetTaskInfo(Browse.GetCurrentFolderInfo().DATAID);
 			Tasks.DrawTasksArea();
 		}
