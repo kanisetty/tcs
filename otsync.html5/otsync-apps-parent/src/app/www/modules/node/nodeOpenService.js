@@ -57,6 +57,9 @@ function $nodeOpenService($q, $nodeService, $displayMessageService, $fileResourc
                             // store offline available file types when accessing so we can access if the device
                             // later loses network connectivity
                             $fileResource.downloadAndStore(nodeToOpen, true);
+                        } else {
+                            // use OPEN IN functionality when device is offline
+                            $cacheService.doOpenIn(nodeToOpen);
                         }
                     });
                 } else {

@@ -1,6 +1,6 @@
 angular.module('Node', ['Sharing'])
 
-    .factory('Node', ['$sessionService', 'Sharing', '$appworksService', function ($sessionService, Sharing, $aw) {
+    .factory('Node', ['$sessionService', 'Sharing', function ($sessionService, Sharing) {
 
         var CATEGORY_TYPE = 131;
         var ACTIVE_VIEW_TYPE = 30309;
@@ -33,12 +33,8 @@ angular.module('Node', ['Sharing'])
          * https://developer.apple.com/library/content/qa/qa1630/_index.html#//apple_ref/doc/uid/DTS40008749
          *
          */
-        var IOS_OFFLINE_EXTENSION_WHITELIST = [
-            'jpg', 'jpeg', 'gif', 'png', 'xls', 'xlsx', 'pdf', 'ppt', 'pptx', 'doc', 'docx', 'rtf', 'txt', 'key', 'numbers', 'pages'
-        ];
-
-        var ANDROID_OFFLINE_EXTENSION_WHITELIST = [
-            'jpg', 'jpeg', 'gif', 'png'
+        var OFFLINE_EXTENSION_WHITELIST = [
+            'jpg', 'jpeg', 'gif', 'png', 'xls', 'xlsx', 'pdf', 'ppt', 'pptx', 'doc', 'docx', 'rtf', 'txt'
         ];
 
         var IMAGE_EXTENSION_WHITELIST = [
@@ -173,14 +169,8 @@ angular.module('Node', ['Sharing'])
                 // checking filename. admittedly not the best check
                 // TODO does content server return content type in the metadata?
                 // if so get the content type from that and return
-                var whitelist;
                 var extension = (this.toString() || '').split('.').pop();
-                if ($aw.deviceIsAndroid()) {
-                    whitelist = ANDROID_OFFLINE_EXTENSION_WHITELIST;
-                } else {
-                    whitelist = IOS_OFFLINE_EXTENSION_WHITELIST;
-                }
-                return whitelist.indexOf(extension.toLowerCase()) > -1;
+                return OFFLINE_EXTENSION_WHITELIST.indexOf(extension.toLowerCase()) > -1;
             };
 
             this.isImageType = function () {

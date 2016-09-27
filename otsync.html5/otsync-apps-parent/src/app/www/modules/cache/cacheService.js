@@ -132,6 +132,17 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
             });
         },
 
+        doOpenIn: function (node) {
+            var deferred = $q.defer();
+            var fileName = node.getFileNameForOnDeviceStorage();
+            $appworksService.getFile(fileName).then(function (file) {
+                var finder = new Appworks.Finder(deferred.resolve, deferred.reject);
+                // remove file encoding from open in call
+                finder.openDirect(file.nativeURL);
+            });
+            return deferred.promise;
+        },
+
         openNodeFromStorage: function (node) {
             var self = this;
             var deferred = $q.defer();
