@@ -144,7 +144,7 @@ $.extend( true, info.userPrefDictionary, {
 		"Name":"Name",
 		"Name_Caps": "NAME", 
 		"NewFolder": "New Folder",
-		"NewFolderError": "Please provide a proper folder name",
+		"NewFolderError": "Please provide a valid folder name",
 		"NewFolderName": "New Folder Name",
 		"NewName": "New Name",
 		"NewPassword": "New Password",
