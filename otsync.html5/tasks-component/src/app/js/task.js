@@ -67,7 +67,7 @@ $(document).ready(function() {
 	
 	    	if( $('#startDate').val() != '' ){
 	    		
-	    		str += '&startDate=' + moment($('#startDate').val()).utc().format("YYYY-MM-DDTHH:mm:ss[Z]");
+	    		str += '&startDate=' + moment($('#startDate').val(), 'YYYY-MM-DD hh:mm A').utc().format("YYYY-MM-DDTHH:mm:ss[Z]");
 	    	}
 	    	else{
 	    		errorRequiredField = apputil.T('error.Start Date is required');
@@ -76,7 +76,7 @@ $(document).ready(function() {
 		
 	    if( $('#dueDate').val() != '' ){
 				    		
-			str += '&dueDate=' + moment($('#dueDate').val()).utc().format("YYYY-MM-DDTHH:mm:ss[Z]");
+			str += '&dueDate=' + moment($('#dueDate').val(), 'YYYY-MM-DD hh:mm A').utc().format("YYYY-MM-DDTHH:mm:ss[Z]");
 	    }
 	    else{
 	    	str += '&dueDate=';
@@ -84,7 +84,7 @@ $(document).ready(function() {
 
 		// check that start and due dates are valid
 		if ($('#dueDate').val() && $('#startDate').val()) {
-			if ( moment($('#dueDate').val(), 'YYYY-MM-DD HH:MM A').isBefore(moment($('#startDate').val(), 'YYYY-MM-DD HH:MM A')) ) {
+			if ( Date.parse($('#dueDate').val()) - Date.parse($('#startDate').val()) < 0 ) {
 				errorRequiredField = apputil.T('error.Due date must be after start');
 			}
 		}
