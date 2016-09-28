@@ -2,19 +2,19 @@ package com.opentext.otsync.connector.auth;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opentext.otag.sdk.handlers.AbstractAuthRequestHandler;
+import com.opentext.otag.sdk.handlers.AuthResponseDecorator;
 import com.opentext.otag.sdk.types.v3.auth.AuthHandlerResult;
 import com.opentext.otag.sdk.types.v3.client.ClientRepresentation;
 import com.opentext.otag.sdk.util.Cookie;
 import com.opentext.otag.sdk.util.ForwardHeaders;
 import com.opentext.otag.service.context.components.AWComponentContext;
 import com.opentext.otsync.api.HttpClient;
-import com.opentext.otag.sdk.handlers.AbstractAuthRequestHandler;
-import com.opentext.otag.sdk.handlers.AuthResponseDecorator;
+import com.opentext.otsync.connector.OTSyncConnector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import com.opentext.otsync.connector.OTSyncConnector;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -43,7 +43,7 @@ public class OTSyncAuthHandler extends AbstractAuthRequestHandler {
     /**
      * Connector housing this handler. It retains the connection to Content Server itself.
      */
-    OTSyncConnector connector;
+    private OTSyncConnector connector;
 
     // TODO FIXME - Make use of the requested ClientRepresentation
     @Override
@@ -102,7 +102,6 @@ public class OTSyncAuthHandler extends AbstractAuthRequestHandler {
 
     @Override
     public String getOtdsResourceId() {
-
         return getCSResourceId(getCsUrl());
     }
 
@@ -156,7 +155,6 @@ public class OTSyncAuthHandler extends AbstractAuthRequestHandler {
                     JsonNode node = OBJECT_MAPPER.readTree(new StringReader(json));
                     ret = node.get("ResourceID").asText();
                     // TODO FIXME update setting value
-
                 }
             } catch (Exception e) {
                 LOG.error("Cannot determine CS resource id via func otdsintegration.getresourceid", e);

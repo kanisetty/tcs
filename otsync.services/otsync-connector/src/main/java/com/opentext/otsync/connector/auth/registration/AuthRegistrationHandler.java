@@ -1,14 +1,14 @@
 package com.opentext.otsync.connector.auth.registration;
 
 import com.opentext.otag.sdk.client.v3.AuthClient;
-import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
 import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AbstractMultiSettingChangeHandler;
+import com.opentext.otsync.connector.OTSyncConnectorConstants;
 import jersey.repackaged.com.google.common.collect.Sets;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import com.opentext.otsync.connector.OTSyncConnectorConstants;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -33,13 +33,7 @@ public class AuthRegistrationHandler extends AbstractMultiSettingChangeHandler i
      */
     private boolean registeredAuth = false;
 
-    /**
-     * We listen for changes to this setting. When CS auth only is true we don't bother
-     * asking OTDS to provide username mapping for login via credentials.
-     */
-    private boolean csAuthOnly = false;
-
-    AuthClient identityServiceClient;
+    private AuthClient identityServiceClient;
 
     /**
      * This thread will register the OTSyncAuthHandler with the Gateway, it will do
@@ -59,22 +53,13 @@ public class AuthRegistrationHandler extends AbstractMultiSettingChangeHandler i
             LOG.info("CS url setting was updated, re-register CS Auth provider");
             registerAuthHandler();
         });
-        addHandler(OTSyncConnectorConstants.CS_AUTH_ONLY, (s) -> {
-            LOG.info("CS auth only setting was updated, re-register CS Auth provider");
-            registerAuthHandler();
-            try {
-                csAuthOnly = Boolean.valueOf(s.getNewValue());
-            } catch (Exception e) {
-                LOG.error("Failed to resolve CS Auth only into Boolean", e);
-            }
-        });
 
         registerAuthHandler();
     }
 
     @Override
     public Set<String> getSettingKeys() {
-        return Sets.newHashSet(Arrays.asList(OTSyncConnectorConstants.CS_URL, OTSyncConnectorConstants.CS_AUTH_ONLY));
+        return Sets.newHashSet(Collections.singletonList(OTSyncConnectorConstants.CS_URL));
     }
 
     @Override
@@ -89,10 +74,6 @@ public class AuthRegistrationHandler extends AbstractMultiSettingChangeHandler i
 
     public void setRegisteredAuth(boolean registeredAuth) {
         this.registeredAuth = registeredAuth;
-    }
-
-    public boolean isCsAuthOnly() {
-        return csAuthOnly;
     }
 
     private void registerAuthHandler() {

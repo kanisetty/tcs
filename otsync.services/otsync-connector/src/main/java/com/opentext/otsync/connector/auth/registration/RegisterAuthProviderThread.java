@@ -9,19 +9,16 @@ import com.opentext.otag.sdk.types.v3.auth.RegisterAuthHandlersRequest;
 import com.opentext.otag.sdk.types.v3.settings.Setting;
 import com.opentext.otag.service.context.components.AWComponentContext;
 import com.opentext.otag.service.context.error.AWComponentNotFoundException;
-import com.opentext.otsync.connector.auth.OTSyncAuthHandler;
 import com.opentext.otsync.connector.OTSyncConnectorConstants;
+import com.opentext.otsync.connector.auth.OTSyncAuthHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
  * In order to resolve the OTDS resource id that we are interested in (for username
  * mapping) we need the CS url to be defined correctly. Register our auth handler
- * when we know we can build the AuthProvider with the OTDS resource id, unless we
- * are only interested in CS Auth only.
- *
- * @see com.opentext.otsync.connector.OTSyncConnectorConstants#CS_AUTH_ONLY
- */
+ * when we know we can build the AuthProvider with the OTDS resource id.
+ **/
 public class RegisterAuthProviderThread extends Thread {
 
     private static final Log LOG = LogFactory.getLog(RegisterAuthProviderThread.class);
@@ -56,38 +53,26 @@ public class RegisterAuthProviderThread extends Thread {
 
                 RegisterAuthHandlersRequest registerAuthHandlersRequest = new RegisterAuthHandlersRequest();
                 // ask our parent for the current value (it listens)
-                boolean csAuthOnly = registrationHandler.isCsAuthOnly();
-                if (!csAuthOnly) {
-                    String otdsResourceId = handler.getOtdsResourceId();
+                String otdsResourceId = handler.getOtdsResourceId();
 
-                    if (otdsResourceId != null) {
-                        LOG.info("OTDS Resource Id was populated, issuing registration request to Gateway");
-                        if (!issueRequest(handler, registerAuthHandlersRequest)) {
-                            LOG.info("Failed to register auth handler, please review the logs at " +
-                                    "managing Gateway, sleeping ...");
-                            sleep();
-                        } else {
-                            // set the read-only setting value
-                            updateOtdsResourceIdSetting(otdsResourceId);
-
-                            // let the connector know we are done
-                            registrationHandler.setRegisteredAuth(true);
-                            keepRunning = false;
-                            LOG.info("Registered CS Auth handler with Gateway");
-                        }
-                    } else {
-                        LOG.info("Still unable to resolve OTDS resource id, sleeping ...");
+                if (otdsResourceId != null) {
+                    LOG.info("OTDS Resource Id was populated, issuing registration request to Gateway");
+                    if (!issueRequest(handler, registerAuthHandlersRequest)) {
+                        LOG.info("Failed to register auth handler, please review the logs at " +
+                                "managing Gateway, sleeping ...");
                         sleep();
+                    } else {
+                        // set the read-only setting value
+                        updateOtdsResourceIdSetting(otdsResourceId);
+
+                        // let the connector know we are done
+                        registrationHandler.setRegisteredAuth(true);
+                        keepRunning = false;
+                        LOG.info("Registered CS Auth handler with Gateway");
                     }
                 } else {
-                    LOG.info("CS auth only detected, issuing registration request to Gateway");
-                    // ignore OTDS resource for CS only auth
-                    handler = new AuthHandler(handler.getHandler(),
-                            handler.isDecorator(),
-                            handler.getKnownCookies());
-
-                    issueRequest(handler, registerAuthHandlersRequest);
-                    keepRunning = false;
+                    LOG.info("Still unable to resolve OTDS resource id, sleeping ...");
+                    sleep();
                 }
             } catch (APIException e) {
                 LOG.info("Failed to retrieve OTDS resource id - " + e.getCallInfo());
@@ -126,13 +111,13 @@ public class RegisterAuthProviderThread extends Thread {
             keepRunning = false;
             this.interrupt();
         } catch (Exception e) {
-            LOG.error("Shutdown for "  + this.getName() + " did not complete " +
+            LOG.error("Shutdown for " + this.getName() + " did not complete " +
                     "successfully, " + e.getMessage(), e);
         }
     }
 
     private boolean issueRequest(AuthHandler handler,
-                              RegisterAuthHandlersRequest registerAuthHandlersRequest) throws APIException {
+                                 RegisterAuthHandlersRequest registerAuthHandlersRequest) throws APIException {
         registerAuthHandlersRequest.addHandler(handler);
         SDKResponse sdkResponse = identityServiceClient.registerAuthHandlers(registerAuthHandlersRequest);
         return sdkResponse.isSuccess();
@@ -141,7 +126,8 @@ public class RegisterAuthProviderThread extends Thread {
     private void sleep() {
         try {
             Thread.sleep(20 * 1000);
-        } catch (InterruptedException ignored) {}
+        } catch (InterruptedException ignored) {
+        }
     }
 
 }

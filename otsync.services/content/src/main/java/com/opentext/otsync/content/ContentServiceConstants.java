@@ -16,7 +16,6 @@ public class ContentServiceConstants {
     public static final String TEMPDIR = "otag.tmp.path";
     public static final String REPO = "content.repo";
     public static final String IS_TEMPO_BOX_ENABLED = "content.enableTempoBox";
-    public static final String CS_AUTH_ONLY = "content.csAuthOnly";
     public static final String MIN_VERSION_MAC = "content.clientMinVersionMac";
     public static final String CUR_VERSION_MAC = "content.clientCurrentVersionMac";
     public static final String INSTALL_FOLDER_MAC = "content.clientInstallerFolderMac";
