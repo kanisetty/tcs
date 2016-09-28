@@ -112,6 +112,7 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
 
             // see if we have stored our settings already
             resolveSettings();
+
             // listen for changes to our settings
             registerSettingHandlers();
 
@@ -320,6 +321,18 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
         resolveSetting(OTSyncConnectorConstants.CS_URL, (s) -> csUrl = s);
         resolveSetting(OTSyncConnectorConstants.CS_ADMIN_USER, (s) -> csAdminUser = s);
         resolveSetting(OTSyncConnectorConstants.CS_ADMIN_PWORD, (s) -> csAdminPassword = s);
+
+        // remove the previously used 'cs auth only' setting from the db
+        try {
+            String csAuthOnly = "otsync-connector.csAuthOnly";
+            if (settingsClient.getSetting(csAuthOnly) != null) {
+                settingsClient.removeSetting(csAuthOnly);
+                if (LOG.isDebugEnabled())
+                    LOG.debug("Removed 'cs auth only' setting from Gateway: " + csAuthOnly);
+            }
+        } catch (Exception e) {
+            LOG.warn("Failed to remove 'cs auth only' setting from Gateway");
+        }
     }
 
     private void resolveSetting(String settingKey, Consumer<String> setter) {
