@@ -84,7 +84,7 @@ $(document).ready(function() {
 
 		// check that start and due dates are valid
 		if ($('#dueDate').val() && $('#startDate').val()) {
-			if ( Date.parse($('#dueDate').val()) - Date.parse($('#startDate').val()) < 0 ) {
+			if ( moment($('#dueDate').val(), 'YYYY-MM-DD hh:mm A').diff(moment($('#startDate').val(), 'YYYY-MM-DD hh:mm A')) < 0 ) {
 				errorRequiredField = apputil.T('error.Due date must be after start');
 			}
 		}
