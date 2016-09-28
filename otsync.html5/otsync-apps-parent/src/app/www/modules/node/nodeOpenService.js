@@ -44,39 +44,36 @@ function $nodeOpenService($q, $nodeService, $displayMessageService, $fileResourc
 
                 dataForComponent = {id: nodeToOpen.getID()};
 
-                // dont refresh the list whenever the view is loaded
-                //if (menuItem) {
-                //    menuItem.setRefresh(true);
-                //}
-
                 if (nodeToOpen.isOfflineType()) {
-                    $cacheService.isNodeInStorage(nodeToOpen).then(function (nodeIsCached) {
-                        if (nodeIsCached) {
-                            /**
-                             * we have the facility to open document types in the iOS webview, but not android
-                             * if we are on android we defer to DCS by default, but first we store a copy locally
-                             * so that if the device loses network connectivity we can later perform an Open In action
-                             */
-                            // we have the facility to open document types in the iOS webview, but not android
-                            // so if we are on android we defer to DCS by default
+                    $cacheService.isNodeInStorage(nodeToOpen).then(function (documentIsStoredOnDevice) {
+                        if ($sessionService.isOnline()) {
                             if ($appworksService.deviceIsIos()) {
-                                $cacheService.openNodeFromStorage(nodeToOpen);
+                                if (documentIsStoredOnDevice) {
+                                    // open in webview straight away
+                                    $cacheService.openNodeFromStorage(nodeToOpen);
+                                } else {
+                                    // download first, then open in webview
+                                    $fileResource.downloadAndStore(nodeToOpen, true);
+                                }
                             } else {
-                                $appworksService.openFromAppworks('dcs-component', dataForComponent, true);
-                            }
-
-                        } else if ($sessionService.isOnline()) {
-                            // store offline available file types when accessing so we can access if the device
-                            // later loses network connectivity
-                            if ($appworksService.deviceIsIos()) {
-                                $fileResource.downloadAndStore(nodeToOpen, true);
-                            } else {
+                                // store the file for later use TODO should it be stored for favorites only?
                                 $fileResource.downloadAndStore(nodeToOpen, false);
+                                // fallback is to use the dcs component to render the file
                                 $appworksService.openFromAppworks('dcs-component', dataForComponent, true);
                             }
                         } else {
-                            // use OPEN IN functionality when device is offline
-                            $cacheService.doOpenIn(nodeToOpen);
+                            if (documentIsStoredOnDevice) {
+                                if ($appworksService.deviceIsIos()) {
+                                    // open in webview straight away
+                                    $cacheService.openNodeFromStorage(nodeToOpen);
+                                } else {
+                                    // invoke open in to open this file in another application
+                                    $cacheService.doOpenIn(nodeToOpen);
+                                }
+                            } else {
+                                // display an error message to the user
+                                $displayMessageService.showErrorMessage('You must get online to view this file', 'Offline');
+                            }
                         }
                     });
                 } else {
