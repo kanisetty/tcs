@@ -32,9 +32,7 @@
  }
 
 		
-		 if ( navigator.userAgent.match( /(iPhone|iPod|iPad)/ ) )
-           window.location.href=url;
-        else if ( navigator.userAgent.match (/Android/) )
+		 if ( navigator.userAgent.match( /(iPhone|iPod|iPad|Android)/ ) )
            window.location.href=url;
         else
            alert("No help for the current type of device!");
