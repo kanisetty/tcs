@@ -408,7 +408,7 @@ button.ui-button .ui-button-text {
 
 .dropdown .dropDownMenu {
     /* Hide it off-screen. */
-    position: relative;
+    position: absolute;
     left: -4px;
     display: none;
     z-index: 1000;
@@ -584,7 +584,7 @@ button.ui-button .ui-button-text {
 	display: block;
 }
 
-.inviteMessageInput {	
+.inviteMessageInput {
 	border: 1px solid #E0E0E0;
     border-radius: 3px 3px 3px 3px;
     height: 65px;

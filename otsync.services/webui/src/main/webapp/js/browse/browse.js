@@ -679,13 +679,18 @@ var Browse = new function(){
 			var viewPortOffsetTop = $(window).scrollTop();
 			var buttonOffsetTop = button.offset().top;
 			var buttonHeight = button.height();
+			var dropDownMenuLists = $('.dropDownMenuListSelector');
 
 			if (viewPortHeight + viewPortOffsetTop - buttonOffsetTop - buttonHeight < menuHeight) {
+				dropDownMenuLists.removeClass('dropDownMenuList');
+				dropDownMenuLists.addClass('dropUpMenuList');
 				button.parents('.browseItem').addClass('needUpwardMenu');
 				button.next('div').children('.whiteLine').addClass('upward');
 				menu.css('top', '-' + menu.height() + 'px' );
 			}
 			else {
+				dropDownMenuLists.removeClass('dropUpMenuList');
+				dropDownMenuLists.addClass('dropDownMenuList');
 				button.parents('.browseItem').removeClass('needUpwardMenu');
 				button.next('div').children('.whiteLine').removeClass('upward');
 			}

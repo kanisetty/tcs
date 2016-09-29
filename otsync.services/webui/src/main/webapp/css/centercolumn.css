@@ -622,6 +622,16 @@ a.itemName {
 	border-radius:5px 5px 0 5px;
 }
 
+.dropDownMenuList{
+	position: absolute;
+	top: 22px;
+}
+
+.dropUpMenuList{
+	position: absolute;
+	bottom: 100%;
+}
+
 .thumbnailViewBrowseItem.needUpwardMenu .dropDownMenu ul{
 	border: 1px solid #cbdfeb;
 	border-radius:5px 5px 5px 5px;
