@@ -132,6 +132,15 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
             });
         },
 
+        showDoc: function(name, url) {
+            var win = window.open('show-doc.html', '_blank', 'EnableViewPortScale=yes,location=no');
+            win.addEventListener( "loadstop", function() {
+                win.executeScript({
+                    code: "showFile('" + name + "', '" + url + "')"
+                });
+            });
+        },
+
         doOpenIn: function (node) {
             var deferred = $q.defer();
             var fileName = node.getFileNameForOnDeviceStorage();
@@ -156,7 +165,8 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
                             self.showImage(node.getName(), file.nativeURL);
                         } else {
                             // otherwise its a regular document, try to open in the web view
-                            window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes,location=no');
+                            self.showDoc(node.getName(), file.nativeURL);
+                            //window.open(file.nativeURL, '_blank', 'EnableViewPortScale=yes,location=no');
                         }
                         deferred.resolve();
                     } else {
