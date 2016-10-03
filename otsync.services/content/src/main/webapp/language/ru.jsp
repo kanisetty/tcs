@@ -26,7 +26,6 @@
 		
 	//Download Text
 	 download = "ЗАГРУЗИТЬ";
-	 bb_downloadText = "ЗАГРУЗИТЬ версию для Blackberry";
 	 and_downloadText = "ЗАГРУЗИТЬ версию для Android";
 	 ios_downloadText = "ЗАГРУЗИТЬ версию для iOS";
 	 mac_downloadText = "ЗАГРУЗИТЬ версию для Mac";
