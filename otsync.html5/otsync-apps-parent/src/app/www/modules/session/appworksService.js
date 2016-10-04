@@ -6,9 +6,9 @@ angular.module('appworksService', [])
         '$displayMessageService',
         function ($q, $httpParamSerializerJQLike, $displayMessageService) {
 
-            return {
+            var appworksService = {
 
-                addToCache: function (key, value, usePersistentStorage) {
+                addToCache: function addToCache(key, value, usePersistentStorage) {
                     var cache = new Appworks.AWCache({
                         usePersistentStorage: usePersistentStorage
                     });
@@ -16,14 +16,14 @@ angular.module('appworksService', [])
                     cache.setItem(key, value);
                 },
 
-                authenticate: function (force) {
+                authenticate: function authenticate(force) {
                     var deferred = $q.defer();
                     var auth = new Appworks.Auth(deferred.resolve, deferred.reject);
                     auth.authenticate(force);
                     return deferred.promise;
                 },
 
-                execCordovaRequest: function (namespace, func, params) {
+                execCordovaRequest: function execCordovaRequest(namespace, func, params) {
                     var deferred = $q.defer();
 
                     var successFn = function (data) {
@@ -38,19 +38,19 @@ angular.module('appworksService', [])
                     return deferred.promise;
                 },
 
-                getCameraOptions: function () {
+                getCameraOptions: function getCameraOptions() {
                     var options = {
                         destinationType: Camera.DestinationType.DATA_URL
                     };
                     return options;
                 },
 
-                getComponentList: function () {
+                getComponentList: function getComponentList() {
                     var args = ["component"];
                     return this.execCordovaRequest('AWComponent', 'list', args);
                 },
 
-                getDefaultLanguage: function () {
+                getDefaultLanguage: function getDefaultLanguage() {
                     var deferred = $q.defer();
                     var _defaultLanguage = 'en';
 
@@ -70,7 +70,7 @@ angular.module('appworksService', [])
                     return deferred.promise;
                 },
 
-                getFile: function (fileName) {
+                getFile: function getFile(fileName) {
                     var deferred = $q.defer();
 
                     var storage = new Appworks.SecureStorage(success, failure);
@@ -96,12 +96,14 @@ angular.module('appworksService', [])
                     }
                 },
 
-                getFromCache: function (key) {
-                    var cache = new Appworks.AWCache();
+                getFromCache: function getFromCache(key) {
+                    var cache = new Appworks.AWCache({
+                        usePersistentStorage: true
+                    });
                     return cache.getItem(key);
                 },
 
-                getGatewayURL: function () {
+                getGatewayURL: function getGatewayURL() {
                     var deferred = $q.defer();
 
                     this.execCordovaRequest("AWAuth", "gateway").then(
@@ -117,7 +119,7 @@ angular.module('appworksService', [])
                     return deferred.promise;
                 },
 
-                getSharedDocumentUrl: function () {
+                getSharedDocumentUrl: function getSharedDocumentUrl() {
                     var deferred = $q.defer();
                     this.authenticate().then(function (authResponse) {
                         deferred.resolve(authResponse.authData.sharedDocumentUrl);
@@ -125,7 +127,7 @@ angular.module('appworksService', [])
                     return deferred.promise;
                 },
 
-                getOTCSTICKET: function () {
+                getOTCSTICKET: function getOTCSTICKET() {
                     var deferred = $q.defer();
 
                     this.execCordovaRequest("AWAuth", "authenticate")
@@ -147,7 +149,7 @@ angular.module('appworksService', [])
                     return deferred.promise;
                 },
 
-                isNodeInStorage: function (node, key) {
+                isNodeInStorage: function isNodeInStorage(node, key) {
                     var isNodeInCache = false;
                     var favorites = this.getFromCache(key);
 
@@ -165,11 +167,11 @@ angular.module('appworksService', [])
                     return isNodeInCache;
                 },
 
-                closeCurrentComponent: function () {
+                closeCurrentComponent: function closeCurrentComponent() {
                     this.execCordovaRequest('AWComponent', 'close');
                 },
 
-                openFromAppworks: function (componentName, data, isComponent) {
+                openFromAppworks: function openFromAppworks(componentName, data, isComponent) {
                     var appworksType = "component";
 
                     if (!isComponent) {
@@ -183,7 +185,7 @@ angular.module('appworksService', [])
                     ]);
                 },
 
-                storeFile: function (downloadURL, fileName, options, share) {
+                storeFile: function storeFile(downloadURL, fileName, options, share) {
                     var deferred = $q.defer();
                     var storage = new Appworks.SecureStorage(success, failure);
                     var sharedStorage = new Appworks.AWFileTransfer(success, failure);
@@ -209,9 +211,31 @@ angular.module('appworksService', [])
                     }
 
                     function storeShared() {
+                        // keep a record of when items were added to shared storage
+                        var nodeCache = appworksService.getFromCache('nodeCache');
                         // replace spaces with four underscores to avoid problems when trying to access in web view
                         fileName = fileName.replace(/ +/g, '____');
                         sharedStorage.download(downloadURL, fileName, null, true);
+
+                        if (nodeCache) {
+                            nodeCache = JSON.parse(nodeCache);
+                        } else {
+                            nodeCache = {};
+                        }
+
+                        /**
+                         * when we export a file to the shared document area we set a timestamp
+                         * 1. if the document gets used by another application and exported back into the shared
+                         * area, then the lastmodified field will differ from what is stored in our private cache
+                         * 2. if we detect a change (i.e. file.lastmodified !== cache.lastModified) then we
+                         * upload the document to content server as a version
+                         * 3. if no changes are detected then we dont do anything
+                         */
+                        nodeCache.exported = nodeCache.exported || {};
+                        nodeCache.exported[fileName] = {lastModified: new Date().getTime().toString()};
+
+                        appworksService.addToCache('nodeCache', JSON.stringify(nodeCache), true);
+
                     }
 
                     function store() {
@@ -223,15 +247,17 @@ angular.module('appworksService', [])
                     return deferred.promise;
                 },
 
-                deviceIsIos: function () {
+                deviceIsIos: function deviceIsIos() {
                     var device = new Appworks.AWDevice();
                     return device.platform === 'iOS';
                 },
 
-                deviceIsAndroid: function () {
+                deviceIsAndroid: function deviceIsAndroid() {
                     var device = new Appworks.AWDevice();
                     return device.platform === 'Android';
                 }
-            }
+            };
+
+            return appworksService;
         }
     ]);
