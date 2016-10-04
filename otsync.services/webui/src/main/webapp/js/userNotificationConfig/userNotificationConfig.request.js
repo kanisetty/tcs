@@ -56,7 +56,7 @@ $.extend(UserNotificationConfig, new function(){
 
 		var notifyOnFolderChangeValue = false;
 		var notifyOnShareRequestValue = false;
-		var notificationConfigTaskAssigned = false;
+		var notifyOnTaskAssignedValue = false;
 
 		if($("#notificationConfigShareRequest").checkbox("isChecked"))
 		{
@@ -64,7 +64,7 @@ $.extend(UserNotificationConfig, new function(){
 		}
 		if($("#notificationConfigTaskAssigned").checkbox("isChecked"))
 		{
-			notificationConfigTaskAssigned = true;
+			notifyOnTaskAssignedValue = true;
 		}
 		if($("#notificationConfigFolderChange").checkbox("isChecked"))
 		{
@@ -73,9 +73,9 @@ $.extend(UserNotificationConfig, new function(){
 
 		info.settings.notifyOnFolderChange = notifyOnFolderChangeValue;
 		info.settings.notifyOnShareRequest = notifyOnShareRequestValue;
-		info.settings.notifyOnShareRequest = notificationConfigTaskAssigned;
+		info.settings.notifyOnTaskAssigned = notifyOnTaskAssignedValue;
 
-		return $.when(_SetUserNotificationConfig(notifyOnFolderChangeValue, notifyOnShareRequestValue, notificationConfigTaskAssigned))
+		return $.when(_SetUserNotificationConfig(notifyOnFolderChangeValue, notifyOnShareRequestValue, notifyOnTaskAssignedValue))
 		.pipe(request.ValidateResponse)
 		.done(function(resultData){
 			Browse.UpdateObjectInfo();
