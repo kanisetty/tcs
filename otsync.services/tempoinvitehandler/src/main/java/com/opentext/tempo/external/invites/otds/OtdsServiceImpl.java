@@ -232,8 +232,8 @@ public class OtdsServiceImpl extends AbstractMultiSettingChangeHandler /* AppWor
     private String otdsUrlEncode(String s) {
         try {
             String ret = URLEncoder.encode(s, "UTF-8");
-            ret.replaceAll("%5C", "%EF%82%A6");
-            ret.replaceAll("%2F", "%EF%82%A7");
+            ret = ret.replaceAll("%5C", "%EF%82%A6");
+            ret = ret.replaceAll("%2F", "%EF%82%A7");
             return ret;
         } catch (UnsupportedEncodingException e) {
             // utf-8 always supported
