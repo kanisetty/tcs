@@ -128,8 +128,6 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
 
     function syncToRoot(filename) {
         // add a new file to the root of the workspace
-        alert('will add new file to root from exported documents...');
-
         if ($sessionService.getRootID()) {
             performSync($sessionService.getRootID());
         } else {
@@ -161,8 +159,6 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
     }
 
     function syncWithPreviousVersion(filename) {
-        alert('will add new version from exported documents...');
-
         fileToDataUrl(filename).then(function (dataUrl) {
             var metadata = getNodeMetadataFromFilename(filename);
             var node = new Node({id: metadata.nodeId, name: filename});
