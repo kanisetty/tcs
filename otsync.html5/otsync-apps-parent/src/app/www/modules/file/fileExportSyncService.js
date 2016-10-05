@@ -73,6 +73,22 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
         return deferred.promise;
     }
 
+    function removeCachedFile(filename) {
+        var deferred = $q.defer();
+
+        if (cordova && cordova.file) {
+            window.resolveLocalFileSystemURL(cordova.file.documentsDirectory + filename, gotFileEntry, deferred.reject);
+        } else {
+            deferred.reject('Cordova is not enabled');
+        }
+
+        return deferred.promise;
+
+        function gotFileEntry(fileEntry) {
+            fileEntry.remove(deferred.resolve, deferred.reject);
+        }
+    }
+
     function sync() {
         var finder = new Appworks.Finder(onFileListing);
         var cache = $appworksService.getFromCache('nodeCache');
@@ -156,6 +172,9 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
                 // update the lastModified date in the cache to reflect the new time
                 // use the unix EPOCH date
                 updateMetadataForFilename(filename, {lastModified: ((new Date().getTime())/1000|0)});
+                // it is likely we already have the old version of this file cached on device..
+                // remove it to force a fetch of the latest
+                removeCachedFile(filename);
             }, function (err) {
                 if (err.status === 401) {
                     $appworksService.authenticate(true).then(function () {
