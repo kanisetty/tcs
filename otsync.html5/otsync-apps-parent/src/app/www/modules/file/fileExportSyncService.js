@@ -6,13 +6,32 @@ angular
         '$http',
         '$sessionService',
         '$q',
+        '$displayMessageService',
+        '$state',
         'File',
         'Node',
         $fileExportSync
     ]);
 
-function $fileExportSync($appworksService, $fileResource, $http, $sessionService, $q, File, Node) {
+function $fileExportSync($appworksService, $fileResource, $http, $sessionService, $q, $dm, $state, File, Node) {
+    var _this = this;
+    var _filesToSync = 0;
+    var _filesSynced = 0;
+    var _confirmText = 'Imported files have been synced. Reload to reflect changes?';
+    var _confirmTitle = 'Sync Complete';
+
     this.sync = sync;
+
+    function displayReloadConfirmation() {
+        if (_filesSynced === _filesToSync) {
+            $dm.createConfirmationPopup(_confirmTitle, _confirmText).then(function () {
+                // reload the page to show the display synced files
+                $state.go('app.browse');
+            });
+            _filesSynced = 0;
+            _filesToSync = 0;
+        }
+    }
 
     function fileToDataUrl(filename) {
         var deferred = $q.defer();
@@ -120,6 +139,7 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
                             // file has been modified, add as a version on top of previous
                             syncWithPreviousVersion(item.filename);
                         }
+                        _filesToSync += 1;
                     }
                 });
             }
@@ -147,6 +167,10 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
                         // use the unix EPOCH date
                         lastModified: ((new Date().getTime())/1000|0)
                     });
+                    // update the total files synced for displaying a reload message later on
+                    _filesSynced += 1;
+                    // display a message to the user notifying that exported files have been synced.
+                    // will not display unless _filesSynced === _filesToSync
                 }, function (err) {
                     if (err.status === 401) {
                         $appworksService.authenticate(true).then(function () {
@@ -171,6 +195,11 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
                 // it is likely we already have the old version of this file cached on device..
                 // remove it to force a fetch of the latest
                 removeCachedFile(filename);
+                // update the total files synced for displaying a reload message later on
+                _filesSynced += 1;
+                // display a message to the user notifying that exported files have been synced.
+                // will not display unless _filesSynced === _filesToSync
+                displayReloadConfirmation();
             }, function (err) {
                 if (err.status === 401) {
                     $appworksService.authenticate(true).then(function () {
