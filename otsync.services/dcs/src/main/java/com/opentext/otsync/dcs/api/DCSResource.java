@@ -1,6 +1,7 @@
 package com.opentext.otsync.dcs.api;
 
 import com.opentext.otsync.dcs.cs.CSNodeResource;
+import com.opentext.otsync.dcs.cs.node.Node;
 import com.opentext.otsync.dcs.cs.node.NodeFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,6 +22,10 @@ import javax.ws.rs.core.StreamingOutput;
 public class DCSResource {
 
     public static final Log log = LogFactory.getLog(DCSResource.class);
+
+    private static final String CONVERSION_FAILED_MSG = "Unable to get page data, this document " +
+            "has failed conversion";
+
     private NodeFactory nodeFactory = NodeFactory.singleton();
 
     @GET
@@ -30,8 +35,8 @@ public class DCSResource {
 
         try {
             CSNodeResource nodeResource = nodeFactory.createCSNodeResource(nodeID, request);
-            int count = nodeFactory.getOrCreateNode(nodeID)
-                    .getTotalPages(nodeResource);
+            Node node = nodeFactory.getOrCreateNode(nodeID);
+            int count = node.getTotalPages(nodeResource);
 
             return Response.ok(count).build();
         } catch (Exception e) {
@@ -46,13 +51,24 @@ public class DCSResource {
     @GET
     @Path("pages/{page}")
     @Produces("image/png")
-    public StreamingOutput getRenderedPage(@PathParam("nodeID") String nodeID,
-                                           @PathParam("page") int page,
-                                           @Context HttpServletRequest request) {
+    public Response getRenderedPage(@PathParam("nodeID") String nodeID,
+                                    @PathParam("page") int page,
+                                    @Context HttpServletRequest request) {
         try {
             CSNodeResource nodeResource = nodeFactory.createCSNodeResource(nodeID, request);
-            return nodeFactory.getOrCreateNode(nodeID)
-                    .getPage(page, nodeResource);
+            Node node = nodeFactory.getOrCreateNode(nodeID);
+
+            StreamingOutput streamingOutput;
+            try {
+                streamingOutput = node.getPage(page, nodeResource);
+            } catch (Exception e) {
+                throw new WebApplicationException(CONVERSION_FAILED_MSG, 400);
+            }
+
+            if (streamingOutput == null)
+                throw new WebApplicationException(CONVERSION_FAILED_MSG, 400);
+
+            return Response.ok(streamingOutput).build();
         } catch (Exception e) {
             String errMsg = "Failed to get page" + page + " for node " + nodeID;
             log.error(errMsg, e);

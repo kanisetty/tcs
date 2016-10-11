@@ -115,7 +115,7 @@ public class CSNodeResource {
             JsonNode json = execute(csRequest);
             version = json.get("versionNum").asInt();
         } catch (Exception e) {
-            LOG.error("Couldn't get pages count from cs.", e);
+            LOG.error("Couldn't get pages count from cs. Node id - " + nodeID, e);
         }
 
         if (LOG.isTraceEnabled())
@@ -138,7 +138,7 @@ public class CSNodeResource {
         try {
             csRequest.write(streamPipe);
         } catch (Exception e) {
-            LOG.error("Couldn't get pages count from cs.", e);
+            LOG.error("Couldn't get pages count from cs. Node " + nodeID, e);
             return null;
         }
 
