@@ -23,7 +23,7 @@ public class Node {
      * @return number of pages
      * @throws Exception if for some reason we aren't able to retrieve the number of pages
      */
-    public synchronized int getTotalPages(CSNodeResource csNodeResource) throws Exception {
+    public int getTotalPages(CSNodeResource csNodeResource) throws Exception {
         int pagesCount = csNodeResource.getPagesCount();
         if (pagesCount == 0) {
             nodePagesGenerator.generatePagesCount(csNodeResource);
@@ -45,7 +45,7 @@ public class Node {
      * @return output stream containing the page bytes
      * @throws Exception if we cannot get the page data (image)
      */
-    public synchronized StreamingOutput getPage(int page, CSNodeResource csNodeResource) throws Exception {
+    public StreamingOutput getPage(int page, CSNodeResource csNodeResource) throws Exception {
         StreamingOutput streamOutput = null;
         try {
             streamOutput = csNodeResource.getPage(page);

@@ -18,7 +18,7 @@ public class NodeFactory {
 
     private static final Log LOG = LogFactory.getLog(NodeFactory.class);
 
-    private static NodeFactory instance;
+    private static volatile NodeFactory instance;
 
     /**
      * We keep objects that represent CS nodes so we can lock concurrent operations on

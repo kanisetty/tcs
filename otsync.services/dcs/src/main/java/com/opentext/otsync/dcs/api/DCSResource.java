@@ -1,5 +1,7 @@
 package com.opentext.otsync.dcs.api;
 
+import com.opentext.otsync.dcs.appworks.ServiceIndex;
+import com.opentext.otsync.dcs.cache.DocumentConversionFileCache;
 import com.opentext.otsync.dcs.cs.CSNodeResource;
 import com.opentext.otsync.dcs.cs.node.Node;
 import com.opentext.otsync.dcs.cs.node.NodeFactory;
@@ -12,6 +14,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+import java.io.FileInputStream;
+import java.util.Optional;
 
 /**
  * DCS API controller -
@@ -58,15 +62,17 @@ public class DCSResource {
             CSNodeResource nodeResource = nodeFactory.createCSNodeResource(nodeID, request);
             Node node = nodeFactory.getOrCreateNode(nodeID);
 
-            StreamingOutput streamingOutput;
-            try {
-                streamingOutput = node.getPage(page, nodeResource);
-            } catch (Exception e) {
-                throw new WebApplicationException(CONVERSION_FAILED_MSG, 400);
-            }
+            StreamingOutput streamingOutput = getLocalFile(nodeID, page, nodeResource);
+            if (streamingOutput == null) {
+                try {
+                    streamingOutput = node.getPage(page, nodeResource);
+                } catch (Exception e) {
+                    throw new WebApplicationException(CONVERSION_FAILED_MSG, 400);
+                }
 
-            if (streamingOutput == null)
-                throw new WebApplicationException(CONVERSION_FAILED_MSG, 400);
+                if (streamingOutput == null)
+                    throw new WebApplicationException(CONVERSION_FAILED_MSG, 400);
+            }
 
             return Response.ok(streamingOutput).build();
         } catch (Exception e) {
@@ -76,6 +82,37 @@ public class DCSResource {
                 throw (WebApplicationException) e;
             throw new WebApplicationException(errMsg);
         }
+    }
+
+    private StreamingOutput getLocalFile(String nodeID, int page, CSNodeResource nodeResource) {
+        DocumentConversionFileCache cacheService = ServiceIndex.getFileCacheService();
+        if (cacheService != null) {
+            try {
+                int latestVersion = nodeResource.getLatestVersion();
+
+                Optional<java.nio.file.Path> nodePage = cacheService.getNodePage(
+                        nodeID, String.valueOf(latestVersion), String.valueOf(page));
+                if (nodePage.isPresent()) {
+                    java.nio.file.Path imageFilePath = nodePage.get();
+                    return output -> {
+                        FileInputStream inputStream = new FileInputStream(imageFilePath.toString());
+                        int nextByte;
+                        while ((nextByte = inputStream.read()) != -1) {
+                            output.write(nextByte);
+                        }
+                        output.flush();
+                        output.close();
+                        inputStream.close();
+                    };
+                }
+            } catch (Exception e) {
+                log.warn("Failed to get page " + page + " for node " + nodeID +
+                        " from the local cache", e);
+            }
+        }
+
+        return null;
+
     }
 
 }

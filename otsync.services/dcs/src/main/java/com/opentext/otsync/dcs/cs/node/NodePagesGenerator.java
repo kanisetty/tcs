@@ -51,10 +51,14 @@ public class NodePagesGenerator {
     public void generatePage(final CSNodeResource csNodeResource, int page) throws Exception {
         int version = csNodeResource.getLatestVersion();
 
-        ResultCollector uploadFunc = result ->
+        convertNode(csNodeResource, version, page, page + 5, result -> {
+            try {
                 uploadPages(csNodeResource, result.getPageFilesMap());
-
-        convertNode(csNodeResource, version, page, page + 5, uploadFunc);
+            } catch (Exception e) {
+                LOG.error("Upload page" + 1 + " for " + csNodeResource.getNodeID() + " failed", e);
+                throw e;
+            }
+        });
     }
 
     private void convertNode(final CSNodeResource csNodeResource,
