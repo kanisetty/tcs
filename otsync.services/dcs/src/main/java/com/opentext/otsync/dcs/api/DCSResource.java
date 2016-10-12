@@ -70,7 +70,7 @@ public class DCSResource {
 
             return Response.ok(streamingOutput).build();
         } catch (Exception e) {
-            String errMsg = "Failed to get page" + page + " for node " + nodeID;
+            String errMsg = "Failed to get page " + page + " for node " + nodeID;
             log.error(errMsg, e);
             if (e instanceof WebApplicationException)
                 throw (WebApplicationException) e;

@@ -51,7 +51,7 @@ public class Node {
             streamOutput = csNodeResource.getPage(page);
         } catch (Exception e) {
             LOG.warn("Page " + page + " not found for node " + csNodeResource.getNodeID() +
-                    " attempting to generate locally");
+                    " attempting to generate locally", e);
         }
 
         if (streamOutput == null) {

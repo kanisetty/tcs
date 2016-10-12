@@ -42,7 +42,8 @@ public class NodePagesGenerator {
                     LOG.error("Upload page" + 1 + " for " + nodeID + " failed", e);
                 }
             } catch (Exception e) {
-                LOG.error("We failed to set the page count for node " + nodeID, e);
+                LOG.error("We failed to set the page count for node " + nodeID +
+                        " - " + e.getMessage(), e);
             }
         });
     }

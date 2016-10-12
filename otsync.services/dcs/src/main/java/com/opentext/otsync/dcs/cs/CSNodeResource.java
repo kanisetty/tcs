@@ -72,7 +72,8 @@ public class CSNodeResource {
             LOG.error("otag.numpagesget: Request to get page count for node " + nodeID + " timed out", e);
             throw e;
         } catch (IOException e) {
-            LOG.error("otag.numpagesget: Couldn't get pages count from cs.", e);
+            LOG.error("otag.numpagesget: Couldn't get pages count from cs. - " +
+                    e.getMessage(), e);
             throw e;
         }
 
@@ -162,7 +163,8 @@ public class CSNodeResource {
             LOG.error("otag.renderedpageget: The request to get the page count from Content Server timed out", e);
             throw e;
         } catch (Exception e) {
-            LOG.error("otag.renderedpageget: Couldn't get pages count from cs. Node " + nodeID, e);
+            LOG.error("otag.renderedpageget: Couldn't get pages count from cs. Node " +
+                    nodeID + " - " + e.getMessage(), e);
             throw e;
         }
 
