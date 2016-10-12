@@ -49,8 +49,11 @@ public class NodePagesGenerator {
 
     public void generatePage(final CSNodeResource csNodeResource, int page) throws Exception {
         int version = csNodeResource.getLatestVersion();
-        convertNode(csNodeResource, version, page, page + 5,
-                result -> uploadPages(csNodeResource, result.getPageFilesMap()));
+
+        ResultCollector uploadFunc = result ->
+                uploadPages(csNodeResource, result.getPageFilesMap());
+
+        convertNode(csNodeResource, version, page, page + 5, uploadFunc);
     }
 
     private void convertNode(final CSNodeResource csNodeResource,

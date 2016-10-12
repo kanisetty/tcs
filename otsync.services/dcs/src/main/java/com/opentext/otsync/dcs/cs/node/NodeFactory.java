@@ -27,7 +27,7 @@ public class NodeFactory {
      *
      * @see SettingsService#TMP_CLEANUP_TIMEOUT_KEY
      */
-    private volatile Map<String, SoftReference<Node>> nodesCache = new ConcurrentHashMap<>();
+    private final Map<String, SoftReference<Node>> nodesCache = new ConcurrentHashMap<>();
 
     public static NodeFactory singleton() {
         if (instance == null) {

@@ -88,9 +88,9 @@ public class CSDocumentPageUploader {
             headers.addTo(request);
             LLCookie llCookie = headers.getLLCookie();
 
-            if (LOG.isDebugEnabled())
-                LOG.debug("Posting CS request -func:otag.renderedpagepost");
             HttpResponse response;
+            LOG.info("func:otag.renderedpagepost: Attempting to upload page" +
+                    pageNumber + " of node " + nodeID);
             if (llCookie != null) {
                 response = httpClient.execute(request, llCookie.getContextWithLLCookie(request));
             } else {
@@ -101,7 +101,8 @@ public class CSDocumentPageUploader {
 
             int respStatusCode = statusLine.getStatusCode();
             if (respStatusCode != HttpStatus.SC_OK) {
-                LOG.error("Upload failed, received status code - " + respStatusCode);
+                LOG.error("Upload failed, returned status " + respStatusCode + " for " +
+                        pageNumber + " of node " + nodeID);
                 throw new WebApplicationException(Response.status(new Response.StatusType() {
                     public int getStatusCode() {
                         return statusLine.getStatusCode();
@@ -116,8 +117,6 @@ public class CSDocumentPageUploader {
                     }
                 }).build());
             }
-            if (LOG.isDebugEnabled())
-                LOG.debug("Upload completed successfully");
         } catch (Exception e) {
             if (request != null) request.abort();
             throw e;

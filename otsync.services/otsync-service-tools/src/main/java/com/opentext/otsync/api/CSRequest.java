@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 /**
@@ -79,6 +80,10 @@ public class CSRequest implements StreamingOutput {
 
             processResponse(out, response, status);
 
+        } catch (SocketTimeoutException e) {
+            log.error("The Content Server request timed out for URL - " + csUrl, e);
+            request.abort();
+            throw e;
         } catch (IOException e) {
             log.error("Error contacting Content Server", e);
             request.abort();

@@ -23,7 +23,7 @@ public class Node {
      * @return number of pages
      * @throws Exception if for some reason we aren't able to retrieve the number of pages
      */
-    public int getTotalPages(CSNodeResource csNodeResource) throws Exception {
+    public synchronized int getTotalPages(CSNodeResource csNodeResource) throws Exception {
         int pagesCount = csNodeResource.getPagesCount();
         if (pagesCount == 0) {
             nodePagesGenerator.generatePagesCount(csNodeResource);
@@ -36,6 +36,7 @@ public class Node {
 
     /**
      * Retrieve a specific page (image of) from a Content Server node resource (document).
+     * <p>
      * The other public method of this class ({@link #getTotalPages(CSNodeResource)} should
      * have been used to determine if the supplied page number exists.
      *
@@ -44,13 +45,20 @@ public class Node {
      * @return output stream containing the page bytes
      * @throws Exception if we cannot get the page data (image)
      */
-    public StreamingOutput getPage(int page, CSNodeResource csNodeResource) throws Exception {
-        StreamingOutput streamOutput = csNodeResource.getPage(page);
+    public synchronized StreamingOutput getPage(int page, CSNodeResource csNodeResource) throws Exception {
+        StreamingOutput streamOutput = null;
+        try {
+            streamOutput = csNodeResource.getPage(page);
+        } catch (Exception e) {
+            LOG.warn("Page " + page + " not found for node " + csNodeResource.getNodeID() +
+                    " attempting to generate locally");
+        }
+
         if (streamOutput == null) {
             if (LOG.isDebugEnabled())
                 LOG.debug("Page " + page + " was not found for csNodeResource, attempting to generate page");
             nodePagesGenerator.generatePage(csNodeResource, page);
-            // ask CS again
+            // ask CS again after we generated the page
             streamOutput = csNodeResource.getPage(page);
         }
 
