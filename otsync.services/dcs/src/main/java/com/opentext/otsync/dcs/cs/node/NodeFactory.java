@@ -70,7 +70,7 @@ public class NodeFactory {
     }
 
     private SoftReference<Node> addNodeReference(String nodeID) {
-        SoftReference<Node> softReference = new SoftReference<>(new Node());
+        SoftReference<Node> softReference = new SoftReference<>(new Node(nodeID));
         nodesCache.put(nodeID, softReference);
         return softReference;
     }

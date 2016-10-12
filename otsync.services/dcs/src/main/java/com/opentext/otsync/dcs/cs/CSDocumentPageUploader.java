@@ -9,13 +9,12 @@ import com.opentext.otsync.dcs.appworks.ContentServerURLProvider;
 import com.opentext.otsync.dcs.appworks.ServiceIndex;
 import com.opentext.otsync.otag.components.HttpClientService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
-import com.opentext.otsync.rest.util.LLCookie;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
@@ -30,6 +29,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.opentext.otsync.api.CSRequestHelper.makeRequest;
 
 public class CSDocumentPageUploader {
 
@@ -84,41 +85,35 @@ public class CSDocumentPageUploader {
 
             request = new HttpPost(getCsUrl());
             request.setEntity(entity);
-
             headers.addTo(request);
-            LLCookie llCookie = headers.getLLCookie();
 
-            HttpResponse response;
             LOG.info("func:otag.renderedpagepost: Attempting to upload page" +
                     pageNumber + " of node " + nodeID);
-            if (llCookie != null) {
-                response = httpClient.execute(request, llCookie.getContextWithLLCookie(request));
-            } else {
-                response = httpClient.execute(request);
-            }
+            try (CloseableHttpResponse response = makeRequest(httpClient, request, headers)) {
+                final StatusLine statusLine = response.getStatusLine();
+                int respStatusCode = statusLine.getStatusCode();
 
-            final StatusLine statusLine = response.getStatusLine();
+                if (respStatusCode != HttpStatus.SC_OK) {
+                    LOG.error("Upload failed, returned status " + respStatusCode + " for " +
+                            pageNumber + " of node " + nodeID);
+                    throw new WebApplicationException(Response.status(new Response.StatusType() {
+                        public int getStatusCode() {
+                            return statusLine.getStatusCode();
+                        }
 
-            int respStatusCode = statusLine.getStatusCode();
-            if (respStatusCode != HttpStatus.SC_OK) {
-                LOG.error("Upload failed, returned status " + respStatusCode + " for " +
-                        pageNumber + " of node " + nodeID);
-                throw new WebApplicationException(Response.status(new Response.StatusType() {
-                    public int getStatusCode() {
-                        return statusLine.getStatusCode();
-                    }
+                        public String getReasonPhrase() {
+                            return statusLine.getReasonPhrase();
+                        }
 
-                    public String getReasonPhrase() {
-                        return statusLine.getReasonPhrase();
-                    }
-
-                    public Response.Status.Family getFamily() {
-                        return Response.Status.Family.CLIENT_ERROR;
-                    }
-                }).build());
+                        public Response.Status.Family getFamily() {
+                            return Response.Status.Family.CLIENT_ERROR;
+                        }
+                    }).build());
+                }
             }
         } catch (Exception e) {
-            if (request != null) request.abort();
+            if (request != null)
+                request.abort();
             throw e;
         }
     }
