@@ -36,6 +36,7 @@ public class Node {
 
     /**
      * Retrieve a specific page (image of) from a Content Server node resource (document).
+     * <p>
      * The other public method of this class ({@link #getTotalPages(CSNodeResource)} should
      * have been used to determine if the supplied page number exists.
      *
