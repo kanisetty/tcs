@@ -38,15 +38,15 @@ public class HttpClientService implements AWServiceContextHandler {
      * <p>
      * <ul>
      * <li>
-     * connect timeout -  the time to establish the connection with the remote host
+     *     connect timeout - the time to establish the connection with the remote host
      * </li>
      * <li>
-     * connection request timeout -  the time to wait for a connection from the
-     * connection manager/pool
+     *     connection request timeout - the time to wait for a connection from the
+     *     connection manager/pool
      * </li>
      * <li>
-     * socket timeout - the time waiting for data – after the connection was
-     * established; maximum time of inactivity between two data packets
+     *     socket timeout - the time waiting for data – after the connection was
+     *     established; maximum time of inactivity between two data packets
      * </li>
      * </ul>
      */

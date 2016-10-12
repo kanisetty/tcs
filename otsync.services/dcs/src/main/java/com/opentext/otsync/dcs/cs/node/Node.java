@@ -46,12 +46,19 @@ public class Node {
      * @throws Exception if we cannot get the page data (image)
      */
     public synchronized StreamingOutput getPage(int page, CSNodeResource csNodeResource) throws Exception {
-        StreamingOutput streamOutput = csNodeResource.getPage(page);
+        StreamingOutput streamOutput = null;
+        try {
+            streamOutput = csNodeResource.getPage(page);
+        } catch (Exception e) {
+            LOG.warn("Page " + page + " not found for node " + csNodeResource.getNodeID() +
+                    " attempting to generate locally");
+        }
+
         if (streamOutput == null) {
             if (LOG.isDebugEnabled())
                 LOG.debug("Page " + page + " was not found for csNodeResource, attempting to generate page");
             nodePagesGenerator.generatePage(csNodeResource, page);
-            // ask CS again
+            // ask CS again after we generated the page
             streamOutput = csNodeResource.getPage(page);
         }
 
