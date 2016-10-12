@@ -30,6 +30,28 @@ public class HttpClientService implements AWServiceContextHandler {
 
     private static final Object CLIENT_LOCK = new Object();
 
+    private static final int DEFAULT_MAX_CONNS = 200;
+    private static final int DEFAULT_MAX_CONNS_PER_ROUTE = 20;
+
+    /**
+     * Connection timeout used for the default request properties:
+     * <p>
+     * <ul>
+     * <li>
+     * connect timeout -  the time to establish the connection with the remote host
+     * </li>
+     * <li>
+     * connection request timeout -  the time to wait for a connection from the
+     * connection manager/pool
+     * </li>
+     * <li>
+     * socket timeout - the time waiting for data – after the connection was
+     * established; maximum time of inactivity between two data packets
+     * </li>
+     * </ul>
+     */
+    private static final int DEFAULT_TIMEOUT = 30 * 1000;
+
     /**
      * Provide static access via the component context for ease of use, the AW
      * component context is centralised anyway per web context. This method fails
@@ -46,11 +68,8 @@ public class HttpClientService implements AWServiceContextHandler {
     @Override
     public void onStart(String appName) {
         LOG.info("Initialising HttpClientService HTTP client");
-        // default values
-        int maxTotal = 200;
-        int maxPerRoute = 20;
-
-        buildClient(maxTotal, maxPerRoute, null, null);
+        buildClient(DEFAULT_MAX_CONNS, DEFAULT_MAX_CONNS_PER_ROUTE,
+                null, DEFAULT_TIMEOUT);
     }
 
     public CloseableHttpClient getHttpClient() {
@@ -95,7 +114,7 @@ public class HttpClientService implements AWServiceContextHandler {
      * @param maxTotal       max total connections
      * @param maxPerRoute    max connections per route
      * @param ttlSeconds     time to live in seconds
-     * @param requestTimeout connection timeout in seconds
+     * @param requestTimeout connection timeout in milliseconds
      */
     public void configure(Integer maxTotal, Integer maxPerRoute, Long ttlSeconds, Integer requestTimeout) {
         buildClient(maxTotal, maxPerRoute, ttlSeconds, requestTimeout);
@@ -116,8 +135,10 @@ public class HttpClientService implements AWServiceContextHandler {
     private void buildClient(Integer maxTotal, Integer maxPerRoute, Long ttl, Integer connectionTimeout) {
         synchronized (CLIENT_LOCK) {
             try {
-                if (httpClient != null)
+                if (httpClient != null) {
+                    LOG.info("Closing existing client for reconfiguration");
                     httpClient.close();
+                }
             } catch (Exception e) {
                 LOG.error("Failed to shut down the existing http client gracefully", e);
             }
@@ -136,18 +157,19 @@ public class HttpClientService implements AWServiceContextHandler {
             if (maxPerRoute != null)
                 cm.setDefaultMaxPerRoute(maxPerRoute);
 
-            RequestConfig requestConfig = RequestConfig.DEFAULT;
+            // set connection timeout properties
+            connectionTimeout = (connectionTimeout == null) ? DEFAULT_TIMEOUT : connectionTimeout;
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectTimeout(connectionTimeout)
+                    .setConnectionRequestTimeout(connectionTimeout)
+                    .setSocketTimeout(connectionTimeout)
+                    .build();
 
-            // we use the same timeout value for the initial connection, and time
-            // between connection inactivity
-            if (connectionTimeout != null) {
-                // we accept seconds, so need to convert
-                int millisVal = connectionTimeout * 1000;
-                requestConfig = RequestConfig.custom()
-                        .setConnectTimeout(millisVal)
-                        .setConnectionRequestTimeout(millisVal)
-                        .build();
-            }
+            LOG.info("Creating HTTP Client");
+            LOG.info("Max Connections Per Route = " + (maxTotal != null ? maxTotal : "UNSET"));
+            LOG.info("Max Connections = " + (maxPerRoute != null ? maxPerRoute : "UNSET"));
+            LOG.info("Connection pool TTL (seconds) = " + (ttl != null ? ttl : "UNSET"));
+            LOG.info("Connection Timeout (millis) = " + connectionTimeout);
 
             httpClient = HttpClients.custom()
                     .setConnectionManager(cm)

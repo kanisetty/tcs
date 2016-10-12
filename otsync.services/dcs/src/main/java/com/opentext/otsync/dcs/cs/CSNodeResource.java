@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.SocketTimeoutException;
 
 /**
  * Instances of this class are responsible for managing the interaction between
@@ -64,12 +65,14 @@ public class CSNodeResource {
         try {
             JsonNode json = execute(csRequest);
             count = json.get("numPages").asInt();
+            if (LOG.isTraceEnabled())
+                LOG.trace("otag.numpagesget: CS told us that node " + nodeID + " has " + count + " pages");
+        } catch (SocketTimeoutException e) {
+            LOG.error("otag.numpagesget: Request to get page count for node " + nodeID + " timed out", e);
         } catch (IOException e) {
-            LOG.error("Couldn't get pages count from cs.", e);
+            LOG.error("otag.numpagesget: Couldn't get pages count from cs.", e);
         }
 
-        if (LOG.isTraceEnabled())
-            LOG.trace("otag.numpagesget: CS told us that node " + nodeID + " has " + count + " pages");
         return count;
     }
 
@@ -90,9 +93,16 @@ public class CSNodeResource {
                 .para("versionNum", newVersionNum)
                 .para("numPages", countString)
                 .build();
-        execute(csRequest);
-        if (LOG.isTraceEnabled())
-            LOG.trace("otag.numpageset: CS has set page count for node " + nodeID + " successfully");
+        try {
+            execute(csRequest);
+            if (LOG.isTraceEnabled())
+                LOG.trace("otag.numpageset: CS has set page count for node " +
+                        nodeID + " successfully");
+        } catch (SocketTimeoutException e) {
+            LOG.error("otag.numpageset: Request to set the number of pages for node " +
+                    nodeID + " has timed out", e);
+            throw e;
+        }
     }
 
     public void downloadTo(File file) throws IOException {
@@ -114,13 +124,17 @@ public class CSNodeResource {
         try {
             JsonNode json = execute(csRequest);
             version = json.get("versionNum").asInt();
+            if (LOG.isTraceEnabled())
+                LOG.trace("otag.renderversionnumget: CS told us that the latest " +
+                        "version of node " + nodeID + " is " + version);
+        } catch (SocketTimeoutException e) {
+            LOG.error("otag.renderversionnumget: Request to get pages count from cs timed out. " +
+                    "Node id - " + nodeID, e);
         } catch (Exception e) {
-            LOG.error("Couldn't get pages count from cs. Node id - " + nodeID, e);
+            LOG.error("otag.renderversionnumget: Couldn't get pages count from cs. " +
+                    "Node id - " + nodeID, e);
         }
 
-        if (LOG.isTraceEnabled())
-            LOG.trace("otag.renderversionnumget: CS told us that the latest " +
-                    "version of node " + nodeID + " is " + version);
 
         return version;
     }
@@ -137,14 +151,17 @@ public class CSNodeResource {
         StreamPipe streamPipe = new StreamPipe();
         try {
             csRequest.write(streamPipe);
+            if (LOG.isTraceEnabled())
+                LOG.trace("otag.renderedpageget: Retrieved bytes for page " +
+                        page + " of node " + nodeID);
+        } catch (SocketTimeoutException e) {
+            LOG.error("otag.renderedpageget: The request to get the page count from Content Server timed out", e);
+            return null;
         } catch (Exception e) {
-            LOG.error("Couldn't get pages count from cs. Node " + nodeID, e);
+            LOG.error("otag.renderedpageget: Couldn't get pages count from cs. Node " + nodeID, e);
             return null;
         }
 
-        if (LOG.isTraceEnabled())
-            LOG.trace("otag.renderedpageget: Retrieved bytes for page " +
-                    page + " of node " + nodeID);
         return streamPipe;
     }
 
