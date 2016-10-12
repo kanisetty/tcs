@@ -58,7 +58,7 @@ public class CSDocumentDownloader {
                 throw new IOException(response.getHeaders("Warning")[0].toString());
 
             StatusLine statusLine = response.getStatusLine();
-            if (statusLine.getStatusCode() != HttpStatus.SC_OK) {;
+            if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
                 throw new WebApplicationException(Response.status(new Response.StatusType() {
                     public int getStatusCode() {
                         return statusLine.getStatusCode();

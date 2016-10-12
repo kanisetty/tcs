@@ -31,7 +31,8 @@ public class Node {
      * @throws Exception if for some reason we aren't able to retrieve the number of pages
      */
     public synchronized int getTotalPages(CSNodeResource csNodeResource) throws Exception {
-       LOG.info(Thread.currentThread().getName() + " started using getTotalPages for node " + nodeId);
+        if (LOG.isTraceEnabled())
+            LOG.trace(Thread.currentThread().getName() + " started using getTotalPages for node " + nodeId);
         try {
             int pagesCount = csNodeResource.getPagesCount();
             if (pagesCount == 0) {
@@ -42,7 +43,8 @@ public class Node {
 
             return pagesCount;
         } finally {
-            LOG.info(Thread.currentThread().getName() + " finished using getTotalPages for node " + nodeId);
+            if (LOG.isTraceEnabled())
+                LOG.trace(Thread.currentThread().getName() + " finished using getTotalPages for node " + nodeId);
         }
     }
 
@@ -58,8 +60,9 @@ public class Node {
      * @throws Exception if we cannot get the page data (image)
      */
     public synchronized StreamingOutput getPage(int page, CSNodeResource csNodeResource) throws Exception {
-        LOG.info(Thread.currentThread().getName() + " started using getPage for node " +
-                nodeId + " page " + page);
+        if (LOG.isTraceEnabled())
+            LOG.trace(Thread.currentThread().getName() + " started using getPage for node " +
+                    nodeId + " page " + page);
         StreamingOutput streamOutput;
         try {
             streamOutput = null;
@@ -78,8 +81,9 @@ public class Node {
                 streamOutput = csNodeResource.getPage(page);
             }
         } finally {
-            LOG.info(Thread.currentThread().getName() + " finished using getPage for node " +
-                    nodeId + " page " + page);
+            if (LOG.isDebugEnabled())
+                LOG.trace(Thread.currentThread().getName() + " finished using getPage for node " +
+                        nodeId + " page " + page);
         }
 
         return streamOutput;
