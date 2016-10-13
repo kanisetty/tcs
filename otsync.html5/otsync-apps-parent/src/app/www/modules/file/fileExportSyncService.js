@@ -56,7 +56,7 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
     }
 
     function getNodeMetadataFromFilename(filename) {
-        var parts = filename.match(/^(\d+)_(\d+)/);
+        var parts = filename.match(/^(\d+)_(\d+)/) || [];
         parts.shift();
         return {
             nodeId: parts[0],
