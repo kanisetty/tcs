@@ -316,12 +316,14 @@
 #diskUsage{
 	border:1px solid #2B5F7F;
 	padding:8px;
-	height:49px;
 	color:#fff;
 	font-weight:bold;
 	font-size:12px;	
 	background-color:#0072AA;
 	width:182px;
+}
+#diskProgressBar {
+  height:1em;
 }
 .diskProgressBar {
 	height:8px;
@@ -330,7 +332,6 @@
 	background: url("images/ui-bg_flat_75_ffffff_40x100.png") repeat-x scroll 50% 50% #FFFFFF !important;
 	padding:0px !important;
 	margin-top:2px;
-
 }
 .diskProgressBar div{
 	border-radius:0px;
@@ -338,7 +339,6 @@
 	border-right:0px;	
 	background: url("../img/progress_lightblue.png") repeat-x !important;
 	margin:0 !important;
-
 }
 #userActions ul {
   border-left: 1px solid #192229;
