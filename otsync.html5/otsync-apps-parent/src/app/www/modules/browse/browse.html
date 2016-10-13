@@ -1,21 +1,28 @@
-<ion-view  ng-init="onDeviceLoadInit()">
+<ion-view ng-init="onDeviceLoadInit()">
     <div class="search-bar has-header">
         <span ng-hide="root.hideSearch" class="item item-input">
             <i class="placeholder-icon"></i>
-            <input type="search" placeholder='{{"SEARCH FROM HERE" | translate}}' ng-model="currentQuery">
-            <button class="button button-small button-icon ion-search search-icon" ng-click="doSearch(root)"></button>
+            <input type="search"
+                   placeholder='{{"SEARCH FROM HERE" | translate}}'
+                   ng-model="currentQuery">
+            <button class="button button-small button-icon ion-search search-icon"
+                    ng-click="doSearch(root)">
+            </button>
         </span>
     </div>
     <ion-content ng-class="{'has-subheader':root.hideSearch == null || root.hideSearch == false}">
         <ion-refresher pulling-text="{{'PULL TO REFRESH' | translate}}" on-refresh="reloadPage()">
         </ion-refresher>
         <ion-list>
-            <ion-item ng-class="{'do-indent': browseDecorator.doIndent()}" ng-repeat="browseDecorator in browseDecorators" ng-click="clickBrowseDecorator(browseDecorator)"
-					  on-hold="longPressBrowseDecorator(browseDecorator)">
+            <ion-item ng-class="{'do-indent': browseDecorator.doIndent()}"
+                      ng-repeat="browseDecorator in browseDecorators"
+                      ng-click="clickBrowseDecorator(browseDecorator)"
+                      on-hold="longPressBrowseDecorator(browseDecorator)">
                 <div class="display-item">
                     <div class="image-container">
                         <div class="image-outer">
-                            <div class="display-image" style="background-image: url('{{browseDecorator.getIconURL()}}')">
+                            <div class="display-image"
+                                 style="background-image: url('{{browseDecorator.getIconURL()}}')">
                                 <img class="{{browseDecorator.getTopLeftOverlayCSS()}}">
                                 <img class="{{browseDecorator.getBottomRightOverlayCSS()}} overlay-position-bottom-right overlay">
                                 <img class="{{browseDecorator.getBottomMiddleOverlayCSS()}} overlay-position-bottom-middle overlay">
@@ -29,7 +36,9 @@
                     </div>
                 </div>
             </ion-item>
-            <ion-item class="center-item-text" ng-show="browseDecorators.length == 0">{{"NO ITEMS" | translate}}</ion-item>
+            <ion-item class="center-item-text" ng-show="browseDecorators.length == 0">
+                {{"NO ITEMS" | translate}}
+            </ion-item>
         </ion-list>
         <ion-infinite-scroll
                 ng-if="moreCanBeLoaded"

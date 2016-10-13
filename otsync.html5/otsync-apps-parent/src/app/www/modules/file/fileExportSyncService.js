@@ -118,7 +118,10 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
             cache = {};
         }
 
-        finder.list('');
+        // perform file sync only if the device is online. the user can retry later if they are currently offline
+        if ($sessionService.isOnline()) {
+            finder.list('');
+        }
 
         function onFileListing(items) {
             console.log('listing items in shared directory...');
