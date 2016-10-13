@@ -1,5 +1,6 @@
 package com.opentext.otsync.dcs.cs.node;
 
+import com.opentext.otsync.api.CSRequestHelper;
 import com.opentext.otsync.dcs.appworks.ServiceIndex;
 import com.opentext.otsync.dcs.cache.DocumentConversionFileCache;
 import com.opentext.otsync.dcs.conversion.DocConversionEngineWrapper;
@@ -40,9 +41,12 @@ public class NodePagesGenerator {
                     uploadPages(csNodeResource, result.getPageFilesMap());
                 } catch (Exception e) {
                     LOG.error("Upload page" + 1 + " for " + nodeID + " failed", e);
+                    CSRequestHelper.processPotential401(e);
                 }
             } catch (Exception e) {
-                LOG.error("We failed to set the page count for node " + nodeID, e);
+                LOG.error("We failed to set the page count for node " + nodeID +
+                        " - " + e.getMessage(), e);
+                CSRequestHelper.processPotential401(e);
             }
         });
     }
@@ -50,10 +54,14 @@ public class NodePagesGenerator {
     public void generatePage(final CSNodeResource csNodeResource, int page) throws Exception {
         int version = csNodeResource.getLatestVersion();
 
-        ResultCollector uploadFunc = result ->
+        convertNode(csNodeResource, version, page, page + 5, result -> {
+            try {
                 uploadPages(csNodeResource, result.getPageFilesMap());
-
-        convertNode(csNodeResource, version, page, page + 5, uploadFunc);
+            } catch (Exception e) {
+                LOG.error("Upload page" + 1 + " for " + csNodeResource.getNodeID() + " failed", e);
+                throw e;
+            }
+        });
     }
 
     private void convertNode(final CSNodeResource csNodeResource,
@@ -64,36 +72,31 @@ public class NodePagesGenerator {
         String nodeID = csNodeResource.getNodeID();
         final String conversionErr = "Failed to convert node %s contents";
 
-        try {
-            final DocConversionResult result = new DocConversionResult();
+        final DocConversionResult result = new DocConversionResult();
 
-            // create a new folder for the node id in our file cache
-            DocumentConversionFileCache cacheService = ServiceIndex.getFileCacheService();
+        // create a new folder for the node id in our file cache
+        DocumentConversionFileCache cacheService = ServiceIndex.getFileCacheService();
 
-            // create a folder for this cs node resource to write our content into
-            Path nodeFolder = cacheService.createFolder(nodeID);
+        // create a folder for this cs node resource to write our content into
+        Path nodeFolder = cacheService.createFolder(nodeID);
 
-            // we wrap the conversion in a locking mechanism making sure no one writes to
-            // the node folder involved in the conversion
-            cacheService.runCacheActionSecurely(nodeFolder, outputPath -> {
-                try {
-                    // read from the local disk or download to that location
-                    File nodeFile = getOrDownloadDocFile(csNodeResource, version, outputPath);
-                    // run conversion
-                    docConversionEngineWrapper.convert(nodeFile, fromPage, toPage, outputPath, result);
-                    // inject into result object
-                    resultCollector.collect(result);
-                } catch (Exception e) {
-                    // throw if we fail to convert the node
-                    throw new RuntimeException(String.format(conversionErr, nodeID), e);
-                }
-            });
-        } catch (Exception e) {
-            // if the consumer threw, rethrow, else report the error
-            if (e instanceof RuntimeException)
-                throw e;
-            throw new RuntimeException(String.format(conversionErr, nodeID), e);
-        }
+        // we wrap the conversion in a locking mechanism making sure no one writes to
+        // the node folder involved in the conversion
+        cacheService.runCacheActionSecurely(nodeFolder, outputPath -> {
+            try {
+                // read from the local disk or download to that location
+                File nodeFile = getOrDownloadDocFile(csNodeResource, version, outputPath);
+                // run conversion
+                docConversionEngineWrapper.convert(nodeFile, fromPage, toPage, outputPath, result);
+                // inject into result object
+                resultCollector.collect(result);
+            } catch (Exception e) {
+                CSRequestHelper.processPotential401(e);
+                // throw if we fail to convert the node
+                throw new RuntimeException(String.format(conversionErr, nodeID), e);
+            }
+        });
+
     }
 
     private void uploadPages(CSNodeResource csNodeResource, Map<Integer, String> pageFilesMap) throws Exception {

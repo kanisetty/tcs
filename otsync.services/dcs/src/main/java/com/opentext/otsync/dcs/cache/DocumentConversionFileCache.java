@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -79,6 +80,31 @@ public class DocumentConversionFileCache implements AWComponent {
         }
 
         return path;
+    }
+
+    public Optional<Path> getNodePage(String name, String version, String page) {
+        String errMsg = "Unable to retrieve local cached file for node " + name + " page " + page;
+
+        String cacheRoot = getCacheRootPath();
+        Path cacheRootPath = Paths.get(cacheRoot);
+        if (!Files.exists(cacheRootPath)) {
+            LOG.warn(errMsg + " the cache root did not exist???");
+            return Optional.empty();
+        }
+
+        Path nodeDir = Paths.get(cacheRoot, name);
+        if (!Files.exists(nodeDir)) {
+            LOG.warn(errMsg);
+            return Optional.empty();
+        }
+
+        // verify the actual physical file exists, for example 55800-1.bin_1.png
+        String fileName = name + "-" + version + ".bin_" + page + ".png";
+        if (LOG.isDebugEnabled())
+            LOG.debug("Attempting to look for cache page file - " + fileName);
+
+        Path imagePath = Paths.get(cacheRoot, name, fileName);
+        return Files.exists(imagePath) ? Optional.of(imagePath) : Optional.empty();
     }
 
     /**

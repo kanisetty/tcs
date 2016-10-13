@@ -9,16 +9,14 @@ import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otsync.api.HttpClient;
 import com.opentext.otsync.otag.EIMConnectorHelper;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
-import com.opentext.otsync.rest.util.LLCookie;
 import com.opentext.tempo.external.invites.appworks.di.ServiceIndex;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
@@ -28,6 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.opentext.otsync.api.CSRequestHelper.makeRequest;
 
 public class CSExternalUserAPI implements ExternalUserAPI {
 
@@ -150,16 +150,10 @@ public class CSExternalUserAPI implements ExternalUserAPI {
         HttpPost request = new HttpPost(ServiceIndex.csUrl());
         request.setEntity(new UrlEncodedFormEntity(postParams));
         headers.addTo(request);
-        LLCookie llCookie = headers.getLLCookie();
-        HttpResponse response;
-        if (llCookie != null) {
-            response = httpClient.execute(request, llCookie.getContextWithLLCookie(request));
-        } else {
-            response = httpClient.execute(request);
+        try (CloseableHttpResponse response = makeRequest(httpClient, request, headers)) {
+            String jsonResult = EntityUtils.toString(response.getEntity());
+            return reader.readValue(jsonResult);
         }
-
-        String jsonResult = EntityUtils.toString(response.getEntity());
-        return reader.readValue(jsonResult);
     }
 
     private static String getFieldAsString(Map<String, Object> message, String field){

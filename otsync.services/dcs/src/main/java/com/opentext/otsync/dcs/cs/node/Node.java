@@ -6,13 +6,21 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.ws.rs.core.StreamingOutput;
 
+import static com.opentext.otag.sdk.util.StringUtil.isNullOrEmpty;
+import static com.opentext.otsync.api.CSRequestHelper.processPotential401;
+
 public class Node {
 
     private static final Log LOG = LogFactory.getLog(Node.class);
 
+    private String nodeId;
+
     private final NodePagesGenerator nodePagesGenerator;
 
-    public Node() {
+    public Node(String nodeId) {
+        if (isNullOrEmpty(nodeId))
+            throw new IllegalArgumentException("A node must have an id");
+        this.nodeId = nodeId;
         this.nodePagesGenerator = new NodePagesGenerator();
     }
 
@@ -24,14 +32,21 @@ public class Node {
      * @throws Exception if for some reason we aren't able to retrieve the number of pages
      */
     public synchronized int getTotalPages(CSNodeResource csNodeResource) throws Exception {
-        int pagesCount = csNodeResource.getPagesCount();
-        if (pagesCount == 0) {
-            nodePagesGenerator.generatePagesCount(csNodeResource);
-            // ask CS again
-            pagesCount = csNodeResource.getPagesCount();
-        }
+        if (LOG.isTraceEnabled())
+            LOG.trace(Thread.currentThread().getName() + " started using getTotalPages for node " + nodeId);
+        try {
+            int pagesCount = csNodeResource.getPagesCount();
+            if (pagesCount == 0) {
+                nodePagesGenerator.generatePagesCount(csNodeResource);
+                // ask CS again
+                pagesCount = csNodeResource.getPagesCount();
+            }
 
-        return pagesCount;
+            return pagesCount;
+        } finally {
+            if (LOG.isTraceEnabled())
+                LOG.trace(Thread.currentThread().getName() + " finished using getTotalPages for node " + nodeId);
+        }
     }
 
     /**
@@ -46,23 +61,58 @@ public class Node {
      * @throws Exception if we cannot get the page data (image)
      */
     public synchronized StreamingOutput getPage(int page, CSNodeResource csNodeResource) throws Exception {
+        if (LOG.isTraceEnabled())
+            LOG.trace(Thread.currentThread().getName() + " started using getPage for node " +
+                    nodeId + " page " + page);
         StreamingOutput streamOutput = null;
         try {
-            streamOutput = csNodeResource.getPage(page);
-        } catch (Exception e) {
-            LOG.warn("Page " + page + " not found for node " + csNodeResource.getNodeID() +
-                    " attempting to generate locally");
-        }
+            try {
+                streamOutput = csNodeResource.getPage(page);
+            } catch (Exception e) {
+                // if this is a 401 we wont get far so return at this point to let the
+                // client know it needs to reauth
+                processPotential401(e);
+                LOG.warn("Page " + page + " not found for node " + csNodeResource.getNodeID() +
+                        " attempting to generate locally", e);
+            }
 
-        if (streamOutput == null) {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Page " + page + " was not found for csNodeResource, attempting to generate page");
-            nodePagesGenerator.generatePage(csNodeResource, page);
-            // ask CS again after we generated the page
-            streamOutput = csNodeResource.getPage(page);
+            if (streamOutput == null) {
+                if (LOG.isDebugEnabled())
+                    LOG.debug("Page " + page + " was not found for csNodeResource, attempting to generate page");
+                nodePagesGenerator.generatePage(csNodeResource, page);
+                // ask CS again after we generated the page
+                streamOutput = csNodeResource.getPage(page);
+            }
+        } finally {
+            if (LOG.isTraceEnabled())
+                LOG.trace(Thread.currentThread().getName() + " finished using getPage for node " +
+                        nodeId + " page " + page);
         }
 
         return streamOutput;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Node node = (Node) o;
+
+        return nodeId.equals(node.nodeId);
+    }
+
+    @Override
+    public int hashCode() {
+        return nodeId.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "nodeId='" + nodeId + '\'' +
+                ", nodePagesGenerator=" + nodePagesGenerator +
+                '}';
     }
 
 }

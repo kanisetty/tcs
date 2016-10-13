@@ -162,7 +162,7 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
-                                    <artifactId>tempoinvitehandler</artifactId>
+                                    <artifactId>tempoInviteHandler</artifactId>
                                     <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>

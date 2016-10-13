@@ -2,13 +2,12 @@ package com.opentext.otsync.api;
 
 import com.opentext.otsync.otag.components.HttpClientService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
-import com.opentext.otsync.rest.util.LLCookie;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -22,6 +21,8 @@ import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.List;
+
+import static com.opentext.otsync.api.CSRequestHelper.makeRequest;
 
 public class CSMultiPartRequest extends CSRequest implements StreamingOutput {
     public static final Log log = LogFactory.getLog(CSRequest.class);
@@ -52,9 +53,9 @@ public class CSMultiPartRequest extends CSRequest implements StreamingOutput {
         FileInputStream localIn = null;
         File tmpFile = new File(getTmpFilePath());
 
-
         try {
-            // Since we need the file size (which Jersey doesn't report correctly), we write to a temporary file then stream our upload from there
+            // Since we need the file size (which Jersey doesn't report correctly), we write
+            // to a temporary file then stream our upload from there
             saveToFile(fileStream, tmpFile);
             long filesize = tmpFile.length();
             localIn = new FileInputStream(tmpFile);
@@ -75,15 +76,10 @@ public class CSMultiPartRequest extends CSRequest implements StreamingOutput {
             headers.addTo(request);
             CloseableHttpClient httpClient = HttpClientService.getService().getHttpClient();
 
-            LLCookie llCookie = headers.getLLCookie();
-            HttpResponse response;
-            if (llCookie != null) {
-                response = httpClient.execute(request, llCookie.getContextWithLLCookie(request));
-            } else {
-                response = httpClient.execute(request);
+            try (CloseableHttpResponse response = makeRequest(httpClient, request, headers)) {
+                final StatusLine status = response.getStatusLine();
+                processResponse(out, response, status);
             }
-            final StatusLine status = response.getStatusLine();
-            processResponse(out, response, status);
         } catch (IOException e) {
             log.error("Error contacting Content Server", e);
             if (request != null)

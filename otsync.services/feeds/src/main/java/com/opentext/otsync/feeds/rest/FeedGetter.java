@@ -3,18 +3,20 @@ package com.opentext.otsync.feeds.rest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.opentext.otsync.api.CSRequestHelper;
 import com.opentext.otsync.otag.components.HttpClientService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
-import com.opentext.otsync.rest.util.LLCookie;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.WebApplicationException;
@@ -140,41 +142,35 @@ public class FeedGetter {
             HttpPost request = new HttpPost(FeedsService.getCsUrl());
             request.setEntity(new UrlEncodedFormEntity(params));
             headers.addTo(request);
-            LLCookie llCookie = headers.getLLCookie();
 
             CloseableHttpClient httpClient = HttpClientService.getService().getHttpClient();
-            HttpResponse response;
-            if (llCookie != null) {
-                response = httpClient.execute(request, llCookie.getContextWithLLCookie(request));
-            } else {
-                response = httpClient.execute(request);
-            }
+            try (CloseableHttpResponse response = CSRequestHelper.makeRequest(httpClient, request, headers)) {
+                final StatusLine status = response.getStatusLine();
 
-            final StatusLine status = response.getStatusLine();
+                if (status.getStatusCode() != HttpStatus.SC_OK) {
+                    FeedsResource.log.error("Problem getting feeds from content server: " + status.getReasonPhrase());
+                    throw new WebApplicationException(status.getStatusCode());
+                }
 
-            if (status.getStatusCode() != HttpStatus.SC_OK) {
-                FeedsResource.log.error("Problem getting feeds from content server: " + status.getReasonPhrase());
-                throw new WebApplicationException(status.getStatusCode());
-            }
+                String body = IOUtils.toString(response.getEntity().getContent());
 
-            String body = IOUtils.toString(response.getEntity().getContent());
+                JsonNode root = nodeReader.readValue(body);
+                feed.isMoreData = root.get("isMoreData").asBoolean();
+                JsonNode itemsNode = root.get("items");
+                Iterator<JsonNode> rawItems = itemsNode.elements();
 
-            JsonNode root = nodeReader.readValue(body);
-            feed.isMoreData = root.get("isMoreData").asBoolean();
-            JsonNode itemsNode = root.get("items");
-            Iterator<JsonNode> rawItems = itemsNode.elements();
+                feed.items = new ArrayList<>(itemsNode.size());
+                while (rawItems.hasNext()) {
+                    feed.items.add(new FeedItem(rawItems.next()));
+                }
 
-            feed.items = new ArrayList<>(itemsNode.size());
-            while (rawItems.hasNext()) {
-                feed.items.add(new FeedItem(rawItems.next()));
-            }
-
-            // Note: feeds must be in newest-first order
-            if (feed.items.size() > 0) {
-                feed.newest = new FeedsResource.Bookmark();
-                feed.newest.ContentServer = feed.items.get(0).seqNo;
-                feed.oldest = new FeedsResource.Bookmark();
-                feed.oldest.ContentServer = feed.items.get(feed.items.size() - 1).seqNo;
+                // Note: feeds must be in newest-first order
+                if (feed.items.size() > 0) {
+                    feed.newest = new FeedsResource.Bookmark();
+                    feed.newest.ContentServer = feed.items.get(0).seqNo;
+                    feed.oldest = new FeedsResource.Bookmark();
+                    feed.oldest.ContentServer = feed.items.get(feed.items.size() - 1).seqNo;
+                }
             }
 
             return feed;
