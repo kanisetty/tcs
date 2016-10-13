@@ -23,7 +23,7 @@
         <module>shares</module>
         <module>tasks</module>
         <module>tempocontent</module>
-        <module>tempoinvitehandler</module>
+        <module>tempoInviteHandler</module>
         <module>workflow</module>
         <module>webui</module>
     </modules>
