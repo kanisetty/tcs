@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import javax.ws.rs.core.StreamingOutput;
 
 import static com.opentext.otag.sdk.util.StringUtil.isNullOrEmpty;
+import static com.opentext.otsync.api.CSRequestHelper.processPotential401;
 
 public class Node {
 
@@ -63,12 +64,14 @@ public class Node {
         if (LOG.isTraceEnabled())
             LOG.trace(Thread.currentThread().getName() + " started using getPage for node " +
                     nodeId + " page " + page);
-        StreamingOutput streamOutput;
+        StreamingOutput streamOutput = null;
         try {
-            streamOutput = null;
             try {
                 streamOutput = csNodeResource.getPage(page);
             } catch (Exception e) {
+                // if this is a 401 we wont get far so return at this point to let the
+                // client know it needs to reauth
+                processPotential401(e);
                 LOG.warn("Page " + page + " not found for node " + csNodeResource.getNodeID() +
                         " attempting to generate locally", e);
             }
@@ -81,7 +84,7 @@ public class Node {
                 streamOutput = csNodeResource.getPage(page);
             }
         } finally {
-            if (LOG.isDebugEnabled())
+            if (LOG.isTraceEnabled())
                 LOG.trace(Thread.currentThread().getName() + " finished using getPage for node " +
                         nodeId + " page " + page);
         }

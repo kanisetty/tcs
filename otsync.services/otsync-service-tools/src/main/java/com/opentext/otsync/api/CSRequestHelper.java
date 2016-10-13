@@ -6,6 +6,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 
 public class CSRequestHelper {
@@ -27,6 +29,22 @@ public class CSRequestHelper {
             return httpClient.execute(request, llCookie.getContextWithLLCookie(request));
         } else {
             return httpClient.execute(request);
+        }
+    }
+
+    /**
+     * Determine if the exception supplied contains a 401 UNAUTHORIZED response
+     * and rethrow if it does.
+     *
+     * @param e an exception
+     * @throws WebApplicationException 401 if e is identified as such
+     */
+    public static void processPotential401(Exception e) throws WebApplicationException {
+        if (e == null) return;
+        if (e instanceof WebApplicationException) {
+            WebApplicationException webEx = (WebApplicationException) e;
+            if (Response.Status.UNAUTHORIZED.getStatusCode() == webEx.getResponse().getStatus())
+                throw (WebApplicationException) e;
         }
     }
 

@@ -53,9 +53,9 @@ public class CSMultiPartRequest extends CSRequest implements StreamingOutput {
         FileInputStream localIn = null;
         File tmpFile = new File(getTmpFilePath());
 
-
         try {
-            // Since we need the file size (which Jersey doesn't report correctly), we write to a temporary file then stream our upload from there
+            // Since we need the file size (which Jersey doesn't report correctly), we write
+            // to a temporary file then stream our upload from there
             saveToFile(fileStream, tmpFile);
             long filesize = tmpFile.length();
             localIn = new FileInputStream(tmpFile);

@@ -27,9 +27,6 @@ public class DCSResource {
 
     public static final Log log = LogFactory.getLog(DCSResource.class);
 
-    private static final String CONVERSION_FAILED_MSG = "Unable to get page data, this document " +
-            "has failed conversion";
-
     private NodeFactory nodeFactory = NodeFactory.singleton();
 
     @GET
@@ -40,8 +37,8 @@ public class DCSResource {
         try {
             CSNodeResource nodeResource = nodeFactory.createCSNodeResource(nodeID, request);
             Node node = nodeFactory.getOrCreateNode(nodeID);
-            int count = node.getTotalPages(nodeResource);
 
+            int count = node.getTotalPages(nodeResource);
             return Response.ok(count).build();
         } catch (Exception e) {
             String errMsg = "Failed to get page count for node " + nodeID;
@@ -63,17 +60,8 @@ public class DCSResource {
             Node node = nodeFactory.getOrCreateNode(nodeID);
 
             StreamingOutput streamingOutput = getLocalFile(nodeID, page, nodeResource);
-            if (streamingOutput == null) {
-                try {
-                    streamingOutput = node.getPage(page, nodeResource);
-                } catch (Exception e) {
-                    throw new WebApplicationException(CONVERSION_FAILED_MSG, 400);
-                }
-
-                if (streamingOutput == null)
-                    throw new WebApplicationException(CONVERSION_FAILED_MSG, 400);
-            }
-
+            if (streamingOutput == null)
+                streamingOutput = node.getPage(page, nodeResource);
             return Response.ok(streamingOutput).build();
         } catch (Exception e) {
             String errMsg = "Failed to get page " + page + " for node " + nodeID;

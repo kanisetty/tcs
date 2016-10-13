@@ -60,7 +60,8 @@ public class CSNodeResource {
         if (LOG.isTraceEnabled())
             LOG.trace("otag.numpagesget: Retrieving page count from CS for node " + nodeID);
         int count;
-        CSRequest csRequest = createCsRequestBuilder().func("otag.numpagesget")
+        CSRequest csRequest = createCsRequestBuilder()
+                .func("otag.numpagesget")
                 .para("nodeID", nodeID)
                 .build();
         try {
@@ -71,7 +72,7 @@ public class CSNodeResource {
         } catch (SocketTimeoutException e) {
             LOG.error("otag.numpagesget: Request to get page count for node " + nodeID + " timed out", e);
             throw e;
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("otag.numpagesget: Couldn't get pages count from cs. - " +
                     e.getMessage(), e);
             throw e;
