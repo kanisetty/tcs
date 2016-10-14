@@ -18,7 +18,7 @@ public class NodeFactory {
 
     private static final Log LOG = LogFactory.getLog(NodeFactory.class);
 
-    private static NodeFactory instance;
+    private static volatile NodeFactory instance;
 
     /**
      * We keep objects that represent CS nodes so we can lock concurrent operations on
@@ -27,7 +27,7 @@ public class NodeFactory {
      *
      * @see SettingsService#TMP_CLEANUP_TIMEOUT_KEY
      */
-    private Map<String, SoftReference<Node>> nodesCache = new ConcurrentHashMap<>();
+    private final Map<String, SoftReference<Node>> nodesCache = new ConcurrentHashMap<>();
 
     public static NodeFactory singleton() {
         if (instance == null) {
@@ -70,7 +70,7 @@ public class NodeFactory {
     }
 
     private SoftReference<Node> addNodeReference(String nodeID) {
-        SoftReference<Node> softReference = new SoftReference<>(new Node());
+        SoftReference<Node> softReference = new SoftReference<>(new Node(nodeID));
         nodesCache.put(nodeID, softReference);
         return softReference;
     }

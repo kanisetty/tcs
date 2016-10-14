@@ -1,6 +1,9 @@
 package com.opentext.otsync.dcs.api;
 
+import com.opentext.otsync.dcs.appworks.ServiceIndex;
+import com.opentext.otsync.dcs.cache.DocumentConversionFileCache;
 import com.opentext.otsync.dcs.cs.CSNodeResource;
+import com.opentext.otsync.dcs.cs.node.Node;
 import com.opentext.otsync.dcs.cs.node.NodeFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +14,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+import java.io.FileInputStream;
+import java.util.Optional;
 
 /**
  * DCS API controller -
@@ -21,6 +26,7 @@ import javax.ws.rs.core.StreamingOutput;
 public class DCSResource {
 
     public static final Log log = LogFactory.getLog(DCSResource.class);
+
     private NodeFactory nodeFactory = NodeFactory.singleton();
 
     @GET
@@ -30,9 +36,9 @@ public class DCSResource {
 
         try {
             CSNodeResource nodeResource = nodeFactory.createCSNodeResource(nodeID, request);
-            int count = nodeFactory.getOrCreateNode(nodeID)
-                    .getTotalPages(nodeResource);
+            Node node = nodeFactory.getOrCreateNode(nodeID);
 
+            int count = node.getTotalPages(nodeResource);
             return Response.ok(count).build();
         } catch (Exception e) {
             String errMsg = "Failed to get page count for node " + nodeID;
@@ -46,20 +52,55 @@ public class DCSResource {
     @GET
     @Path("pages/{page}")
     @Produces("image/png")
-    public StreamingOutput getRenderedPage(@PathParam("nodeID") String nodeID,
-                                           @PathParam("page") int page,
-                                           @Context HttpServletRequest request) {
+    public Response getRenderedPage(@PathParam("nodeID") String nodeID,
+                                    @PathParam("page") int page,
+                                    @Context HttpServletRequest request) {
         try {
             CSNodeResource nodeResource = nodeFactory.createCSNodeResource(nodeID, request);
-            return nodeFactory.getOrCreateNode(nodeID)
-                    .getPage(page, nodeResource);
+            Node node = nodeFactory.getOrCreateNode(nodeID);
+
+            StreamingOutput streamingOutput = getLocalFile(nodeID, page, nodeResource);
+            if (streamingOutput == null)
+                streamingOutput = node.getPage(page, nodeResource);
+            return Response.ok(streamingOutput).build();
         } catch (Exception e) {
-            String errMsg = "Failed to get page" + page + " for node " + nodeID;
+            String errMsg = "Failed to get page " + page + " for node " + nodeID;
             log.error(errMsg, e);
             if (e instanceof WebApplicationException)
                 throw (WebApplicationException) e;
             throw new WebApplicationException(errMsg);
         }
+    }
+
+    private StreamingOutput getLocalFile(String nodeID, int page, CSNodeResource nodeResource) {
+        DocumentConversionFileCache cacheService = ServiceIndex.getFileCacheService();
+        if (cacheService != null) {
+            try {
+                int latestVersion = nodeResource.getLatestVersion();
+
+                Optional<java.nio.file.Path> nodePage = cacheService.getNodePage(
+                        nodeID, String.valueOf(latestVersion), String.valueOf(page));
+                if (nodePage.isPresent()) {
+                    java.nio.file.Path imageFilePath = nodePage.get();
+                    return output -> {
+                        FileInputStream inputStream = new FileInputStream(imageFilePath.toString());
+                        int nextByte;
+                        while ((nextByte = inputStream.read()) != -1) {
+                            output.write(nextByte);
+                        }
+                        output.flush();
+                        output.close();
+                        inputStream.close();
+                    };
+                }
+            } catch (Exception e) {
+                log.warn("Failed to get page " + page + " for node " + nodeID +
+                        " from the local cache", e);
+            }
+        }
+
+        return null;
+
     }
 
 }
