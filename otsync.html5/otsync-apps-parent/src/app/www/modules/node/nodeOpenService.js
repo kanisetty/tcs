@@ -42,7 +42,7 @@ function $nodeOpenService($q, $nodeService, $displayMessageService, $fileResourc
                 getComponentForOpen(nodeToOpen).then(componentDidLoad);
             } else {
 
-                dataForComponent = {id: nodeToOpen.getID(), name: nodeToOpen.getName()};
+                dataForComponent = {id: nodeToOpen.getID(), name: encodeURI(nodeToOpen.getName())};
 
                 if (nodeToOpen.isOfflineType()) {
                     $cacheService.isNodeInStorage(nodeToOpen).then(function (documentIsStoredOnDevice) {
