@@ -10,7 +10,7 @@
             <h2>{{attachment.NAME}}</h2>
             <p>{{attachment.CREATEDATE | date}}</p>
             <button class="button button-positive"
-                    ng-click="viewAttachment(attachment.DATAID)"
+                    ng-click="viewAttachment(attachment.DATAID, attachment.NAME)"
                     ng-if="attachment.SUBTYPE === 144">
                 View &raquo;
             </button>

@@ -165,7 +165,7 @@ $(document).ready(function () {
                 // create a closure for the click handler to get the right attachment
                 (function (attachment) {
                     button.on('click', function () {
-                        viewAttachmentFor(attachment.DATAID);
+                        viewAttachmentFor(attachment.DATAID, attachment.NAME);
                     });
                 })(attachment);
 
@@ -184,8 +184,8 @@ $(document).ready(function () {
 
     }
 
-    function viewAttachmentFor(id) {
-        WorkflowAttachments.openFromAppworks('dcs-component', {id: id}, false, true);
+    function viewAttachmentFor(id, name) {
+        WorkflowAttachments.openFromAppworks('dcs-component', {id: id, name: encodeURI(name)}, false, true);
     }
 
     function showLoadingProgress() {
