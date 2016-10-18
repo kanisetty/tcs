@@ -69,6 +69,7 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
             var PermModify = 0x10000;
             var PermDelete = 0x00008;
             var PermCreateNode = 0x00004;
+            var hideCommentOptions = ($sessionService.getAppName() == "tempo" && node.isContainer());
 
             modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('OBJECT DETAILS'), !refresh, !hasModal,
                 function () {
@@ -116,15 +117,16 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
                 }
             }
 
-            modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('COMMENTS'), !refresh, !hasModal,
-                function () {
-                    var additionalParams = {node: node};
-                    return $navigationService.openPage('app.browse', {
-                        id: "PulseContent",
-                        additionalParams: additionalParams
-                    });
-                }));
-
+            if(!hideCommentOptions) {
+              modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('COMMENTS'), !refresh, !hasModal,
+                  function () {
+                      var additionalParams = {node: node};
+                      return $navigationService.openPage('app.browse', {
+                          id: "PulseContent",
+                          additionalParams: additionalParams
+                      });
+                  }));
+            }
             //For Documents
             if (!node.isContainer() && node.isDocument()) {
                 if ((permissions & PermSeeContents) == PermSeeContents) {
@@ -146,18 +148,19 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
                         }));
                 }
             } else { //Folders
-                modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('COMMENTS FROM HERE'), !refresh, !hasModal,
-                    function () {
-                        var additionalParams = {
-                            node: node,
-                            isRecursive: true
-                        };
-                        return $navigationService.openPage('app.browse', {
-                            id: "PulseContent",
-                            additionalParams: additionalParams
-                        });
-                    }));
-
+                if(!hideCommentOptions) {
+                  modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('COMMENTS FROM HERE'), !refresh, !hasModal,
+                      function () {
+                          var additionalParams = {
+                              node: node,
+                              isRecursive: true
+                          };
+                          return $navigationService.openPage('app.browse', {
+                              id: "PulseContent",
+                              additionalParams: additionalParams
+                          });
+                      }));
+                }
                 if ((permissions & PermCreateNode) == PermCreateNode && node.isFolder()) {
                     modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('UPLOAD HERE'), !refresh, hasModal,
                         function () {
