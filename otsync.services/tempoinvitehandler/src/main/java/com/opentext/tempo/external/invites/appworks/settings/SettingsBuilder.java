@@ -90,7 +90,7 @@ public class SettingsBuilder {
     }
 
     private Setting otdsPartition() {
-        return buildSetting(InviteHandlerConstants.OTDS_PARTITION, "OTDS External Users Partition", "otag",
+        return buildSetting(InviteHandlerConstants.OTDS_PARTITION, "OTDS External Users Partition", "ExtUsers",
                 "The OTDS User Partition where invited users will be managed", SettingType.string, 5);
     }
 
