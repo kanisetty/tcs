@@ -8,6 +8,10 @@
             <button class="button button-small button-icon ion-search search-icon"
                     ng-click="doSearch(root)">
             </button>
+            <button class="button button-small button-icon ion-close search-icon"
+                    ng-click="clearSearch(root)"
+                    ng-show="showingSearchResults">
+           </button>
         </span>
     </div>
     <ion-content ng-class="{'has-subheader':root.hideSearch == null || root.hideSearch == false}">

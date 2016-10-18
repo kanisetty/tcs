@@ -38,9 +38,11 @@ function browseController($scope, $stateParams, $displayMessageService, $ionicPl
     $scope.root = null;
     $scope.browseDecorators = [];
     $scope.moreCanBeLoaded = false;
+    $scope.showingSearchResults = false;
 
     $scope.clickBrowseDecorator = clickBrowseDecorator;
     $scope.doSearch = doSearch;
+    $scope.clearSearch = clearSearch;
     $scope.getBrowseDecorators = getBrowseDecorators;
     $scope.initialize = initialize;
     $scope.longPressBrowseDecorator = longPressBrowseDecorator;
@@ -198,11 +200,18 @@ function browseController($scope, $stateParams, $displayMessageService, $ionicPl
     }
 
     function doSearch(root) {
+        $scope.showingSearchResults = true;
         $displayMessageService.showDisplayMessage('LOADING');
         $browseService.initialize();
         $scope.browseDecorators = [];
         $scope.getBrowseDecorators(root, $scope.currentQuery);
         $scope.lastExecutedQuery = $scope.currentQuery;
+    }
+
+    function clearSearch(root) {
+        $scope.currentQuery = "";
+        doSearch(root);
+        $scope.showingSearchResults = false;
     }
 
     function hideOfflineUnavailableBrowseDecorators() {
