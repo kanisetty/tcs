@@ -207,6 +207,16 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
                             });
                         }));
                 }
+
+            // TEMPO-6760
+            } else {
+              if (node.sharing().isSharedToMe() || node.sharing().isAnEnterpriseShare()) {
+                  modalMenuItems.push(menuItemFactory.createMenuItemWithConfirmation($displayMessageService.translate('REMOVE SHARE'), refresh, !hasModal,
+                      function () {
+                          return $nodeResource.deleteNode(node);
+                      },
+                      $displayMessageService.translate("REMOVE SHARE CONFIRMATION", {filename: node.getName()})));
+              }
             }
 
             modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('COPY'), !refresh, !hasModal,
