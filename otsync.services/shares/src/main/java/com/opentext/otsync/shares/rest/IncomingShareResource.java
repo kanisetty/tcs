@@ -60,7 +60,7 @@ public class IncomingShareResource {
         info.put("nodeID", nodeID);
 
         String subType;
-        if (notify!=null && notify) {
+        if (notify!=null) {
           info.put("notify", notify);
           subType = "setsharenotify";
         } else if (accepted !=null && accepted) {
