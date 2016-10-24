@@ -8,7 +8,7 @@
     <groupId>com.opentext.otsync</groupId>
     <artifactId>otsync.services</artifactId>
     <packaging>pom</packaging>
-    <version>16.0.1</version>
+    <version>16.1.0</version>
 
     <name>OTSync Services</name>
 
@@ -34,7 +34,7 @@
         <main.basedir>${project.basedir}</main.basedir>
 
         <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
-        <appworks.platform.version>16.0.1-SNAPSHOT</appworks.platform.version>
+        <appworks.platform.version>16.0.2-SNAPSHOT</appworks.platform.version>
     </properties>
 
     <repositories>

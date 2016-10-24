@@ -6,17 +6,18 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.bundles</artifactId>
-        <version>16.0.1</version>
+        <version>16.1.0</version>
     </parent>
 
     <artifactId>ote-bundle</artifactId>
     <name>OpenText Everywhere Bundle</name>
+    <version>16.1.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <app.properties.version>16.0.1</app.properties.version>
-        <services.app.properties.version>16.0.1</services.app.properties.version>
+        <app.properties.version>${project.version}</app.properties.version>
+        <services.app.properties.version>${project.version}</services.app.properties.version>
 
         <artifact.name>${project.artifactId}-${project.version}</artifact.name>
         <bundle.zip>${project.build.directory}/${artifact.name}.zip</bundle.zip>
@@ -202,14 +203,6 @@
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>forms-component</artifactId>
                                     <version>${app.properties.version}</version>
-                                    <type>zip</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>dependencies</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.opentext.otsync</groupId>
-                                    <artifactId>otsync-connector</artifactId>
-                                    <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>

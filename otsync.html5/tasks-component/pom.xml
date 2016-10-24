@@ -6,12 +6,13 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.html5</artifactId>
-        <version>16.0.1</version>
+        <version>16.1.0</version>
     </parent>
 
     <artifactId>tasks-component</artifactId>
 	<name>Tasks Component</name>
     <description></description>
+    <version>16.1.0</version>
 
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,7 +20,7 @@
         <!-- General app.properties -->
         <app.properties.displayName>Tasks Component</app.properties.displayName>
         <app.properties.description>Tasks Component</app.properties.description>
-        <app.properties.version>16.0.1</app.properties.version>
+        <app.properties.version>${project.version}</app.properties.version>
         <app.properties.type>component</app.properties.type>
     </properties>
 

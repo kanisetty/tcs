@@ -8,12 +8,12 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.0.1</version>
+        <version>16.1.0</version>
     </parent>
 
     <artifactId>otsync-connector</artifactId>
     <packaging>war</packaging>
-    <version>16.0.1</version>
+    <version>16.1.0</version>
     <name>OTSync Connector</name>
 
     <properties>
@@ -25,6 +25,11 @@
         <app.properties.releaseNumber>1</app.properties.releaseNumber>
         <app.properties.minimumClientVersion>2</app.properties.minimumClientVersion>
         <app.properties.type>eimconnector</app.properties.type>
+        <app.properties.version>${project.version}</app.properties.version>
+
+        <!-- Output artifacts properties -->
+        <appworks.service.name>otsync-connector</appworks.service.name>
+        <appworks.service.version>${project.version}</appworks.service.version>
     </properties>
 
     <build>
@@ -98,7 +103,7 @@
         <dependency>
             <groupId>com.opentext.otsync</groupId>
             <artifactId>otsync-service-tools</artifactId>
-            <version>${version}</version>
+            <version>16.1.0</version>
         </dependency>
   
         <dependency>

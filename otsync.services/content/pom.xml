@@ -8,13 +8,13 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.0.1</version>
+        <version>16.1.0</version>
     </parent>
 
     <artifactId>content</artifactId>
     <packaging>war</packaging>
     <name>Content Service</name>
-    <version>16.0.3</version>
+    <version>16.1.0</version>
     <description>Content Server-backed APIs for document management and sharing</description>
 
     <properties>
@@ -22,7 +22,7 @@
 
         <!-- Output artifacts properties -->
         <appworks.service.name>content</appworks.service.name>
-        <appworks.service.version>16.0.1</appworks.service.version>
+        <appworks.service.version>${project.version}</appworks.service.version>
     </properties>
 
     <build>
@@ -103,7 +103,7 @@
       <dependency>
           <groupId>com.opentext.otsync</groupId>
           <artifactId>webui</artifactId>
-          <version>16.0.3</version>
+          <version>16.1.0</version>
           <type>zip</type>
       </dependency>
 
@@ -111,7 +111,7 @@
         <dependency>
             <groupId>com.opentext.otsync</groupId>
             <artifactId>otsync-service-tools</artifactId>
-            <version>16.0.1</version>
+            <version>16.1.0</version>
         </dependency>
 
         <!-- Make sure these elderly gents don't drag our Servlet level down -->

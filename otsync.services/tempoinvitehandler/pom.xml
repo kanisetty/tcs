@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.0.1</version>
+        <version>16.1.0</version>
     </parent>
 
     <artifactId>tempoInviteHandler</artifactId>
@@ -16,6 +16,7 @@
     <name>Tempo Invite Handler Service</name>
     <description>Allows external invitees to confirm their invites, update their external profiles (passwords),
         and receive emails regarding the invite and share.</description>
+    <version>16.1.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,13 +24,13 @@
         <!-- General app.properties -->
         <app.properties.displayName>Tempo Notifications Service</app.properties.displayName>
         <app.properties.description>Tempo Notifications Service</app.properties.description>
-        <app.properties.version>16.0.1</app.properties.version>
+        <app.properties.version>${project.version}</app.properties.version>
         <app.properties.minimumClientVersion>2</app.properties.minimumClientVersion>
         <app.properties.type>service</app.properties.type>
 
         <!-- Output artifacts properties -->
         <appworks.service.name>temponotifications</appworks.service.name>
-        <appworks.service.version>${app.properties.version}</appworks.service.version>
+        <appworks.service.version>${project.version}</appworks.service.version>
     </properties>
 
     <build>
@@ -118,7 +119,7 @@
         <dependency>
             <groupId>com.opentext.otsync</groupId>
             <artifactId>otsync-service-tools</artifactId>
-            <version>16.0.1</version>
+            <version>16.1.0</version>
         </dependency>
 
         <dependency>

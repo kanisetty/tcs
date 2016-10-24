@@ -8,12 +8,13 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.0.1</version>
+        <version>16.1.0</version>
     </parent>
 
     <artifactId>dcs</artifactId>
     <packaging>war</packaging>
     <name>Document Conversion Service</name>
+    <version>16.1.0</version>
     <description>Provides rendered views of documents. The service will break documents (nodes) up into
         a series of images, uploading the results to Content Server.</description>
 
@@ -22,7 +23,7 @@
 
         <!-- Output artifacts properties -->
         <appworks.service.name>dcs</appworks.service.name>
-        <appworks.service.version>16.0.1</appworks.service.version>
+        <appworks.service.version>${project.version}</appworks.service.version>
     </properties>
 
     <build>
@@ -96,7 +97,7 @@
         <dependency>
             <groupId>com.opentext.otsync</groupId>
             <artifactId>otsync-service-tools</artifactId>
-            <version>${version}</version>
+            <version>16.1.0</version>
         </dependency>
 
         <dependency>

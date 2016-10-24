@@ -8,12 +8,13 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.0.1</version>
+        <version>16.1.0</version>
     </parent>
 
     <artifactId>workflow</artifactId>
     <packaging>war</packaging>
     <name>Workflow Service</name>
+    <version>16.1.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,13 +22,13 @@
         <!-- General app.properties -->
         <app.properties.displayName>Workflow Service</app.properties.displayName>
         <app.properties.description>This service provides initiation and management of Content Server workflows</app.properties.description>
-        <app.properties.versionNumber>16.0.1</app.properties.versionNumber>
+        <app.properties.versionNumber>${project.version}</app.properties.versionNumber>
         <app.properties.minimumClientVersion>2</app.properties.minimumClientVersion>
         <app.properties.type>service</app.properties.type>
 
         <!-- Output artifacts properties -->
         <appworks.service.name>workflow</appworks.service.name>
-        <appworks.service.version>${app.properties.versionNumber}</appworks.service.version>
+        <appworks.service.version>${project.version}</appworks.service.version>
     </properties>
 
     <build>
@@ -101,7 +102,7 @@
         <dependency>
             <groupId>com.opentext.otsync</groupId>
             <artifactId>otsync-service-tools</artifactId>
-            <version>${version}</version>
+            <version>16.1.0</version>
         </dependency>
   
         <dependency>
