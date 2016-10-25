@@ -1589,6 +1589,10 @@ img.pending {
     padding: 0;
 }
 
+#passwordDialogContent {
+    font-size: 0.8em;
+}
+
 .currentPasswordTextRight, .newPassword1TextRight, .newPassword2TextRight {
     font-size: 12px;
     color: #666;
