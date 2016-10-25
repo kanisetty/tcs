@@ -16,11 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("invitations")
@@ -38,6 +36,7 @@ public class InvitationsResource {
      * @return the created OTDS user
      */
     @POST
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("create")
     public Response createExternalUserInOtds(@FormParam("key") String key,
                                              @FormParam("email") String email,
