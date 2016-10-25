@@ -133,12 +133,7 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
         },
 
         showDoc: function(name, url) {
-            var win = window.open('show-doc.html', '_blank', 'EnableViewPortScale=yes,location=no');
-            win.addEventListener( "loadstop", function() {
-                win.executeScript({
-                    code: "showFile('" + name + "', '" + url + "')"
-                });
-            });
+            window.open(url, '_blank', 'EnableViewPortScale=yes,location=no');
         },
 
         doOpenIn: function (node) {
