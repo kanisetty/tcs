@@ -69,7 +69,7 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
             var PermModify = 0x10000;
             var PermDelete = 0x00008;
             var PermCreateNode = 0x00004;
-            var hideCommentOptions = ($sessionService.getAppName() == "tempo" && node.isContainer());
+            var hideCommentOptions = ($sessionService.getAppName() == "tempo");
 
             modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('OBJECT DETAILS'), !refresh, !hasModal,
                 function () {
