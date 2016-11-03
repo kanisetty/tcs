@@ -11,11 +11,20 @@ angular.module('tempoTasksResource', ['dateService', 'Request', 'urlEncodingServ
 
             var _processResponseForTempoTasks = function(response){
                 var tasks = [];
+                var completedOrCancelled = [];
 
                 if (response != null && response.tasks != null) {
 
                     response.tasks.forEach(function(taskData){
-                        tasks.push(new TempoTask(taskData))
+                        if(taskData.status == "COMPLETED" || taskData.status == "CANCELLED") {
+                          completedOrCancelled.push(taskData);
+                        } else {
+                          tasks.push(new TempoTask(taskData))
+                        }
+                    });
+
+                    completedOrCancelled.forEach(function(taskData) {
+                      tasks.push(new TempoTask(taskData));
                     });
                 }
 
