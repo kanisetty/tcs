@@ -13,8 +13,8 @@ angular.module('FavoritesHeader', ['Header', 'Menu', 'menuItemFactory', 'favorit
 					// TODO JI, DG Aug 10, 2016 removing sync.
 					// it does not provide any utility to the user once files have been downloaded.
 					// removing for the 16 release of OTE. may be looked at at a later date.
-					this.showButton = false;
-					//this.showButton = showButton;
+					//this.showButton = false;
+					this.showButton = showButton;
 					this.showButtonCSS  = 'ion-android-sync';
 
 					this.getFilesToSyncSize = function(){

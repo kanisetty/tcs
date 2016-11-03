@@ -184,9 +184,10 @@ function $cacheService($q, $appworksService, $displayMessageService, Node) {
                     node.setIsStored(false);
                     deferred.resolve(node);
                 } else {
-                    node.setIsStored($appworksService.isNodeInStorage(node, _favoritesKey));
-
-                    deferred.resolve(node);
+                    self.isNodeInStorage(node).then(function(doesExist) {
+                      node.setIsStored(doesExist);
+                      deferred.resolve(node);
+                    });
                 }
             } catch (error) {
                 node.setIsStored(false);
