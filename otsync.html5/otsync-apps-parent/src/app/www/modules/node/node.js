@@ -73,6 +73,10 @@ angular.module('Node', ['Sharing'])
                 return iconURL;
             };
 
+            this.hasTasks = function () {
+              return _nodeData.HASTASKS;
+            };
+
             this.getID = function () {
                 return _nodeData.id;
             };

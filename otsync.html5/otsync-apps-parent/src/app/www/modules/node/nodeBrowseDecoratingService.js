@@ -98,6 +98,10 @@ angular.module('nodeBrowseDecoratingService', ['NodeBrowseDecorator'])
                 }
             }
 
+            if(node.hasTasks()) {
+              nodeBrowseDecorator.setTopRightOverlayCSS("tasks-overlay");
+            }
+
             if(node.getSubtype() == 1)
 				nodeBrowseDecorator.setTopLeftOverlayCSS("overlay-shortcut");
 
