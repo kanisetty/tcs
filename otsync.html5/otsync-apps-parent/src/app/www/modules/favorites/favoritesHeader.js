@@ -15,7 +15,7 @@ angular.module('FavoritesHeader', ['Header', 'Menu', 'menuItemFactory', 'favorit
 					// removing for the 16 release of OTE. may be looked at at a later date.
 					//this.showButton = false;
 					this.showButton = showButton;
-					this.showButtonCSS  = 'ion-android-sync';
+					this.showButtonCSS  = 'ion-ios-download-outline';
 
 					this.getFilesToSyncSize = function(){
 						return this.filesToSyncSize;
