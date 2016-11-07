@@ -459,7 +459,7 @@ var request = new function() {
 							}
 						});
 
-						if (data.length > 0){
+						if (data.length >= 0){
 							return data;
 						}
 
