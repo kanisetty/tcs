@@ -81,7 +81,7 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
             var PermModify = 0x10000;
             var PermDelete = 0x00008;
             var PermCreateNode = 0x00004;
-            var hideCommentOptions = ($sessionService.getAppName() == "tempo");
+            var isTempo = ($sessionService.getAppName() == "tempo");
 
             modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('OBJECT DETAILS'), !refresh, !hasModal,
                 function () {
@@ -129,7 +129,7 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
                 }
             }
 
-            if(!hideCommentOptions) {
+            if(!isTempo) {
               modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('COMMENTS'), !refresh, !hasModal,
                   function () {
                       var additionalParams = {node: node};
@@ -160,11 +160,11 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
                         }));
                 }
 
-                if (node.isBrava()) {
+                if (isTempo && node.isBrava()) {
                     modalMenuItems.push(this.getOpenMenuItemBrava($displayMessageService.translate('BRAVA'), root, node));
                 }
             } else { //Folders
-                if(!hideCommentOptions) {
+                if(!isTempo) {
                   modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('COMMENTS FROM HERE'), !refresh, !hasModal,
                       function () {
                           var additionalParams = {
