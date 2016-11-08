@@ -2,6 +2,7 @@
   "ADD FOLDER" : "Ajouter un dossier",
   "ADD TO FAVORITES" : "Ajouter aux favoris",
   "ADD VERSION" : "Ajouter une version",
+	"BRAVA" : "Brava!",
   "BYTES" : "Octets",
   "CANCEL" : "Annuler",
   "COMMENTS" : "Commentaires",
@@ -44,5 +45,5 @@
   "UNRESERVE" : "Annuler la réservation",
   "UPDATED" : "mis à jour",
   "UPLOAD HERE" : "Charger ici",
-  "ZERO_BYTES" : "0 octets"  
+  "ZERO_BYTES" : "0 octets"
 }

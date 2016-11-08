@@ -3,6 +3,7 @@ angular.module('sessionService', ['appworksService', 'requestService', 'Request'
         function ($q, $appworksService, $requestService, Request) {
             var _contentServerAPIPath = '/otcsapi';
             var _contentServerAPIPathExternal = '/content';
+            var _contentServerBravaPath = '/otcs/livelink.exe?func=brava.bravaviewer&nodeid={NODEID}OpenInNewWin=_blank';
             var _appName = '';
             var _gatewayURL = '';
             var _defaultLanguage = '';
@@ -66,6 +67,10 @@ angular.module('sessionService', ['appworksService', 'requestService', 'Request'
 
                 getContentServerURLExternal: function () {
                     return _gatewayURL + _contentServerAPIPathExternal;
+                },
+
+                getContentServerBravaPath: function () {
+                    return _gatewayURL + _contentServerBravaPath;
                 },
 
                 getDefaultLanguage: function () {

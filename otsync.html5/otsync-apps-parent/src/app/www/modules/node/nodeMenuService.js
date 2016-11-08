@@ -54,6 +54,18 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
             return menuItemFactory.createMenuItem(title, !refresh, !hasModal, action)
         },
 
+        getOpenMenuItemBrava: function (title, root, node) {
+            var action = function () {
+              var deferred = $q.defer();
+              // remove file encoding from open in call
+              var url = $sessionService.getContentServerBravaPath().replace("{NODEID}",node.getID());
+              window.open(url, '_blank', 'EnableViewPortScale=yes,location=no');
+              deferred.resolve();
+              return deferred.promise;
+            };
+            return menuItemFactory.createMenuItem(title, !refresh, !hasModal, action)
+        },
+
         createMenu: function (scope, node) {
             var menu = new ModalMenu(this.getNodeMenuItems(scope.root, node), $displayMessageService.translate('OPTIONS'), $displayMessageService.translate('CANCEL'));
             menu.showModalMenu(scope);
@@ -146,6 +158,10 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
                         function () {
                             return $fileMenuService.getFileMenuItemsAddVersion(true, node);
                         }));
+                }
+
+                if (node.isBrava()) {
+                    modalMenuItems.push(this.getOpenMenuItemBrava($displayMessageService.translate('BRAVA'), root, node));
                 }
             } else { //Folders
                 if(!hideCommentOptions) {

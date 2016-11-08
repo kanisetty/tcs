@@ -189,6 +189,10 @@ angular.module('Node', ['Sharing'])
             this.getFileNameForOnDeviceStorage = function () {
                 return this.getID() + "_" + this.getVersionNumber() + "_" + this.getName();
             };
+
+            this.isBrava = function () {
+                return _nodeData.ISBRAVA;
+            };
         };
 
         Node.fromJson = function (nodeData) {
