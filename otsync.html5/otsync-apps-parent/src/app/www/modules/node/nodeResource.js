@@ -85,7 +85,7 @@ function $nodeResource($sessionService, $urlEncode, $browseService, $stateParams
 
             var requestParams = {
                 method: 'GET',
-                url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + nodeId + '/children' + fields,
+                url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + nodeId + '/children',
                 headers: {'Content-Type': 'application/json; charset=utf-8'},
                 params: {fields: fields, pageNumber: pageNumber, pageSize: pageSize, type: $sessionService.getClientType()}
             };
