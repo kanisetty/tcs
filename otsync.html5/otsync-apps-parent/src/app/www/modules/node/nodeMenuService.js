@@ -185,7 +185,7 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
                         }));
                 }
 
-                if (node.sharing().isTempo() && (node.sharing().isAShare() || node.sharing().isShareable())) {
+                if ((node.sharing().isTempo() || isTempo) && (node.sharing().isAShare() || node.sharing().isShareable())) {
                     modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('SHARE'), !refresh, !hasModal,
                         function () {
                             $navigationService.openPage('app.collaborators', {node: node});
