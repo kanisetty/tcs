@@ -138,9 +138,22 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
                         // we will sync this file to the root of the current workspace
                         if (!metadata) {
                             syncToRoot(item.filename);
-                        } else if (metadata.lastModified < item.lastmodified) {
+                        } else {
+
+                          var metaLastModified = metadata.lastModified;
+                          var itemLastModified = item.lastmodified;
+
+                          if(metaLastModified > 1000000000000) {
+                            metaLastModified = metaLastModified / 1000;
+                          }
+                          if(itemLastModified > 1000000000000) {
+                            itemLastModified = itemLastModified / 1000;
+                          }
+
+                          if (metaLastModified < itemLastModified) {
                             // file has been modified, add as a version on top of previous
                             syncWithPreviousVersion(item.filename);
+                          }
                         }
                         _filesToSync += 1;
                     }
