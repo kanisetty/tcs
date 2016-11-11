@@ -85,18 +85,46 @@ var appworksRequest = function () {
             var deferred = $.Deferred();
             try {
 
-                var options = {destinationType: Camera.DestinationType.DATA_URL};
-                var camera = new Appworks.AWCamera(function (data) {
-                    deferred.resolve(data);
-                }, function (error) {
-                    deferred.reject(error);
-                });
+                var options = null;
+                var camera = null;
 
-                if (func === 'gallery') {
-                    camera.openGallery(options);
-                }
-                else if (func === 'camera') {
-                    camera.takePicture(options);
+                if (func === 'device') {
+
+                  camera = new Appworks.AWCamera(function (filePath) {
+                      var finder = new Appworks.Finder(function(fileObject) {
+                        deferred.resolve(fileObject);
+                      }, function (error) {
+                          deferred.reject(error);
+                      });
+                      finder.filePathToData(filePath);
+                  }, function (error) {
+                      deferred.reject(error);
+                  });
+
+                  options = {
+                              destinationType: Camera.DestinationType.FILE_URI,
+                              mediaType: Camera.MediaType.ALLMEDIA
+                            };
+                  camera.openGallery(options);
+
+                } else {
+
+                  camera = new Appworks.AWCamera(function (data) {
+                      deferred.resolve(data);
+                  }, function (error) {
+                      deferred.reject(error);
+                  });
+
+                  options = {
+                              destinationType: Camera.DestinationType.DATA_URL
+                            };
+
+                  if (func === 'gallery') {
+                      camera.openGallery(options);
+                  }
+                  else if (func === 'camera') {
+                      camera.takePicture(options);
+                  }
                 }
 
             } catch (error) {

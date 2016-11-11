@@ -1,7 +1,7 @@
-angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileService', 'File'])
+angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileService', 'File', 'appworksService'])
 
-		.factory('$fileMenuService', ['menuItemFactory', '$fileResource', '$fileService', '$displayMessageService', 'File',
-			function(menuItemFactory, $fileResource, $fileService, $displayMessageService, File){
+		.factory('$fileMenuService', ['menuItemFactory', '$fileResource', '$fileService', '$displayMessageService', 'File', '$appworksService',
+			function(menuItemFactory, $fileResource, $fileService, $displayMessageService, File, $appworksService){
 				var disablePromptLoading = true;
 				var hasModal = true;
 				var refresh = true;
@@ -50,6 +50,23 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileServi
 							},
 							!disablePromptLoading));
 
+						/*
+						if($appworksService.deviceIsAndroid()) {
+							fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM DEVICE'), shouldRefresh, !hasModal,
+								function () {
+									var filename = node.getName();
+									if (!new RegExp(/\.(jpe?g)$/).test(filename)) {
+										filename += '.jpg';
+									}
+									return $fileResource.addVersion(node, new File(filename, this.data));
+								},
+								function () {
+									return $fileService.getFileFromDevice();
+								},
+								!disablePromptLoading));
+						}
+						*/
+
 						return fileMenuItems;
 					},
 
@@ -73,6 +90,20 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileServi
 									return $fileService.getFileFromGallery();
 								},
 								!disablePromptLoading));
+
+						/*
+						if($appworksService.deviceIsAndroid()) {
+							fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM DEVICE'), shouldRefresh, !hasModal,
+									function () {
+										return new File('photo_' + Date.now() + '.jpg', this.data);
+									},
+									function () {
+										return $fileService.getFileFromDevice();
+									},
+									!disablePromptLoading));
+						}
+						*/
+
 						return fileMenuItems;
 					},
 
@@ -98,6 +129,16 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileServi
                                     return $fileResource.getAddNodeForm(addNodeOptions, shouldRefresh);
                                 }
                         ));
+
+												if($appworksService.deviceIsAndroid()) {
+	                        fileMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('FROM DEVICE'), shouldRefresh, !hasModal,
+	                                function () {
+	                                    addNodeOptions.fileSource = 'device';
+	                                    return $fileResource.getAddNodeForm(addNodeOptions, shouldRefresh);
+	                                }
+	                        ));
+												}
+
 						return fileMenuItems;
 					},
 
@@ -121,6 +162,19 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileServi
 								return $fileService.getFileFromGallery();
 							},
 							!disablePromptLoading));
+
+						/*
+						if($appworksService.deviceIsAndroid()) {
+							fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM DEVICE'), shouldRefresh, !hasModal,
+								function () {
+									return $fileResource.addDocument(node, new File('photo_' + Date.now() + '.jpg', this.data));
+								},
+								function () {
+									return $fileService.getFileFromDevice();
+								},
+								!disablePromptLoading));
+						}
+						*/
 
 						return fileMenuItems;
 					}
