@@ -9,18 +9,32 @@ function $File() {
 
         var _dataURLtoBlob = function (dataURL) {
             var sliceSize = 512;
-
-            var byteCharacters = atob(dataURL.replace(/^[^,]+,/, ''));
+            var byteCharacters = null;
+            var contentType = null;
             var byteArrays = [];
 
-            // try to determine content type from data url or default to image/jpeg
-            var contentType = dataURL.match(/^data:(.+);/);
 
-            if (contentType) {
-                contentType = contentType.pop();
+            if(_fileName.indexOf("photo_") > -1) {
+              byteCharacters = atob(dataURL.replace(/^[^,]+,/, ''));
+
+              // try to determine content type from data url or default to image/jpeg
+              contentType = dataURL.match(/^data:(.+);/);
+
+              if (contentType) {
+                  contentType = contentType.pop();
+              } else {
+                  contentType = 'image/jpeg';
+              }
             } else {
-                contentType = 'image/jpeg';
+              // Split "data:application/pdf;JPSAJDfdjfhksdff..sdf3y3dhdd=="
+              // into parts[0] = data:application.pdf
+              // and parts[1] = JPSAJDfdjfhksdff..sdf3y3dhdd==
+              var parts = dataURL.split(";");
+              contentType = parts[0].replace("data:","");
+              byteCharacters = atob(parts[1].replace(/^[^,]+,/, ''));
             }
+            //var byteCharacters = atob(dataURL.replace(/^[^,]+,/, ''));
+            var byteArrays = [];
 
             for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
                 var slice = byteCharacters.slice(offset, offset + sliceSize);

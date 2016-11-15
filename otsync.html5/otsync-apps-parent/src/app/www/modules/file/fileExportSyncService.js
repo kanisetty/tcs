@@ -38,16 +38,28 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
 
         $appworksService.getSharedDocumentUrl().then(function (path) {
             // append path to filename
-            window.resolveLocalFileSystemURL('file://' + path + '/' + filename, gotFileEntry, deferred.reject);
-
-            function gotFileEntry(fileEntry) {
-                fileEntry.file(function (file) {
-                    var reader = new FileReader();
-                    reader.onloadend = function (evt) {
-                        deferred.resolve(evt.target.result);
-                    };
-                    reader.readAsDataURL(file);
-                });
+            if($appworksService.deviceIsAndroid()) {
+              window.resolveLocalFileSystemURL('file://' + path + '/' + filename, gotFileEntryAW, deferred.reject);
+              function gotFileEntryAW(fileEntry) {
+                  var finder = new Appworks.Finder(function(fileObject) {
+                    var data = "data:" + fileObject.mimetype + ";" + fileObject.data;
+                    deferred.resolve(data);
+                  }, function (error) {
+                      deferred.reject;
+                  });
+                  finder.filePathToData(fileEntry.nativeURL);
+              }
+            } else {
+              window.resolveLocalFileSystemURL('file://' + path + '/' + filename, gotFileEntry, deferred.reject);
+              function gotFileEntry(fileEntry) {
+                  fileEntry.file(function (file) {
+                      var reader = new FileReader();
+                      reader.onloadend = function (evt) {
+                          deferred.resolve(evt.target.result);
+                      };
+                      reader.readAsDataURL(file);
+                  });
+              }
             }
 
         }, deferred.reject);
