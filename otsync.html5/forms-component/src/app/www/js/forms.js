@@ -29,7 +29,6 @@ var initialize = function () {
                             if(appSettings.fileSource == "device") {
                               appSettings.FileData = data.data || {};
                               appSettings.FileName = data.filename || "";
-                              appSettings.FileExtension = data.extension || "";
                               appSettings.MimeType = data.mimetype || "";
                             } else {
                               appSettings.FileData = data || {};
@@ -78,7 +77,6 @@ var getSettings = function () {
 
         //Added for upload "from device"
         appSettings.FileName = "";
-        appSettings.FileExtension = "";
         appSettings.MimeType = "";
 
         if (appSettings.parentID == undefined || appSettings.nodeType == undefined || (isFile(appSettings.nodeType) && appSettings.fileSource == null)) {
@@ -133,7 +131,6 @@ var submitForm = function () {
         if(appSettings.fileSource == "device") {
           var blob = b64toBlob(appSettings.FileData, appSettings.MimeType);
           createData = _.omit(createData, 'file');
-          createData.name += '.' + appSettings.FileExtension;
           formData.append('file', blob, createData.name);
         } else {
           var blob = b64toBlob(appSettings.FileData, "image/jpeg");
@@ -291,7 +288,7 @@ var showPlainForm = function () {
                 name = nameField.val();
 
                 if(appSettings.fileSource == "device") {
-                  formData.append('versionFile', b64toBlob(appSettings.FileData, appSettings.MimeType), name + '.' + appSettings.FileExtension);
+                  formData.append('versionFile', b64toBlob(appSettings.FileData, appSettings.MimeType), name);
                 } else {
                   if (!new RegExp(/\.jpg$/).test(name)) {
                       name += '.jpg';

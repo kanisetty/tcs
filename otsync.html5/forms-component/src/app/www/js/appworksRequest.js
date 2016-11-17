@@ -83,6 +83,7 @@ var appworksRequest = function () {
         getFile: function (func) {
 
             var deferred = $.Deferred();
+            var fileObject = {};
             try {
 
                 var options = null;
@@ -91,12 +92,27 @@ var appworksRequest = function () {
                 if (func === 'device') {
 
                   camera = new Appworks.AWCamera(function (filePath) {
-                      var finder = new Appworks.Finder(function(fileObject) {
-                        deferred.resolve(fileObject);
-                      }, function (error) {
-                          deferred.reject(error);
+
+                    window.resolveLocalFileSystemURL('file://' + filePath,
+                      function (fileEntry) {
+                        fileEntry.file(function (file) {
+                          var reader = new FileReader();
+                          fileObject = {"filename" : file.name, "mimetype" : file.type};
+                          reader.onloadend = function (evt) {
+                              var parts = evt.target.result.split(";");
+                              fileObject["data"] = parts[1].replace("base64,","");
+                              deferred.resolve(fileObject);
+                          };
+
+                          reader.readAsDataURL(file);
+                        },
+                          function (err) {
+                            deferred.reject;
+                          });
+                      }, function (err) {
+                        deferred.reject;
                       });
-                      finder.filePathToData(filePath);
+
                   }, function (error) {
                       deferred.reject(error);
                   });
