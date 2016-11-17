@@ -20,7 +20,7 @@ public class ServletConfig {
 
     private static final Log LOG = LogFactory.getLog(ServletConfig.class);
 
-    // version and link information from tempo.clients.properties
+    // version and link information
     private static Map<String, ClientType> clientInfo = null;
 
     private static String productName = null;
