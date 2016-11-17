@@ -29,16 +29,19 @@ public class Users extends ResourcePath {
         if (sort == null) sort = "";
         String limit = req.getParameter(Message.LIMIT_KEY_NAME);
         if (limit == null) limit = "";
+        String sharingNodeId = req.getParameter(Message.USER_SEARCH_SHARE_NODE);
+        if (sharingNodeId == null) sharingNodeId = "";
 
-        userSearch(req, searchFilter, sort, dir, limit);
+        userSearch(req, searchFilter, sort, dir, limit, sharingNodeId);
     }
 
-    private void userSearch(HttpServletRequest req, String searchFilter, String sort, String dir, String limit) {
+    private void userSearch(HttpServletRequest req, String searchFilter, String sort, String dir, String limit, String sharingNodeId) {
         HashMap<String, Object> payload = Message.makePayload(Message.NOTIFY_KEY_VALUE, Message.USER_SEARCH_VALUE, req);
         Message.infoPut(payload, Message.USER_QUERY_KEY_NAME, searchFilter);
         Message.infoPut(payload, Message.SORT_KEY_NAME, sort);
         Message.infoPut(payload, Message.SORT_DIRECTION_NAME, dir);
         Message.infoPut(payload, Message.LIMIT_KEY_NAME, limit);
+        Message.infoPut(payload, Message.USER_SEARCH_SHARE_NODE, sharingNodeId);
 
         getFrontChannel().sendFrontChannelPayload(req, payload, false);
     }
