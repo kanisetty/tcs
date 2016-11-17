@@ -37,19 +37,6 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
         var deferred = $q.defer();
 
         $appworksService.getSharedDocumentUrl().then(function (path) {
-            // append path to filename
-            if($appworksService.deviceIsAndroid()) {
-              window.resolveLocalFileSystemURL('file://' + path + '/' + filename, gotFileEntryAW, deferred.reject);
-              function gotFileEntryAW(fileEntry) {
-                  var finder = new Appworks.Finder(function(fileObject) {
-                    var data = "data:" + fileObject.mimetype + ";" + fileObject.data;
-                    deferred.resolve(data);
-                  }, function (error) {
-                      deferred.reject;
-                  });
-                  finder.filePathToData(fileEntry.nativeURL);
-              }
-            } else {
               window.resolveLocalFileSystemURL('file://' + path + '/' + filename, gotFileEntry, deferred.reject);
               function gotFileEntry(fileEntry) {
                   fileEntry.file(function (file) {
@@ -60,8 +47,6 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
                       reader.readAsDataURL(file);
                   });
               }
-            }
-
         }, deferred.reject);
 
         return deferred.promise;
