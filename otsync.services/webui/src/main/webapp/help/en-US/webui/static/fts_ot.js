@@ -1,25 +1,27 @@
 //*************************************************************
 
-vResults="Results";
-var vTooShort="Please type in more characters.";
 var vMinEntry= 2;
 
 function validEntry(entry){
 	var words = new Array;
 	while(entry.charAt(0)==" "){entry=entry.substring(1,entry.length);}
 	while(entry.charAt((entry.length)-1)==" "){entry=entry.substring(0,entry.length-1);}
+  if (entry.match(/^\s*$/)) {
+    top.frame1.location="toc4js.htm?reset";
+		return false;
+  }
 	entry=entry.replace(/[ \t]+/g," ");
-	document.searchForm.searchField.value=entry;
-	if(!document.searchForm.searchMode[2].checked)words=entry.split(" ");
-	else words[0]=entry;
+	top.ftsSrchExpr=entry;
+	if(!top.ftsSrchMode==1) { words=entry.split(" "); }
+	                   else { words[0]=entry; }
 	var wordsok=true;
 	for(i=0;i<words.length;i++){
 		if(words[i].length<vMinEntry)wordsok=false;
 		if(words[i].match(/[^\*]/)==null)wordsok=false;
 	}
 	if(!wordsok){
-		alert(vTooShort);
-		document.searchForm.searchField.focus();
+		alert(top.lbl4fts["msgTooShort"]);
+		document.getElementById('searchField').focus();
 		return false;
 	}
 	return true;
@@ -29,14 +31,12 @@ function preSubmit(){
   parent.seenHits='';
 	formField=document.searchForm.searchField.value;
   formField=formField.replace(/\\/g,"&#0092;");
- 	if(!validEntry(formField)){
+ 	if (!validEntry(formField)) {
 		return false;
-	}else{
-		if(top){
-			top.ftsSrchExpr=document.searchForm.searchField.value;
-			for(i=0;i<3;i++){if(document.searchForm.searchMode[i].checked)top.ftsSrchMode=i;}
-		}
-		if(document.searchForm.searchWhere.checked){
+	} else {
+		if(top.ftsScope && top.ftsScope==2){
+		  top.ftsPgHighltCur=0;
+      writeResultCountOnly(top.ftsPgHighltCur);
 			top.frame2.location.reload();
 			return true;
 		}	
@@ -64,7 +64,10 @@ function putFirstHitInView(vWin){
 }
 
 function highLight(vObj,text,mode){
-  if ((text) && (text !='')) {
+  text=window.ftsSrchExpr;
+  var hlMax=10;
+  if (top.ftsPgHighltMax) { hlMax=top.ftsPgHighltMax }
+  if ((text) && (text !='') && (hlMax>0)) {
     text=text.replace(/&#0092;/g,"\\");
   	var words=new Array();
   	var vHighObj;
@@ -107,7 +110,7 @@ function highLight(vObj,text,mode){
       j=i;if(j>=5)j=4; // max number of fts-match variations defined in css
   		k=0;
   		do{vString=vString.replace(re,"<<#fts-match"+j+">>$1>>/#fts-match"+j+">>$2");
-  			k++;if(k>9)break;}while(vString.match(re)!=null);
+  			k++;if(k>hlMax)break;}while(vString.match(re)!=null);
   	}
   	re=RegExp("<<#(fts-match[0-9]+)>>([^>]+)>>\/#(fts-match[0-9]+)>>", "i");//first hit
   	if(re.test(vString)){
@@ -117,6 +120,31 @@ function highLight(vObj,text,mode){
   		vHighObj.innerHTML=vString;//highlighting done, now check scroll position
   		putFirstHitInView(vObj);
   	}
+  	// Count matches for messaging
+  	var pgHitCntDispl=top.frame1.document.getElementById("pgHitCntDispl");
+  	var pgHitsSeeHl  =top.frame1.document.getElementById("ftsRsltSeeHl");
+  	var pgHitCntScope=top.frame1.document.getElementById("pgHitCntScope");
+  	if (pgHitCntDispl) {
+      top.ftsPgHighltCur=0;
+      var spList=vHighObj.getElementsByTagName("span");
+	    var ntElem=top.frame1.document.getElementById("ftsRsltSeeHl");
+      for (var i=0; i<spList.length; i++) { if (spList[i].className && spList[i].className.match(/fts-match/i)) { top.ftsPgHighltCur++; }}
+      if (top.ftsPgHighltCur==0) {
+        pgHitCntDispl.innerHTML=top.lbl4fts["fts_MsgNoMatchCurPg"];
+        pgHitCntDispl.className="ftslistTitle nomatch";
+        pgHitCntDispl.className="ftslistTitle nomatch";
+  	    if (ntElem) { ntElem.className+=" hideMe" }
+        if (pgHitCntScope) { pgHitCntScope.innerHTML=''; }
+      } else {
+        if (top.ftsPgHighltCur==1) { pgHitCntDispl.innerHTML=top.ftsPgHighltCur + " " + top.lbl4fts["rsltPgTtl1"]; }
+                              else { pgHitCntDispl.innerHTML=top.ftsPgHighltCur + " " + top.lbl4fts["rsltPgTtl"]; }
+        pgHitCntDispl.className="ftslistTitle";
+  	    if (ntElem) { ntElem.className=ntElem.className.replace(/ hideMe/i, '');}
+        if (pgHitsSeeHl)   { pgHitsSeeHl.innerHTML   = top.lbl4fts["ftsRsltSeeHl"] }
+        if (pgHitCntScope) { pgHitCntScope.innerHTML = top.lbl4fts["ftsRsltScope"+top.ftsScope]; }
+      }
+  	}
+
  } 	
 }   
 

@@ -21,26 +21,26 @@
 	=======
 	
 	2005-05-26 mmh: v0.6
-	2005-06-09 ekbert: changed TOC layout
-	2011-11-21 ekbert: update for search results
+	2005-06-09 em: changed TOC layout
+	2011-11-21 em: update for search results
 
 */
 
 /* General */
-body {font-family: Tahoma, Arial, Helvetica, sans-serif; font-style: normal; font-weight: normal; color: #000000;}
+body { font-family: Tahoma, Arial, Helvetica, sans-serif; font-style: normal; font-weight: normal; color: #000000; }
 
 /* Banner */
 .banner {
 	background-image: url(../static/images/pattern.gif); 
 	margin: 0 0 0 6px;
 }
-.sM	{margin-top: 3px;} 
-td.mHiL	{background-repeat: repeat-y; background-position: 50% 50%; background-image: url(nav/vert_w.gif); text-align: center;}
-td.mHi	{text-align: center; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 0.75em; color: #fff; text-decoration: none;}
-td.mHi a:link	{color: #fff; background-color: transparent; text-decoration: none;}
-td.mHi a:visited{color: #fff; background-color: transparent; text-decoration: none;}
-td.mHi a:hover	{color: #fff; background-color: transparent; text-decoration: none;}
-td.mHi a:active	{color: #fff; background-color: transparent; text-decoration: none;}
+.sM              { margin-top: 3px;} 
+td.mHiL          { background-repeat: repeat-y; background-position: 50% 50%; background-image: url(nav/vert_w.gif); text-align: center; }
+td.mHi           { text-align: center; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 0.75em; color: #fff; text-decoration: none; }
+td.mHi a:link    { color: #fff; background-color: transparent; text-decoration: none; }
+td.mHi a:visited { color: #fff; background-color: transparent; text-decoration: none; }
+td.mHi a:hover   { color: #fff; background-color: transparent; text-decoration: none; }
+td.mHi a:active  { color: #fff; background-color: transparent; text-decoration: none; }
 
 .currentView {
  font-family: Tahoma, Geneva, Arial, Helvetica, sans-serif;
@@ -164,10 +164,10 @@ td.mHi a:active	{color: #fff; background-color: transparent; text-decoration: no
 	background-repeat: repeat-x; 
 }
 .dyntoc {vertical-align:middle; font-size: 12px; height:18px; margin-top: 0px;} /* TD class */
-.navtoc A:link		{color: #000; background-color: transparent; text-decoration: none;}
-.navtoc A:visited	{color: #000; background-color: transparent; text-decoration: none;}
-.navtoc A:hover		{color: #69C; background-color: transparent; text-decoration: none;}
-.navtoc A:active	{color: #69C; background-color: transparent; text-decoration: none;}
+.navtoc A:link        { color: #000; background-color: transparent; text-decoration: none; }
+.navtoc A:visited     { color: #000; background-color: transparent; text-decoration: none; }
+.navtoc A:hover       { color: #69C; background-color: transparent; text-decoration: none; }
+.navtoc A:active      { color: #69C; background-color: transparent; text-decoration: none; }
 
 /* IX */
 .navix  {
@@ -202,30 +202,56 @@ div.indexdiv dl dd dl dd dl dt {
 	margin: 1px 0 0 52px;
 	text-indent: -24px;
 }
-.navix A:link	  	    {color: #369; background-color: transparent; text-decoration: none;}
-.navix A:visited	    {color: #369; background-color: transparent; text-decoration: none;}
-.navix A:hover	      {color: #69C; background-color: transparent; text-decoration: none;}
-.navix A:active	      {color: #69C; background-color: transparent; text-decoration: none;}
-                      
-/* FTS */             
-.navfts               {font-family: Tahoma, Arial, Helvetica, sans-serif; text-align: left; margin-left: 16px; margin-right: 16px; color: #000; background-color: #fff;}
-td.ftsstats,          
-.ftslist              {font-size: 0.75em; margin-bottom: 0.3em; }
-ul.ftslist            {margin-top:0.9em; padding: 0px 0px 0.5em 0.5em; }
-.ftslistmdl           {font-size: 0.75em; margin-bottom: 0.3em; vertical-align:middle;}
-.ftslistbut           {font-size: 0.75em; margin-bottom: 0.3em; padding-bottom: 0em; vertical-align:middle;}
-.ftslistsmall         {font-size: 0.7em; margin-bottom: 0.3em; vertical-align:middle;}
-.ftsPglist            {font-size: 1em; margin: 0px 0px 0px 0px; padding:0.4em 0.7em 0.4em 0.4em; vertical-align:middle; 
-                       border-top: solid 1px #C8CFE0; border-bottom: solid 1px #C8CFE0; background-color: #E4EDF2;}
-#ftsnotes td          {padding-top:0.4em; margin:0pt; border-top: solid 1px #00009c;}
-div.ftslistTitle      {font-size: 1em; padding: 0.5em 0.7em 0.5em 0.7em; margin: 0em; 
-                       border-top: solid 1px #00009c;  background-color: #D8EBF5;}
-div#ftsRes            {padding-bottom:0px; margin-bottom:0px}
-.ftsPglist *          {padding:0.2em 0.3em 0.5em 0.3em; font-size:0.9em; }
-.ftsPglist A:link		  {color: #369; background-color: transparent; text-decoration: none;}
-.ftsPglist A:visited	{color: #aaa; background-color: transparent; text-decoration: none;}
-.ftsPglist A:hover		{color: #69C; background-color: transparent; text-decoration: underline;}
-.ftsPglist span.act	  {color: #DE7C0D; font-weight:bold; background-color: #EFF7FF; border: 1px solid #C8CFE0; border-bottom:1px solid transparent; }
+.navix A:link         { color: #369; background-color: transparent; text-decoration: none; }
+.navix A:visited      { color: #369; background-color: transparent; text-decoration: none; }
+.navix A:hover        { color: #69C; background-color: transparent; text-decoration: none; }
+.navix A:active       { color: #69C; background-color: transparent; text-decoration: none; }
+                        
+/* FTS */               
+.navfts               { font-family: Tahoma, Arial, Helvetica, sans-serif; text-align: left; margin-left: 16px; margin-right: 16px; color: #000; background-color: #fff;}
+td.ftsstats,            
+.ftslist              { font-size: 0.75em; margin-bottom: 0.3em; white-space: nowrap; }
+ul.ftslist            { margin-top:0.9em; padding: 0px 0px 0.5em 0.5em; }
+.ftslistmdl           { font-size: 0.75em; margin-bottom: 0.3em; vertical-align:middle;}
+.ftslistbut           { font-size: 0.75em; margin-bottom: 0.3em; padding-bottom: 0em; vertical-align:middle;}
+.ftslistsmall         { font-size: 0.7em; margin-bottom: 0.3em; vertical-align:middle;}
+.ftsPglist            { font-size: 1em; margin: 0px 0px 0px 0px; padding:0.4em 0.7em 0.4em 0.4em; vertical-align:middle; 
+                        border-top: solid 1px #C8CFE0; border-bottom: solid 1px #C8CFE0; background-color: #E4EDF2;}
+.ftsadi               { display: block; color:#999999;}
+li.ftsdiv             { margin-top:0.3em; list-style-type: square; background-color: transparent; }
+li.ftsdiv span.ftsdiv { font-weight:bold; color:#004D80;}
+ul.ftsdiv             { margin:0px; padding: 0.3em;}
+li.ftsSiut-clps0, 
+li.ftsSiut-clps1      { list-style-type: none; font-weight: bold; margin-top:10px; margin-left: -1.8em; height:20px; 
+                        background:url(../ic4clps1.png) no-repeat 7px 7px #C7DDF2; }
+li.ftsSiut-clps0      { background:url(../ic4clps0.png) no-repeat 7px 7px #C7DDF2; }
+li.ftsSiut-clps1 span,
+li.ftsSiut-clps0 span { position:relative; top:3px; left:26px;}
+tr.clps-0 tt.clps {
+  background:url(ic4clps0.png) no-repeat center;
+}
+tr.clps-1 tt.clps {
+  background:url(ic4clps1.png) no-repeat center;
+}
+
+.hideMe               { display:none; }
+.docDiff              { color:#D6A176; }
+.docSame              { color:#7ECF87; }
+                       
+#ftsnotes td          { padding-top:0.4em; margin:0pt; border-top: solid 1px #00009c; }
+div#ftsRes .addinfo,
+div.ftslistTitle      { font-size: 1em; padding: 0.5em 0.7em 0.1em 0.7em; margin: 0em; 
+                       /*border-top: solid 1px #00009c; */
+                        background-color: #D8EBF5; }
+div.ftsRsltAddinfo    { padding: 0.1em 0.7em 0.5em 0.8em; color: #999999; background-color: #D8EBF5; }
+div#ftsRes            { padding-bottom:0px; margin-bottom:0px; width:100%; }
+.ftsPglist *          { padding:0.2em 0.3em 0.5em 0.3em; font-size:0.9em;  }
+.ftsPglist A:link     { color: #369; background-color: transparent; text-decoration: none;      }
+.ftsPglist A:visited  { color: #aaa; background-color: transparent; text-decoration: none;      }
+.ftsPglist A:hover    { color: #69C; background-color: transparent; text-decoration: underline; }
+.ftsPglist span.act   { color: #DE7C0D; font-weight:bold; background-color: #EFF7FF; border: 1px solid #C8CFE0; border-bottom:1px solid transparent; }
+div#ftsRes .addinfo   { padding-bottom:0px; margin-bottom:0px; }
+div#pgHitCntDispl     { font-size:10pt; margin-left:0px; padding-left:0.5em;}
  
 .ftsstats {
   text-align: right;
@@ -240,5 +266,16 @@ hr.ftslistTitle {
   padding: 0pt;
   margin: 0pt;
 }
+span.modindic {
+  font-size:6px;
+  width:4px;
+  height:4px;
+  margin-right: 3px;
+  padding:0px 1px;
+}
+.ftsRsNt {
+  width: 250px;
+}
 
 /* End Of dynamics.css */
+

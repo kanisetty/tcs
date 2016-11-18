@@ -556,22 +556,22 @@ a.navheadersect9:hover {
     text-decoration   : underline;
 }
 
-a:hover,
-a.minor:hover,
-a.x:hover,
-a.toc:hover,
-a.toc1:hover,
-a.toc2:hover,
-a.toc3:hover,
-a.toc4:hover,
-a.toc5:hover,
-a.toc6:hover,
-a.toc7:hover,
-a.toc8:hover,
+a[href]:hover,
+a[href].minor:hover,
+a[href].x:hover,
+a[href].toc:hover,
+a[href].toc1:hover,
+a[href].toc2:hover,
+a[href].toc3:hover,
+a[href].toc4:hover,
+a[href].toc5:hover,
+a[href].toc6:hover,
+a[href].toc7:hover,
+a[href].toc8:hover,
 table.ix-nav * a:link:hover,
-a.toc9:hover,
-a.x:hover,
-a.totoc:hover {
+a[href].toc9:hover,
+a[href].x:hover,
+a[href].totoc:hover {
     color             : #80B4D6;
     text-decoration   : underline;
 }
@@ -1047,7 +1047,7 @@ td.percontscell .remark,
   color: #cc7777;
   text-decoration:underline;
 }
-.remark a:hover {
+.remark a[href]:hover {
   color: #dd0000;
 }
 
@@ -1345,7 +1345,7 @@ table.note p {/* just to surround a conflict between old llhelp200.css and ix21.
     text-decoration   : none;
 }
 
-.otobar * a:hover {
+.otobar * a[href]:hover {
     color             : #00609E;
     text-decoration   : underline;
 }
@@ -1574,7 +1574,7 @@ span.boxed-reflink a:active {
   color             : #75869C;
   text-decoration   : none;
 }
-span.boxed-reflink a:hover {
+span.boxed-reflink a[href]:hover {
   color             : #3E77C7;
   text-decoration   : underline;
 }
@@ -1596,6 +1596,10 @@ span.picmt:hover {
   background-color: #bbbbbb;
   border: 1px solid #557FFF;
   color:#557FFF;
+}
+
+.nobr {
+  white-space: nowrap;
 }
 
 frame {

@@ -1,21 +1,14 @@
-<fl><f name="sync-icons-bg.htm">
-<extref tgt="wcsoc-h-uws.-"/>
-<extref tgt="wcsoc-h-uws.-"/>
-</f><f name="syncpc-renamedelmoveshare-bg.htm">
+<fl><f name="syncpc-renamedelmoveshare-bg.htm">
 <extref tgt="synclles-h-ugd.-"/>
 </f><f name="syncpcwb-delete-shared-folder-p.htm">
 <extref tgt="synclles-h-ugd.-"/>
-<extref tgt="wcsoc-h-uws.-"/>
 </f><f name="syncpcwb-fileman-so.htm">
 <extref tgt="synclles-h-ugd.-"/>
 </f><f name="syncpcwb-readonlyshare-p.htm">
 <extref tgt="synclles-h-ugd.-"/>
 </f><f name="syncpcwb-sharing-so.htm">
 <extref tgt="synclles-h-ugd.-"/>
-</f><f name="syncpcwb-updatecollab-p.htm">
-<extref tgt="synclles-h-ugd.-"/>
-</f><tl pd="1434046259">
+</f><tl pd="1479497064">
   <tgtdoc revnum="SYNCLLES-H-UGD-EN"/>
-  <tgtdoc revnum="WCSOC-H-UWS-EN"/>
 </tl>
 </fl>

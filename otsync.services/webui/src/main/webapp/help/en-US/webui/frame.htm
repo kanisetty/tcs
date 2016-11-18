@@ -4,8 +4,9 @@
 <META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.44">
 <LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21.css">
 <LINK REL="STYLESHEET" TYPE="text/css" HREF="ix21ohp.css">
-<SCRIPT   language="JavaScript" type="text/javascript" src="static/fts_ot.js"></script>
-<SCRIPT language="JavaScript" type="text/javascript">
+<SCRIPT  type="text/javascript" src="static/fts_ot.js"></SCRIPT>
+<SCRIPT type="text/javascript" src="jsutil.js"></SCRIPT>
+<SCRIPT  type="text/javascript">
 <!--
    window.focus();
    document.maxtoc=1;
@@ -17,11 +18,57 @@
    window.TocUpdatedBy=new String('none');
    window.TocUpdCnt=0;
    window.seenHits=new String();
-   window.ctxtFlags='</>';
+   window.urlopt=window.location.search;
+   window.docdir='';
+   window.tocredir='';
    var myRefWin;
+   window.dojstoc=1;
+   window.ftsSrchMode=1;
+   window.ftsSortMode=0;
+   window.ftsScope=0;
+   window.ftsAdhoc=0;
+   window.ftsStore=0;
+   window.ftsSrchExpr='';
+   window.ftsRslt=new Array();
+   window.ftsRsltPtn='';
+   window.ftsExpandPtn='';
+   window.ftsMatchSiblingPtn='';
+   window.ftsMatchMaxCnt='';
+   window.ftsDelay4adhoc=900;
+   window.ftsPgHighltMax=99;
+   window.ftsPgHighltCur=0;
+   window.ftsPrevSeenHit='';
+   window.tocSectnum=1;
+   window.ftsStats='';
+   window.fvList='';
+   window.ctxtFlags='</>';
+   window.curTocEntryId='';
+   window.curPgId='';
+   window.ut='';
+   window.docid='syncpcwb160100-h-ugd';
+   window.topid='syncpcwb160100-h-ugd';
+   window.doclang='en';
+   window.toplang='en';
+   window.modref=new Array();
+   window.divTtl=new Array();
+   window.dynloadcnt=0;
+   window.ftsIdxCnt=0;
+   window.ftsIdx0Cnt=0;
+   window.ftsMatchColl=new Array();
+   window.lbl4fts=new Array();
+   window.profiles=new Array();
+   window.siDirColl=new Array();
+   window.dynIdxAll=new Array();
+   window.dynIdxAvl=new Array();
+   window.scrLoaded=new Array();
+   window.siAdded=new String('');
+   window.siAddedCnt=0;
+   window.siRead=new String('');
+   window.si2read=new String('');
+   window.visArr=new Array();
 
    // ----------------------------------
-   function SetLinks(bwlink,fwlink,hmlink,endlink,CurTocLevel) {
+   function SetLinks(bwlink,fwlink,hmlink,endlink,CurTocLevel,ut) {
    // ----------------------------------
    // This function is called by frame2 pages to set the local links
    // that are used in the "for" script below then.
@@ -33,10 +80,11 @@
      document.CurTocLevel=CurTocLevel;
      document.piInfoCounterCtrl=0;
      document.piInfoCounter=0;
+     if (ut) { window.ut=ut }
    }
    
    // ----------------------------------
-   function MarkCurrentTocLink(toMatch, SectLvl) {
+   function MarkCurrentTocLink(toMatch, SectLvl, ut, pgdocid) {
    // ----------------------------------
    // This function is called to highlight the TOC entry that matches the currently
    // displayed HTML file. It also changes the displayed TOC page to the deepest one, if
@@ -59,61 +107,103 @@
      if (toMatch=="--reset--") { 
        document.LinkToRememberNum=''; 
        // top.LinkToRememberClassName='';
-       top.ftsSrchExpr='';
-       top.ftsSrchMode='';
+       // top.ftsSrchExpr='';
+       // top.ftsSrchMode='';
        return;
      }  
-     
+     top.curPgId=toMatch.replace(/\.\w+$/, '');
      TocDocLoc=String(frame1.location);
-     if ((TocDoc.links[1] != null) && (TocDoc.links) && (!(TocDocLoc.match(/fts\.htm/i))))  {
-       do {
-         TocDocLoc=String(frame1.location);
-         if (TocDocLoc.indexOf("idx2.htm")>0) { return }
-         loopCnt++;
-         if (document.LinkToRememberNum != '') {
-           var myArr=document.LinkToRememberNum.split(";");
-           for (var i=0; i < myArr.length; i++) {
-             if ((myArr[i]>0) && (TocDoc.links[myArr[i]])) {
-               TocDoc.links[myArr[i]].className=TocDoc.links[myArr[i]].className.replace(/active /gi, '');
-               var parNode=TocDoc.links[myArr[i]].parentNode.parentNode;
-               parNode.className=parNode.className.replace(/active /gi, '');
-               parNode=parNode.parentNode;
-               parNode.className=parNode.className.replace(/active /gi, '');
+     if (TocDocLoc.match(/fts\.htm/) && (ut !='')) {
+       var bkTocSel=TocDoc.getElementById("a4ut");
+       var pgloc=frame2.location.href.replace(/[^\/\\]*$/, '').replace(/[^\\\/:a-zA-Z0-9\-\_\.]*/gi, '');
+       if (bkTocSel) {
+         bkTocSel.innerHTML=ut;
+         top.docid=pgdocid;
+         frame1.updResList();
+         var TocDocBody=TocDoc.getElementsByTagName("body");
+         TocDocBody[0].innerHTML=TocDocBody[0].innerHTML.replace(/[\\\/:a-zA-Z0-9\-\_\.]*toc4js\.htm/gi, pgloc + "toc4js.htm");
+       }
+     }
+     
+     if (TocDoc.links && (TocDoc.links[1] != null)) {
+       if (TocDocLoc.match(/fts\.htm/i))  {
+         var xID=toMatch.replace(/\.\w+$/, '');
+         parent.frame1.ProcVis(this, "regMove:" + xID);
+         window.curTocEntryId=xID;
+         if (top.ftsPrevSeenHit != '') {
+           var elm=top.frame1.document.getElementById(top.ftsPrevSeenHit);
+           if (elm && elm.parentNode.className) { 
+             elm.parentNode.className=elm.parentNode.className.replace(/ active/g, ''); 
+           }
+           top.frame1.document.getElementById('searchField').focus();
+         }
+         
+         for (var i=0; i < TocDoc.links.length; i++) {
+           if (TocDoc.links[i].id && TocDoc.links[i].id==xID) {
+             top.ftsPrevSeenHit=xID;
+             TocDoc.links[i].parentNode.className+=" active";
+             break;
+           }
+         }
+       } else {
+         do {
+           TocDocLoc=String(frame1.location);
+           if (TocDocLoc.match(/(idx2|idx4js)\.htm/i)) { return }
+           loopCnt++;
+           if (document.LinkToRememberNum != '') {
+             var myArr=document.LinkToRememberNum.split(";");
+             for (var i=0; i < myArr.length; i++) {
+               if ((myArr[i]>0) && (TocDoc.links[myArr[i]])) {
+                 TocDoc.links[myArr[i]].className=TocDoc.links[myArr[i]].className.replace(/active /gi, '');
+                 var parNode=TocDoc.links[myArr[i]].parentNode.parentNode;
+                 parNode.className=parNode.className.replace(/active /gi, '');
+                 parNode=parNode.parentNode;
+                 parNode.className=parNode.className.replace(/active /gi, '');
+               }  
              }  
            }  
-         }  
-         document.LinkToRememberNum='';
-    
-         for (var k=0; k < TocDoc.links.length; k++) {
-           if ((TocDoc.links[k].href.indexOf("/"+toMatch)>0) && (TocDoc.links[k].href.indexOf("#")<0))  { 
-             document.LinkToRememberNum=document.LinkToRememberNum + ";" + k;
-             TocDoc.links[k].className = "active " + TocDoc.links[k].className.replace(/active( |$)/, "");
-             var parNode=TocDoc.links[k].parentNode.parentNode;
-             var parNode2=parNode.parentNode;
-             parNode.className = "active " + parNode.className.replace(/active( |$)/, "");
-             parNode=parNode.parentNode;
-             if (!(parNode.className.match(/active( |$)/))) { // most links have 2 TDs with a link each, so the parent TR is touched twice, and the second would override the original LinkToRememberClassNamePar2
-               parNode.className = "active " + parNode.className;
+           document.LinkToRememberNum='';
+      
+           for (var k=0; k < TocDoc.links.length; k++) {
+             if ((TocDoc.links[k].href.indexOf("/"+toMatch)>0) && (TocDoc.links[k].href.indexOf("#")<0))  { 
+               document.LinkToRememberNum=document.LinkToRememberNum + ";" + k;
+               TocDoc.links[k].className = "active " + TocDoc.links[k].className.replace(/active( |$)/, "");
+               var parNode=TocDoc.links[k].parentNode.parentNode;
+               var parNode2=parNode.parentNode;
+               parNode.className = "active " + parNode.className.replace(/active( |$)/, "");
+               parNode=parNode.parentNode;
+               if (!(parNode.className.match(/active( |$)/))) { // most links have 2 TDs with a link each, so the parent TR is touched twice, and the second would override the original LinkToRememberClassNamePar2
+                 parNode.className = "active " + parNode.className;
+               }
+               found++;
+               if (TocDocLoc.match(/toc4js\.htm/i)) { 
+                 frame1.ToggleTE(this, "jumpto:" + parNode.id);
+                 window.curTocEntryId=parNode.id;
+               }
+               if (found==1) { // Scroll the TOC if necessary
+                 var id2go=new String(TocDoc.links[k].href);
+                 id2go=id2go.replace(/.*\//, "");
+                 if (TocDoc.getElementById(id2go)) { 
+                   TocDoc.getElementById(id2go).focus(); 
+                   checkvisible(TocDoc.getElementById(id2go));
+                 }
+               } 
+               window.focus(); // Re-activate general key codes in the script below
+               if (frame1.searchForm) { 
+                 frame1.searchForm.searchField.focus(); 
+                 frame1.searchForm.searchField.value=frame1.searchForm.searchField.value; 
+               }
              }
-             found++;
-             if (TocDocLoc.match(/toc4js\.htm/i)) { 
-               parent.frame1.ToggleTE(this, "jumpto:" + parNode.id);
-             }
-             if (found==1) { // Scroll the TOC if necessary
-               var id2go=new String(TocDoc.links[k].href);
-               id2go=id2go.replace(/.*\//, "");
-               if (TocDoc.getElementById(id2go)) { TocDoc.getElementById(id2go).focus(); }
-             } 
-             window.focus(); // Re-activate general key codes in the script below
-           }
-         } 
-         if ((found==0) && (window.switchingToc!=1)) { 
-           TocDocLoc=TocDocLoc.replace(/([\/\\])[^\/\\]*?$/, "$1" + "toc" + document.maxtoc + ".htm");
-           frame1.location=TocDocLoc;
-           TocDoc=frame1.document;
-         }  
-       } while ((found==0) && (loopCnt<2));
+           } 
+           if ((found==0) && (window.switchingToc!=1) && (!TocDocLoc.match(/toc4js/i))) { 
+             TocDocLoc=TocDocLoc.replace(/([\/\\])[^\/\\]*?$/, "$1" + "toc" + document.maxtoc + ".htm");
+             frame1.location=TocDocLoc;
+             TocDoc=frame1.document;
+           }  
+         } while ((found==0) && (loopCnt<2));
+       }  
      }  
+//     top.ftsStats=''; // reset stats display when switching to a new page
      window.switchingToc=0;
      if (window.TocUpdatedBy==toMatch) { 
        window.TocUpdCnt++;
@@ -122,6 +212,29 @@
        window.TocUpdatedBy=toMatch;
      }  
    }  
+
+   // ----------------------------------
+   function loadFile(path, type, doc) {
+   // ----------------------------------
+   // http://www.javascriptkit.com/javatutors/loadjavascriptcss.shtml
+     if (type=="js") { 
+       var elm=document.createElement('script')
+       elm.setAttribute("language", "JavaScript")
+       elm.setAttribute("type","text/javascript")
+       elm.setAttribute("src", path)
+       elm.onload=function(){top.dynloadcnt++;}
+     } else if (type=="css") { 
+       var elm=document.createElement("link")
+       elm.setAttribute("rel", "stylesheet")
+       elm.setAttribute("type", "text/css")
+       elm.setAttribute("href", path)
+       elm.onload=function(){top.dynloadcnt++;}
+     }
+     if (typeof path!="undefined") {
+       doc.getElementsByTagName("head")[0].appendChild(elm);
+     }
+   }
+
 
    // ----------------------------------
    function PutInfoToClipboard(FullId,LocString, evt) {
@@ -192,9 +305,50 @@
      return false; // to skip actual href processing
    }
    
- //-->
+   // ----------------------------------
+   function posY(elm) {
+   // ----------------------------------
+     var test = elm, top = 0;
+     while(!!test && test.tagName.toLowerCase() !== "body") {
+         top += test.offsetTop;
+         test = test.offsetParent;
+     }
+     return top;
+   }
+
+   // ----------------------------------
+   function viewPortHeight() {
+   // ----------------------------------
+     var de = frame1.document.documentElement;
+          if (!!frame1.innerWidth)            { return frame1.innerHeight; }
+     else if( de && !isNaN(de.clientHeight) ) { return de.clientHeight; }
+     return 0;
+   }
+
+   // ----------------------------------
+   function scrollY() {
+   // ----------------------------------
+     if ( frame1.pageYOffset ) { return frame1.pageYOffset; }
+     return Math.max(frame1.document.documentElement.scrollTop, frame1.document.body.scrollTop);
+   }
+
+   // ----------------------------------
+   function checkvisible( elm, opt ) {
+   // ----------------------------------
+     var VPHght = viewPortHeight();
+     var hdH=120;
+     scrTop = scrollY();
+     y = posY(elm);
+     if (opt && opt=='goto')         { frame1.scrollBy(0, (y-(scrTop+hdH))) }
+     else if ((y-scrTop)<120)        { frame1.scrollBy(0, (y-scrTop-hdH)) }
+     else if (y > (VPHght + scrTop)) { frame1.scrollBy(0, (y-(VPHght + scrTop -150))); }
+     return false;
+   }   
+
+//-->
 </SCRIPT>
-<SCRIPT  language="JavaScript" type="text/javascript">
+<SCRIPT  TYPE="text/javascript" SRC="dflts4js.js"></SCRIPT>
+<SCRIPT TYPE="text/javascript">
 <!--
  // Enable navigation via keyboard (note the difference between frameset level and page evel!):
  // * PgDn/PgUp or CsLeft/CsRight on frameset level: scroll page by page
@@ -233,16 +387,30 @@
 //      else if (evt.keyCode==27)
 //                  { frame1.focus(); return true; }
       else if ((evt.keyCode==73) || (evt.keyCode==88)) // I or X to Index
-                  { frame1.location="idx2.htm"; return true; }
+                  { frame1.location="idx4js.htm"; return true; }
       else if ((evt.keyCode==83) || (evt.keyCode==105)) // S or F 12343to search
                   { frame1.location="fts.html?searchField="; return true; }
       else { return true; }
     }              
   }  
+  var hlpidmap=new Array();
   document.onkeyup = handleKeyCode;  
+  var pgOptArg=window.location.search.match(/[?&]ftsOpt=\w+:\w+/gi);
+  if (pgOptArg) {
+    GetCookieVal("OTftsOpts");
+    for (var o=0; o<pgOptArg.length; o++) {
+      var optFld=pgOptArg[o].replace(/[?&]ftsOpt=/i, '').split(":", 2);
+      if (optFld[0].match(/^delFtsCookies$/i) && optFld[1].match(/^1$/i)) { 
+        SetCookieVal("OTftsOpts", "-DELcooKie-");
+      } else if (optFld[0].match(/^(ftsDelay4adhoc|ftsScope|ftsSortMode|ftsSrchMode|ftsAdhoc|dojstoc)$/i) && optFld[1].match(/^\d+$/i)) { 
+        window[optFld[0]]=optFld[1]; 
+      }
+    }
+    SetCookieVal("OTftsOptsForce");
+  }
 //-->
 </SCRIPT>
-</head><frameset COLS = "25%,75%" FRAMEBORDER="1" FRAMESPACING="0" BORDER="1px"><frame SRC="toc.htm" NAME="frame1" scrolling="yes" FRAMEBORDER="0" BORDER="0" FRAMESPACING="0"><frame SRC="copyrght.htm" NAME="frame2" scrolling="yes" FRAMEBORDER="0" BORDER="0" FRAMESPACING="0"></frameset>
+</head><frameset COLS = "25%,75% " FRAMEBORDER="1" FRAMESPACING="0" BORDER="1px"><frame SRC="toc.htm" NAME="frame1" scrolling="yes" FRAMEBORDER="0" BORDER="0" FRAMESPACING="0"><frame SRC="copyrght.htm" NAME="frame2" scrolling="yes" FRAMEBORDER="0" BORDER="0" FRAMESPACING="0"></frameset>
 <BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF" ONLOAD="if (top.highLight) top.highLight(self,top.ftsSrchExpr,top.ftsSrchMode)"><noframes>
 <p>This manual requires a browser which can display frames (e.g. Netscape navigator or Microsoft Internet Explorer)</noframes>
 </body></html>
