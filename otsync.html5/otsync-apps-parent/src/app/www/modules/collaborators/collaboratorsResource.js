@@ -59,7 +59,7 @@ function $collaboratorsResource($q, $sessionService, collaboratorFactory, $urlEn
             return $sessionService.runRequest(request);
         },
 
-        collaboratorSearch: function (queryFilter, isReadOnlyPerms) {
+        collaboratorSearch: function (queryFilter, isReadOnlyPerms, nodeId) {
             var deferred = $q.defer();
             var _isReadOnlyPerms = isReadOnlyPerms;
 
@@ -67,7 +67,7 @@ function $collaboratorsResource($q, $sessionService, collaboratorFactory, $urlEn
                 method: 'GET',
                 url: $sessionService.getGatewayURL() + '/content/v5/users',
                 headers: {'Content-Type': 'application/json; charset=utf-8'},
-                params: {filter: encodeURIComponent(queryFilter)}
+                params: {filter: encodeURIComponent(queryFilter), sharingNodeId: nodeId}
             };
 
             var request = new Request(requestParams);
