@@ -6,59 +6,63 @@ var initialize = function () {
     request = appworksRequest();
     cordovaRequest = CordovaRequest();
 
-    cordovaRequest.authenticate().done(function (authResponse) {
+      cordovaRequest.authenticate().done(function (authResponse) {
 
-        var opts = {fallbackLng: "en"};
+          var opts = {fallbackLng: "en"};
 
-        appSettings.serverURL = authResponse.authData.gatewayUrl;
-        appSettings.authResponse = authResponse;
+          appSettings.serverURL = authResponse.authData.gatewayUrl;
+          appSettings.authResponse = authResponse;
 
-        cordovaRequest.getDefaultLanguage().done(function (lng) {
-            opts.lng = lng.value;
-        }).always(function () {
-            i18n.init(opts).done(function () {
+          cordovaRequest.getDefaultLanguage().done(function (lng) {
+              opts.lng = lng.value;
+          }).always(function () {
+              i18n.init(opts).done(function () {
 
-                //translate submit button
-                $(".btnSubmit").i18n();
+                  //translate submit button
+                  $(".btnSubmit").i18n();
 
-                AddCustomAlpacaFields();
+                  AddCustomAlpacaFields();
 
-                if (isFile(appSettings.nodeType)) {
-                    request.getFile(appSettings.fileSource).done(
-                        function (data) {
-                            if(appSettings.fileSource == "device") {
-                              appSettings.FileData = data.data || {};
-                              appSettings.FileName = data.filename || "";
-                              appSettings.MimeType = data.mimetype || "";
-                            } else {
-                              appSettings.FileData = data || {};
+                  if (isFile(appSettings.nodeType)) {
+                    var getFileTimeout = setTimeout(function(){
+                        request.getFile(appSettings.fileSource).done(function (data) {
+                                console.log("getFile");
+                                if(appSettings.fileSource == "device") {
+                                  appSettings.FileData = data.data || {};
+                                  appSettings.FileName = data.filename || "";
+                                  appSettings.MimeType = data.mimetype || "";
+                                } else {
+                                  appSettings.FileData = data || {};
+                                }
+                                getForms();
+                        }).fail(
+                            function () {
+                                // no file chosen so go back to ews
+                                closeMe();
                             }
-                            getForms();
-                        }
-                    ).fail(
-                        function () {
-                            // no file chosen so go back to ews
-                            closeMe();
-                        }
-                    );
-                }
-                getForms();
+                        );
+                    }, 500);
+                  }
 
-            }).fail(
-                function (res, statusText, err) {
-                    if (res && res.status === 401) {
-                        // we may have an external user. dont quit until we try to submit and it doesnt work
-                    } else {
-                        alert($.t("ERROR_INVALID_ARGUMENTS"));
-                        closeMe();
-                    }
-                }
-            );
-        });
+                  var getFormsTimeout = setTimeout(function(){
+                    getForms();
+                  },800);
 
-    }).fail(function () {
-        alert("fail epic");
-    });
+              }).fail(
+                  function (res, statusText, err) {
+                      if (res && res.status === 401) {
+                          // we may have an external user. dont quit until we try to submit and it doesnt work
+                      } else {
+                          alert($.t("ERROR_INVALID_ARGUMENTS"));
+                          closeMe();
+                      }
+                  }
+              );
+          });
+
+      }).fail(function () {
+          alert("fail epic");
+      });
 
 };
 
@@ -370,7 +374,10 @@ var onDeviceReady = function () {
             closeMe();
         }
     });
-    initialize();
+
+    var t = setTimeout(function(){
+      initialize();
+    }, 1000);
 };
 
 var processQueryParameters = function (query) {
