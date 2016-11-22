@@ -25,6 +25,9 @@ function $File() {
               } else {
                   contentType = 'image/jpeg';
               }
+            } else if (typeof(dataURL) === "object") {
+              contentType = dataURL.mimetype;
+              byteCharacters = atob(dataURL.data.replace(/^[^,]+,/, ''));
             } else {
               // Split "data:application/pdf;JPSAJDfdjfhksdff..sdf3y3dhdd=="
               // into parts[0] = data:application.pdf

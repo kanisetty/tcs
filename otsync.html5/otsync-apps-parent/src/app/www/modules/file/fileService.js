@@ -45,8 +45,26 @@ angular.module('fileService', ['appworksService'])
 
                 var camera = new Appworks.AWCamera(success, failure);
 
-                function success(data) {
-                    deferred.resolve(data);
+                function success(filePath) {
+                  window.resolveLocalFileSystemURL('file://' + filePath,
+                    function (fileEntry) {
+                      fileEntry.file(function (file) {
+                        var reader = new FileReader();
+                        fileObject = {"filename" : file.name, "mimetype" : file.type};
+                        reader.onloadend = function (evt) {
+                            var parts = evt.target.result.split(";");
+                            fileObject["data"] = parts[1].replace("base64,","");
+                            deferred.resolve(fileObject);
+                        };
+
+                        reader.readAsDataURL(file);
+                      },
+                        function (err) {
+                          deferred.reject;
+                        });
+                    }, function (err) {
+                      deferred.reject;
+                    });
                 }
 
                 function failure(err) {

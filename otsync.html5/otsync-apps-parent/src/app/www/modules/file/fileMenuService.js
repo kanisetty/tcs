@@ -50,14 +50,10 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileServi
 							},
 							!disablePromptLoading));
 
-						/*
 						if($appworksService.deviceIsAndroid()) {
 							fileMenuItems.push(menuItemFactory.createMenuItemWithPrompt($displayMessageService.translate('FROM DEVICE'), shouldRefresh, !hasModal,
 								function () {
 									var filename = node.getName();
-									if (!new RegExp(/\.(jpe?g)$/).test(filename)) {
-										filename += '.jpg';
-									}
 									return $fileResource.addVersion(node, new File(filename, this.data));
 								},
 								function () {
@@ -65,7 +61,6 @@ angular.module('fileMenuService', ['menuItemFactory', 'fileResource', 'fileServi
 								},
 								!disablePromptLoading));
 						}
-						*/
 
 						return fileMenuItems;
 					},
