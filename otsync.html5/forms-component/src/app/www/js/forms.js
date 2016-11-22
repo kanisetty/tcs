@@ -26,27 +26,22 @@ var initialize = function () {
                   if (isFile(appSettings.nodeType)) {
                     var getFileTimeout = setTimeout(function(){
                         request.getFile(appSettings.fileSource).done(function (data) {
-                                console.log("getFile");
-                                if(appSettings.fileSource == "device") {
-                                  appSettings.FileData = data.data || {};
-                                  appSettings.FileName = data.filename || "";
-                                  appSettings.MimeType = data.mimetype || "";
-                                } else {
-                                  appSettings.FileData = data || {};
-                                }
-                                getForms();
-                        }).fail(
-                            function () {
-                                // no file chosen so go back to ews
-                                closeMe();
-                            }
-                        );
+                          if(appSettings.fileSource == "device") {
+                            appSettings.FileData = data.data || {};
+                            appSettings.FileName = data.filename || "";
+                            appSettings.MimeType = data.mimetype || "";
+                          } else {
+                            appSettings.FileData = data || {};
+                          }
+                          getForms();
+                        }).fail(function () {
+                            // no file chosen so go back to ews
+                            closeMe();
+                        });
                     }, 500);
                   }
 
-                  var getFormsTimeout = setTimeout(function(){
-                    getForms();
-                  },800);
+                  getForms();
 
               }).fail(
                   function (res, statusText, err) {
@@ -160,6 +155,7 @@ var submitForm = function () {
         };
 
         loadingDialog.show();
+        loadingDialog.cancelTimeout();
 
         request.sendRequest(requestParams).done(
             function () {
@@ -350,6 +346,7 @@ var sendPlainFormRequest = function (request) {
     });
 
     loadingDialog.show();
+    loadingDialog.cancelTimeout();
 };
 
 var closeMe = function () {

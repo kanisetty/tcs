@@ -65,6 +65,7 @@ var loadingDialog = loadingDialog || (function ($) {
              * Closes dialog
              */
             hide: function () {
+              clearTimeout($timeout);
               $timeout = null;
               $dialog.find('.reload').hide();
               $dialog.find('.progress').show();
@@ -72,9 +73,15 @@ var loadingDialog = loadingDialog || (function ($) {
             },
 
             showRetry: function () {
+              clearTimeout($timeout);
               $timeout = null;
               $dialog.find('.reload').show();
               $dialog.find('.progress').hide();
+            },
+
+            cancelTimeout: function () {
+              clearTimeout($timeout);
+              $timeout = null;
             }
         };
 
