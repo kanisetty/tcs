@@ -30,8 +30,13 @@ function $File() {
               // into parts[0] = data:application.pdf
               // and parts[1] = JPSAJDfdjfhksdff..sdf3y3dhdd==
               var parts = dataURL.split(";");
-              contentType = parts[0].replace("data:","");
-              byteCharacters = atob(parts[1].replace(/^[^,]+,/, ''));
+              if(parts.length == 1) {
+                contentType = 'image/jpeg';
+                byteCharacters = atob(parts[0].replace(/^[^,]+,/, ''));
+              } else {
+                contentType = parts[0].replace("data:","");
+                byteCharacters = atob(parts[1].replace(/^[^,]+,/, ''));
+              }
             }
             //var byteCharacters = atob(dataURL.replace(/^[^,]+,/, ''));
             var byteArrays = [];
