@@ -225,8 +225,13 @@
         // Set Creator username
         $("#node-created-by").text(node.ownerName);
 
+        /*
+         * TEMPO-6877
+         * modified date of the documents in IOS does not matches with the date from the desktop system
+         * Was using displayModifyDate as default, now using nodeModifiedDate
+         */
         // Set Modified Date
-        $("#node-modified").text(ObjDetails.format.date(node.displayModifyDate?node.displayModifyDate:node.modifyDate));
+        $("#node-modified").text(ObjDetails.format.date(node.nodeModifiedDate?node.nodeModifiedDate:node.displayModifyDate));
 
         // Set Type
         $("#node-type").text(formatType(node.subtype));
