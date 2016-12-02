@@ -25,7 +25,11 @@ var initialize = function () {
 
                   if (isFile(appSettings.nodeType)) {
                     var getFileTimeout = setTimeout(function(){
-                        request.getFile(appSettings.fileSource).done(function (data) {
+                        request.getFile(appSettings.fileSource).progress(function (progress) {
+                          $("#progress-wrapper").css({display:"block"});
+                          $("#progress").css({width:(Math.round((progress.loaded / progress.total) * 100))+"%"});
+                        }).done(function (data) {
+                          $("#progress-wrapper").css({display:"none"});
                           if(appSettings.fileSource == "device") {
                             appSettings.FileData = data.data || {};
                             appSettings.FileName = data.filename || "";
@@ -35,6 +39,7 @@ var initialize = function () {
                           }
                           getForms();
                         }).fail(function () {
+                            $("#progress-wrapper").css({display:"none"});
                             // no file chosen so go back to ews
                             closeMe();
                         });

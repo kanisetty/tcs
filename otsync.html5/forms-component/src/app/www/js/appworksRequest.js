@@ -93,8 +93,14 @@ var appworksRequest = function () {
 
                   camera = new Appworks.AWCamera(function (filePath) {
 
-                    window.resolveLocalFileSystemURL('file://' + filePath,
+                    var updatedFilePath = filePath;
+                    if(updatedFilePath.indexOf("://") < 0) {
+                      updatedFilePath = 'file://' + filePath;
+                    }
+
+                    window.resolveLocalFileSystemURL(updatedFilePath,
                       function (fileEntry) {
+
                         fileEntry.file(function (file) {
                           var reader = new FileReader();
                           fileObject = {"filename" : file.name, "mimetype" : file.type};
@@ -103,18 +109,30 @@ var appworksRequest = function () {
                               fileObject["data"] = parts[1].replace("base64,","");
                               deferred.resolve(fileObject);
                           };
+                          reader.onerror = function (err) {
+                            console.log("Error in reader.readAsDataURL: " + err);
+                            deferred.reject;
+                          };
+                          reader.onprogress = function(progress) {
+                            deferred.notify(progress);
+                            console.log("FileReader progress: " + progress.loaded + " / " + progress.total + "("+ Math.round((progress.loaded / progress.total) * 100) + "%)");
+                          };
 
                           reader.readAsDataURL(file);
+
                         },
                           function (err) {
+                            console.log("Error in fileEntry.file: " + err);
                             deferred.reject;
                           });
                       }, function (err) {
+                        console.log("Error in window.resolveLocalFileSystemURL: " + err);
                         deferred.reject;
                       });
 
-                  }, function (error) {
-                      deferred.reject(error);
+                  }, function (err) {
+                    console.log("Error in camera.openGallery: " + err);
+                      deferred.reject(err);
                   });
 
                   options = {
