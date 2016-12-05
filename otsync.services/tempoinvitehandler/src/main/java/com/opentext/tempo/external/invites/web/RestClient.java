@@ -140,6 +140,12 @@ public class RestClient {
                 case 204:
                     return null;
                 default:
+                    try {
+                        String errResponseBody = response.readEntity(String.class);
+                        LOG.info("RestClient request failed - status " + status + ", body: " + errResponseBody);
+                    } catch (Exception e) {
+                        LOG.error("Our attempt at reading the response body failed", e);
+                    }
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Received error response of status " + status + " " + response);
                     }

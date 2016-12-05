@@ -2,7 +2,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
-                             
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.opentext.otsync</groupId>
@@ -19,7 +19,7 @@
         <module>favorites</module>
         <module>feeds</module>
         <module>otsync-connector</module>
-		<module>otsync-service-tools</module>
+        <module>otsync-service-tools</module>
         <module>shares</module>
         <module>tasks</module>
         <module>tempocontent</module>
@@ -82,6 +82,63 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <!--use to trawl dependencies, including useful tree-->
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>download-licenses</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-third-party</goal>
+                            <goal>download-licenses</goal>
+                        </goals>
+                        <configuration>
+                            <licensesOutputDirectory>
+                                ${project.build.directory}/licenses/${project.artifactId}-licenses
+                            </licensesOutputDirectory>
+                            <licensesOutputFile>
+                                ${project.build.directory}/licenses/${project.artifactId}-licenses.xml
+                            </licensesOutputFile>
+                            <excludedScopes>test,provided</excludedScopes>
+                            <useMissingFile>true</useMissingFile>
+                            <licenseMerges>
+                                <licenseMerge>Apache License, Version 2.0|Apache 2|Apache 2.0|Apache Software
+                                    License -
+                                    Version 2.0|The Apache Software License, Version 2.0|Apache License 2.0|Apache
+                                    License Version 2.0|Apache Public License 2.0
+                                </licenseMerge>
+                                <licenseMerge>Common Development and Distribution License (CDDL) v1.0|COMMON
+                                    DEVELOPMENT
+                                    AND DISTRIBUTION LICENSE (CDDL) Version 1.0
+                                </licenseMerge>
+                                <licenseMerge>Common Development and Distribution License (CDDL) v1.1|CDDL 1.1
+                                </licenseMerge>
+                                <licenseMerge>Creative Commons Zero|cc0|CC0</licenseMerge>
+                                <licenseMerge>Eclipse Distribution License, Version 1.0|Eclipse Distribution License
+                                    v.
+                                    1.0
+                                </licenseMerge>
+                                <licenseMerge>Eclipse Public License, Version 1.0|Eclipse Public License v1.0
+                                </licenseMerge>
+                                <licenseMerge>GPLv2 with classpath exception|GPL2 w/ CPE|GPLv2+CE</licenseMerge>
+                                <licenseMerge>LGPL|GNU Lesser Public License</licenseMerge>
+                                <licenseMerge>CDDL v1.1 and GPL v2|Dual license consisting of the CDDL v1.1 and GPL
+                                    v2
+                                </licenseMerge>
+                            </licenseMerges>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>
