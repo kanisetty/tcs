@@ -217,7 +217,9 @@ var getForms = function () {
                     if(appSettings.fileSource == "device") {
                       nodeCreateForm.data.name = appSettings.FileName;
                       if(appSettings.FileName != "") {
+                        $('#alpaca3').focus();
                         $('#alpaca3').val(appSettings.FileName);
+                        $('#alpaca3').blur();
                       }
                     } else {
                       nodeCreateForm.data.name = appSettings.FileData.fileName;
@@ -460,6 +462,7 @@ function dataURItoBlob(dataURI) {
 function blurInputFields() {
     // blur all input fields
     $("#nodeCreate").find('input').each(function (index, element) {
+        $(element).focus(); // Alpaca forms are horrible!
         $(element).blur();
     });
 }
