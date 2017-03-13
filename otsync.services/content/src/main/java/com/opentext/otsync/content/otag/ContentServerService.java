@@ -4,31 +4,21 @@ import com.opentext.otag.sdk.client.v3.AuthClient;
 import com.opentext.otag.sdk.client.v3.NotificationsClient;
 import com.opentext.otag.sdk.client.v3.ServiceClient;
 import com.opentext.otag.sdk.client.v3.SettingsClient;
+import com.opentext.otag.sdk.connector.EIMConnectorClient;
+import com.opentext.otag.sdk.connector.EIMConnectorClient.ConnectionResult;
+import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
+import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
 import com.opentext.otag.sdk.types.v3.api.SDKResponse;
 import com.opentext.otag.sdk.types.v3.api.error.APIException;
 import com.opentext.otag.sdk.types.v3.management.DeploymentResult;
-import com.opentext.otag.sdk.types.v3.settings.Setting;
 import com.opentext.otsync.content.engine.ContentServiceEngine;
-import com.opentext.otsync.content.ws.server.ClientType;
 import com.opentext.otsync.content.http.HTTPRequestManager;
-import com.opentext.otag.sdk.connector.EIMConnectorClient;
-import com.opentext.otag.sdk.connector.EIMConnectorClient.ConnectionResult;
-import com.opentext.otag.sdk.connector.EIMConnectorClientImpl;
-import com.opentext.otag.sdk.handlers.AWServiceContextHandler;
-import com.opentext.otag.sdk.handlers.AWServiceStartupComplete;
+import com.opentext.otsync.content.ws.server.ClientType;
 import com.opentext.otsync.otag.EIMConnectorHelper;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import com.opentext.otsync.content.ContentServiceConstants;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Content Server Appworks Service. Responds to the Gateways startup signal initialising
@@ -125,7 +115,7 @@ public class ContentServerService implements AWServiceContextHandler {
             serviceEngine.shutdown();
     }
 
-    public static Map<String, ClientType> getClientInfo(){
+    public static Map<String, ClientType> getClientInfo() {
         return clientInfo;
     }
 

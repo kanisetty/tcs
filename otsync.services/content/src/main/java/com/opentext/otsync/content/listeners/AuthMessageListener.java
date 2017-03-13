@@ -3,9 +3,9 @@ package com.opentext.otsync.content.listeners;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opentext.otsync.content.ContentServiceConstants;
-import com.opentext.otsync.content.http.HTTPRequestManager;
 import com.opentext.otsync.content.message.Message;
 import com.opentext.otsync.content.message.SynchronousMessageListener;
+import com.opentext.otsync.content.otag.GatewayUrlSettingService;
 import com.opentext.otsync.content.util.ReturnHeaders;
 import com.opentext.otsync.content.ws.ServletConfig;
 import com.opentext.otsync.content.ws.message.MessageConverter;
@@ -28,7 +28,6 @@ import org.apache.http.util.EntityUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,11 +41,14 @@ public class AuthMessageListener implements SynchronousMessageListener {
     private MessageConverter _messageConverter;
     private static Log log = LogFactory.getLog(AuthMessageListener.class);
     private ClientTypeSet _clientSet;
+    private GatewayUrlSettingService gatewayUrlSettingService;
 
-    public AuthMessageListener(MessageConverter messageConverter, HTTPRequestManager serverConnection) {
+    public AuthMessageListener(MessageConverter messageConverter,
+                               GatewayUrlSettingService gatewayUrlSettingService) {
         _messageConverter = messageConverter;
 
         _clientSet = new ClientTypeSet();
+        this.gatewayUrlSettingService = gatewayUrlSettingService;
     }
 
     /**
@@ -141,17 +143,12 @@ public class AuthMessageListener implements SynchronousMessageListener {
         String requestJSON = buildAWAuthRequestString(message);
         CSForwardHeaders headers = new CSForwardHeaders(incomingRequest);
 
-        //Build up AppWorks Auth request using incoming request's URL
-        String requestScheme = incomingRequest.getScheme();
-        Integer requestPort = incomingRequest.getServerPort();
-        String requestServer = incomingRequest.getServerName();
-
         HttpResponse response;
 
         HttpClient httpClient = new DefaultHttpClient();
         try {
-            URL requestURL = new URL(requestScheme, requestServer, requestPort, "/v3/admin/auth");
-            HttpPost request = new HttpPost(requestURL.toString());
+            String requestURL = gatewayUrlSettingService.getGatewayUrl() + "/v3/admin/auth";
+            HttpPost request = new HttpPost(requestURL);
 
             headers.addTo(request);
             request.addHeader("content-type", "application/json");
