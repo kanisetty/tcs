@@ -69,6 +69,48 @@ public class AuthMessageListener implements SynchronousMessageListener {
         Map<String, Object> awAuthResult = doAppWorksAuth(message, request, returnHeaders);
         combinedResult.putAll(awAuthResult);
 
+
+        if(message.containsKey("username")){
+            log.debug("Username key found" );
+            // We need to overwrite the username and password in the message passed to the Content Server auth
+
+            // First we check that the username isn't empty or invalid
+            log.debug("Replacing username based on OTSYNC Connector creds....");
+            if (awAuthResult.containsKey("addtl") && (awAuthResult.get("addtl") != null)){
+
+                try {
+                    Map<String, Object> otsyncParent = (Map<String, Object>) awAuthResult.get("addtl");
+
+                    if(otsyncParent.containsKey("otsync-connector")){
+                        log.trace("OTSYNC Connector key found....");
+                        Map<String, Object> otsyncKeys = (Map<String, Object>) otsyncParent.get("otsync-connector");
+
+                        String otsyncUsername = (String) otsyncKeys.get("csUsername");
+                        log.trace("OTSYNC Connector Username is: " + otsyncUsername);
+                        if (otsyncUsername != null && !otsyncUsername.isEmpty()){
+                            log.trace("Username replacement in progress");
+                            log.trace("Username from message object is:" + message.get("username"));
+                            log.trace("Removing Key: username");
+                            message.remove("username");
+                            message.put("username", otsyncUsername);
+                            log.trace("Username from message object is:" + message.get("username"));
+
+                        } else{
+                            log.error("Username replacement failed - OTSYNC Username is blank" );
+                        }
+
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+        }
+
         Map<String, Object> csAuthResult = doContentServerAuth(message, request, returnHeaders);
         combinedResult.putAll(csAuthResult);
 
@@ -178,6 +220,9 @@ public class AuthMessageListener implements SynchronousMessageListener {
             log.error(e);
             throw e;
         }
+
+
+        result.putAll(workingMap);
 
         //Map AW response fields to expected API response
         result.put("token", workingMap.getOrDefault("otagtoken", ""));
