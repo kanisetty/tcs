@@ -9,6 +9,8 @@ import com.opentext.otsync.content.otag.GatewayUrlSettingService;
 import com.opentext.otsync.content.util.ReturnHeaders;
 import com.opentext.otsync.content.ws.ServletConfig;
 import com.opentext.otsync.content.ws.message.MessageConverter;
+import com.opentext.otsync.content.ws.server.ClientSet;
+import com.opentext.otsync.content.ws.server.ClientType;
 import com.opentext.otsync.content.ws.server.ClientTypeSet;
 import com.opentext.otsync.otag.components.HttpClientService;
 import com.opentext.otsync.rest.util.CSForwardHeaders;
@@ -38,16 +40,21 @@ import static com.opentext.otsync.api.CSRequestHelper.makeRequest;
 // and clients can be updated
 public class AuthMessageListener implements SynchronousMessageListener {
 
-    private MessageConverter _messageConverter;
     private static Log log = LogFactory.getLog(AuthMessageListener.class);
+
+    static final String USERNAME = "username";
+    private static final String OTSYNC_CONNECTOR = "otsync-connector";
+    private static final String ADDTL = "addtl";
+
+    private MessageConverter _messageConverter;
     private ClientTypeSet _clientSet;
     private GatewayUrlSettingService gatewayUrlSettingService;
 
     public AuthMessageListener(MessageConverter messageConverter,
+                               ClientTypeSet clientSet,
                                GatewayUrlSettingService gatewayUrlSettingService) {
         _messageConverter = messageConverter;
-
-        _clientSet = new ClientTypeSet();
+        _clientSet = clientSet;
         this.gatewayUrlSettingService = gatewayUrlSettingService;
     }
 
@@ -58,58 +65,20 @@ public class AuthMessageListener implements SynchronousMessageListener {
      *
      * @param message - incoming request map with legacy FrontChannel format
      * @return - Map containing all fields to be returned to the requesting client
-     * @throws IOException
+     * @throws IOException if the remote auth call fails to Gateway or CS
      */
     public Map<String, Object> onMessage(Map<String, Object> message) throws IOException {
-        HttpServletRequest request = (HttpServletRequest) message.remove(ContentServiceConstants.INCOMING_REQUEST_KEY);
         ReturnHeaders returnHeaders = new ReturnHeaders();
-
         Map<String, Object> combinedResult = generateDefaultResponse();
+
+        HttpServletRequest request = (HttpServletRequest) message.remove(ContentServiceConstants.INCOMING_REQUEST_KEY);
 
         Map<String, Object> awAuthResult = doAppWorksAuth(message, request, returnHeaders);
         combinedResult.putAll(awAuthResult);
 
-
-        if(message.containsKey("username")){
-            log.debug("Username key found" );
-            // We need to overwrite the username and password in the message passed to the Content Server auth
-
-            // First we check that the username isn't empty or invalid
-            log.debug("Replacing username based on OTSYNC Connector creds....");
-            if (awAuthResult.containsKey("addtl") && (awAuthResult.get("addtl") != null)){
-
-                try {
-                    Map<String, Object> otsyncParent = (Map<String, Object>) awAuthResult.get("addtl");
-
-                    if(otsyncParent.containsKey("otsync-connector")){
-                        log.trace("OTSYNC Connector key found....");
-                        Map<String, Object> otsyncKeys = (Map<String, Object>) otsyncParent.get("otsync-connector");
-
-                        String otsyncUsername = (String) otsyncKeys.get("csUsername");
-                        log.trace("OTSYNC Connector Username is: " + otsyncUsername);
-                        if (otsyncUsername != null && !otsyncUsername.isEmpty()){
-                            log.trace("Username replacement in progress");
-                            log.trace("Username from message object is:" + message.get("username"));
-                            log.trace("Removing Key: username");
-                            message.remove("username");
-                            message.put("username", otsyncUsername);
-                            log.trace("Username from message object is:" + message.get("username"));
-
-                        } else{
-                            log.error("Username replacement failed - OTSYNC Username is blank" );
-                        }
-
-                    }
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-
-        }
+        // AppWorks may supply the correct CS username to use via its connector, the username
+        // provide by the original call may not be recognised
+        replaceUsernameInMessage(message, awAuthResult);
 
         Map<String, Object> csAuthResult = doContentServerAuth(message, request, returnHeaders);
         combinedResult.putAll(csAuthResult);
@@ -119,6 +88,41 @@ public class AuthMessageListener implements SynchronousMessageListener {
 
         combinedResult.put(ReturnHeaders.MAP_KEY, returnHeaders);
         return combinedResult;
+    }
+
+    /**
+     * We need to overwrite the username in the message passed to the Content Server auth if
+     * AppWorks supplies one from its Content Server connector.
+     *
+     * @param message to update
+     * @param awAuthResult the AppWorks auth result
+     */
+    @SuppressWarnings("unchecked")
+    private void replaceUsernameInMessage(Map<String, Object> message, Map<String, Object> awAuthResult) {
+        if (message != null && message.containsKey(USERNAME)) {
+            // First we check that the username isn't empty or invalid
+            if (awAuthResult != null && awAuthResult.containsKey(ADDTL) && (awAuthResult.get(ADDTL) != null)) {
+                try {
+                    Map<String, Object> additionalDetails = (Map<String, Object>) awAuthResult.get(ADDTL);
+                    if (additionalDetails.containsKey(OTSYNC_CONNECTOR)) {
+                        log.debug("OTSYNC Connector key found, attempting to retrieve username");
+                        Map<String, Object> otsyncKeys = (Map<String, Object>) additionalDetails.get(OTSYNC_CONNECTOR);
+
+                        String otsyncUsername = (String) otsyncKeys.get("csUsername");
+                        if (otsyncUsername != null && !otsyncUsername.isEmpty()) {
+                            message.remove(USERNAME);
+                            log.debug("Replacing username based on OTSYNC Connector creds....");
+                            message.put(USERNAME, otsyncUsername);
+                        } else {
+                            log.warn("Username replacement failed - OTSYNC Username is blank");
+                        }
+                    }
+                } catch (Exception e) {
+                    log.warn("Failed to add username from AppWorks auth response, CS login may fail", e);
+                }
+
+            }
+        }
     }
 
     /**

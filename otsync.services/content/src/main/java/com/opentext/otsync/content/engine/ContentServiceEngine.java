@@ -15,6 +15,7 @@ import com.opentext.otsync.content.ws.message.JsonMessageConverter;
 import com.opentext.otsync.content.ws.message.MessageConverter;
 import com.opentext.otsync.content.ws.server.CleanUpThread;
 import com.opentext.otsync.content.ws.server.ClientSet;
+import com.opentext.otsync.content.ws.server.ClientTypeSet;
 import com.opentext.otsync.content.ws.server.servlet3.Servlet3BackChannel;
 import com.opentext.otsync.content.ws.server.servlet3.Servlet3ContentChannel;
 import com.opentext.otsync.content.ws.server.servlet3.Servlet3FrontChannel;
@@ -190,7 +191,8 @@ public class ContentServiceEngine {
             throw new RuntimeException("Failed to resolve the GatewayUrlSettingService, we will " +
                     "not be able to authenticate requests against the managing AppWorks Gateway without it.");
         }
-        AuthMessageListener authListener = new AuthMessageListener(messageConverter, otagUrlService);
+        AuthMessageListener authListener = new AuthMessageListener(
+                messageConverter, new ClientTypeSet(), otagUrlService);
         messageHandler.setHandler(authListener, Message.AUTH_KEY_VALUE);
 
         ForwardingMessageListener notifyListener =
