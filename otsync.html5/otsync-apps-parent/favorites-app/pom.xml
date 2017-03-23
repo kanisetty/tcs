@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync-apps-parent</artifactId>
-        <version>16.1.0</version>
+        <version>16.1.1</version>
     </parent>
 
     <artifactId>favorites-app</artifactId>
 	<name>Favorites App</name>
-    <version>16.1.0</version>
+    <version>16.1.1</version>
 
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
