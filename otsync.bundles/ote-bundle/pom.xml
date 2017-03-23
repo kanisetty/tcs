@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.bundles</artifactId>
-        <version>16.1.0</version>
+        <version>16.1.1</version>
     </parent>
 
     <artifactId>ote-bundle</artifactId>
     <name>OpenText Everywhere Bundle</name>
-    <version>16.1.0</version>
+    <version>16.1.1</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
