@@ -8,12 +8,12 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.1.0</version>
+        <version>16.1.1</version>
     </parent>
 
     <artifactId>otsync-service-tools</artifactId>
     <name>OTSync Service Tools</name>
-    <version>16.1.0</version>
+    <version>16.1.1</version>
     <description>Common classes used by Content Server client/services deployed to the
         Appworks Gateway. Used extensively by the ECM Everywhere/Tempo service implementations.</description>
 

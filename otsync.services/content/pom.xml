@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.1.0</version>
+        <version>16.1.1</version>
     </parent>
 
     <artifactId>content</artifactId>
@@ -103,7 +103,7 @@
       <dependency>
           <groupId>com.opentext.otsync</groupId>
           <artifactId>webui</artifactId>
-          <version>16.1.0</version>
+          <version>16.1.1</version>
           <type>zip</type>
       </dependency>
 
@@ -111,7 +111,7 @@
         <dependency>
             <groupId>com.opentext.otsync</groupId>
             <artifactId>otsync-service-tools</artifactId>
-            <version>16.1.0</version>
+            <version>16.1.1</version>
         </dependency>
 
         <!-- Make sure these elderly gents don't drag our Servlet level down -->

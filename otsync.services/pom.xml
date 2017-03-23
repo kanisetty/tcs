@@ -8,7 +8,7 @@
     <groupId>com.opentext.otsync</groupId>
     <artifactId>otsync.services</artifactId>
     <packaging>pom</packaging>
-    <version>16.1.0</version>
+    <version>16.1.1</version>
 
     <name>OTSync Services</name>
 

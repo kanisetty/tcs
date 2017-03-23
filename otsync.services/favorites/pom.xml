@@ -8,13 +8,13 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.1.0</version>
+        <version>16.1.1</version>
     </parent>
 
     <artifactId>favorites</artifactId>
     <packaging>war</packaging>
     <name>Favorites Service</name>
-    <version>16.1.0</version>
+    <version>16.1.1</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -102,7 +102,7 @@
         <dependency>
             <groupId>com.opentext.otsync</groupId>
             <artifactId>otsync-service-tools</artifactId>
-            <version>16.1.0</version>
+            <version>16.1.1</version>
         </dependency>
   
         <dependency>

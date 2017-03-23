@@ -6,13 +6,13 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.1.0</version>
+        <version>16.1.1</version>
     </parent>
 
     <artifactId>webui</artifactId>
     <name>Web UI</name>
     <description>The TempoBox Web UI.</description>
-    <version>16.1.0</version>
+    <version>16.1.1</version>
 
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
