@@ -342,8 +342,7 @@ public class OTSyncConnector extends AbstractMultiSettingChangeHandler
                 String value = setting.getValue();
                 if (value != null) {
                     if (setting.isConfidential()) {
-                        LOG.info("Discovered " + settingKey + " setting was defined, " +
-                                "setting local value " + value);
+                        LOG.info("Discovered setting '" + settingKey + "'");
                     }
                     setter.accept(value);
                 }
