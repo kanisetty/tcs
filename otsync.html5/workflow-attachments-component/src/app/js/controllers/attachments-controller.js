@@ -42,9 +42,9 @@ function AttachmentsController(attachmentsProvider, $scope, $ionicModal, $ionicP
         $scope.modal.show();
     };
 
-    $scope.viewAttachment = function viewAttachment(attachmentId, attachmentName) {
+    $scope.viewAttachment = function viewAttachment(attachmentId) {
         var component = new Appworks.AWComponent();
-        var data = {id: attachmentId, name: encodeURI(attachmentName)};
+        var data = {id: attachmentId};
         var success = function () {
         };
         var err = function (err) {

@@ -1,17 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+	
 	<modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.html5</artifactId>
-        <version>16.1.1</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>workflow-attachments-component</artifactId>
 	<name>Workflow Attachments Component</name>
-    <version>16.1.1</version>
 
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,7 +18,7 @@
         <!-- General app.properties -->
         <app.properties.displayName>Workflow Attachments Component</app.properties.displayName>
         <app.properties.description>Workflow Attachments Component</app.properties.description>
-        <app.properties.version>${project.version}</app.properties.version>
+        <app.properties.version>16.0.1</app.properties.version>
         <app.properties.type>component</app.properties.type>
     </properties>
 
@@ -43,7 +42,7 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-
+        
 		<plugins>
             <!-- Clear down the local front end dependencies and  node/npm install -->
             <plugin>

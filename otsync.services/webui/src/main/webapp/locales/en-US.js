@@ -194,7 +194,6 @@ $.extend( true, info.userPrefDictionary, {
 		"Repo":"Repo",
 		"Reserve":"Reserve",
 		"ReserveItem":"Reserve Item",
-		"ResetPasswordLink":"Click here to reset password",
 		"Restore":"Restore",
 		"ReturnToAllFiles": "Return to All Files",
 		"Save": "Save",

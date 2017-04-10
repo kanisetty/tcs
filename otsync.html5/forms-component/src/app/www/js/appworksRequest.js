@@ -83,82 +83,20 @@ var appworksRequest = function () {
         getFile: function (func) {
 
             var deferred = $.Deferred();
-            var fileObject = {};
             try {
 
-                var options = null;
-                var camera = null;
+                var options = {destinationType: Camera.DestinationType.DATA_URL};
+                var camera = new Appworks.AWCamera(function (data) {
+                    deferred.resolve(data);
+                }, function (error) {
+                    deferred.reject(error);
+                });
 
-                if (func === 'device') {
-
-                  camera = new Appworks.AWCamera(function (filePath) {
-
-                    var updatedFilePath = filePath;
-                    if(updatedFilePath.indexOf("://") < 0) {
-                      updatedFilePath = 'file://' + filePath;
-                    }
-
-                    window.resolveLocalFileSystemURL(updatedFilePath,
-                      function (fileEntry) {
-
-                        fileEntry.file(function (file) {
-                          var reader = new FileReader();
-                          fileObject = {"filename" : file.name, "mimetype" : file.type};
-                          reader.onloadend = function (evt) {
-                              var parts = evt.target.result.split(";");
-                              fileObject["data"] = parts[1].replace("base64,","");
-                              deferred.resolve(fileObject);
-                          };
-                          reader.onerror = function (err) {
-                            console.log("Error in reader.readAsDataURL: " + err);
-                            deferred.reject;
-                          };
-                          reader.onprogress = function(progress) {
-                            deferred.notify(progress);
-                            console.log("FileReader progress: " + progress.loaded + " / " + progress.total + "("+ Math.round((progress.loaded / progress.total) * 100) + "%)");
-                          };
-
-                          reader.readAsDataURL(file);
-
-                        },
-                          function (err) {
-                            console.log("Error in fileEntry.file: " + err);
-                            deferred.reject;
-                          });
-                      }, function (err) {
-                        console.log("Error in window.resolveLocalFileSystemURL: " + err);
-                        deferred.reject;
-                      });
-
-                  }, function (err) {
-                    console.log("Error in camera.openGallery: " + err);
-                      deferred.reject(err);
-                  });
-
-                  options = {
-                              destinationType: Camera.DestinationType.FILE_URI,
-                              mediaType: Camera.MediaType.ALLMEDIA
-                            };
-                  camera.openGallery(options);
-
-                } else {
-
-                  camera = new Appworks.AWCamera(function (data) {
-                      deferred.resolve(data);
-                  }, function (error) {
-                      deferred.reject(error);
-                  });
-
-                  options = {
-                              destinationType: Camera.DestinationType.DATA_URL
-                            };
-
-                  if (func === 'gallery') {
-                      camera.openGallery(options);
-                  }
-                  else if (func === 'camera') {
-                      camera.takePicture(options);
-                  }
+                if (func === 'gallery') {
+                    camera.openGallery(options);
+                }
+                else if (func === 'camera') {
+                    camera.takePicture(options);
                 }
 
             } catch (error) {

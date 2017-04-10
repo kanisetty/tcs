@@ -73,10 +73,6 @@ angular.module('Node', ['Sharing'])
                 return iconURL;
             };
 
-            this.hasTasks = function () {
-              return _nodeData.HASTASKS;
-            };
-
             this.getID = function () {
                 return _nodeData.id;
             };
@@ -188,10 +184,6 @@ angular.module('Node', ['Sharing'])
 
             this.getFileNameForOnDeviceStorage = function () {
                 return this.getID() + "_" + this.getVersionNumber() + "_" + this.getName();
-            };
-
-            this.isBrava = function () {
-                return _nodeData.ISBRAVA;
             };
         };
 

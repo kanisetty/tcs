@@ -22,12 +22,6 @@ angular.module('ews', ['ionic', 'browseController', 'collaboratorsController', '
         });
     }])
 
-    .run(['$rootScope', '$fileExportSync', function ($rootScope, $fileExportSync) {
-        $rootScope.$on('$fileExportSync.sync', function () {
-            $fileExportSync.sync();
-        });
-    }])
-
     .config(['$provide', function ($provide) {
         $provide.decorator("$exceptionHandler", ['$delegate', function ($delegate) {
             return function (exception, cause) {

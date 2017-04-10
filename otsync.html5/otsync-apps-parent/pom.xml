@@ -6,13 +6,13 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.html5</artifactId>
-        <version>16.1.1</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>otsync-apps-parent</artifactId>
 	<name>OTSync Apps Parent</name>
     <packaging>pom</packaging>
-    <version>16.1.1</version>
+    <version>16.0.1</version>
 
     <modules>
         <module>ews-app</module>

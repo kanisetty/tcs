@@ -8,13 +8,13 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.1.1</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>content</artifactId>
     <packaging>war</packaging>
     <name>Content Service</name>
-    <version>16.1.1</version>
+    <version>16.0.3</version>
     <description>Content Server-backed APIs for document management and sharing</description>
 
     <properties>
@@ -22,7 +22,7 @@
 
         <!-- Output artifacts properties -->
         <appworks.service.name>content</appworks.service.name>
-        <appworks.service.version>${project.version}</appworks.service.version>
+        <appworks.service.version>16.0.1</appworks.service.version>
     </properties>
 
     <build>
@@ -103,7 +103,7 @@
       <dependency>
           <groupId>com.opentext.otsync</groupId>
           <artifactId>webui</artifactId>
-          <version>16.1.1</version>
+          <version>16.0.3</version>
           <type>zip</type>
       </dependency>
 
@@ -111,7 +111,7 @@
         <dependency>
             <groupId>com.opentext.otsync</groupId>
             <artifactId>otsync-service-tools</artifactId>
-            <version>16.1.1</version>
+            <version>16.0.1</version>
         </dependency>
 
         <!-- Make sure these elderly gents don't drag our Servlet level down -->
@@ -155,25 +155,6 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>3.0.1</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easytesting</groupId>
-            <artifactId>fest-assert-core</artifactId>
-            <version>2.0M10</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>

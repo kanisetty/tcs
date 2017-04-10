@@ -76,40 +76,11 @@ var request = new function() {
 		this.contentType = 'application/json; charset=utf-8';
 		this.dataType = 'json';
 
-    	this.beforeSend = function(xhr){
-			// note: the space after Connection is required
-			xhr.setRequestHeader("Connection ", "close");
-   		};
+    this.beforeSend = function(xhr){
+        // note: the space after Connection is required
+        xhr.setRequestHeader("Connection ", "close");
+    };
 	};
-
-	/**
-	 This constructor will create an object that can be used to make an AJAX call to OTSync Rest API.
-
-	 @param {String} url
-	 @param {Object} formData
-
-	 @private
-	 */
-	this.RestAPIPutRequest = function(url, formData){
-		this.type = 'PUT';
-		this.url = url;
-		this.data = formData;
-		this.contentType = 'application/x-www-form-urlencoded; charset=UTF-8';
-		this.cache = false;
-
-		try{
-			formData.clientID = info.clientID;
-		}
-		catch(err){
-			console.log(err.message);
-		}
-
-		this.beforeSend = function(xhr){
-			// note: the space after Connection is required
-			xhr.setRequestHeader("Connection ", "close");
-		};
-	};
-
 
 	/**
 	This constructor will create an object that will be passed to OTSync (authentication requests).
@@ -459,7 +430,7 @@ var request = new function() {
 							}
 						});
 
-						if (data.length >= 0){
+						if (data.length > 0){
 							return data;
 						}
 

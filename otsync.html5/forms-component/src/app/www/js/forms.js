@@ -6,63 +6,53 @@ var initialize = function () {
     request = appworksRequest();
     cordovaRequest = CordovaRequest();
 
-      cordovaRequest.authenticate().done(function (authResponse) {
+    cordovaRequest.authenticate().done(function (authResponse) {
 
-          var opts = {fallbackLng: "en"};
+        var opts = {fallbackLng: "en"};
 
-          appSettings.serverURL = authResponse.authData.gatewayUrl;
-          appSettings.authResponse = authResponse;
+        appSettings.serverURL = authResponse.authData.gatewayUrl;
+        appSettings.authResponse = authResponse;
 
-          cordovaRequest.getDefaultLanguage().done(function (lng) {
-              opts.lng = lng.value;
-          }).always(function () {
-              i18n.init(opts).done(function () {
+        cordovaRequest.getDefaultLanguage().done(function (lng) {
+            opts.lng = lng.value;
+        }).always(function () {
+            i18n.init(opts).done(function () {
 
-                  //translate submit button
-                  $(".btnSubmit").i18n();
+                //translate submit button
+                $(".btnSubmit").i18n();
 
-                  AddCustomAlpacaFields();
+                AddCustomAlpacaFields();
 
-                  if (isFile(appSettings.nodeType)) {
-                    var getFileTimeout = setTimeout(function(){
-                        request.getFile(appSettings.fileSource).progress(function (progress) {
-                          $("#progress-wrapper").css({display:"block"});
-                          $("#progress").css({width:(Math.round((progress.loaded / progress.total) * 100))+"%"});
-                        }).done(function (data) {
-                          $("#progress-wrapper").css({display:"none"});
-                          if(appSettings.fileSource == "device") {
-                            appSettings.FileData = data.data || {};
-                            appSettings.FileName = data.filename || "";
-                            appSettings.MimeType = data.mimetype || "";
-                          } else {
+                if (isFile(appSettings.nodeType)) {
+                    request.getFile(appSettings.fileSource).done(
+                        function (data) {
                             appSettings.FileData = data || {};
-                          }
-                          getForms();
-                        }).fail(function () {
-                            $("#progress-wrapper").css({display:"none"});
+                            getForms();
+                        }
+                    ).fail(
+                        function () {
                             // no file chosen so go back to ews
                             closeMe();
-                        });
-                    }, 500);
-                  }
+                        }
+                    );
+                }
+                getForms();
 
-                  getForms();
+            }).fail(
+                function (res, statusText, err) {
+                    if (res && res.status === 401) {
+                        // we may have an external user. dont quit until we try to submit and it doesnt work
+                    } else {
+                        alert($.t("ERROR_INVALID_ARGUMENTS"));
+                        closeMe();
+                    }
+                }
+            );
+        });
 
-              }).fail(
-                  function (res, statusText, err) {
-                      if (res && res.status === 401) {
-                          // we may have an external user. dont quit until we try to submit and it doesnt work
-                      } else {
-                          alert($.t("ERROR_INVALID_ARGUMENTS"));
-                          closeMe();
-                      }
-                  }
-              );
-          });
-
-      }).fail(function () {
-          alert("fail epic");
-      });
+    }).fail(function () {
+        alert("fail epic");
+    });
 
 };
 
@@ -78,10 +68,6 @@ var getSettings = function () {
         appSettings.nodeType = queryParams.type;
         appSettings.fileSource = queryParams.fileSource;
         appSettings.FileData = {};
-
-        //Added for upload "from device"
-        appSettings.FileName = "";
-        appSettings.MimeType = "";
 
         if (appSettings.parentID == undefined || appSettings.nodeType == undefined || (isFile(appSettings.nodeType) && appSettings.fileSource == null)) {
             throw new Error("Invalid Arguments");
@@ -132,19 +118,13 @@ var submitForm = function () {
     createData.roles.categories = catsData;
 
     if (isFile(appSettings.nodeType)) {
-        if(appSettings.fileSource == "device") {
-          var blob = b64toBlob(appSettings.FileData, appSettings.MimeType);
-          createData = _.omit(createData, 'file');
-          formData.append('file', blob, createData.name);
-        } else {
-          var blob = b64toBlob(appSettings.FileData, "image/jpeg");
-          createData = _.omit(createData, 'file');
-          // auto add .jpg extensions for proper thumbnailing
-          if (!new RegExp(/\.jpg$/).test(createData.name)) {
-              createData.name += '.jpg';
-          }
-          formData.append('file', blob, createData.name);
+        var blob = b64toBlob(appSettings.FileData, "image/jpeg");
+        createData = _.omit(createData, 'file');
+        // auto add .jpg extensions for proper thumbnailing
+        if (!new RegExp(/\.jpg$/).test(createData.name)) {
+            createData.name += '.jpg';
         }
+        formData.append('file', blob, createData.name);
     }
 
     formData.append('body', JSON.stringify(createData));
@@ -160,7 +140,6 @@ var submitForm = function () {
         };
 
         loadingDialog.show();
-        loadingDialog.cancelTimeout();
 
         request.sendRequest(requestParams).done(
             function () {
@@ -214,16 +193,7 @@ var getForms = function () {
                     nodeCreateForm.schema.properties = _.omit(nodeCreateForm.schema.properties, 'file');
 
                     //populate the name field with the name from the filepicker
-                    if(appSettings.fileSource == "device") {
-                      nodeCreateForm.data.name = appSettings.FileName;
-                      if(appSettings.FileName != "") {
-                        $('#alpaca3').focus();
-                        $('#alpaca3').val(appSettings.FileName);
-                        $('#alpaca3').blur();
-                      }
-                    } else {
-                      nodeCreateForm.data.name = appSettings.FileData.fileName;
-                    }
+                    nodeCreateForm.data.name = appSettings.FileData.fileName;
                 }
 
                 populateForm(nodeCreateForm.data, nodeCreateForm.options, nodeCreateForm.schema, 'nodeCreate');
@@ -269,12 +239,7 @@ var showPlainForm = function () {
     submit.i18n();
 
     if (isFile(appSettings.nodeType)) {
-      if(appSettings.fileSource == "device") {
-        nameField.val(appSettings.FileName);
-        imgField.hide();
-      } else {
         imgField.attr('src', 'data:image/jpeg;base64,' + appSettings.FileData);
-      }
     } else {
         imgField.hide();
         descriptionGroup.hide();
@@ -293,15 +258,11 @@ var showPlainForm = function () {
             } else {
 
                 name = nameField.val();
-
-                if(appSettings.fileSource == "device") {
-                  formData.append('versionFile', b64toBlob(appSettings.FileData, appSettings.MimeType), name);
-                } else {
-                  if (!new RegExp(/\.jpg$/).test(name)) {
-                      name += '.jpg';
-                  }
-                  formData.append('versionFile', b64toBlob(appSettings.FileData, 'image/jpeg'), name);
+                if (!new RegExp(/\.jpg$/).test(name)) {
+                    name += '.jpg';
                 }
+
+                formData.append('versionFile', b64toBlob(appSettings.FileData, 'image/jpeg'), name);
                 formData.append('func', 'otsync.otsyncrequest');
                 formData.append('payload', JSON.stringify({
                     cstoken: csToken,
@@ -353,7 +314,6 @@ var sendPlainFormRequest = function (request) {
     });
 
     loadingDialog.show();
-    loadingDialog.cancelTimeout();
 };
 
 var closeMe = function () {
@@ -378,10 +338,7 @@ var onDeviceReady = function () {
             closeMe();
         }
     });
-
-    var t = setTimeout(function(){
-      initialize();
-    }, 1000);
+    initialize();
 };
 
 var processQueryParameters = function (query) {
@@ -462,7 +419,6 @@ function dataURItoBlob(dataURI) {
 function blurInputFields() {
     // blur all input fields
     $("#nodeCreate").find('input').each(function (index, element) {
-        $(element).focus(); // Alpaca forms are horrible!
         $(element).blur();
     });
 }

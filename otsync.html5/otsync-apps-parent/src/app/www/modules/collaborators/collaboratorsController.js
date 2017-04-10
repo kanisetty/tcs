@@ -40,7 +40,7 @@ angular.module('collaboratorsController', ['collaboratorsService', 'collaborator
 
                 if ( $scope.collaboratorQuery.length > 0 ) {
 
-                    $collaboratorsResource.collaboratorSearch($scope.collaboratorQuery, $scope.isReadOnlyPerms, $stateParams.node.getID()).then(function (allCollaborators) {
+                    $collaboratorsResource.collaboratorSearch($scope.collaboratorQuery, $scope.isReadOnlyPerms).then(function (allCollaborators) {
                         var collaboratorsAvailableForSharing = $collaboratorsService.getCollaboratorsAvailableForSharing($scope.collaborators, allCollaborators);
 
                         if ( collaboratorsAvailableForSharing.length > 0 ) {

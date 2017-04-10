@@ -33,7 +33,7 @@ public final class OtagInviteServlet extends HttpServlet {
      * Used to form the links in emails to direct the user to acceptance form and general invite UI
      * we provide.
      */
-    private static final String INVITE_HANDLER_SERVICE_PATH = "/tempoInviteHandler";
+    private static final String INVITE_HANDLER_SERVICE_PATH = "/tempoinvitehandler";
 
     /**
      * The Gateway exposes its public URL (could be a load balancer address).

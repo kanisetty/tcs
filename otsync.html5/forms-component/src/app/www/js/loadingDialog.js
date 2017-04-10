@@ -1,9 +1,6 @@
 var loadingDialog = loadingDialog || (function ($) {
         'use strict';
 
-        // timeout
-        var $timeout = null;
-
         // Creating modal dialog's DOM
         var $dialog = $(
             '<div class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top:15%; overflow-y:visible;">' +
@@ -11,7 +8,6 @@ var loadingDialog = loadingDialog || (function ($) {
             '<div class="modal-content">' +
             '<div class="modal-header"><h3 style="margin:0;"></h3></div>' +
             '<div class="modal-body">' +
-            '<div class="reload" style="display:none;"><button onclick="location.reload();">Retry</button></div>' +
             '<div class="progress progress-striped active" style="margin-bottom:0;"><div class="progress-bar" style="width: 100%"></div></div>' +
             '</div>' +
             '</div></div></div>');
@@ -51,38 +47,16 @@ var loadingDialog = loadingDialog || (function ($) {
                         settings.onHide.call($dialog);
                     });
                 }
-
-                $dialog.find('.reload').hide();
-                $dialog.find('.progress').show();
-
                 // Opening dialog
                 $dialog.modal();
-
-                $timeout = setTimeout(this.showRetry, 7500);
-
             },
             /**
              * Closes dialog
              */
             hide: function () {
-              clearTimeout($timeout);
-              $timeout = null;
-              $dialog.find('.reload').hide();
-              $dialog.find('.progress').show();
-              $dialog.modal('hide');
-            },
-
-            showRetry: function () {
-              clearTimeout($timeout);
-              $timeout = null;
-              $dialog.find('.reload').show();
-              $dialog.find('.progress').hide();
-            },
-
-            cancelTimeout: function () {
-              clearTimeout($timeout);
-              $timeout = null;
+                $dialog.modal('hide');
             }
         };
 
     })(jQuery);
+

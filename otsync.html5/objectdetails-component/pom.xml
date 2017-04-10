@@ -6,12 +6,11 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.html5</artifactId>
-        <version>16.1.1</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>objectdetails-component</artifactId>
 	<name>Object Details Component</name>
-    <version>16.1.1</version>
 
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,7 +18,7 @@
         <!-- General app.properties -->
         <app.properties.displayName>Object Details Component</app.properties.displayName>
         <app.properties.description>Object Details Component</app.properties.description>
-        <app.properties.version>${project.version}</app.properties.version>
+        <app.properties.version>16.0.1</app.properties.version>
         <app.properties.type>component</app.properties.type>
     </properties>
 

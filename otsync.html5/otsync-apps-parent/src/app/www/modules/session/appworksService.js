@@ -47,13 +47,6 @@ function $appworksService($q, $httpParamSerializerJQLike, $displayMessageService
             };
         },
 
-        getDeviceOptions: function getDeviceOptions() {
-            return {
-                destinationType: Camera.DestinationType.FILE_URI,
-                mediaType: Camera.MediaType.ALLMEDIA
-            };
-        },
-
         getComponentList: function getComponentList() {
             var args = ["component"];
             return this.execCordovaRequest('AWComponent', 'list', args);

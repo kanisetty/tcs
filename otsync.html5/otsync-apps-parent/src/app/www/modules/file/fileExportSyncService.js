@@ -6,54 +6,38 @@ angular
         '$http',
         '$sessionService',
         '$q',
-        '$displayMessageService',
-        '$state',
         'File',
         'Node',
         $fileExportSync
     ]);
 
-function $fileExportSync($appworksService, $fileResource, $http, $sessionService, $q, $dm, $state, File, Node) {
-    var _this = this;
-    var _filesToSync = 0;
-    var _filesSynced = 0;
-    var _confirmText = 'Imported files have been synced. Reload to reflect changes?';
-    var _confirmTitle = 'Sync Complete';
-
+function $fileExportSync($appworksService, $fileResource, $http, $sessionService, $q, File, Node) {
     this.sync = sync;
-
-    function displayReloadConfirmation() {
-        if (_filesSynced === _filesToSync) {
-            $dm.createConfirmationPopup(_confirmTitle, _confirmText).then(function () {
-                // reload the page to show the display synced files
-                $state.go('app.browse');
-            });
-            _filesSynced = 0;
-            _filesToSync = 0;
-        }
-    }
 
     function fileToDataUrl(filename) {
         var deferred = $q.defer();
 
         $appworksService.getSharedDocumentUrl().then(function (path) {
-              window.resolveLocalFileSystemURL('file://' + path + '/' + filename, gotFileEntry, deferred.reject);
-              function gotFileEntry(fileEntry) {
-                  fileEntry.file(function (file) {
-                      var reader = new FileReader();
-                      reader.onloadend = function (evt) {
-                          deferred.resolve(evt.target.result);
-                      };
-                      reader.readAsDataURL(file);
-                  });
-              }
+            // append path to filename
+            window.resolveLocalFileSystemURL('file://' + path + '/' + filename, gotFileEntry, deferred.reject);
+
+            function gotFileEntry(fileEntry) {
+                fileEntry.file(function (file) {
+                    var reader = new FileReader();
+                    reader.onloadend = function (evt) {
+                        deferred.resolve(evt.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
         }, deferred.reject);
 
         return deferred.promise;
     }
 
     function getNodeMetadataFromFilename(filename) {
-        var parts = filename.match(/^(\d+)_(\d+)/) || [];
+        var parts = filename.match(/^(\d+)_(\d+)/);
         parts.shift();
         return {
             nodeId: parts[0],
@@ -115,10 +99,7 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
             cache = {};
         }
 
-        // perform file sync only if the device is online. the user can retry later if they are currently offline
-        if ($sessionService.isOnline()) {
-            finder.list('');
-        }
+        finder.list('');
 
         function onFileListing(items) {
             console.log('listing items in shared directory...');
@@ -135,24 +116,10 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
                         // we will sync this file to the root of the current workspace
                         if (!metadata) {
                             syncToRoot(item.filename);
-                        } else {
-
-                          var metaLastModified = metadata.lastModified;
-                          var itemLastModified = item.lastmodified;
-
-                          if(metaLastModified > 1000000000000) {
-                            metaLastModified = metaLastModified / 1000;
-                          }
-                          if(itemLastModified > 1000000000000) {
-                            itemLastModified = itemLastModified / 1000;
-                          }
-
-                          if (metaLastModified < itemLastModified) {
+                        } else if (metadata.lastModified < item.lastmodified) {
                             // file has been modified, add as a version on top of previous
                             syncWithPreviousVersion(item.filename);
-                          }
                         }
-                        _filesToSync += 1;
                     }
                 });
             }
@@ -161,6 +128,8 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
 
     function syncToRoot(filename) {
         // add a new file to the root of the workspace
+        alert('will add new file to root from exported documents...');
+
         if ($sessionService.getRootID()) {
             performSync($sessionService.getRootID());
         } else {
@@ -180,10 +149,6 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
                         // use the unix EPOCH date
                         lastModified: ((new Date().getTime())/1000|0)
                     });
-                    // update the total files synced for displaying a reload message later on
-                    _filesSynced += 1;
-                    // display a message to the user notifying that exported files have been synced.
-                    // will not display unless _filesSynced === _filesToSync
                 }, function (err) {
                     if (err.status === 401) {
                         $appworksService.authenticate(true).then(function () {
@@ -196,6 +161,8 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
     }
 
     function syncWithPreviousVersion(filename) {
+        alert('will add new version from exported documents...');
+
         fileToDataUrl(filename).then(function (dataUrl) {
             var metadata = getNodeMetadataFromFilename(filename);
             var node = new Node({id: metadata.nodeId, name: filename});
@@ -208,11 +175,6 @@ function $fileExportSync($appworksService, $fileResource, $http, $sessionService
                 // it is likely we already have the old version of this file cached on device..
                 // remove it to force a fetch of the latest
                 removeCachedFile(filename);
-                // update the total files synced for displaying a reload message later on
-                _filesSynced += 1;
-                // display a message to the user notifying that exported files have been synced.
-                // will not display unless _filesSynced === _filesToSync
-                displayReloadConfirmation();
             }, function (err) {
                 if (err.status === 401) {
                     $appworksService.authenticate(true).then(function () {

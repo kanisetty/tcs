@@ -817,13 +817,11 @@ var Browse = new function(){
 	*/
 	this.SetFolderNotify = function(notify){
 
-		var url = '../shares/v5/incoming/'+ui.GetCurrentNodeID();
+		var url = 'v4/shares/incoming/'+ui.GetCurrentNodeID()+'?notify='+notify;
 		var type = 'request';
 		var subtype = 'UpdateFolderNotify';
 		var requestID = type + subtype +"(" + Math.floor(Math.random()*65536)  + ")";
-		var formData = {notify: notify};
-
-		var ajaxData = new request.RestAPIPutRequest(url, formData);
+		var ajaxData = new request.RestAPIRequest(url, 'PUT');
 		return $.when(queue.AddSet(requestID, ajaxData)).pipe(request.ValidateRestResponse).done(function(resultData){
 			queue.ClearCache("requestUpdateFolderNotify");
 			ui.MessageController.ShowMessage(T('LABEL.FolderNotifyStatusUpdated'));

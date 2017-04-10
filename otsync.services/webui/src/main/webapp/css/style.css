@@ -125,7 +125,7 @@ a:link {
     width: 100%;
     min-width: 1024px;
     float: left;
-    margin-top: 42px;
+    margin-top: 48px;
 }
 
 #leftColumnWrapper {
@@ -1587,12 +1587,6 @@ img.pending {
     height: 20px;
     width: 290px;
     padding: 0;
-}
-
-#passwordDialogContent a {
-    font-size: 0.7em;
-    color: #639FCE;
-    text-decoration: underline;
 }
 
 .currentPasswordTextRight, .newPassword1TextRight, .newPassword2TextRight {

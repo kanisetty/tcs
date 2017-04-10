@@ -116,7 +116,6 @@ public class Message extends SuspendedAction {
 	public static final String CHANGE_PASSWORD_VALUE = "changepassword";
 	public static final String DELETE_PROFILE_PHOTO_VALUE = "deleteprofilephoto";
 	public static final String USER_QUERY_KEY_NAME = "searchStr";
-	public static final String USER_SEARCH_SHARE_NODE = "sharingNodeId";
 	public static final String LIMIT_KEY_NAME = "limit";
 	public static final String PAGE_SIZE_KEY_NAME = "pageSize";
 	public static final String PAGE_NUMBER_KEY_NAME = "pageNumber";

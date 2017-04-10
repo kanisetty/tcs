@@ -8,12 +8,12 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.1.1</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>otsync-service-tools</artifactId>
     <name>OTSync Service Tools</name>
-    <version>16.1.1</version>
+
     <description>Common classes used by Content Server client/services deployed to the
         Appworks Gateway. Used extensively by the ECM Everywhere/Tempo service implementations.</description>
 
@@ -139,7 +139,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5</version>
+            <version>4.3.5</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -150,7 +150,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient-cache</artifactId>
-            <version>4.5</version>
+            <version>4.3.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -166,13 +166,19 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
-            <version>4.5</version>
+            <version>4.3.5</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>3.1</version>
         </dependency>
 
     </dependencies>

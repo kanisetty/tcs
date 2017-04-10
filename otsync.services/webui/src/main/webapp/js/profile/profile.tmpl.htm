@@ -26,6 +26,9 @@
 <script id="changePasswordTemplate_tmpl" type="text/x-jquery-tmpl">
         <div class="changeProfileSectionTitle">Password</div>
         <div id="passwordDialogContent">
-           <a href="../tempoInviteHandler/register/forgotpassword">${T('LABEL.ResetPasswordLink')}</a>
-	    </div>
+            {{tmpl(currentPasswordInput) "#input_tmpl"}}
+            {{tmpl(newPasswordInput1) "#input_tmpl"}}
+            {{tmpl(newPasswordInput2) "#input_tmpl"}}
+            <div id='passwordMismatchError'>${mismatchMessage}</div>
+	</div>
 </script>

@@ -79,7 +79,6 @@ angular.module('nodeBrowseDecoratingService', ['NodeBrowseDecorator'])
         setOverlays: function(nodeBrowseDecorator, node){
             var isReadOnly = node.isReadOnly();
             var isFavorite = node.isFavorite();
-            var isTempo = ($sessionService.getAppName() == "tempo");
 
             //Add readonly overlay
             if(isReadOnly) {
@@ -97,10 +96,6 @@ angular.module('nodeBrowseDecoratingService', ['NodeBrowseDecorator'])
                     if($cacheService.isNodeStorable(node) && !node.isStored())
 						nodeBrowseDecorator.setBottomLeftOverlayCSS("favorite-unavailable-overlay");
                 }
-            }
-
-            if(isTempo && node.hasTasks()) {
-              nodeBrowseDecorator.setTopRightOverlayCSS("tasks-overlay");
             }
 
             if(node.getSubtype() == 1)

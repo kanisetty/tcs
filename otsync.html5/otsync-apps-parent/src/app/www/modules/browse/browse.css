@@ -77,14 +77,6 @@
 	margin-right: 2px;
 }
 
-.overlay-position-top-right {
-	position: relative;
-	float: right;
-	height: 30%;
-	max-width: 29%;
-	margin-right: -6%;
-}
-
 .right-button {
 	float: left;
 }

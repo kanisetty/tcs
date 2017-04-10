@@ -14,7 +14,7 @@ import java.util.Objects;
 
 class InvitationHandlerClient {
 
-    private static final String SERVICE_BASE_PATH = "/tempoInviteHandler/api/v1/";
+    private static final String SERVICE_BASE_PATH = "/tempoinvitehandler/api/v1/";
     private static final String REST_API_BASE = SERVICE_BASE_PATH + "invitations";
 
     private Client httpClient;

@@ -9,40 +9,18 @@ function $File() {
 
         var _dataURLtoBlob = function (dataURL) {
             var sliceSize = 512;
-            var byteCharacters = null;
-            var contentType = null;
+
+            var byteCharacters = atob(dataURL.replace(/^[^,]+,/, ''));
             var byteArrays = [];
 
+            // try to determine content type from data url or default to image/jpeg
+            var contentType = dataURL.match(/^data:(.+);/);
 
-            if(_fileName.indexOf("photo_") > -1) {
-              byteCharacters = atob(dataURL.replace(/^[^,]+,/, ''));
-
-              // try to determine content type from data url or default to image/jpeg
-              contentType = dataURL.match(/^data:(.+);/);
-
-              if (contentType) {
-                  contentType = contentType.pop();
-              } else {
-                  contentType = 'image/jpeg';
-              }
-            } else if (typeof(dataURL) === "object") {
-              contentType = dataURL.mimetype;
-              byteCharacters = atob(dataURL.data.replace(/^[^,]+,/, ''));
+            if (contentType) {
+                contentType = contentType.pop();
             } else {
-              // Split "data:application/pdf;JPSAJDfdjfhksdff..sdf3y3dhdd=="
-              // into parts[0] = data:application.pdf
-              // and parts[1] = JPSAJDfdjfhksdff..sdf3y3dhdd==
-              var parts = dataURL.split(";");
-              if(parts.length == 1) {
                 contentType = 'image/jpeg';
-                byteCharacters = atob(parts[0].replace(/^[^,]+,/, ''));
-              } else {
-                contentType = parts[0].replace("data:","");
-                byteCharacters = atob(parts[1].replace(/^[^,]+,/, ''));
-              }
             }
-            //var byteCharacters = atob(dataURL.replace(/^[^,]+,/, ''));
-            var byteArrays = [];
 
             for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
                 var slice = byteCharacters.slice(offset, offset + sliceSize);

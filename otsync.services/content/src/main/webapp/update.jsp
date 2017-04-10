@@ -30,9 +30,11 @@
     ClientType androidClient = new ClientType(ANDROID_CLIENT_KEY);
     ClientType iosClient = new ClientType(IOS_CLIENT_KEY);
 
-    androidClient.setClientLink("https://play.google.com/store/apps/details?id=com.opentext.mobile.tb16");
-    iosClient.setClientLink("https://itunes.apple.com/us/app/opentext-tempo-box-16/id1153490161");
-    
+    androidClient.setClientLink("https://play.google.com/store/apps/details?id=com.opentext.m.tempo");
+    androidClient.setMinVersion("4.2");
+    iosClient.setClientLink("https://itunes.apple.com/ca/app/opentext-tempo/id781547141");
+    iosClient.setMinVersion("8_0");
+
     //Get the client's Locale (language and country)
     Locale locale = request.getLocale();
     String detectedLanguage = locale.getLanguage();
@@ -137,9 +139,17 @@
 
     if (ANDROID_CLIENT_KEY.equalsIgnoreCase(os)) {
         downloadText = and_downloadText;
+
+        if (androidVersion.compareTo(androidClient.getMinVersion()) < 0) {
+            osVersionNotSupported = true;
+        }
     }
     else if (IOS_CLIENT_KEY.equalsIgnoreCase(os)) {
         downloadText = ios_downloadText;
+
+        if (iOSVersion.compareTo(iosClient.getMinVersion()) < 0) {
+            osVersionNotSupported = true;
+        }
     }
     else if (WIN_CLIENT_KEY.equalsIgnoreCase(os)) {
 

@@ -6,18 +6,18 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.bundles</artifactId>
-        <version>16.1.1</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>tempo-bundle</artifactId>
     <name>Tempo Bundle</name>
-    <version>16.1.1</version>
+    <version>16.0.3</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <app.properties.version>${project.version}</app.properties.version>
-        <services.app.properties.version>${project.version}</services.app.properties.version>
+        <app.properties.version>16.0.1</app.properties.version>
+        <services.app.properties.version>16.0.1</services.app.properties.version>
 
         <nexus.base.url>http://appworks-re1.lab.opentext.com:8082/nexus</nexus.base.url>
 
@@ -75,7 +75,7 @@
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
                                     <artifactId>content</artifactId>
-                                    <version>${services.app.properties.version}</version>
+                                    <version>16.0.3</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>dependencies</outputDirectory>
@@ -162,7 +162,15 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>com.opentext.otsync</groupId>
-                                    <artifactId>tempoInviteHandler</artifactId>
+                                    <artifactId>tempoinvitehandler</artifactId>
+                                    <version>${services.app.properties.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>dependencies</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.opentext.otsync</groupId>
+                                    <artifactId>otsync-connector</artifactId>
                                     <version>${services.app.properties.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>

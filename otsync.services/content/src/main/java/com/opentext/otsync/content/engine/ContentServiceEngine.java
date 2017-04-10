@@ -8,14 +8,12 @@ import com.opentext.otsync.content.ContentServiceConstants;
 import com.opentext.otsync.content.engine.core.SuspendedActionQueue;
 import com.opentext.otsync.content.http.HTTPRequestManager;
 import com.opentext.otsync.content.message.Message;
-import com.opentext.otsync.content.otag.GatewayUrlSettingService;
 import com.opentext.otsync.content.otag.SettingsService;
 import com.opentext.otsync.content.ws.ServletUtil;
 import com.opentext.otsync.content.ws.message.JsonMessageConverter;
 import com.opentext.otsync.content.ws.message.MessageConverter;
 import com.opentext.otsync.content.ws.server.CleanUpThread;
 import com.opentext.otsync.content.ws.server.ClientSet;
-import com.opentext.otsync.content.ws.server.ClientTypeSet;
 import com.opentext.otsync.content.ws.server.servlet3.Servlet3BackChannel;
 import com.opentext.otsync.content.ws.server.servlet3.Servlet3ContentChannel;
 import com.opentext.otsync.content.ws.server.servlet3.Servlet3FrontChannel;
@@ -29,8 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-
-import static com.opentext.otag.service.context.components.AWComponentContext.getComponent;
 
 /**
  * The engine:
@@ -185,14 +181,7 @@ public class ContentServiceEngine {
         // JSON string with {"type": "auth"} is POSTed to the FrontChannel
         messageHandler = new SynchronousMessageSwitch();
 
-        // get the settings listener from our AppWorks DI context
-        GatewayUrlSettingService otagUrlService = getComponent(GatewayUrlSettingService.class);
-        if (otagUrlService == null) {
-            throw new RuntimeException("Failed to resolve the GatewayUrlSettingService, we will " +
-                    "not be able to authenticate requests against the managing AppWorks Gateway without it.");
-        }
-        AuthMessageListener authListener = new AuthMessageListener(
-                messageConverter, new ClientTypeSet(), otagUrlService);
+        AuthMessageListener authListener = new AuthMessageListener(messageConverter, serverConnection);
         messageHandler.setHandler(authListener, Message.AUTH_KEY_VALUE);
 
         ForwardingMessageListener notifyListener =

@@ -2,26 +2,25 @@ package com.opentext.otsync.content.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opentext.otsync.otag.components.HttpClientService;
+import com.opentext.otsync.rest.util.CSForwardHeaders;
 import com.opentext.otsync.content.ContentServiceConstants;
+import com.opentext.otsync.content.http.HTTPRequestManager;
 import com.opentext.otsync.content.message.Message;
 import com.opentext.otsync.content.message.SynchronousMessageListener;
-import com.opentext.otsync.content.otag.GatewayUrlSettingService;
 import com.opentext.otsync.content.util.ReturnHeaders;
 import com.opentext.otsync.content.ws.ServletConfig;
 import com.opentext.otsync.content.ws.message.MessageConverter;
-import com.opentext.otsync.content.ws.server.ClientSet;
-import com.opentext.otsync.content.ws.server.ClientType;
 import com.opentext.otsync.content.ws.server.ClientTypeSet;
-import com.opentext.otsync.otag.components.HttpClientService;
-import com.opentext.otsync.rest.util.CSForwardHeaders;
+import com.opentext.otsync.rest.util.LLCookie;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -30,32 +29,23 @@ import org.apache.http.util.EntityUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.opentext.otsync.api.CSRequestHelper.makeRequest;
 
 // TODO FIXME this legacy endpoint should be deprecated once AppWorks implements all required features
 // and clients can be updated
 public class AuthMessageListener implements SynchronousMessageListener {
 
-    private static Log log = LogFactory.getLog(AuthMessageListener.class);
-
-    static final String USERNAME = "username";
-    private static final String OTSYNC_CONNECTOR = "otsync-connector";
-    private static final String ADDTL = "addtl";
-
     private MessageConverter _messageConverter;
+    private static Log log = LogFactory.getLog(AuthMessageListener.class);
     private ClientTypeSet _clientSet;
-    private GatewayUrlSettingService gatewayUrlSettingService;
 
-    public AuthMessageListener(MessageConverter messageConverter,
-                               ClientTypeSet clientSet,
-                               GatewayUrlSettingService gatewayUrlSettingService) {
+    public AuthMessageListener(MessageConverter messageConverter, HTTPRequestManager serverConnection) {
         _messageConverter = messageConverter;
-        _clientSet = clientSet;
-        this.gatewayUrlSettingService = gatewayUrlSettingService;
+
+        _clientSet = new ClientTypeSet();
     }
 
     /**
@@ -65,20 +55,16 @@ public class AuthMessageListener implements SynchronousMessageListener {
      *
      * @param message - incoming request map with legacy FrontChannel format
      * @return - Map containing all fields to be returned to the requesting client
-     * @throws IOException if the remote auth call fails to Gateway or CS
+     * @throws IOException
      */
     public Map<String, Object> onMessage(Map<String, Object> message) throws IOException {
+        HttpServletRequest request = (HttpServletRequest)message.remove(ContentServiceConstants.INCOMING_REQUEST_KEY);
         ReturnHeaders returnHeaders = new ReturnHeaders();
-        Map<String, Object> combinedResult = generateDefaultResponse();
 
-        HttpServletRequest request = (HttpServletRequest) message.remove(ContentServiceConstants.INCOMING_REQUEST_KEY);
+        Map<String, Object> combinedResult = generateDefaultResponse();
 
         Map<String, Object> awAuthResult = doAppWorksAuth(message, request, returnHeaders);
         combinedResult.putAll(awAuthResult);
-
-        // AppWorks may supply the correct CS username to use via its connector, the username
-        // provide by the original call may not be recognised
-        replaceUsernameInMessage(message, awAuthResult);
 
         Map<String, Object> csAuthResult = doContentServerAuth(message, request, returnHeaders);
         combinedResult.putAll(csAuthResult);
@@ -88,41 +74,6 @@ public class AuthMessageListener implements SynchronousMessageListener {
 
         combinedResult.put(ReturnHeaders.MAP_KEY, returnHeaders);
         return combinedResult;
-    }
-
-    /**
-     * We need to overwrite the username in the message passed to the Content Server auth if
-     * AppWorks supplies one from its Content Server connector.
-     *
-     * @param message to update
-     * @param awAuthResult the AppWorks auth result
-     */
-    @SuppressWarnings("unchecked")
-    private void replaceUsernameInMessage(Map<String, Object> message, Map<String, Object> awAuthResult) {
-        if (message != null && message.containsKey(USERNAME)) {
-            // First we check that the username isn't empty or invalid
-            if (awAuthResult != null && awAuthResult.containsKey(ADDTL) && (awAuthResult.get(ADDTL) != null)) {
-                try {
-                    Map<String, Object> additionalDetails = (Map<String, Object>) awAuthResult.get(ADDTL);
-                    if (additionalDetails.containsKey(OTSYNC_CONNECTOR)) {
-                        log.debug("OTSYNC Connector key found, attempting to retrieve username");
-                        Map<String, Object> otsyncKeys = (Map<String, Object>) additionalDetails.get(OTSYNC_CONNECTOR);
-
-                        String otsyncUsername = (String) otsyncKeys.get("csUsername");
-                        if (otsyncUsername != null && !otsyncUsername.isEmpty()) {
-                            message.remove(USERNAME);
-                            log.debug("Replacing username based on OTSYNC Connector creds....");
-                            message.put(USERNAME, otsyncUsername);
-                        } else {
-                            log.warn("Username replacement failed - OTSYNC Username is blank");
-                        }
-                    }
-                } catch (Exception e) {
-                    log.warn("Failed to add username from AppWorks auth response, CS login may fail", e);
-                }
-
-            }
-        }
     }
 
     /**
@@ -139,7 +90,7 @@ public class AuthMessageListener implements SynchronousMessageListener {
         Map<String, Object> clientData = new HashMap<>();
         params.put("clientData", clientData);
 
-        String clientID = (String) message.getOrDefault(Message.CLIENT_ID_KEY_NAME, "");
+        String clientID = (String)message.getOrDefault(Message.CLIENT_ID_KEY_NAME, "");
         if (!"".equalsIgnoreCase(clientID) && !"null".equalsIgnoreCase(clientID)) {
             clientData.put("clientId", clientID);
         }
@@ -159,8 +110,8 @@ public class AuthMessageListener implements SynchronousMessageListener {
         Map<String, Object> deviceInfo = new HashMap<>();
         clientData.put("deviceInfo", deviceInfo);
 
-        String modelName = "" + message.getOrDefault(Message.CLIENT_OS_KEY_NAME, "") + " " +
-                message.getOrDefault(Message.CLIENT_OSVERSION_KEY_NAME, "");
+        String modelName =  "" + message.getOrDefault(Message.CLIENT_OS_KEY_NAME, "") + " " +
+            message.getOrDefault(Message.CLIENT_OSVERSION_KEY_NAME, "");
         deviceInfo.put("model", modelName);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -182,19 +133,22 @@ public class AuthMessageListener implements SynchronousMessageListener {
      * @return - Map containing required tokens and info mapped to the legacy API response format
      * @throws IOException
      */
-    private Map<String, Object> doAppWorksAuth(Map<String, Object> message,
-                                               HttpServletRequest incomingRequest,
-                                               ReturnHeaders returnHeaders) throws IOException {
+    private Map<String, Object> doAppWorksAuth(Map<String, Object> message, HttpServletRequest incomingRequest, ReturnHeaders returnHeaders) throws IOException {
         Map<String, Object> result = new HashMap<>();
         String requestJSON = buildAWAuthRequestString(message);
         CSForwardHeaders headers = new CSForwardHeaders(incomingRequest);
+
+        //Build up AppWorks Auth request using incoming request's URL
+        String requestScheme = incomingRequest.getScheme();
+        Integer requestPort = incomingRequest.getServerPort();
+        String requestServer = incomingRequest.getServerName();
 
         HttpResponse response;
 
         HttpClient httpClient = new DefaultHttpClient();
         try {
-            String requestURL = gatewayUrlSettingService.getGatewayUrl() + "/v3/admin/auth";
-            HttpPost request = new HttpPost(requestURL);
+            URL requestURL = new URL(requestScheme, requestServer, requestPort, "/v3/admin/auth");
+            HttpPost request = new HttpPost(requestURL.toString());
 
             headers.addTo(request);
             request.addHeader("content-type", "application/json");
@@ -225,9 +179,6 @@ public class AuthMessageListener implements SynchronousMessageListener {
             throw e;
         }
 
-
-        result.putAll(workingMap);
-
         //Map AW response fields to expected API response
         result.put("token", workingMap.getOrDefault("otagtoken", ""));
         result.put("isOTAG", workingMap.getOrDefault("isOTAG", false));
@@ -248,12 +199,9 @@ public class AuthMessageListener implements SynchronousMessageListener {
      *
      * @param message - Map containing the incoming request body
      * @return - Map containing required tokens and info mapped to the legacy API response format
-     * @throws IOException if the auth request fails
+     * @throws IOException
      */
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> doContentServerAuth(Map<String, Object> message,
-                                                    HttpServletRequest incoming,
-                                                    ReturnHeaders returnHeaders) throws IOException {
+    private Map<String, Object> doContentServerAuth(Map<String, Object> message, HttpServletRequest incoming, ReturnHeaders returnHeaders) throws IOException {
         Map<String, Object> result = new HashMap<>();
         CSForwardHeaders headers = new CSForwardHeaders(incoming);
         ArrayList<NameValuePair> params = new ArrayList<>();
@@ -266,40 +214,54 @@ public class AuthMessageListener implements SynchronousMessageListener {
             return new HashMap<>();
         }
 
-        HttpPost request = new HttpPost(ServletConfig.getContentServerUrl());
-        headers.addTo(request);
-        request.setEntity(new UrlEncodedFormEntity(params));
+        HttpResponse response;
+        CloseableHttpClient httpClient = HttpClientService.getService().getHttpClient();
+
+        try {
+            HttpPost request = new HttpPost(ServletConfig.getContentServerUrl());
+            headers.addTo(request);
+            request.setEntity(new UrlEncodedFormEntity(params));
+            LLCookie llCookie = headers.getLLCookie();
+            if (llCookie != null) {
+                HttpClientContext contextWithLLCookie = llCookie.getContextWithLLCookie(request);
+                response = httpClient.execute(request, contextWithLLCookie);
+            } else {
+                response = httpClient.execute(request);
+            }
+        } catch (IOException e) {
+            log.error(e);
+            throw e;
+        }
 
         String responseString;
         Map<String, Object> workingMap;
-        CloseableHttpClient httpClient = HttpClientService.getService().getHttpClient();
-        try (CloseableHttpResponse response = makeRequest(httpClient, request, headers)) {
-            try {
-                responseString = EntityUtils.toString(response.getEntity());
-                workingMap = _messageConverter.getDeserializer().deserialize(responseString);
-            } catch (IOException e) {
-                log.error(e);
-                throw e;
-            }
-            // Insert extra required info data
-            Map<String, Object> info = (Map<String, Object>) workingMap.get("info");
-            if (info != null) {
-                info.put(Message.SYNC_RECOMMENDED_KEY_NAME, false);
-                if (Boolean.FALSE.equals(info.get("auth"))) {
-                    result.put("auth", Boolean.FALSE);
-                }
-            }
-            // Map CS response fields to current expected API response
-            result.put("APIVersion", workingMap.getOrDefault("APIVersion", 4));
-            result.put(ContentServiceConstants.CS_AUTH_TOKEN,
-                    workingMap.getOrDefault(ContentServiceConstants.CS_AUTH_TOKEN, ""));
-            result.put("info", workingMap.get("info"));
-            result.put("serverDate", workingMap.get("serverDate"));
-            result.put("subtype", workingMap.getOrDefault("subtype", "auth"));
-            result.put("type", workingMap.getOrDefault("type", "auth"));
 
-            returnHeaders.extractHeaders(response);
+        try {
+            responseString = EntityUtils.toString(response.getEntity());
+            workingMap = _messageConverter.getDeserializer().deserialize(responseString);
+        } catch (IOException e) {
+            log.error(e);
+            throw e;
         }
+
+        //Insert extra required info data
+        Map<String, Object> info = (Map<String, Object>) workingMap.get("info");
+        if (info != null) {
+            info.put(Message.SYNC_RECOMMENDED_KEY_NAME, false);
+            if (Boolean.FALSE.equals(info.get("auth"))) {
+                result.put("auth", Boolean.FALSE);
+            }
+        }
+
+        //Map CS response fields to current expected API response
+        result.put("APIVersion", workingMap.getOrDefault("APIVersion", 4));
+        result.put(ContentServiceConstants.CS_AUTH_TOKEN, workingMap.getOrDefault(ContentServiceConstants.CS_AUTH_TOKEN, ""));
+        result.put("info", workingMap.get("info"));
+        result.put("serverDate", workingMap.get("serverDate"));
+        result.put("subtype", workingMap.getOrDefault("subtype", "auth"));
+        result.put("type", workingMap.getOrDefault("type", "auth"));
+
+        returnHeaders.extractHeaders(response);
 
         return result;
     }

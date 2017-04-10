@@ -156,7 +156,8 @@
     <meta http-equiv="Cache-Control" content="max-age=0"/>
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
 
-    <title><%=ServletConfig.getProductName() %></title>
+    <title><%=ServletConfig.getProductName() %>
+    </title>
     <link type="text/css" rel="stylesheet" href="${otd:toHTMLString(repo)}/css/tempo.css"/>
     <link rel="shortcut icon" type="image/ico" href="${otd:toHTMLString(repo)}/img/favicon.ico">
     <!--<script src="/webaccess/js/otag.js"></script>-->
@@ -192,7 +193,6 @@
         }
     </script>
     <script src="${otd:toHTMLString(repo)}/js/jquery.js"></script>
-    <script src="${otd:toHTMLString(repo)}/tempo.tmpl.htm"></script>
     <script src="${otd:toHTMLString(repo)}/js/tempo.js"></script>
     <script src="${otd:toHTMLString(repo)}/locales/${lang}.js"></script>
 </head>

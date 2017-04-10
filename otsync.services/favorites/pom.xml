@@ -8,13 +8,12 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.1.1</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>favorites</artifactId>
     <packaging>war</packaging>
     <name>Favorites Service</name>
-    <version>16.1.1</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,13 +21,13 @@
         <!-- General app.properties -->
         <app.properties.displayName>Favorites Service</app.properties.displayName>
         <app.properties.description>Content Server Favorites service</app.properties.description>
-        <app.properties.version>${project.version}</app.properties.version>
+        <app.properties.version>16.0.1</app.properties.version>
         <app.properties.minimumClientVersion>2</app.properties.minimumClientVersion>
         <app.properties.type>service</app.properties.type>
 
         <!-- Output artifacts properties -->
         <appworks.service.name>favorites</appworks.service.name>
-        <appworks.service.version>${project.version}</appworks.service.version>
+        <appworks.service.version>${app.properties.version}</appworks.service.version>
     </properties>
 
     <build>
@@ -102,7 +101,7 @@
         <dependency>
             <groupId>com.opentext.otsync</groupId>
             <artifactId>otsync-service-tools</artifactId>
-            <version>16.1.1</version>
+            <version>${version}</version>
         </dependency>
   
         <dependency>

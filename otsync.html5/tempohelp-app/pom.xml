@@ -6,12 +6,11 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.html5</artifactId>
-        <version>16.1.1</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>tempohelp-app</artifactId>
 	<name>Tempo Help App</name>
-    <version>16.1.1</version>
 
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,7 +18,7 @@
         <!-- General app.properties -->
         <app.properties.displayName>Tempo Help App</app.properties.displayName>
         <app.properties.description>Tempo Help App</app.properties.description>
-        <app.properties.version>${project.version}</app.properties.version>
+        <app.properties.version>16.0.1</app.properties.version>
         <app.properties.type>app</app.properties.type>
     </properties>
     

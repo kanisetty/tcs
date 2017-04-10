@@ -15,15 +15,3 @@
 .plain-form .form-group label {
     display: block;
 }
-
-#progress-wrapper {
-  background-color: #ffffff;
-  border: 1px solid #3333ff;
-  height:8px;
-  display:none;
-}
-#progress {
-  background-color: #3333ff;
-  height:8px;
-  width:0%;
-}

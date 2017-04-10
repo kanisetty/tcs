@@ -54,18 +54,6 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
             return menuItemFactory.createMenuItem(title, !refresh, !hasModal, action)
         },
 
-        getOpenMenuItemBrava: function (title, root, node) {
-            var action = function () {
-              var deferred = $q.defer();
-              // remove file encoding from open in call
-              var url = $sessionService.getContentServerBravaPath().replace("{NODEID}",node.getID());
-              window.open(url, '_blank', 'EnableViewPortScale=yes,location=no');
-              deferred.resolve();
-              return deferred.promise;
-            };
-            return menuItemFactory.createMenuItem(title, !refresh, !hasModal, action)
-        },
-
         createMenu: function (scope, node) {
             var menu = new ModalMenu(this.getNodeMenuItems(scope.root, node), $displayMessageService.translate('OPTIONS'), $displayMessageService.translate('CANCEL'));
             menu.showModalMenu(scope);
@@ -81,7 +69,6 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
             var PermModify = 0x10000;
             var PermDelete = 0x00008;
             var PermCreateNode = 0x00004;
-            var isTempo = ($sessionService.getAppName() == "tempo");
 
             modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('OBJECT DETAILS'), !refresh, !hasModal,
                 function () {
@@ -129,16 +116,15 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
                 }
             }
 
-            if(!isTempo) {
-              modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('COMMENTS'), !refresh, !hasModal,
-                  function () {
-                      var additionalParams = {node: node};
-                      return $navigationService.openPage('app.browse', {
-                          id: "PulseContent",
-                          additionalParams: additionalParams
-                      });
-                  }));
-            }
+            modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('COMMENTS'), !refresh, !hasModal,
+                function () {
+                    var additionalParams = {node: node};
+                    return $navigationService.openPage('app.browse', {
+                        id: "PulseContent",
+                        additionalParams: additionalParams
+                    });
+                }));
+
             //For Documents
             if (!node.isContainer() && node.isDocument()) {
                 if ((permissions & PermSeeContents) == PermSeeContents) {
@@ -159,24 +145,19 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
                             return $fileMenuService.getFileMenuItemsAddVersion(true, node);
                         }));
                 }
-
-                if (isTempo && node.isBrava()) {
-                    modalMenuItems.push(this.getOpenMenuItemBrava($displayMessageService.translate('BRAVA'), root, node));
-                }
             } else { //Folders
-                if(!isTempo) {
-                  modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('COMMENTS FROM HERE'), !refresh, !hasModal,
-                      function () {
-                          var additionalParams = {
-                              node: node,
-                              isRecursive: true
-                          };
-                          return $navigationService.openPage('app.browse', {
-                              id: "PulseContent",
-                              additionalParams: additionalParams
-                          });
-                      }));
-                }
+                modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('COMMENTS FROM HERE'), !refresh, !hasModal,
+                    function () {
+                        var additionalParams = {
+                            node: node,
+                            isRecursive: true
+                        };
+                        return $navigationService.openPage('app.browse', {
+                            id: "PulseContent",
+                            additionalParams: additionalParams
+                        });
+                    }));
+
                 if ((permissions & PermCreateNode) == PermCreateNode && node.isFolder()) {
                     modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('UPLOAD HERE'), !refresh, hasModal,
                         function () {
@@ -185,7 +166,7 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
                         }));
                 }
 
-                if ((node.sharing().isTempo() || isTempo) && (node.sharing().isAShare() || node.sharing().isShareable())) {
+                if (node.sharing().isTempo() && (node.sharing().isAShare() || node.sharing().isShareable())) {
                     modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('SHARE'), !refresh, !hasModal,
                         function () {
                             $navigationService.openPage('app.collaborators', {node: node});
@@ -226,16 +207,6 @@ function $nodeMenuService($q, $displayMessageService, $nodeResource, $fileMenuSe
                             });
                         }));
                 }
-
-            // TEMPO-6760
-            } else {
-              if (node.sharing().isSharedToMe() || node.sharing().isAnEnterpriseShare()) {
-                  modalMenuItems.push(menuItemFactory.createMenuItemWithConfirmation($displayMessageService.translate('REMOVE SHARE'), refresh, !hasModal,
-                      function () {
-                          return $nodeResource.deleteNode(node);
-                      },
-                      $displayMessageService.translate("REMOVE SHARE CONFIRMATION", {filename: node.getName()})));
-              }
             }
 
             modalMenuItems.push(menuItemFactory.createMenuItem($displayMessageService.translate('COPY'), !refresh, !hasModal,

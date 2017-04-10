@@ -9,7 +9,6 @@ angular.module('BrowseDecorator', [])
             this.decoratedObject = objectToBeDecorated;
             this.title = title;
             this.topLeftOverlayCSS = '';
-            this.topRightOverlayCSS = '';
         };
 
 		BrowseDecorator.prototype.doIndent = function(){
@@ -46,10 +45,6 @@ angular.module('BrowseDecorator', [])
             return this.topLeftOverlayCSS;
         };
 
-        BrowseDecorator.prototype.getTopRightOverlayCSS = function(){
-            return this.topRightOverlayCSS;
-        };
-
         BrowseDecorator.prototype.setBottomLeftOverlayCSS = function(bottomLeftOverlayCSS){
             this.bottomLeftOverlayCSS = bottomLeftOverlayCSS;
         };
@@ -64,10 +59,6 @@ angular.module('BrowseDecorator', [])
 
         BrowseDecorator.prototype.setTopLeftOverlayCSS = function(topLeftOverlayCSS){
             this.topLeftOverlayCSS = topLeftOverlayCSS;
-        };
-
-        BrowseDecorator.prototype.setTopRightOverlayCSS = function(topRightOverlayCSS){
-            this.topRightOverlayCSS = topRightOverlayCSS;
         };
 
         BrowseDecorator.prototype.toString = function(){

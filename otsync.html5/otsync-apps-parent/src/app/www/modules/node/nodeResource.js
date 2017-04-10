@@ -81,13 +81,11 @@ function $nodeResource($sessionService, $urlEncode, $browseService, $stateParams
 
         getNodeChildren: function (nodeId, filter, pageSize, pageNumber) {
 
-            var fields = "id,parentID,name,subtype,mimeType,childCount,dataSize,modifyDate,isShared,modifyUserName,modifyUser,modifyUserID,sharedFolder,isShareable,isRootShare,isReadOnly,versionNum,dataHash,isNotifySet,isSubscribed,isContainer,originSubtype,originTypeName,originDataID,thumbnailEnabled,rootType,numComments,isFavorite,permissions,userID,ownerUser,ownerName,createdByUser,shareClass,isReservable,reservedByUserName,displayCreateDate,displayModifyDate,nodeCreatedDate,nodeModifiedDate,parentCreatedDate,parentModifiedDate,isHidden,iconURL,HASTASKS,ISBRAVA";
-
             var requestParams = {
                 method: 'GET',
                 url: $sessionService.getGatewayURL() + '/content/v5/nodes/' + nodeId + '/children',
                 headers: {'Content-Type': 'application/json; charset=utf-8'},
-                params: {fields: fields, pageNumber: pageNumber, pageSize: pageSize, type: $sessionService.getClientType()}
+                params: {pageNumber: pageNumber, pageSize: pageSize, type: $sessionService.getClientType()}
             };
 
             if (filter != null && filter.length > 0) {

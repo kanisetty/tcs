@@ -8,20 +8,19 @@
     <parent>
         <groupId>com.opentext.otsync</groupId>
         <artifactId>otsync.services</artifactId>
-        <version>16.1.1</version>
+        <version>16.0.1</version>
     </parent>
 
     <artifactId>feeds</artifactId>
     <packaging>war</packaging>
     <name>Feeds Service</name>
-    <version>16.1.1</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Output artifacts properties -->
         <appworks.service.name>feeds</appworks.service.name>
-        <appworks.service.version>${project.version}</appworks.service.version>
+        <appworks.service.version>16.0.1</appworks.service.version>
     </properties>
 
     <build>
@@ -103,7 +102,7 @@
         <dependency>
             <groupId>com.opentext.otsync</groupId>
             <artifactId>otsync-service-tools</artifactId>
-            <version>16.1.1</version>
+            <version>${version}</version>
         </dependency>
   
         <dependency>
